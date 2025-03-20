@@ -38,12 +38,14 @@ Nome (mínimo 3 caracteres).
 E-mail (único no sistema, usado como chave principal do login).
 Cidade (somente letras).
 Senha (mínimo 6 caracteres, confirmação obrigatória).  
+Sincronização de dados ☁️, Como o app pode ser usado em múltiplos dispositivos (Web, Android, iOS), garantir que todas as entradas fiquem salvas na nuvem.
 
 Motivação:
 
 📌 Ter um login global, acessível para motoristas de qualquer país.  
 📌 Facilidade de acesso com redes sociais.  
 📌 Recuperação de conta simples e segura via e-mail.
+Enviar um e-mail de confirmação antes de ativar a conta. Isso evita spam e contas falsas.
 
 ## 2.2 Tela Inicial (Painel)  
 
@@ -60,11 +62,13 @@ Motivação:
 
 📌 Exibir um resumo rápido da performance financeira.  
 📌 Permitir que o motorista tome decisões sobre quando vale a pena trabalhar mais.
+Permitir que o motorista escolha quais métricas quer ver primeiro. Ex: pode querer ver "Lucro líquido" antes de "Ganho da Semana".
+Exibir um aviso caso os gastos com combustível estejam acima da média usual do motorista.
 
 ## 2.3 Jornadas de Trabalho  
 
 Motorista inicia uma jornada, registrando quilometragem inicial e horário automático.
-Ao final, insere quilometragem final, corridas realizadas e faturamento.
+Ao final, insere quilometragem final, corridas realizadas e faturamento podendo editar informações passadas se necessário for.
 
 Cálculos automáticos:
 
@@ -119,6 +123,8 @@ Campos para inserção de abastecimento:
 
 Motivação:
 📌 Controlar com precisão o gasto com combustível, permitindo análises sobre consumo e eficiência.
+📌 A quilometragem media é calculada com base na quantidade de litros abastecidos e a quilometragem percorrida.
+Aviso de Consumo Elevado ⚠️ - Se o consumo médio do carro subir muito em comparação com os últimos abastecimentos, exibir um alerta.
 
 ## 2.5 Controle de Despesas  
 
@@ -136,6 +142,9 @@ Exportação de dados em formato de tabela (PDF, Excel, CSV).
 Motivação:  
 📌 Controlar gastos avulsos e recorrentes.  
 📌 Permitir ajustes manuais para pagamentos antecipados e parcelamentos.
+Gráficos Visuais 📊 Mostrar gráficos de distribuição de gastos (Ex: 40% combustível, 30% manutenção, etc.).
+Se houver um IPVA ou seguro para pagar, exibir um lembrete com antecedência.
+
 
 ## 2.6 Metas para Motoristas
 
@@ -144,8 +153,10 @@ Objetivo da Funcionalidade
 🎯 Motorista pode definir metas diárias, semanais e mensais.
 📊 Card na tela inicial mostra progresso da meta em tempo real.
 🔔 Alertas se o motorista estiver abaixo da meta.
+Permitir que o motorista veja como foi seu desempenho em metas passadas.
+Se um motorista geralmente ganha R$ 1.200/semana, sugerir uma meta próxima disso ao invés de deixar em branco.
 
-Comparar o progresso com a meta** diretamente na tela inicial.  
+Comparar o progresso com a meta diretamente na tela inicial.  
 Ter um card dinâmico mostrando o percentual atingido.  
 
 Como Funcionará?
@@ -159,7 +170,7 @@ O motorista poderá cadastrar três tipos de metas:
 | **Semanal** | Valor total desejado para a semana. | **R$ 1.750/semana** |
 | **Mensal** | Valor total desejado no mês. | **R$ 7.500/mês** |
 
-O motorista pode alterar ou redefinir metas a qualquer momento.  
+O motorista pode alterar ou redefinir metas futuras a qualquer momento, no entanto nao pode alterar uma meta do passado.  
 As metas não são acumulativas (ex: uma meta semanal não soma automaticamente as diárias).
 
 Monitoramento do Progresso
@@ -201,12 +212,19 @@ Relatórios Básicos:
 Relatórios Avançados:
 
 - Ranking de faturamento na cidade.
+- Ranking de melhores motoristas em relação a faturamento da cidade
+- Ranking de melhores motoristas em relação a lucro da cidade
+- Ranking de motoristas com maiores quilometragens
+- Ranking da sua posição em relação aos outros motoristas em faturamento e lucro
 - Média de faturamento e quilometragem por dia da semana.
 - Gráfico de evolução das últimas 8 semanas (faturamento vs. gastos).
 - Previsão de faturamento e lucro líquido para a próxima semana e mês.  
     ✅ Exportação de dados em tabela (PDF, Excel, CSV).  
     ✅ Filtros por data (mês atual por padrão).  
-    ✅ Modo de exibição otimizado (mostrando um card de cada vez, com rolagem automática).  
+    ✅ Modo de exibição otimizado (mostrando um card de cada vez, com rolagem automática).
+  Mostrar um ranking opcional com os melhores motoristas da cidade baseado em faturamento e lucro líquido.
+  O motorista pode optar por mostrar ou esconder seu nome no ranking nos configuraçõees do app
+  Um gráfico mostrando qual app (Uber, 99, etc.) trouxe mais ganhos ao longo do tempo.
 
 Motivação:  
 📌 Analisar desempenho financeiro e eficiência.  
@@ -216,6 +234,11 @@ Motivação:
 
 ## Tela de Login e Cadastro
 Objetivo: Permitir que o motorista faça login ou crie uma conta.
+permitir acionar o dark mode
+Permitir login biometrico com digital
+Além de login por digital/Face ID, permitir um PIN de 4-6 dígitos como alternativa rápida ao login completo, Exemplo: "Digite seu PIN ou use biometria."
+Avisar instantaneamente se o e-mail já existe ao digitar, antes de apertar "Criar Conta".
+Permitir a mudança automática para Dark Mode com base nas preferências do sistema operacional.
 
 Componentes:
 
@@ -245,6 +268,11 @@ Componentes:
 ## 3.1 Tela Inicial (Dashboard)
 
 Objetivo: Mostrar um resumo do desempenho do motorista.
+os dados não serao atualizados de acordo com o banco de dados
+Exibir skeleton loaders enquanto os dados carregam para evitar tela "vazia".
+Suavizar a transição dos valores no card de ganhos quando um novo valor entra.
+Motoristas podem escolher quais cards querem ver primeiro. Exemplo: Alguém pode querer ver Lucro Líquido antes de KM Rodados.
+Criar um widget opcional mostrando "Faturamento do Dia" e "Progresso da Meta" direto na tela inicial do celular.
 
 **Componentes:**
 
@@ -274,6 +302,11 @@ Objetivo: Mostrar um resumo do desempenho do motorista.
 ## 3.2 Tela de Jornadas de Trabalho
 
 **Objetivo:** Registrar e acompanhar jornadas de trabalho do motorista.
+É possivel editar uma jornada passada e possibilidade de pausar uma jornada no caso de um café ou almoço para nao contar o tempo de serviço.
+Criar um botão "Pausar Jornada" para cafés e intervalos sem contar como tempo de serviço.
+Exibir pequenas métricas como:
+🚀 Melhor dia da semana para faturamento
+⏳ Duração média das jornadas
 
 **Componentes:**
 
@@ -303,6 +336,9 @@ Objetivo: Mostrar um resumo do desempenho do motorista.
 ## 3.3 Tela de Abastecimentos
 
 **Objetivo:** Registrar e acompanhar abastecimentos.
+Criar uma previsão de quantos KM ainda podem ser rodados baseado no tanque atual.
+Exibir abastecimentos passados como um gráfico de barras ao invés de apenas uma lista.
+
 
 **Componentes:**
 
@@ -329,6 +365,9 @@ Objetivo: Mostrar um resumo do desempenho do motorista.
 ## 3.4 Tela de Despesas
 
 📍 **Objetivo:** Registrar e visualizar despesas do motorista.
+permitir alterar o vencimento de contas futuras
+indicar se uma despesa é recorrente e forma automatica
+Alertas Automáticos, "Seu IPVA vence em 3 dias. Deseja registrar o pagamento?"
 
 **Componentes:**
 
@@ -356,6 +395,9 @@ Objetivo: Mostrar um resumo do desempenho do motorista.
 ## 3.5 Tela de Relatórios e Análises
 
 📍 **Objetivo:** Mostrar estatísticas financeiras para o motorista.
+Gráfico de Tendência de Lucro, Um gráfico de linha comparando últimos 3 meses de lucro líquido.
+Sistema de Insights Sugestões automáticas como: "Seu faturamento caiu 10% esta semana. Pode ser um reflexo do horário trabalhado?" "Sábado tem sido seu dia mais lucrativo. Considere trabalhar mais nesse dia."
+Ranking mostrando motoristas com perfil semelhante na cidade (Ex: mesma média de quilometragem, mesmo carro).
 
 **Componentes:**
 
@@ -370,6 +412,11 @@ Objetivo: Mostrar um resumo do desempenho do motorista.
 - 🔹 **Comparação de ganhos entre Uber, 99, InDrive**.
 - 📈 **Gráfico de evolução dos últimos 3 meses**.
 - 🔮 **Previsão de ganhos futuros**.
+- Comparação de faturamento medio dos motoristas da cidade
+- comparação de quilometragem media dos motoristas da cidade
+- ranking dos motoristas com melhores faturamento
+- ranking dos motoristas com melhor ganho liquido
+- ranking com motoristas com maiores quilometragens 
 
 ✅ **Filtros e Exportação:**
 
@@ -384,6 +431,8 @@ Objetivo: Mostrar um resumo do desempenho do motorista.
 ## 3.6 Notificações
 
 📍 **Objetivo:** Mostrar alertas e mensagens importantes para o motorista.
+O usuário pode definir notificações manuais. Exemplo: "Me lembre de abastecer quando o tanque estiver abaixo de 25%."
+Sistema de Conquistas (Gamificação) Pequenos prêmios motivacionais: "Parabéns! Você bateu sua meta semanal 3 vezes seguidas!" "TOP 10 motoristas da sua cidade este mês!"
 
 **Componentes:**
 
@@ -423,6 +472,8 @@ Objetivo: Mostrar um resumo do desempenho do motorista.
 ✅ Gerenciamento de estado usando **Zustand** ou **TanStack Query**.  
 ✅ Design com **shadcn/ui + Tailwind CSS** para manter um layout moderno.
 ✅ **Barra de Progresso para Metas:**
+Suporte para internacionalização i18n
+Implementação de background sync para salvar dados offline e sincronizar quando houver internet.
 
 - **Exibição de progresso diário, semanal e mensal**.
 - **Usar shadcn/ui Progress ou Radix UI Progress**.
@@ -462,9 +513,22 @@ O **banco de dados será PostgreSQL**, armazenado na **nuvem (Google Cloud, AWS 
 
 ## 4.1 Estrutura das Tabelas  
 
+Definir índices nas colunas mais consultadas
+Incluir Soft Delete (deleted_at TIMESTAMP NULL) para evitar perda acidental de dados em tabelas críticas
+Utilizar enum para valores fixos como tipo_combustivel, tipo_despesa, tipo_uso para evitar registros inconsistentes.
+Adicionar um campo telefone VARCHAR(20) para eventual autenticação via SMS.
+Adicionar status_conta ENUM(‘ativo’, ‘inativo’, ‘banido’) para controle de usuários.
+Criar índice no campo email para melhorar consultas de login
+
+
 ### 4.1.1. Tabela: usuarios (Cadastro de Usuários)
 
 Guarda informações dos motoristas cadastrados no sistema.
+Adicione um campo de autenticação por telefone (telefone VARCHAR(20)) ☎️
+Registrar o último login do usuário (ultimo_login TIMESTAMP) 
+Criptografia de e-mail e telefone - O PostgreSQL permite usar pgcrypto para encriptar e-mails e dados sensíveis.
+
+Para permitir login via SMS futuramente.
 
 | **Campo** | **Tipo de Dado** | **Regras de Validação** | **Descrição** |
 | id_usuario | UUID | Chave Primária (PK) | Identificador único do usuário. |
@@ -477,6 +541,13 @@ Guarda informações dos motoristas cadastrados no sistema.
 ### 4.1.2. Tabela: veiculos (Cadastro de veículos)  
 
 Cada veículo pertence a um **usuário único**, e apenas um pode estar **ativo**.  
+
+Adicionar campo ativo BOOLEAN DEFAULT true para indicar o veículo atual.
+Adicionar data_desativacao TIMESTAMP NULL para registro do histórico de veículos antigos.
+Criar um índice em id_usuario para melhorar a performance de busca dos veículos por usuário.
+Adicione deleted_at TIMESTAMP NULL para Soft Delete: Permite ao usuário restaurar veículos excluídos.
+Criar um campo media_consumo NUMERIC(5,2): Guarda a média de KM/L baseada nos abastecimentos do veículo.
+
 
 | **Campo** | **Tipo de Dado** | **Regras de Validação** | **Descrição** |
 | id_veiculo | UUID | \-  | Identificador único do veículo. |
@@ -491,6 +562,11 @@ Cada veículo pertence a um **usuário único**, e apenas um pode estar **ativo*
 | data_cadastro | TIMESTAMP | YYYY-MM-DD HH:MM:SS |     |
 
 ### 4.1.3. Tabela: jornadas
+
+Adicionar campo status ENUM(‘em andamento’, ‘finalizada’, ‘cancelada’) para maior controle das jornadas.
+Criar índice em data_inicio para otimizar consultas por período.
+Adicionar um campo observacoes TEXT NULL para anotações do motorista sobre a jornada.
+Melhoria no cálculo de faturamento líquido: Adicionar um campo calculado faturamento_liquido NUMERIC(10,2), que já subtrai custos como aluguel e combustível.
 
 | **Campo** | **Tipo de Dado** | **Regras de Validação** | **Descrição** |
 | id_jornada | UUID | Chave Primária (PK) | Identificador único da jornada. |
@@ -513,6 +589,11 @@ Cada veículo pertence a um **usuário único**, e apenas um pode estar **ativo*
 
 Registra todos os **abastecimentos feitos**.
 
+Criar índice em data_abastecimento para otimizar consultas por período
+Histórico de preço do combustível: Adicionar uma tabela separada historico_preco_combustivel com:
+id_preco (UUID), data TIMESTAMP, tipo_combustivel VARCHAR(20), preco NUMERIC(5,2).
+Isso permite gráficos de variação de preços ao longo do tempo.
+
 | **Campo** | **Tipo de Dado** | **Regras de Validação** | **Descrição** |
 | id_abastecimento | UUID | Identificador único. |     |
 | id_usuario | UUID | Relacionamento com usuarios. |     |
@@ -528,6 +609,12 @@ Registra todos os **abastecimentos feitos**.
 **O sistema calculará automaticamente o consumo médio do veículo**.
 
 ### 4.1.5. Tabela: despesas  
+
+Adicionar um campo descricao TEXT NULL para detalhes adicionais da despesa.
+Criar índice em data_despesa para otimizar filtros por período.
+Adicionar deleted_at TIMESTAMP NULL para Soft Delete.
+Adicionar notificar_vencimento BOOLEAN DEFAULT true: Ativa lembretes automáticos para contas a pagar.
+Criar uma categoria_despesa ENUM('Fixas', 'Variáveis', 'Extras') Facilita o agrupamento de despesas no relatório financeiro.
 
 | **Campo** | **Tipo de Dado** | **Regras de Validação** | **Descrição** |
 | id_despesa | UUID | Identificador único. |     |
@@ -545,6 +632,9 @@ Registra todos os **abastecimentos feitos**.
 
 ### 4.1.6. Tabela: Tabela de Metas  
 
+Criar índice em id_usuario para acelerar consultas por motorista.
+Adicionar um campo meta_alcancada BOOLEAN DEFAULT false para marcar metas cumpridas.
+
 | **Campo** | **Tipo de Dado** | **Descrição** |
 | id_meta | UUID | Identificador único da meta. |
 | id_usuario | UUID | Relacionamento com a tabela usuarios. |
@@ -557,7 +647,13 @@ Registra todos os **abastecimentos feitos**.
 ### 5.1 Tecnologias Utilizadas e Arquitetura do Sistema  
 
 O aplicativo será desenvolvido como uma **aplicação full-stack**, com tecnologias modernas para garantir **performance, escalabilidade e segurança**.  
-<br/>Tecnologias Utilizadas  
+
+Adicionar Redis para cache de sessões, tokens e requisições frequentes (melhoria na escalabilidade).
+Especificar a versão mínima do Node.js e PostgreSQL para garantir compatibilidade no futuro.
+Incluir Sentry ou LogRocket para monitoramento de erros no frontend e backend.
+
+
+Tecnologias Utilizadas  
 
 | **Camada** | **Tecnologia** | **Motivo da Escolha** |
 | **Frontend** | React Native (com TypeScript) | Desempenho nativo para Android e iOS. |
@@ -575,9 +671,23 @@ O aplicativo será desenvolvido como uma **aplicação full-stack**, com tecnolo
 | **Criptografia** | bcrypt.js + TLS | Segurança para senhas e transmissão de dados. |
 | **Infraestrutura** | Google Cloud / AWS / Azure | Hospedagem escalável e confiável. |
 
-### 5.2 Arquitetura do Sistema  
-
+### 5.2 Arquitetura do Sistema 
 O aplicativo seguirá uma arquitetura **modular** para facilitar **escalabilidade e manutenção**.  
+
+Adicionar camada de middlewares no backend para padronizar logs, tratamento de erros e autenticação.
+Especificar se a API REST terá suporte para WebSockets (para atualizações em tempo real).
+Definir taxa limite de requisições (Rate Limiting) para prevenir ataques DDoS.
+Cache com Redis para sessões e dados estáticos
+Evita consultas repetitivas ao banco.
+Pode armazenar dados de ranking de motoristas, últimos abastecimentos.
+Monitoramento de Erros com Sentry ou LogRocket
+
+Captura erros de frontend e backend em tempo real.
+Permite reproduzir bugs diretamente do painel.
+Backup Diário e Replicação do PostgreSQL
+Evita perda de dados em caso de falha no servidor.
+Configurar failover automático para outra instância.
+
 
 | **Camada** | **Descrição** |
 | **📱 Frontend (React Native)** | Responsável pela interface do usuário e interações com a API. Inclui estilização, gerenciamento de estado e navegação. |
@@ -590,6 +700,10 @@ O aplicativo seguirá uma arquitetura **modular** para facilitar **escalabilidad
 
 O **backend** será responsável por gerenciar **todas as regras de negócio, validações e segurança**, além de disponibilizar uma **API REST** para comunicação com o **frontend**.  
 
+Incluir CORS configurado corretamente para evitar problemas de segurança.
+Implementar Refresh Token na autenticação JWT para evitar logout automático após expiração do token.
+Incluir Helmet.js e Rate Limiter no Express.js para proteção contra ataques comuns.
+
 **Node.js + Express.js** → Servidor rápido e escalável.  
 **Passport.js + JWT** → Autenticação segura e tokens de acesso.  
 **Drizzle ORM + PostgreSQL** → Gerenciamento eficiente do banco de dados.  
@@ -597,15 +711,31 @@ O **backend** será responsável por gerenciar **todas as regras de negócio, va
 
 ### 5.4 Estrutura do Frontend
 
+Especificar uso de Lazy Loading para otimizar carregamento de telas.
+Definir política de armazenamento local (AsyncStorage, SecureStore, etc.) para manter segurança de tokens no app.
+
 O **frontend (React Native)** será responsável pela interface do usuário e interações com a API.
 **React Native com TypeScript** → Código mais seguro e estruturado.  
 **Tailwind CSS + Radix UI** → Interface moderna e responsiva.  
 **TanStack Query** → Otimiza chamadas à API e melhora o desempenho.  
 **React Hook Form + Zod** → Validação e gerenciamento de formulários eficientes.
+Modo Offline (PWA para Web e Cache para Mobile) 📶
+
+Motorista pode registrar abastecimentos sem internet e sincronizar depois.
+Animações de Transição com Framer Motion ✨
+
+Para suavizar carregamentos e melhorar a percepção de velocidade.
+Painel de Estatísticas Interativo 📊
+
+Gráficos dinâmicos de ganhos, gastos e consumo de combustível
 
 ### 5.5 Estrutura do Banco de Dados  
 
 O **banco de dados será PostgreSQL**, hospedado na nuvem, com tabelas bem estruturadas para **garantir velocidade e consistência dos dados**.
+
+Incluir suporte a JSONB no PostgreSQL para campos flexíveis (ex: logs de atividades).
+Definir backups automáticos diários/semanalmente e política de retenção.
+Adicionar tabelas auxiliares para logs e auditoria (quem alterou determinado dado e quando).
 
 **Tabelas bem definidas** para usuários, veículos, jornadas, abastecimentos e despesas.  
 **Índices e otimizações** para evitar lentidão.  
@@ -619,12 +749,15 @@ O **banco de dados será PostgreSQL**, hospedado na nuvem, com tabelas bem estru
 **Tempo máximo de resposta da API:** **≤ 500ms** para requisições simples e **≤ 1s** para cálculos complexos.  
 **Banco de Dados otimizado** com índices e cache para reduzir tempo de leitura.  
 **Uso de TanStack Query (React Query)** para otimizar requisições e evitar chamadas desnecessárias.
+Habilitar compressão GZIP no Express.js para reduzir tempo de resposta.
+Definir um cache de API em endpoints que não mudam frequentemente (ex: tabelas de preços, regras de negócio).
 
 #### 6.2 Responsividade  
 
 **100% responsivo** para telas **Android, iOS e Web**.  
 **UI adaptável** com **Tailwind CSS** e componentes do **Radix UI + shadcn/ui**.  
 **Suporte a Dark Mode** para melhor experiência visual.
+Testes de acessibilidade (WCAG) no frontend para garantir suporte a usuários com deficiência.
 
 #### 6.3 Usabilidade  
 
@@ -633,18 +766,37 @@ O **banco de dados será PostgreSQL**, hospedado na nuvem, com tabelas bem estru
 **Confirmações para ações irreversíveis** (exclusão de registros, redefinição de senha).  
 **Mensagens de erro e sucesso claras e diretas**.  
 **Autopreenchimento inteligente** nos formulários.
+Suporte a diferentes idiomas (internacionalização - i18n).
+Tutoriais interativos na primeira vez que o usuário acessa cada funcionalidade.
 
 #### 6.4 Disponibilidade  
 
 **99,9% de uptime garantido**, hospedado em **Google Cloud, AWS ou Azure**.  
 **Banco de Dados replicado** para evitar falhas.  
 **Monitoramento automático** e alertas em caso de falhas.
+Definir failover automático para outro servidor em caso de falha.
+Adicionar logs centralizados (ex: Loggly, Datadog, ELK Stack) para monitoramento avançado.
 
 #### 6.5 Escalabilidade  
 
 **Backend desacoplado**, permitindo crescimento sem comprometer performance.  
 **Cache de dados** para reduzir carga no banco de dados.  
 **Uso de CDN** para servir imagens e arquivos estáticos rapidamente.
+Definir horizontal scaling no backend (load balancer para múltiplas instâncias).
+Incluir suporte para GraphQL ou gRPC caso a API precise ser mais performática em buscas complexas.
+Habilitar JSONB para armazenar logs e preferências do usuário 📦
+
+Permite salvar configurações personalizadas sem criar várias colunas.
+Exemplo: { "dark_mode": true, "notificacoes": false }.
+Criar uma tabela de logs de atividades (logs_atividades) 📑
+
+Ajuda na auditoria de ações do motorista.
+Campos: id_log, id_usuario, acao, data_hora.
+Indexação em colunas de busca frequente ⚡
+
+Criar índices em:
+email (usuarios), data_abastecimento (abastecimentos), data_despesa (despesas).
+Melhora velocidade de consultas em grande escala.
 
 ### 7.0 Requisitos de Segurança  
 
@@ -654,6 +806,22 @@ O **banco de dados será PostgreSQL**, hospedado na nuvem, com tabelas bem estru
 **Token JWT seguro para autenticação** (expira após X tempo).  
 **Criptografia TLS em todas as comunicações**.  
 **Dados sensíveis armazenados com criptografia AES-256**.
+Adicionar Refresh Token para renovação segura de sessões (evita login frequente).
+Implementar CORS corretamente para prevenir requisições maliciosas.
+Configurar Rate Limiting no backend para prevenir ataques de força bruta.
+Monitoramento de atividades suspeitas (ex: múltiplos logins falhos de diferentes IPs).
+Adotar MFA (Multi-Factor Authentication) Opcional 🔑
+
+Além do 2FA via SMS ou e-mail, permitir autenticação via Google Authenticator ou Authy.
+Token JWT com Refresh Seguro 🔄
+
+Implementar Rotação de Refresh Tokens para evitar vazamentos.
+Adicionar Monitoramento de Sessões 🕵️‍♂️
+
+Criar uma tela onde o motorista vê dispositivos conectados e pode deslogar remotamente.
+Assinaturas Digitais para Registros Sensíveis ✍️
+
+Todas as operações críticas (exemplo: alteração de e-mail, remoção de conta, troca de veículo) podem exigir um código de confirmação enviado via e-mail/SMS.
 
 #### 7.2 Regras de Segurança
 
@@ -662,6 +830,26 @@ O **banco de dados será PostgreSQL**, hospedado na nuvem, com tabelas bem estru
 **Permissões e papéis de usuário** para restringir acessos indevidos.  
 **Logs de atividades** para rastrear ações suspeitas.  
 **Proteção contra SQL Injection e XSS**.
+Adicionar "Lembrar este dispositivo" no 2FA para melhorar experiência do usuário.
+Notificar usuários por e-mail/SMS em caso de login em um novo dispositivo.
+Proteção contra ataques CSRF para evitar ações maliciosas em sessões ativas.
+Implementar Refresh Token JWT: O usuário não precisa logar toda vez que o token expira.
+Evita requisições desnecessárias de login.
+Adotar OAuth para login social: Permitir login com Google, Facebook, Apple ID via Passport.js.
+Habilitar Rate Limiting e Proteção contra DDoS 🛡
+Utilizar express-rate-limit para limitar tentativas de login.: Helmet.js para bloquear headers vulneráveis
+Adotar ReCaptcha v3 no Login e Cadastro 🛡
+
+Evita bots e ataques de força bruta sem incomodar o usuário.
+Detectar Logins Suspeitos 🌎
+
+Notificar o usuário caso um login seja feito de outro país ou IP suspeito.
+Logs de Atividades com Geolocalização 📍
+
+Adicionar ip_usuario e localizacao_aproximada para rastrear de onde partem logins e ações importantes.
+Criptografia para Dados Sensíveis 🔒
+
+Guardar números de telefone, e-mails e placas de veículos com pgcrypto no PostgreSQL.
 
 # 8.0 Plano de Monetização - Aplicativo para Motoristas  
 
@@ -673,9 +861,15 @@ Tipos de Monetização
 ✅ **Plano Gratuito** (acesso básico, com limitações).  
 ✅ **Plano Premium Mensal** (R$ XX,90/mês - desbloqueia funcionalidades avançadas).  
 ✅ **Plano Premium Anual** (R$ XXX,90/ano - desconto em relação ao mensal).  
+✅ **Plano Premium semestral** (R$ XXX,90/ano - desconto em relação ao anual).  
 ✅ **Pagamento Único para Recursos Específicos** (exemplo: relatório detalhado).
 
 ### 8.2 Plano Básico - Free
+
+Liberar Recursos Premium Temporariamente ⏳
+
+Exemplo: "Hoje você pode testar um relatório premium de graça!".
+Isso pode aumentar o desejo de assinar.
 
 Os motoristas poderão usar **as funções essenciais**, mas com **restrições**:
 
@@ -692,8 +886,25 @@ Os motoristas poderão usar **as funções essenciais**, mas com **restrições*
 🚫 **Sem ranking de faturamento da cidade.**  
 🚫 **Não pode cadastrar múltiplos veículos.**
 
+Adicionar um botão "Ver Benefícios do Premium" nas telas bloqueadas para aumentar conversões.
+Mostrar um contador de "dias restantes" de histórico → Isso incentiva o motorista a assinar para manter acesso.
+Alertas personalizados: "Seu relatório avançado está bloqueado. Assine o Premium para ver detalhes completos!".
+Assinatura com Cashback 💸
+
+Motoristas podem receber cashback de 10% se renovarem a assinatura antes do vencimento.
+
 ### 8.3 Plano Premium – Pago  
 
+ecompensas para Usuários Fieis 🎖
+
+Quem mantiver a assinatura por 6 meses consecutivos ganha um mês grátis.
+Notificações Personalizadas para Assinantes Premium 🔔
+
+Exemplo: "Você é Premium! Aqui estão os melhores horários para rodar hoje em sua cidade."
+Criar um Nível VIP 🏆
+
+Motoristas Premium ganham um selo especial no ranking e em seus relatórios.
+Isso cria um efeito de exclusividade.
 Os motoristas que assinarem o plano terão **acesso ilimitado a todas as funções**, incluindo:
 
 ✅ **Histórico ilimitado de abastecimentos e despesas.**  
@@ -717,3 +928,20 @@ Os motoristas que assinarem o plano terão **acesso ilimitado a todas as funçõ
 ✅ **Mensagens dentro do app sugerindo o plano premium** ao tentar acessar funcionalidades bloqueadas.  
 ✅ **Descontos para assinaturas anuais.**  
 ✅ **Ofertas especiais em épocas sazonais (ex: Black Friday, fim de ano).**
+Enviar e-mails e notificações push antes do teste grátis expirar para lembrar os usuários de assinar.
+Oferecer descontos progressivos para quem assina imediatamente após o teste grátis (exemplo: 10% de desconto se assinar nas primeiras 24h após teste).
+Mostrar "quantos motoristas já assinaram" → Isso cria prova social e aumenta conversões.
+Criar um "Nível VIP" para motoristas Premium → Isso pode incluir vantagens exclusivas, como ícones diferenciados no ranking.
+Teste Grátis de 7 Dias com Cartão Salvo 💳
+
+O usuário pode testar sem compromisso, e se não cancelar, a cobrança automática começa.
+Plano Semestral com Desconto Progressivo 📉
+
+Exemplo:
+Mensal: R$ 19,90
+Trimestral: R$ 17,90/mês
+Semestral: R$ 14,90/mês
+Gamificação no Ranking 🏅
+
+Motoristas Premium têm um ranking separado só para assinantes.
+Isso incentiva competitividade entre os que pagam.
