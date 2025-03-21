@@ -1,646 +1,701 @@
-Aplicativo para motoristas de aplicativos
-Versão 1.0
+Aplicativo para Motoristas de Aplicativos - Versão 1.0
 
-# 1. Visão Geral do Projeto
+1. Visão Geral do Projeto
 
-## 1.1 Objetivo do aplicativo  
+1.1 Objetivo do Aplicativo
+Este aplicativo tem como principal finalidade ajudar motoristas de aplicativos (como Uber, 99, InDrive e outros) a gerenciar suas jornadas de trabalho, acompanhar ganhos e controlar despesas relacionadas à sua atividade profissional.
 
-O aplicativo auxilia motoristas de aplicativo (Uber, 99, InDrive, etc.) a gerenciar jornadas, ganhos, abastecimentos e despesas, fornecendo relatórios completos para análise financeira.  
+Com ele, o motorista poderá:
+✅ Registrar suas corridas e acompanhar os valores recebidos;
+✅ Controlar seus abastecimentos e calcular o custo por quilômetro rodado;
+✅ Monitorar despesas com manutenção, pedágios e taxas da plataforma;
+✅ Gerar relatórios financeiros detalhados para entender melhor seus lucros e otimizar ganhos.
 
-## 1.2 Funcionalidades Principais  
+O aplicativo será uma ferramenta essencial para quem deseja ter um controle financeiro eficiente, ajudando os motoristas a tomar decisões mais estratégicas sobre seus rendimentos e custos.
 
-- 📌 **Registro de jornadas** com cálculo de faturamento e tempo rodado.
-- ⛽ **Gestão de abastecimentos** com monitoramento de consumo médio.
-- 💰 **Cadastro de despesas e provisões** para planejamento financeiro.
-- 📊 **Relatórios detalhados** com previsões e rankings.
-- 🎯 **Definição de metas** diárias, semanais e mensais.
-- 🚀 **Comparação de ganhos entre aplicativos** e média de faturamento por cidade.
-- 📎 **Exportação de relatórios** para PDF, Excel e CSV.
-- 🔐 **Autenticação via e-mail, senha e redes sociais**.
-- 📱 **Disponível para Android, iOS e Web (PWA)**.
+1.2 Funcionalidades Principais
+O aplicativo oferecerá um conjunto de funcionalidades que permitirão ao motorista gerenciar sua rotina de trabalho de forma eficiente e prática.
 
-## 1.3 Público-alvo  
+🚖 Gestão da Jornada e Faturamento
+Registro detalhado de cada jornada de trabalho.
+Cálculo automático do faturamento diário, semanal e mensal.
+Monitoramento do tempo rodado e horas trabalhadas.
 
-Motoristas de aplicativo (Uber, 99, InDrive, etc.) que querem controlar melhor seus ganhos e gastos.
-Motoristas que precisam calcular lucros líquidos e planejar despesas futuras.
-Motoristas que querem saber quais dias são mais rentáveis e qual plataforma rende mais na cidade.
+⛽ Controle de Abastecimentos e Consumo de Combustível
+Registro de cada abastecimento, incluindo data, valor e quantidade de litros.
+Cálculo do consumo médio do veículo (km por litro).
+Comparação do gasto com combustível em diferentes períodos.
 
-# 2. Funcionalidades e Regras de Negócio  
+💰 Gestão de Despesas e Provisões
+Cadastro de despesas fixas e variáveis (manutenção, pedágios, taxas de plataforma, etc.).
+Definição de provisões para manutenção futura ou impostos.
+Classificação automática das despesas para facilitar o acompanhamento.
 
-## 2.1 Tela de Login e Cadastro  
+📊 Relatórios Detalhados e Análises Financeiras
+Relatórios gráficos sobre ganhos, despesas e lucro líquido.
+Previsão financeira com base nos dados registrados.
+Ranking de melhores dias e horários para rodar.
+Comparação entre diferentes aplicativos de transporte para entender qual é mais lucrativo.
 
-1. Login com E-mail e Senha
-2. Suporte a Redes Sociais (Google, Facebook, Apple ID).
-3. Recuperação de Senha via E-mail.
-4. Cadastro com os seguintes campos:
+🎯 Definição de Metas e Acompanhamento de Performance
+Criação de metas diárias, semanais e mensais.
+Alertas sobre desempenho em relação às metas definidas.
+Sugestões baseadas nos ganhos médios para alcançar os objetivos financeiros.
 
-Nome (mínimo 3 caracteres).
-E-mail (único no sistema, usado como chave principal do login).
-Cidade (somente letras).
-Senha (mínimo 6 caracteres, confirmação obrigatória).  
-Sincronização de dados ☁️, Como o app pode ser usado em múltiplos dispositivos (Web, Android, iOS), garantir que todas as entradas fiquem salvas na nuvem.
+🚀 Comparação de Ganhos e Estatísticas Regionais
+Comparação automática entre os valores recebidos nos diferentes aplicativos (Uber, 99, InDrive, etc.).
+Média de faturamento por cidade e por dia da semana.
+Identificação dos melhores horários e regiões para trabalhar.
 
-Motivação:
+📎 Exportação de Relatórios e Compartilhamento de Dados
+Exportação de dados em formatos PDF, Excel (XLSX) e CSV.
+Possibilidade de compartilhar relatórios financeiros via e-mail ou WhatsApp.
 
-📌 Ter um login global, acessível para motoristas de qualquer país.  
-📌 Facilidade de acesso com redes sociais.  
-📌 Recuperação de conta simples e segura via e-mail.
-Enviar um e-mail de confirmação antes de ativar a conta. Isso evita spam e contas falsas.
+🔐 Autenticação e Segurança
+Login via e-mail e senha.
+Opção de login rápido com Google, Facebook e Apple ID.
+Proteção dos dados do usuário com criptografia segura.
 
-## 2.2 Tela Inicial (Painel)  
+📱 Disponibilidade e Plataforma
+Aplicativo desenvolvido para Android e iOS.
+Versão Web PWA (Progressive Web App) para acesso pelo navegador sem necessidade de instalação.
 
-1. Resumo da Semana (dados do mês atual carregados automaticamente).
-2. Cards com indicadores principais:
+1.3 Público-Alvo
+O aplicativo é voltado para motoristas de aplicativos que desejam um maior controle sobre seus ganhos e despesas. Ele é ideal para:
 
-Ganho do Dia (faturamento do dia).
-Ganho da Semana (faturamento acumulado na semana).
-Lucro Líquido (faturamento - custos).
-Gastos com Combustível (gasto diário e semanal).
-Ganho por KM rodado.
-
-Motivação:
-
-📌 Exibir um resumo rápido da performance financeira.  
-📌 Permitir que o motorista tome decisões sobre quando vale a pena trabalhar mais.
-Permitir que o motorista escolha quais métricas quer ver primeiro. Ex: pode querer ver "Lucro líquido" antes de "Ganho da Semana".
-Exibir um aviso caso os gastos com combustível estejam acima da média usual do motorista.
-
-## 2.3 Jornadas de Trabalho  
-
-Motorista inicia uma jornada, registrando quilometragem inicial e horário automático.
-Ao final, insere quilometragem final, corridas realizadas e faturamento podendo editar informações passadas se necessário for.
-
-Cálculos automáticos:
-
-- Quilometragem percorrida.
-- Tempo total da jornada.
-- Gasto estimado com combustível (baseado na média do veículo).
-- Lucro líquido da jornada (faturamento - despesas).
-
-Início de Jornada:
-
-- Data e Hora registradas automaticamente.
-- Quilometragem inicial (somente números inteiros entre 000000 e 999999).  
-
-Finalização de Jornada:  
-
-- Quilometragem final (deve ser maior ou igual à inicial).
-- Número de corridas realizadas.
-- Faturamento total da jornada (com máscara R$ 9.999,99).  
-
-Cálculos automáticos ao finalizar a jornada:
-
-- Quilometragem percorrida.
-- Tempo total trabalhado.
-- Gasto estimado com combustível (baseado na média do carro).
-- Lucro líquido da jornada.
-- Histórico de Jornadas** (edição e exclusão permitidas).
-- Filtro por data** (padrão: mês atual).
+✔ Motoristas de Uber, 99, InDrive e outras plataformas que querem entender seus ganhos reais e reduzir gastos desnecessários.
+✔ Motoristas que precisam calcular seus lucros líquidos e planejar despesas futuras para evitar surpresas financeiras.
+✔ Motoristas que querem identificar os melhores dias e horários para trabalhar e maximizar seus rendimentos.
+✔ Profissionais que utilizam mais de um aplicativo e desejam comparar qual plataforma está sendo mais rentável.
 
 
-Motivação:  
-📌 **Registrar todas as jornadas de trabalho** e acompanhar os ganhos por período.  
-📌 **Evitar que o motorista esqueça de finalizar a jornada** (notificações de lembrete).
+2. Funcionalidades e Regras de Negócio
 
-## 2.4 Gestão de Combustivel  
+2.1 Tela de Login e Cadastro
+A tela de login e cadastro permitirá que os motoristas acessem suas contas de forma rápida, segura e sincronizada em todos os dispositivos.
 
-🚗 Registro de abastecimentos com:
+🔑 Opções de Login
 
-- Data e hora.
-- Tipo de combustível (Gasolina, Álcool, Diesel, GNV).
-- Quilometragem no momento do abastecimento.
-- Quantidade abastecida e preço por litro.
-- Posto de combustível (opcional).  
+Login com e-mail e senha (opção padrão).
+Login via redes sociais (Google, Facebook, Apple ID) para mais praticidade.
+Recuperação de senha via e-mail, permitindo redefinir a senha com um link de recuperação.
+📝 Cadastro de Novo Usuário
+Para criar uma conta, o usuário precisará preencher os seguintes campos:
 
-Campos para inserção de abastecimento:
+Nome (mínimo de 3 caracteres).
+E-mail (único no sistema, usado como chave principal para login).
+Cidade (somente letras, sem números ou caracteres especiais).
+Senha (mínimo de 6 caracteres, com confirmação obrigatória).
+📩 Confirmação de e-mail:
 
-- Data e Hora.
-- Tipo de combustível (Gasolina, Álcool, Diesel, GNV).
-- Quilometragem no momento do abastecimento.
-- Quantidade abastecida (exemplo: 45.75 litros).
-- Preço por litro.
-- Valor total.  
+Após o cadastro, um e-mail de confirmação será enviado ao usuário.
+A conta só será ativada após a validação do e-mail, evitando spam e registros falsos.
 
-Motivação:
-📌 Controlar com precisão o gasto com combustível, permitindo análises sobre consumo e eficiência.
-📌 A quilometragem media é calculada com base na quantidade de litros abastecidos e a quilometragem percorrida.
-Aviso de Consumo Elevado ⚠️ - Se o consumo médio do carro subir muito em comparação com os últimos abastecimentos, exibir um alerta.
+☁️ Sincronização de Dados na Nuvem
+Como o aplicativo estará disponível para Android, iOS e Web, os dados do usuário serão salvos na nuvem.
+Isso permite que o motorista acesse sua conta e todos os seus registros de qualquer dispositivo, garantindo continuidade no uso.
 
-## 2.5 Controle de Despesas  
-
- Cadastro de despesas avulsas e recorrentes (ex: mecânico, IPVA, seguro, aluguel).
-  Vinculação a um veículo específico (o usuário escolhe qual veículo).  
-  Se uma despesa for parcelada, o sistema permitirá:
-
-- Cadastrar a quantidade de parcelas.
-- Pagar parcelas antecipadamente (o sistema sugere remover parcelas futuras, mas o usuário pode negar e ajustar manualmente).
-- Caso pague um valor diferente do previsto, o sistema não redistribuirá automaticamente**, mas **permitirá ajuste manual.
-
-Histórico de despesas acessível e editável.  
-Exportação de dados em formato de tabela (PDF, Excel, CSV).
-
-Motivação:  
-📌 Controlar gastos avulsos e recorrentes.  
-📌 Permitir ajustes manuais para pagamentos antecipados e parcelamentos.
-Gráficos Visuais 📊 Mostrar gráficos de distribuição de gastos (Ex: 40% combustível, 30% manutenção, etc.).
-Se houver um IPVA ou seguro para pagar, exibir um lembrete com antecedência.
+🎯 Motivação e Benefícios
+✅ Login global para motoristas de qualquer país.
+✅ Facilidade de acesso por meio de redes sociais.
+✅ Recuperação de conta rápida e segura via e-mail.
+✅ Sincronização automática, permitindo trocar de aparelho sem perder dados.
 
 
-## 2.6 Metas para Motoristas
+2.2 Tela Inicial (Painel)
+A tela inicial do aplicativo funcionará como um painel de controle financeiro, onde o motorista poderá ver um resumo rápido do seu desempenho e tomar decisões sobre sua jornada de trabalho.
 
-Objetivo da Funcionalidade
+📊 Resumo da Semana
+O painel carregará automaticamente os dados do mês atual.
+Exibição de indicadores financeiros em cards interativos.
+📌 Indicadores Principais (Cards)
+Os seguintes indicadores serão exibidos no painel:
 
-🎯 Motorista pode definir metas diárias, semanais e mensais.
-📊 Card na tela inicial mostra progresso da meta em tempo real.
-🔔 Alertas se o motorista estiver abaixo da meta.
-Permitir que o motorista veja como foi seu desempenho em metas passadas.
-Se um motorista geralmente ganha R$ 1.200/semana, sugerir uma meta próxima disso ao invés de deixar em branco.
+✅ Ganho do Dia → Total faturado no dia.
+✅ Ganho da Semana → Total faturado na semana.
+✅ Lucro Líquido → Faturamento menos custos operacionais.
+✅ Gastos com Combustível → Gasto diário e semanal com abastecimento.
+✅ Ganho por KM Rodado → Média de faturamento por quilômetro percorrido.
 
-Comparar o progresso com a meta diretamente na tela inicial.  
-Ter um card dinâmico mostrando o percentual atingido.  
+⚙ Personalização do Painel
 
-Como Funcionará?
+O motorista poderá escolher quais métricas deseja visualizar primeiro.
+Exemplo: pode definir "Lucro Líquido" como primeiro card, em vez de "Ganho da Semana".
 
-Definição de Metas
+⚠ Alertas Inteligentes
+Se os gastos com combustível estiverem acima da média usual do motorista, um aviso será exibido sugerindo otimização dos trajetos.
 
+🎯 Motivação e Benefícios
+✅ Resumo rápido da performance financeira em tempo real.
+✅ Facilidade na tomada de decisão sobre quando vale a pena rodar mais.
+✅ Painel personalizado, exibindo as informações mais relevantes para cada motorista.
+✅ Alertas financeiros inteligentes, ajudando a manter um melhor controle de custos.
+
+2.3 Jornadas de Trabalho
+A funcionalidade de Jornadas de Trabalho permitirá ao motorista registrar cada período de trabalho de forma detalhada, incluindo quilometragem, faturamento e tempo trabalhado.
+
+🚗 Início de Jornada
+O motorista inicia uma jornada registrando:
+✅ Horário de início → Registrado automaticamente.
+✅ Quilometragem inicial → Inserida manualmente (apenas números entre 000000 e 999999).
+🛑 Finalização de Jornada
+Ao encerrar a jornada, o motorista insere:
+✅ Quilometragem final → Deve ser maior ou igual à inicial.
+✅ Número de corridas realizadas.
+✅ Faturamento total da jornada (campo numérico com máscara R$ 9.999,99).
+🔢 Cálculos Automáticos
+Ao finalizar a jornada, o aplicativo calculará automaticamente:
+
+🔹 Quilometragem percorrida.
+🔹 Tempo total trabalhado.
+🔹 Gasto estimado com combustível (baseado na média do veículo).
+🔹 Lucro líquido da jornada (faturamento menos despesas).
+
+📚 Histórico de Jornadas
+
+Todas as jornadas ficam salvas em um histórico acessível.
+O motorista pode editar ou excluir jornadas passadas, caso tenha inserido alguma informação errada.
+
+📅 Filtro por Data
+O motorista pode filtrar as jornadas por período.
+Filtro padrão: Exibir apenas as jornadas do mês atual.
+🔔 Notificações Inteligentes
+O app enviará lembretes para evitar que o motorista esqueça de finalizar a jornada ao fim do dia.
+🎯 Motivação e Benefícios
+✅ Registro preciso das jornadas, permitindo um acompanhamento detalhado.
+✅ Evita esquecimentos, garantindo que todas as informações sejam salvas corretamente.
+✅ Análises financeiras mais precisas, ajudando o motorista a entender seus lucros e custos diários.
+
+2.4 Gestão de Combustível
+A funcionalidade de Gestão de Combustível permitirá que o motorista registre cada abastecimento, acompanhe seus gastos e analise a eficiência do consumo do veículo.
+
+📌 Registro de Abastecimento
+Cada abastecimento registrado terá os seguintes campos:
+✅ Data e Hora – O sistema captura automaticamente, mas permite edição.
+✅ Tipo de Combustível – Opções: Gasolina, Álcool, Diesel, GNV.
+✅ Quilometragem no momento do abastecimento – Apenas números inteiros.
+✅ Quantidade abastecida – Exemplo: 45.75 litros.
+✅ Preço por litro – O usuário informa o valor pago no posto.
+✅ Valor total – Calculado automaticamente (quantidade x preço por litro).
+✅ Posto de Combustível (Opcional) – Para referência futura.
+
+🔢 Cálculo Automático
+O aplicativo calculará automaticamente a média de consumo do veículo com base nos últimos abastecimentos.
+
+⚠ Aviso de Consumo Elevado
+Se o consumo médio do carro subir muito em comparação com os últimos registros, o sistema exibirá um alerta para o motorista verificar possíveis problemas mecânicos ou estratégias para economizar combustível.
+
+🎯 Motivação e Benefícios
+✅ Controle detalhado dos gastos com combustível.
+✅ Análises precisas sobre consumo e eficiência do veículo.
+✅ Alertas preventivos para ajudar a economizar e evitar desperdícios.
+
+2.5 Controle de Despesas
+Esta funcionalidade ajudará o motorista a registrar e gerenciar despesas operacionais, permitindo um controle financeiro eficiente.
+
+📌 Cadastro de Despesas
+
+O motorista pode cadastrar despesas avulsas ou recorrentes (mensais, trimestrais, anuais, etc.).
+As despesas podem ser vinculadas a um veículo específico (caso o motorista tenha mais de um carro).
+Categorias de despesas incluem:
+🔹 Manutenção (óleo, pneus, mecânico, etc.).
+🔹 Impostos (IPVA, licenciamento, seguro obrigatório).
+🔹 Aluguel de veículo (se o motorista aluga um carro para rodar).
+🔹 Taxas da plataforma (Uber, 99, InDrive, etc.).
+📊 Parcelamento e Pagamentos
+Caso uma despesa seja parcelada, o sistema permitirá:
+✅ Definir o número de parcelas.
+✅ Pagar parcelas antecipadamente (o sistema sugere remover as parcelas futuras, mas o usuário pode negar e ajustar manualmente).
+✅ Se o motorista pagar um valor diferente do previsto, o sistema não redistribuirá automaticamente, mas permitirá ajustes manuais.
+
+📂 Histórico e Exportação de Dados
+Todas as despesas ficam salvas e podem ser acessadas no histórico.
+O motorista pode editar ou excluir despesas passadas, se necessário.
+Exportação dos dados para PDF, Excel (XLSX) e CSV para análises mais detalhadas.
+
+📊 Gráficos Visuais de Gastos
+Exibição da distribuição dos gastos em um gráfico de pizza:
+🔹 40% combustível
+🔹 30% manutenção
+🔹 20% impostos
+🔹 10% outros gastos
+
+🔔 Lembretes Inteligentes
+Se houver uma despesa importante chegando (como IPVA ou seguro), o aplicativo enviará alertas com antecedência para lembrar o motorista.
+
+🎯 Motivação e Benefícios
+✅ Controle financeiro mais eficiente com categorização de despesas.
+✅ Facilidade para acompanhar gastos fixos e variáveis.
+✅ Flexibilidade para pagamentos antecipados e ajustes manuais.
+✅ Lembretes de pagamentos importantes para evitar atrasos.
+
+2.6 Metas para Motoristas
+A funcionalidade de metas ajudará os motoristas a planejar seus ganhos e acompanhar seu desempenho ao longo do tempo.
+
+🎯 Objetivo da Funcionalidade
+✔ O motorista pode definir metas diárias, semanais e mensais.
+✔ Um card na tela inicial mostrará o progresso da meta em tempo real.
+✔ O sistema enviará alertas caso o motorista esteja abaixo da meta.
+✔ O motorista poderá consultar o desempenho em metas passadas.
+✔ Se um motorista geralmente ganha R$ 1.200 por semana, o sistema sugerirá uma meta próxima disso, ao invés de deixar em branco.
+
+📊 Definição de Metas
 O motorista poderá cadastrar três tipos de metas:
-
-| **Tipo de Meta** | **O que o motorista define?** | **Exemplo** |
-| **Diária** | Valor que deseja faturar no dia. | **R$ 250/dia** |
-| **Semanal** | Valor total desejado para a semana. | **R$ 1.750/semana** |
-| **Mensal** | Valor total desejado no mês. | **R$ 7.500/mês** |
-
-O motorista pode alterar ou redefinir metas futuras a qualquer momento, no entanto nao pode alterar uma meta do passado.  
-As metas não são acumulativas (ex: uma meta semanal não soma automaticamente as diárias).
-
-Monitoramento do Progresso
-
-Será adicionado um card dinâmico na tela inicial mostrando o progresso da meta escolhida.  
-O motorista poderá alternar entre visualizar o progresso diário, semanal ou mensal.  
-Exibição do progresso em percentual e valores.  
-
+Tipo de Meta	O que o motorista define?	Exemplo
+Diária	Valor que deseja faturar no dia.	R$ 250/dia
+Semanal	Valor total desejado para a semana.	R$ 1.750/semana
+Mensal	Valor total desejado no mês.	R$ 7.500/mês
+O motorista pode alterar ou redefinir metas futuras a qualquer momento.
+Não é possível alterar metas passadas para manter a precisão dos relatórios.
+As metas não são acumulativas (exemplo: a meta semanal não soma automaticamente as metas diárias).
+📊 Monitoramento do Progresso
+Será adicionado um card dinâmico na tela inicial, mostrando o progresso da meta escolhida.
+O motorista poderá alternar entre visualizar o progresso diário, semanal ou mensal.
+Exibição do progresso em percentual e valores.
 Exemplo de Card na Tela Inicial:
 
-🎯 Meta Semanal: R$ 1.750
-📊 Progresso: R$ 1.200 / R$ 1.750 (68%)
-⚠️ Você precisa de R$ 550 para atingir sua meta!
+🔹 🎯 Meta Semanal: R$ 1.750
+🔹 📊 Progresso: R$ 1.200 / R$ 1.750 (68%)
+🔹 ⚠️ Você precisa de R$ 550 para atingir sua meta!
+
+🔔 Alertas e Notificações
+Se o motorista estiver abaixo da meta, um aviso será exibido na tela inicial.
+O sistema poderá enviar notificações push, sugerindo que o motorista aumente o ritmo de trabalho.
+
+Condição	Mensagem exibida
+75% ou mais da meta atingida ✅	"Ótimo trabalho! Você está perto de atingir sua meta!"
+Abaixo de 50% ⚠️	"Você está abaixo da sua meta. Que tal rodar mais um pouco?"
+📌 Integração na Tela Inicial
+✔ O card de metas será adicionado ao painel principal.
+✔ O motorista poderá trocar entre meta diária, semanal ou mensal.
+✔ O progresso será atualizado em tempo real, com base no faturamento registrado.
+
+🎯 Motivação e Benefícios
+✅ Ajuda o motorista a organizar melhor seus ganhos e definir objetivos claros.
+✅ Monitoramento visual e intuitivo do progresso financeiro.
+✅ Notificações motivacionais para incentivar maior faturamento.
+✅ Sugestão de metas com base no histórico do motorista.
+
+2.7 Análises e Relatórios
+
+A funcionalidade de Análises e Relatórios fornecerá aos motoristas uma visão detalhada sobre seu desempenho financeiro e eficiência operacional.
+
+O sistema oferecerá relatórios básicos e avançados, permitindo que o motorista acompanhe sua evolução, compare seu desempenho com outros motoristas da cidade e identifique os melhores períodos para trabalhar.
+
+📊 Relatórios Básicos
+✅ Faturamento Diário, Semanal e Mensal – Exibição do valor total recebido por período.
+✅ Gastos com Combustível por Dia – Relatório detalhado sobre os custos de abastecimento.
+✅ Ganho por KM Rodado – Média de faturamento por quilômetro percorrido.
+✅ Comparação de Faturamento entre Aplicativos – Mostra qual app (Uber, 99, InDrive) gerou mais receita.
+
+📊 Relatórios Avançados
+Os relatórios avançados permitirão ao motorista fazer análises mais aprofundadas sobre seu desempenho, comparação com outros motoristas e tendências financeiras.
+
+🔹 Ranking de Faturamento na Cidade – Mostra os motoristas com maiores ganhos.
+🔹 Ranking de Melhores Motoristas em Faturamento – Lista dos motoristas com maior faturamento.
+🔹 Ranking de Melhores Motoristas em Lucro – Lista dos motoristas que obtiveram maior lucro líquido.
+🔹 Ranking de Motoristas com Maiores Quilometragens – Comparação de quilometragem percorrida.
+🔹 Sua Posição no Ranking – Mostra sua colocação em relação aos outros motoristas da cidade, baseado em faturamento e lucro.
+🔹 Média de Faturamento e Quilometragem por Dia da Semana – Ajuda a identificar os dias mais lucrativos.
+🔹 Gráfico de Evolução das Últimas 8 Semanas – Comparação entre faturamento e gastos ao longo do tempo.
+🔹 Previsão de Faturamento e Lucro – Estimativa dos ganhos para a próxima semana e mês, baseada no histórico do motorista.
+🔹 Gráfico Comparativo dos Aplicativos – Mostra qual plataforma (Uber, 99, InDrive) trouxe mais ganhos ao longo do tempo.
+
+📂 Exportação de Dados e Personalização
+✅ Exportação de Relatórios em PDF, Excel (XLSX) e CSV.
+✅ Filtros por Data → O padrão será exibir o mês atual, mas o motorista pode escolher períodos personalizados.
+✅ Modo de Exibição Otimizado → Um card por vez, com rolagem automática para facilitar a navegação.
+
+🏆 Ranking Opcional
+O aplicativo oferecerá um ranking dos melhores motoristas baseado em faturamento e lucro líquido.
+O motorista poderá escolher se deseja aparecer no ranking ou não. Essa configuração poderá ser ajustada dentro das configurações do app.
+
+🎯 Motivação e Benefícios
+✅ Facilidade para analisar o desempenho financeiro e identificar tendências.
+✅ Ajuda o motorista a entender quais dias e horários são mais rentáveis.
+✅ Comparação entre diferentes aplicativos para otimizar os ganhos.
+✅ Possibilidade de se motivar ao ver seu desempenho no ranking da cidade.
+✅ Estimativa de faturamento futuro, auxiliando no planejamento financeiro.
+
+3.0 Frontend UX/UI
+Esta seção descreve a experiência do usuário (UX) e a interface gráfica (UI) do aplicativo, garantindo que o design seja intuitivo, funcional e responsivo.
+
+3.1 Tela de Login e Cadastro
+
+🎯 Objetivo
+Permitir que o motorista faça login ou crie uma conta de forma rápida e segura.
+Suporte a Dark Mode, respeitando as configurações do sistema operacional.
+Login biométrico (Face ID / Digital) e PIN de 4 a 6 dígitos como alternativa rápida.
+Exibir validação instantânea do e-mail, avisando se já está cadastrado antes do envio do formulário.
+
+✅ Componentes
+📌 Login:
+Campos: E-mail e senha.
+Botão "Entrar".
+Botão "Entrar com Google / Apple ID".
+Botão "Entrar com Biometria" (Face ID / Digital).
+Campo de PIN (Opcional) → "Digite seu PIN ou use biometria".
+Link "Esqueceu a senha?".
+📌 Cadastro:
+
+Campos: Nome, e-mail, senha e cidade.
+Botão "Criar Conta".
+Checkbox "Aceito os termos de uso" (obrigatório).
+Validação instantânea do e-mail (verifica se já existe no sistema).
+📌 Feedback Visual:
+
+Mensagens de erro/sucesso (exemplo: "E-mail inválido", "Senha incorreta").
+Animações sutis ao carregar o login/cadastro.
+
+💡 Tecnologias
+✅ React Hook Form + Zod → Validação de formulários.
+✅ Firebase Auth ou Supabase → Autenticação segura.
+✅ Tailwind CSS → Layout responsivo e moderno.
+
+3.2 Tela Inicial (Dashboard)
+
+🎯 Objetivo
+Apresentar um resumo do desempenho financeiro do motorista de forma clara e dinâmica.
+Permitir personalização dos cards exibidos.
+Atualizar os dados dinamicamente sem recarregar a tela.
+Exibir skeleton loaders enquanto os dados carregam.
+Criar transições suaves nos valores quando novos dados forem inseridos.
+Permitir um widget opcional para exibir "Faturamento do Dia" e "Progresso da Meta" diretamente na tela inicial do celular.
+
+✅ Componentes
+
+📌 Cards Resumo:
+
+💰 Ganhos do Dia.
+📊 Lucro Líquido.
+🚗 KM Rodados.
+⛽ Gasto com Combustível.
+📌 Card de Metas:
+
+Exibe progresso da meta diária, semanal ou mensal.
+Botão "Trocar Meta" para alternar entre metas.
+📌 Atalhos Rápidos:
+📌 Iniciar Jornada.
+📌 Registrar Abastecimento.
+📌 Ver Relatórios.
+📌 Widget Opcional:
+
+Mini-widget para Faturamento do Dia + Progresso da Meta fixo na tela inicial do celular.
+
+💡 Tecnologias
+✅ TanStack Query → Atualização em tempo real dos ganhos.
+✅ Shadcn/ui + Tailwind CSS → Layout responsivo e moderno.
+✅ Framer Motion → Suavização de animações e transições de valores.
 
-Alertas e Notificações
-
-Se o motorista estiver abaixo da meta, aparecerá um alerta na tela inicial.  
-O sistema pode enviar notificações push sugerindo aumentar o ritmo de trabalho.
-
-| Condição | Mensagem exibida|
-| 75% ou mais da meta atingida ✅ | **"Ótimo trabalho! Você está perto de atingir sua meta!"** |
-| Abaixo de 50% ⚠️ | **"Você está abaixo da sua meta. Que tal rodar mais um pouco?"** |
-
-Integração na Tela Inicial
-
-🔹 O card de metas será adicionado ao painel principal.  
-🔹 O motorista poderá trocar entre meta diária, semanal ou mensal.  
-🔹 O progresso será atualizado **em tempo real, com base no faturamento registrado.
-
-## 2.7 Análises e Relatórios
-
-Relatórios Básicos:
-
-- Faturamento diário, semanal e mensal.
-- Gastos com combustível por dia.
-- Ganho por KM rodado.
-- Comparação de faturamento entre Uber, 99, InDrive.
-
-Relatórios Avançados:
-
-- Ranking de faturamento na cidade.
-- Ranking de melhores motoristas em relação a faturamento da cidade
-- Ranking de melhores motoristas em relação a lucro da cidade
-- Ranking de motoristas com maiores quilometragens
-- Ranking da sua posição em relação aos outros motoristas em faturamento e lucro
-- Média de faturamento e quilometragem por dia da semana.
-- Gráfico de evolução das últimas 8 semanas (faturamento vs. gastos).
-- Previsão de faturamento e lucro líquido para a próxima semana e mês.  
-    ✅ Exportação de dados em tabela (PDF, Excel, CSV).  
-    ✅ Filtros por data (mês atual por padrão).  
-    ✅ Modo de exibição otimizado (mostrando um card de cada vez, com rolagem automática).
-  Mostrar um ranking opcional com os melhores motoristas da cidade baseado em faturamento e lucro líquido.
-  O motorista pode optar por mostrar ou esconder seu nome no ranking nos configuraçõees do app
-  Um gráfico mostrando qual app (Uber, 99, etc.) trouxe mais ganhos ao longo do tempo.
-
-Motivação:  
-📌 Analisar desempenho financeiro e eficiência.  
-📌 Comparar ganhos entre plataformas** e entender quais dias e semanas são mais lucrativos.
-
-# 3.0 Frontend UX/UI
-
-## Tela de Login e Cadastro
-Objetivo: Permitir que o motorista faça login ou crie uma conta.
-permitir acionar o dark mode
-Permitir login biometrico com digital
-Além de login por digital/Face ID, permitir um PIN de 4-6 dígitos como alternativa rápida ao login completo, Exemplo: "Digite seu PIN ou use biometria."
-Avisar instantaneamente se o e-mail já existe ao digitar, antes de apertar "Criar Conta".
-Permitir a mudança automática para Dark Mode com base nas preferências do sistema operacional.
-
-Componentes:
-
-✅ **Login:**
-
-- **Campos:** E-mail e senha.
-- **Botão "Entrar"**.
-- **Botão "Entrar com Google / Apple ID"**.
-- **Link "Esqueceu a senha?"**.
-
-✅ **Cadastro:**
-
-- **Campos:** Nome, e-mail, senha e cidade.
-- **Botão "Criar Conta"**.
-- **Checkbox "Aceito os termos de uso"**.
-
-✅ **Feedback Visual:**
-
-- **Mensagens de erro/sucesso** (ex: "E-mail inválido", "Senha incorreta").
-- **Animação ao carregar o login/cadastro**.
-
-**Tecnologias:**
-
-- **React Hook Form + Zod** → Validação de formulários.
-- **Firebase Auth ou Supabase** → Autenticação segura.
-
-## 3.1 Tela Inicial (Dashboard)
-
-Objetivo: Mostrar um resumo do desempenho do motorista.
-os dados não serao atualizados de acordo com o banco de dados
-Exibir skeleton loaders enquanto os dados carregam para evitar tela "vazia".
-Suavizar a transição dos valores no card de ganhos quando um novo valor entra.
-Motoristas podem escolher quais cards querem ver primeiro. Exemplo: Alguém pode querer ver Lucro Líquido antes de KM Rodados.
-Criar um widget opcional mostrando "Faturamento do Dia" e "Progresso da Meta" direto na tela inicial do celular.
-
-**Componentes:**
-
-✅ **Cards Resumo:**
-
-- **Ganhos do Dia** 💰.
-- **Lucro Líquido** 📊.
-- **KM Rodados** 🚗.
-- **Gasto com Combustível** ⛽.
-
-✅ **Card de Metas:**
-
-- Progresso da meta escolhida (diária, semanal ou mensal).
-- **Botão "Trocar Meta"**.
-
-✅ **Atalhos Rápidos:**
-
-- 📌 **Iniciar Jornada**.
-- 📌 **Registrar Abastecimento**.
-- 📌 **Ver Relatórios**.
-
-💡 **Tecnologias:**
-
-- **TanStack Query** → Atualização em tempo real dos ganhos.
-- **Shadcn/ui + Tailwind CSS** → Layout responsivo e moderno.
-
-## 3.2 Tela de Jornadas de Trabalho
-
-**Objetivo:** Registrar e acompanhar jornadas de trabalho do motorista.
-É possivel editar uma jornada passada e possibilidade de pausar uma jornada no caso de um café ou almoço para nao contar o tempo de serviço.
-Criar um botão "Pausar Jornada" para cafés e intervalos sem contar como tempo de serviço.
-Exibir pequenas métricas como:
-🚀 Melhor dia da semana para faturamento
-⏳ Duração média das jornadas
-
-**Componentes:**
-
-✅ **Início da Jornada:**
-
-- **Botão "Iniciar Jornada"** → Grava **data, hora e quilometragem inicial**.
-- **Campo de Quilometragem Inicial** (validação automática).
-
-✅ **Finalização da Jornada:**
-
-- **Botão "Finalizar Jornada"** → Captura **quilometragem final e faturamento**.
-- **Cálculo Automático:**
-  - 🚗 **KM Percorridos**.
-  - 💰 **Faturamento Total**.
-  - ⛽ **Gasto estimado com combustível**.
-
-## Histórico de Jornadas
-
-- Exibição das **últimas jornadas registradas**.
-- Filtro por data.
-
-💡 **Tecnologias:**
-
-- **Shadcn/ui + Tailwind CSS** → Design responsivo.
-- **TanStack Query** → Atualização instantânea dos dados.
-
-## 3.3 Tela de Abastecimentos
-
-**Objetivo:** Registrar e acompanhar abastecimentos.
-Criar uma previsão de quantos KM ainda podem ser rodados baseado no tanque atual.
-Exibir abastecimentos passados como um gráfico de barras ao invés de apenas uma lista.
-
-
-**Componentes:**
-
-✅ **Registrar Abastecimento:**
-
-- 📆 **Data e Hora** (registradas automaticamente).
-- ⛽ **Tipo de Combustível** (Gasolina, Álcool, Diesel, GNV).
-- 🚗 **KM no momento do abastecimento**.
-- 💧 **Litros abastecidos**.
-- 💰 **Preço por litro e valor total**.
-- 🏪 **Posto de Combustível (opcional)**.
-- **Botão "Salvar Abastecimento"**.
-
-✅ **Histórico de Abastecimentos:**
-
-- Listagem dos últimos abastecimentos.
-- Gráfico de **consumo médio do veículo**.
-
-💡 **Tecnologias:**
-
-- **React Hook Form + Zod** → Validação dos campos.
-- **Recharts** → Exibição do consumo médio do veículo.
-
-## 3.4 Tela de Despesas
-
-📍 **Objetivo:** Registrar e visualizar despesas do motorista.
-permitir alterar o vencimento de contas futuras
-indicar se uma despesa é recorrente e forma automatica
-Alertas Automáticos, "Seu IPVA vence em 3 dias. Deseja registrar o pagamento?"
-
-**Componentes:**
-
-✅ **Cadastro de Despesas:**
-
-- 📌 **Tipo de Despesa:** (IPVA, Seguro, Manutenção, Aluguel, Outros).
-- 💰 **Valor**.
-- 🗓 **Data da Despesa**.
-- **Botão "Salvar Despesa"**.
-
-✅ **Histórico de Despesas:**
-
-- Listagem das últimas despesas.
-- Filtro por período (dia, semana, mês).
-
-✅ **Exportação de Dados:**
-
-- **Botão "Exportar para PDF/Excel"**.
-
-💡 **Tecnologias:**
-
-- **TanStack Table** → Exibição das despesas com filtros.
-- **PDFKit / SheetJS** → Exportação para PDF e Excel.
-
-## 3.5 Tela de Relatórios e Análises
-
-📍 **Objetivo:** Mostrar estatísticas financeiras para o motorista.
-Gráfico de Tendência de Lucro, Um gráfico de linha comparando últimos 3 meses de lucro líquido.
-Sistema de Insights Sugestões automáticas como: "Seu faturamento caiu 10% esta semana. Pode ser um reflexo do horário trabalhado?" "Sábado tem sido seu dia mais lucrativo. Considere trabalhar mais nesse dia."
-Ranking mostrando motoristas com perfil semelhante na cidade (Ex: mesma média de quilometragem, mesmo carro).
-
-**Componentes:**
-
-✅ **Relatórios Básicos:**
-
-- 📆 **Faturamento diário, semanal e mensal**.
-- ⛽ **Gastos com combustível por período**.
-- 🚗 **Média de KM rodado por dia**.
-
-✅ **Relatórios Avançados:**
-
-- 🔹 **Comparação de ganhos entre Uber, 99, InDrive**.
-- 📈 **Gráfico de evolução dos últimos 3 meses**.
-- 🔮 **Previsão de ganhos futuros**.
-- Comparação de faturamento medio dos motoristas da cidade
-- comparação de quilometragem media dos motoristas da cidade
-- ranking dos motoristas com melhores faturamento
-- ranking dos motoristas com melhor ganho liquido
-- ranking com motoristas com maiores quilometragens 
-
-✅ **Filtros e Exportação:**
-
-- Filtro de período.
-- **Botão "Exportar Relatório"** (PDF, Excel).
-
-💡 **Tecnologias:**
-
-- **Recharts** → Gráficos interativos.
-- **SheetJS** → Exportação de relatórios.
-
-## 3.6 Notificações
-
-📍 **Objetivo:** Mostrar alertas e mensagens importantes para o motorista.
-O usuário pode definir notificações manuais. Exemplo: "Me lembre de abastecer quando o tanque estiver abaixo de 25%."
-Sistema de Conquistas (Gamificação) Pequenos prêmios motivacionais: "Parabéns! Você bateu sua meta semanal 3 vezes seguidas!" "TOP 10 motoristas da sua cidade este mês!"
-
-**Componentes:**
-
-✅ **Notificações de Progresso de Metas:**
-
-- 🔥 "Você está a 75% da sua meta semanal! Falta pouco!"
-- ⚠️ "Abaixo de 50% da meta. Tente rodar mais algumas horas!"
-
-✅ **Alertas de Manutenção do Veículo:**
-
-- 🚗 "Você já rodou 5.000 km desde o último abastecimento. Hora de revisar o carro?"
-
-✅ **Mensagens do Sistema:**
-
-- "Nova atualização disponível!"
-
-💡 **Tecnologias:**
-
-- **Expo Notifications** → Envio de notificações push.
-
-**📌 3.7 Resumo Final das Telas do App**
-
-| **Tela** | **Objetivo** | **Principais Componentes** |
-| --- | --- | --- |
-| **1️⃣ Login/Cadastro** | Entrada no app | Formulários de login e autenticação social |
-| **2️⃣ Tela Inicial** | Resumo financeiro | Cards de ganhos, atalhos e metas |
-| **3️⃣ Jornadas** | Registro de trabalho | Iniciar/Finalizar jornada, histórico |
-| **4️⃣ Abastecimentos** | Controle de combustível | Registro e histórico de consumo |
-| **5️⃣ Despesas** | Gerenciamento financeiro | Cadastro e exportação de despesas |
-| **6️⃣ Relatórios** | Estatísticas detalhadas | Gráficos e exportação de dados |
-| **7️⃣ Notificações** | Engajamento | Alertas e notificações push |
-
-## 3.8 Estrutura do Projeto para UX  
-
-✅ O app será desenvolvido com **React Native (Expo)** para rodar em **Android e iOS**.  
-✅ O backend será em **Node.js (Express) + PostgreSQL**.  
-✅ Gerenciamento de estado usando **Zustand** ou **TanStack Query**.  
-✅ Design com **shadcn/ui + Tailwind CSS** para manter um layout moderno.
-✅ **Barra de Progresso para Metas:**
-Suporte para internacionalização i18n
-Implementação de background sync para salvar dados offline e sincronizar quando houver internet.
-
-- **Exibição de progresso diário, semanal e mensal**.
-- **Usar shadcn/ui Progress ou Radix UI Progress**.
-- Animação suave ao atualizar o progresso.
-
-✅ **Feedback Visual ao Cadastrar Jornadas e Abastecimentos:**
-
-- **Confirmação animada** ao registrar um abastecimento ou jornada.
-- **Loading effects** ao salvar dados.
-
-✅ **Mudanças Dinâmicas no Ranking do Desafio:**
-
-- **Animação ao subir ou descer no ranking** (Framer Motion).
-- Destaque no **TOP 3 motoristas** com efeito especial.
-
-### 3.9 Compatibilidade com Android e iOS
-
-💡 **Sim, o app será compatível com ambos desde o início!**
-
-✅ **React Native com Expo** já permite rodar no Android e iOS sem modificações complexas.  
-✅ **Shadcn/ui + Tailwind CSS** garante responsividade e adaptação a diferentes telas.  
-✅ **Expo Notifications** para envio de **notificações push**.
-
-
-# 4.0 Estrutura do Banco de Dados
-
-O **banco de dados será PostgreSQL**, armazenado na **nuvem (Google Cloud, AWS ou Azure)**.
-
-## Regras Gerais do Banco de Dados  
-
-1. **E-mail será a chave principal de login**.
-2. **Cada usuário pode cadastrar múltiplos veículos**, mas apenas **um pode estar ativo por vez**.
-3. **Despesas, abastecimentos e jornadas devem estar vinculados a um veículo**.
-4. **Se um veículo for desativado**, todas as despesas pendentes precisarão ser **finalizadas ou removidas manualmente pelo usuário**.
-5. **Despesas recorrentes** podem ser pagas manualmente ou **recalculadas** se forem quitadas antecipadamente.
-6. O **histórico de todas as transações e modificações será mantido**, permitindo auditoria de dados.
-
-## 4.1 Estrutura das Tabelas  
-
-Definir índices nas colunas mais consultadas
-Incluir Soft Delete (deleted_at TIMESTAMP NULL) para evitar perda acidental de dados em tabelas críticas
-Utilizar enum para valores fixos como tipo_combustivel, tipo_despesa, tipo_uso para evitar registros inconsistentes.
-Adicionar um campo telefone VARCHAR(20) para eventual autenticação via SMS.
-Adicionar status_conta ENUM(‘ativo’, ‘inativo’, ‘banido’) para controle de usuários.
-Criar índice no campo email para melhorar consultas de login
-
-
-### 4.1.1. Tabela: usuarios (Cadastro de Usuários)
-
-Guarda informações dos motoristas cadastrados no sistema.
-Adicione um campo de autenticação por telefone (telefone VARCHAR(20)) ☎️
-Registrar o último login do usuário (ultimo_login TIMESTAMP) 
-Criptografia de e-mail e telefone - O PostgreSQL permite usar pgcrypto para encriptar e-mails e dados sensíveis.
-
-Para permitir login via SMS futuramente.
-
-| **Campo** | **Tipo de Dado** | **Regras de Validação** | **Descrição** |
-| id_usuario | UUID | Chave Primária (PK) | Identificador único do usuário. |
-| nome | VARCHAR(100) | Mínimo 3 caracteres, apenas letras. | Nome completo do usuário. |
-| email | VARCHAR(150) | **Único no sistema**, formato <email@dominio.com>. | E-mail usado como chave principal do login. |
-| senha | TEXT (HASHED) | Armazenada de forma segura (bcrypt). | Senha criptografada do usuário. |
-| cidade | VARCHAR(100) | Apenas letras. | Cidade onde o motorista opera. |
-| data_criacao | TIMESTAMP | Formato: YYYY-MM-DD HH:MM:SS. | Data e hora do cadastro do usuário. |
-
-### 4.1.2. Tabela: veiculos (Cadastro de veículos)  
-
-Cada veículo pertence a um **usuário único**, e apenas um pode estar **ativo**.  
-
-Adicionar campo ativo BOOLEAN DEFAULT true para indicar o veículo atual.
-Adicionar data_desativacao TIMESTAMP NULL para registro do histórico de veículos antigos.
-Criar um índice em id_usuario para melhorar a performance de busca dos veículos por usuário.
-Adicione deleted_at TIMESTAMP NULL para Soft Delete: Permite ao usuário restaurar veículos excluídos.
-Criar um campo media_consumo NUMERIC(5,2): Guarda a média de KM/L baseada nos abastecimentos do veículo.
-
-
-| **Campo** | **Tipo de Dado** | **Regras de Validação** | **Descrição** |
-| id_veiculo | UUID | \-  | Identificador único do veículo. |
-| id_usuario | UUID | Relacionamento com usuarios. Cada usuário pode ter vários veículos, mas apenas **um pode estar ativo**. |     |
-| fabricante | VARCHAR(50) | Apenas letras | Marca do veículo (Ex: Toyota, Ford). |
-| modelo | VARCHAR(50) | Apenas letras/números | Modelo do veículo (Ex: Corolla, HB20). |
-| placa | VARCHAR(7) | **Única** no sistema | Formato AAA-9999 ou AAA9A99. Se reativar a mesma placa, atualizar dados do veículo. |
-| ano | INTEGER | 1950 até ano atual | Ano de fabricação. |
-| tipo_uso | VARCHAR(15) | ('Próprio', 'Alugado', 'Financiado') | Indica a posse do veículo. |
-| valor_aluguel | NUMERIC(10,2) | R$ 9.999,99 | Se alugado, valor mensal. |
-| valor_prestacao | NUMERIC(10,2) | R$ 9.999,99 | Se financiado, valor da parcela. |
-| data_cadastro | TIMESTAMP | YYYY-MM-DD HH:MM:SS |     |
-
-### 4.1.3. Tabela: jornadas
-
-Adicionar campo status ENUM(‘em andamento’, ‘finalizada’, ‘cancelada’) para maior controle das jornadas.
-Criar índice em data_inicio para otimizar consultas por período.
-Adicionar um campo observacoes TEXT NULL para anotações do motorista sobre a jornada.
-Melhoria no cálculo de faturamento líquido: Adicionar um campo calculado faturamento_liquido NUMERIC(10,2), que já subtrai custos como aluguel e combustível.
-
-| **Campo** | **Tipo de Dado** | **Regras de Validação** | **Descrição** |
-| id_jornada | UUID | Chave Primária (PK) | Identificador único da jornada. |
-| id_usuario | UUID | Chave Estrangeira (FK) → usuarios(id_usuario). | Relacionamento com a tabela de usuários. |
-| id_veiculo | UUID | Chave Estrangeira (FK) → veiculos(id_veiculo). | Apenas veículos **ativos** podem ser usados. |
-| data_inicio | TIMESTAMP | Definido automaticamente ao iniciar a jornada. | Data e hora do início da jornada. |
-| km_inicio | INTEGER | Apenas números positivos (000000 a 999999). | Quilometragem registrada no início da jornada. |
-| data_fim | TIMESTAMP | Definido automaticamente ao finalizar a jornada. | Data e hora do fim da jornada. |
-| km_fim | INTEGER | Deve ser maior ou igual ao km_inicio. | Quilometragem final ao término da jornada. |
-| corridas | INTEGER | Apenas números inteiros positivos. | Número de corridas realizadas na jornada. |
-| faturamento | NUMERIC(10,2) | **Máscara:** R$ 9.999,99. | Total faturado na jornada. |
-| km_total | INTEGER | **Cálculo automático:** km_fim - km_inicio. | Quilometragem percorrida na jornada. |
-| tempo_total | INTERVAL | Formato HH:MM:SS. | Tempo total da jornada (calculado com data_fim - data_inicio). |
-
-🔹 **Notificação automática** após **8h, 10h, 12h e 18h**, caso a jornada não tenha sido finalizada.  
-🔹 **O usuário pode editar ou excluir qualquer jornada individualmente**.  
-🔹 **Filtro por data** disponível (padrão: mês atual).
-
-### 4.1.4. Tabela: abastecimentos
-
-Registra todos os **abastecimentos feitos**.
-
-Criar índice em data_abastecimento para otimizar consultas por período
-Histórico de preço do combustível: Adicionar uma tabela separada historico_preco_combustivel com:
-id_preco (UUID), data TIMESTAMP, tipo_combustivel VARCHAR(20), preco NUMERIC(5,2).
-Isso permite gráficos de variação de preços ao longo do tempo.
-
-| **Campo** | **Tipo de Dado** | **Regras de Validação** | **Descrição** |
-| id_abastecimento | UUID | Identificador único. |     |
-| id_usuario | UUID | Relacionamento com usuarios. |     |
-| id_veiculo | UUID | Relacionamento com veiculos. |     |
-| data_abastecimento | TIMESTAMP | Data e hora do abastecimento. |     |
-| odometro | INTEGER | Entre 000000 e 999999. |     |
-| tipo_combustivel | VARCHAR(20) | ('Gasolina', 'Álcool', 'Diesel', 'GNV'). |     |
-| litros | NUMERIC(5,2) | **Formato:** 99,99 litros. |     |
-| preco_por_litro | NUMERIC(5,2) | **Máscara:** R$ 9,99. |     |
-| total_pago | NUMERIC(10,2) | **Máscara:** R$ 9.999,99. |     |
-
-**O usuário pode editar e excluir abastecimentos individualmente**.  
-**O sistema calculará automaticamente o consumo médio do veículo**.
-
-### 4.1.5. Tabela: despesas  
-
-Adicionar um campo descricao TEXT NULL para detalhes adicionais da despesa.
-Criar índice em data_despesa para otimizar filtros por período.
-Adicionar deleted_at TIMESTAMP NULL para Soft Delete.
-Adicionar notificar_vencimento BOOLEAN DEFAULT true: Ativa lembretes automáticos para contas a pagar.
-Criar uma categoria_despesa ENUM('Fixas', 'Variáveis', 'Extras') Facilita o agrupamento de despesas no relatório financeiro.
-
-| **Campo** | **Tipo de Dado** | **Regras de Validação** | **Descrição** |
-| id_despesa | UUID | Identificador único. |     |
-| id_usuario | UUID | Relacionamento com usuarios. |     |
-| id_veiculo | UUID | Relacionamento com veiculos. |     |
-| tipo_despesa | VARCHAR(50) | ('Manutenção', 'IPVA', 'Seguro', 'Aluguel'). |     |
-| valor | NUMERIC(10,2) | **Máscara:** R$ 9.999,99. |     |
-| parcelado | BOOLEAN | true ou false. |     |
-| parcelas | INTEGER | Se parcelado, de 1 a 99. |     |
-| data_despesa | TIMESTAMP | Data da despesa. |     |
-
-**Histórico de despesas acessível e editável**.  
-**O usuário pode antecipar parcelas, ajustando manualmente os valores**.  
-**Exportação de dados em PDF, Excel e CSV**.
-
-### 4.1.6. Tabela: Tabela de Metas  
-
-Criar índice em id_usuario para acelerar consultas por motorista.
-Adicionar um campo meta_alcancada BOOLEAN DEFAULT false para marcar metas cumpridas.
-
-| **Campo** | **Tipo de Dado** | **Descrição** |
-| id_meta | UUID | Identificador único da meta. |
-| id_usuario | UUID | Relacionamento com a tabela usuarios. |
-| tipo_meta | VARCHAR(10) | Valores possíveis: 'diaria', 'semanal', 'mensal'. |
-| valor_meta | NUMERIC(10,2) | Valor definido pelo motorista. |
-| data_criacao | TIMESTAMP | Data e hora da criação da meta. |
+3.3 Tela de Jornadas de Trabalho
+
+🎯 Objetivo
+Registrar e acompanhar jornadas de trabalho.
+Permitir pausas sem contar no tempo de serviço (para intervalos, almoço, etc.).
+
+Exibir métricas úteis como:
+🚀 Melhor dia da semana para faturamento.
+⏳ Duração média das jornadas.
+✅ Componentes
+
+📌 Início da Jornada:
+
+Botão "Iniciar Jornada" → Captura data, hora e quilometragem inicial automaticamente.
+Campo de Quilometragem Inicial → Com validação automática.
+
+📌 Pausa na Jornada:
+
+Botão "Pausar Jornada" → Permite pausas sem contar no tempo total de serviço.
+Botão "Retomar Jornada" → Continua o tempo de serviço normalmente.
+
+📌 Finalização da Jornada:
+
+Botão "Finalizar Jornada" → Captura quilometragem final e faturamento.
+Cálculo Automático:
+🚗 KM Percorridos.
+💰 Faturamento Total.
+⛽ Gasto estimado com combustível.
+📌 Histórico de Jornadas:
+
+Exibição das últimas jornadas registradas.
+Filtro por data para buscar jornadas passadas.
+Possibilidade de edição de uma jornada anterior.
+💡 Tecnologias
+✅ Shadcn/ui + Tailwind CSS → Design responsivo e leve.
+✅ TanStack Query → Atualização instantânea dos dados.
+
+3.3 Tela de Abastecimentos
+
+🎯 Objetivo
+Permitir que o motorista registre e acompanhe abastecimentos.
+Criar uma previsão de quantos KM ainda podem ser rodados com base no tanque atual.
+Exibir gráficos de consumo médio do veículo em vez de apenas uma lista.
+
+✅ Componentes
+📌 Registrar Abastecimento:
+
+📆 Data e Hora (registradas automaticamente).
+⛽ Tipo de Combustível (Gasolina, Álcool, Diesel, GNV).
+🚗 KM no momento do abastecimento.
+💧 Litros abastecidos.
+💰 Preço por litro e valor total (calculado automaticamente).
+🏪 Posto de Combustível (opcional).
+Botão "Salvar Abastecimento".
+📌 Histórico de Abastecimentos:
+
+Listagem dos últimos abastecimentos.
+Gráfico de barras mostrando o consumo médio do veículo.
+
+💡 Tecnologias
+✅ React Hook Form + Zod → Validação dos campos.
+✅ Recharts → Exibição do consumo médio do veículo.
+✅ TanStack Query → Atualização dos dados em tempo real.
+
+3.4 Tela de Despesas
+
+🎯 Objetivo
+Registrar e visualizar despesas do motorista.
+Permitir alterar o vencimento de contas futuras.
+Indicar despesas recorrentes automaticamente.
+Enviar alertas automáticos: "Seu IPVA vence em 3 dias. Deseja registrar o pagamento?"
+
+✅ Componentes
+
+📌 Cadastro de Despesas:
+📌 Tipo de Despesa (IPVA, Seguro, Manutenção, Aluguel, Outros).
+💰 Valor.
+🗓 Data da Despesa.
+Checkbox "Despesa Recorrente" (ativar/desativar).
+Botão "Salvar Despesa".
+
+📌 Histórico de Despesas:
+
+Listagem das últimas despesas.
+Filtro por período (dia, semana, mês).
+
+📌 Exportação de Dados:
+
+Botão "Exportar para PDF/Excel".
+💡 Tecnologias
+✅ TanStack Table → Exibição das despesas com filtros.
+✅ PDFKit / SheetJS → Exportação para PDF e Excel.
+✅ Shadcn/ui + Tailwind CSS → Interface moderna.
+
+3.5 Tela de Relatórios e Análises
+
+🎯 Objetivo
+
+Exibir estatísticas financeiras detalhadas para o motorista.
+Criar um gráfico de tendência de lucro dos últimos 3 meses.
+Implementar um sistema de insights com sugestões automáticas:
+"Seu faturamento caiu 10% esta semana. Pode ser um reflexo do horário trabalhado?"
+"Sábado tem sido seu dia mais lucrativo. Considere trabalhar mais nesse dia."
+Exibir um ranking com motoristas semelhantes na cidade (com base em quilometragem e veículo).
+
+✅ Componentes
+📌 Relatórios Básicos:
+
+📆 Faturamento diário, semanal e mensal.
+⛽ Gastos com combustível por período.
+🚗 Média de KM rodado por dia.
+📌 Relatórios Avançados:
+
+🔹 Comparação de ganhos entre Uber, 99, InDrive.
+📈 Gráfico de evolução dos últimos 3 meses.
+🔮 Previsão de ganhos futuros.
+Comparação de faturamento médio e quilometragem de motoristas da cidade.
+Ranking de melhores faturamentos, lucros e quilometragens.
+📌 Filtros e Exportação:
+
+Filtro de período.
+Botão "Exportar Relatório" (PDF, Excel).
+
+💡 Tecnologias
+✅ Recharts → Gráficos interativos.
+✅ SheetJS → Exportação de relatórios.
+✅ TanStack Query → Atualização dos dados.
+
+3.6 Notificações
+
+🎯 Objetivo
+Exibir alertas e mensagens importantes para o motorista.
+Permitir notificações manuais (ex: "Me lembre de abastecer quando o tanque estiver abaixo de 25%.").
+Implementar um Sistema de Conquistas (Gamificação) com prêmios motivacionais:
+"Parabéns! Você bateu sua meta semanal 3 vezes seguidas!"
+"TOP 10 motoristas da sua cidade este mês!"
+
+✅ Componentes
+📌 Notificações de Progresso de Metas:
+
+🔥 "Você está a 75% da sua meta semanal! Falta pouco!"
+⚠️ "Abaixo de 50% da meta. Tente rodar mais algumas horas!"
+📌 Alertas de Manutenção do Veículo:
+
+🚗 "Você já rodou 5.000 km desde o último abastecimento. Hora de revisar o carro?"
+📌 Mensagens do Sistema:
+
+"Nova atualização disponível!"
+💡 Tecnologias
+✅ Expo Notifications → Envio de notificações push.
+✅ Shadcn/ui + Tailwind CSS → Interface visual para alertas.
+
+📌 3.7 Resumo Final das Telas do App
+
+Tela	Objetivo	Principais Componentes
+
+1️⃣ Login/Cadastro	Entrada no app	Formulários de login e autenticação social
+2️⃣ Tela Inicial	Resumo financeiro	Cards de ganhos, atalhos e metas
+3️⃣ Jornadas	Registro de trabalho	Iniciar/Finalizar jornada, histórico
+4️⃣ Abastecimentos	Controle de combustível	Registro e histórico de consumo
+5️⃣ Despesas	Gerenciamento financeiro	Cadastro e exportação de despesas
+6️⃣ Relatórios	Estatísticas detalhadas	Gráficos e exportação de dados
+7️⃣ Notificações	Engajamento	Alertas e notificações push
+
+3.8 Estrutura do Projeto para UX
+
+✅ React Native (Expo) para rodar em Android e iOS.
+✅ Backend em Node.js (Express) + PostgreSQL.
+✅ Gerenciamento de estado com Zustand ou TanStack Query.
+✅ Design com shadcn/ui + Tailwind CSS.
+✅ Barra de Progresso para Metas:
+
+Exibição de progresso diário, semanal e mensal.
+Animação suave ao atualizar o progresso.
+✅ Feedback Visual ao Cadastrar Jornadas e Abastecimentos:
+
+Confirmação animada ao registrar um abastecimento ou jornada.
+Loading effects ao salvar dados.
+✅ Mudanças Dinâmicas no Ranking:
+
+Animação ao subir ou descer no ranking (Framer Motion).
+Destaque no TOP 3 motoristas com efeito especial.
+
+3.9 Compatibilidade com Android e iOS
+✅ React Native com Expo garante compatibilidade desde o início.
+✅ Shadcn/ui + Tailwind CSS garante adaptação para diferentes telas.
+✅ Expo Notifications para notificações push.
+
+4.0 Estrutura do Banco de Dados
+O banco de dados será PostgreSQL, armazenado na nuvem (Google Cloud, AWS ou Azure).
+
+4.1 Regras Gerais do Banco de Dados
+E-mail será a chave principal de login (índice para otimizar consultas).
+Cada usuário pode cadastrar múltiplos veículos, mas apenas um pode estar ativo por vez.
+Despesas, abastecimentos e jornadas devem estar vinculados a um veículo.
+Se um veículo for desativado, todas as despesas pendentes precisarão ser finalizadas ou removidas manualmente pelo usuário.
+Despesas recorrentes podem ser pagas manualmente ou recalculadas se forem quitadas antecipadamente.
+Histórico de todas as transações e modificações será mantido para permitir auditoria de dados.
+Soft Delete (deleted_at TIMESTAMP NULL) será implementado em tabelas críticas para evitar perda de dados acidental.
+Enums serão usados para valores fixos como tipo_combustivel, tipo_despesa e tipo_uso, evitando registros inconsistentes.
+Criptografia (pgcrypto) será aplicada para proteger e-mails e telefones dos usuários.
+
+4.2 Estrutura das Tabelas
+Cada tabela foi projetada para otimizar desempenho, segurança e consultas rápidas.
+
+4.2.1 Tabela: usuarios (Cadastro de Usuários)
+
+📌 Objetivo: Armazena dados dos motoristas cadastrados.
+
+Campo	Tipo	Descrição
+id_usuario	UUID (PK)	Identificador único.
+nome	VARCHAR(100)	Nome completo do usuário.
+email	VARCHAR(150) UNIQUE	E-mail do usuário (chave de login).
+telefone	VARCHAR(20) UNIQUE	Número de telefone para autenticação via SMS.
+senha	TEXT (HASHED)	Senha criptografada (bcrypt).
+cidade	VARCHAR(100)	Cidade do motorista.
+status_conta	ENUM('ativo', 'inativo', 'banido')	Controle de usuários.
+ultimo_login	TIMESTAMP	Registro do último login do usuário.
+data_criacao	TIMESTAMP	Data e hora do cadastro.
+deleted_at	TIMESTAMP NULL	Soft Delete.
+
+📌 Otimizações:
+
+Índice no campo email para melhorar consultas de login.
+Criptografia para e-mail e telefone.
+4.2.2 Tabela: veiculos (Cadastro de Veículos)
+
+📌 Objetivo: Armazena os veículos cadastrados pelos motoristas.
+
+Campo	Tipo	Descrição
+id_veiculo	UUID (PK)	Identificador único.
+id_usuario	UUID (FK)	Relacionamento com usuarios.
+fabricante	VARCHAR(50)	Marca do veículo.
+modelo	VARCHAR(50)	Modelo do veículo.
+placa	VARCHAR(7) UNIQUE	Placa do veículo.
+ano	INTEGER	Ano de fabricação.
+tipo_uso	ENUM('Próprio', 'Alugado', 'Financiado')	Tipo de uso do veículo.
+valor_aluguel	NUMERIC(10,2)	Se alugado, valor mensal.
+valor_prestacao	NUMERIC(10,2)	Se financiado, valor da parcela.
+ativo	BOOLEAN DEFAULT true	Indica se o veículo está ativo.
+data_desativacao	TIMESTAMP NULL	Data de desativação do veículo.
+media_consumo	NUMERIC(5,2)	Média de KM/L baseado nos abastecimentos.
+deleted_at	TIMESTAMP NULL	Soft Delete.
+
+📌 Otimizações:
+
+Índice em id_usuario para melhorar a busca de veículos por usuário.
+Soft Delete (deleted_at) para permitir restauração de veículos excluídos.
+4.2.3 Tabela: jornadas (Registro de Trabalho)
+
+📌 Objetivo: Registrar cada jornada de trabalho do motorista.
+
+Campo	Tipo	Descrição
+id_jornada	UUID (PK)	Identificador único.
+id_usuario	UUID (FK)	Relacionamento com usuarios.
+id_veiculo	UUID (FK)	Relacionamento com veiculos.
+data_inicio	TIMESTAMP	Data e hora de início.
+km_inicio	INTEGER	Quilometragem no início.
+data_fim	TIMESTAMP NULL	Data e hora de fim.
+km_fim	INTEGER NULL	Quilometragem final.
+corridas	INTEGER	Número de corridas.
+faturamento	NUMERIC(10,2)	Total faturado.
+km_total	INTEGER	Cálculo automático.
+tempo_total	INTERVAL	Duração da jornada.
+status	ENUM('em andamento', 'finalizada', 'cancelada')	Status da jornada.
+observacoes	TEXT NULL	Anotações do motorista.
+deleted_at	TIMESTAMP NULL	Soft Delete.
+
+📌 Otimizações:
+
+Índice em data_inicio para otimizar consultas por período.
+Notificação automática após 8h, 10h, 12h e 18h se a jornada não for finalizada.
+4.2.4 Tabela: abastecimentos
+
+📌 Objetivo: Registrar todos os abastecimentos feitos pelo motorista.
+
+Campo	Tipo	Descrição
+id_abastecimento	UUID (PK)	Identificador único.
+id_usuario	UUID (FK)	Relacionamento com usuarios.
+id_veiculo	UUID (FK)	Relacionamento com veiculos.
+data_abastecimento	TIMESTAMP	Data e hora do abastecimento.
+odometro	INTEGER	Quilometragem no momento do abastecimento.
+tipo_combustivel	ENUM('Gasolina', 'Álcool', 'Diesel', 'GNV')	Tipo de combustível.
+litros	NUMERIC(5,2)	Quantidade abastecida.
+preco_por_litro	NUMERIC(5,2)	Valor por litro.
+total_pago	NUMERIC(10,2)	Valor total do abastecimento.
+
+📌 Otimizações:
+
+Índice em data_abastecimento para otimizar consultas.
+Tabela historico_preco_combustivel para armazenar a variação dos preços.
+4.2.5 Tabela: despesas
+
+📌 Objetivo: Registrar todas as despesas do motorista.
+
+Campo	Tipo	Descrição
+id_despesa	UUID (PK)	Identificador único.
+id_usuario	UUID (FK)	Relacionamento com usuarios.
+id_veiculo	UUID (FK)	Relacionamento com veiculos.
+tipo_despesa	ENUM('Manutenção', 'IPVA', 'Seguro', 'Aluguel')	Tipo da despesa.
+valor	NUMERIC(10,2)	Valor da despesa.
+parcelado	BOOLEAN DEFAULT false	Se a despesa é parcelada.
+parcelas	INTEGER NULL	Quantidade de parcelas.
+data_despesa	TIMESTAMP	Data da despesa.
+
+📌 Otimizações:
+
+Notificações automáticas para vencimentos de despesas.
+Exportação para PDF/Excel.
 
 ## 5.0 Requisitos Técnicos
 
