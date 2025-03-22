@@ -137,7 +137,7 @@ O aplicativo é voltado para motoristas de aplicativos que desejam um maior cont
 * Modo Offline (PWA para Web e Cache para Mobile) 📶.
 * Painel de Estatísticas Interativo 📊 com gráficos dinâmicos de ganhos, gastos e consumo de combustível. 
 
-##2.3 Estrutura do Banco de Dados
+## 2.3 Estrutura do Banco de Dados
 
 * O banco de dados será PostgreSQL, armazenado na nuvem (Google Cloud, AWS ou Azure).
 
@@ -155,20 +155,20 @@ O aplicativo é voltado para motoristas de aplicativos que desejam um maior cont
 
 **📌 2.3.2 Estrutura das Tabelas**
 
-*Cada tabela foi projetada para otimizar desempenho, segurança e consultas rápidas.
+* Cada tabela foi projetada para otimizar desempenho, segurança e consultas rápidas.
 
-*🔹 Principais otimizações aplicadas:
-*🗑️ Soft Delete (deleted_at) → Evita exclusões definitivas, permitindo a recuperação de dados.
+*  Principais otimizações aplicadas:
+* 🗑️ Soft Delete (deleted_at) → Evita exclusões definitivas, permitindo a recuperação de dados.
 *⚡ Índices nos campos mais pesquisados → Melhora o desempenho das consultas.
-*🔒 Constraints e validações → Mantêm a integridade dos dados, garantindo consistência.
-*📌 Enums → Padronizam valores fixos, evitando inconsistências.
-*📌 2.3.3 Tabela: usuarios (Cadastro de Usuários)
+* 🔒 Constraints e validações → Mantêm a integridade dos dados, garantindo consistência.
+* 📌 Enums → Padronizam valores fixos, evitando inconsistências.
+* 📌 2.3.3 Tabela: usuarios (Cadastro de Usuários)
 
 **📌 Tabelas**
 
-*🎯 Objetivo:
+* 🎯 Objetivo:
 
-*Armazena os dados dos motoristas cadastrados na plataforma.
+* Armazena os dados dos motoristas cadastrados na plataforma.
 ```
 CREATE TABLE usuarios (
     id_usuario UUID PRIMARY KEY,               -- Identificador único do usuário.
@@ -183,15 +183,15 @@ CREATE TABLE usuarios (
     deleted_at TIMESTAMP NULL                   -- Soft Delete (marcação para exclusão).
 );
 ```
-*🔹 Otimizações Aplicadas:
-*📌 Índice no campo email → Melhora a performance das consultas de login.
-*🔒 Criptografia aplicada para senha usando bcrypt.
-*🔐 Possibilidade de criptografia para email e telefone, garantindo maior segurança.
+* 🔹 Otimizações Aplicadas:
+* 📌 Índice no campo email → Melhora a performance das consultas de login.
+* 🔒 Criptografia aplicada para senha usando bcrypt.
+* 🔐 Possibilidade de criptografia para email e telefone, garantindo maior segurança.
 
 ##📌 2.3.4 Tabela: veiculos (Cadastro de Veículos)
 **🎯 Objetivo:**
 
-*Armazena os veículos cadastrados pelos motoristas.
+* Armazena os veículos cadastrados pelos motoristas.
 ```
 CREATE TABLE veiculos (
     id_veiculo UUID PRIMARY KEY,                -- Identificador único do veículo.
@@ -209,13 +209,13 @@ CREATE TABLE veiculos (
     deleted_at TIMESTAMP NULL                   -- Soft Delete para permitir recuperação.
 );
 ```
-*🔹 Otimizações Aplicadas:
-*📌 Índice em id_usuario → Melhora a busca de veículos por usuário.
-*🗑️ Soft Delete (deleted_at) → Permite restauração de veículos excluídos.
+* 🔹 Otimizações Aplicadas:
+* 📌 Índice em id_usuario → Melhora a busca de veículos por usuário.
+* 🗑️ Soft Delete (deleted_at) → Permite restauração de veículos excluídos.
 
-##📌 2.3.5 Tabela: jornadas (Registro de Trabalho)
-*🎯 Objetivo:
-*Registrar cada jornada de trabalho do motorista.
+## 📌 2.3.5 Tabela: jornadas (Registro de Trabalho)
+* 🎯 Objetivo:
+* Registrar cada jornada de trabalho do motorista.
 ```
 CREATE TABLE jornadas (
     id_jornada UUID PRIMARY KEY,                 -- Identificador único da jornada.
@@ -234,13 +234,13 @@ CREATE TABLE jornadas (
     deleted_at TIMESTAMP NULL                    -- Soft Delete para remoção segura.
 );
 ```
-*🔹 Otimizações Aplicadas:
-*📌 Índice em data_inicio → Otimiza consultas por período.
-*🔔 Notificação automática se a jornada não for finalizada após 8h, 10h, 12h e 18h.
+* 🔹 Otimizações Aplicadas:
+* 📌 Índice em data_inicio → Otimiza consultas por período.
+* 🔔 Notificação automática se a jornada não for finalizada após 8h, 10h, 12h e 18h.
 
 **📌 2.3.6 Tabela: abastecimentos**
-*🎯 Objetivo:
-*Registrar todos os abastecimentos feitos pelo motorista.
+* 🎯 Objetivo:
+* Registrar todos os abastecimentos feitos pelo motorista.
 ```
 CREATE TABLE abastecimentos (
     id_abastecimento UUID PRIMARY KEY,          -- Identificador único do abastecimento.
@@ -255,13 +255,13 @@ CREATE TABLE abastecimentos (
     deleted_at TIMESTAMP NULL                    -- Soft Delete para remoção segura.
 );
 ```
-*🔹 Otimizações Aplicadas:
-*📌 Índice em data_abastecimento → Otimiza consultas por período.
-*⛽ Criação da tabela historico_preco_combustivel → Permite armazenar a variação dos preços ao longo do tempo.
+* 🔹 Otimizações Aplicadas:
+* 📌 Índice em data_abastecimento → Otimiza consultas por período.
+* ⛽ Criação da tabela historico_preco_combustivel → Permite armazenar a variação dos preços ao longo do tempo.
 
 **📌 2.3.7 Tabela: despesas**
-*🎯 Objetivo:
-*Registrar todas as despesas do motorista.
+* 🎯 Objetivo:
+* Registrar todas as despesas do motorista.
 ```
 CREATE TABLE despesas (
     id_despesa UUID PRIMARY KEY,                -- Identificador único da despesa.
@@ -280,41 +280,41 @@ CREATE TABLE despesas (
 
 ---
 
-##📌 3.0 Requisitos Técnicos
+## 📌 3.0 Requisitos Técnicos
 *O aplicativo será desenvolvido como uma aplicação full-stack, utilizando tecnologias modernas para garantir *performance, escalabilidade e segurança.
 
-**📌 3.1 Tecnologias Utilizadas e Arquitetura do Sistema**
-*🔹 Adições importantes:
-*🛑 Redis → Utilizado para cache de sessões, tokens e requisições frequentes, melhorando a escalabilidade.
-*🔍 Sentry ou LogRocket → Para monitoramento de erros no frontend e backend.
-*⚙️ Especificação da versão mínima do Node.js e PostgreSQL → Garante compatibilidade futura.
+** 📌 3.1 Tecnologias Utilizadas e Arquitetura do Sistema**
+* 🔹 Adições importantes:
+* 🛑 Redis → Utilizado para cache de sessões, tokens e requisições frequentes, melhorando a escalabilidade.
+* 🔍 Sentry ou LogRocket → Para monitoramento de erros no frontend e backend.
+* ⚙️ Especificação da versão mínima do Node.js e PostgreSQL → Garante compatibilidade futura.
 
 **🔹 Tecnologias Utilizadas**
-*Camada	Tecnologia	Motivo da Escolha
-*🖥 Frontend	React Native (com TypeScript)	Desempenho nativo para Android e iOS.
-*🎨 UI/UX	Tailwind CSS + Radix UI + shadcn/ui	Estilização eficiente e moderna.
-*⚡ Gerenciamento de Estado	TanStack Query (React Query)	Melhora a performance ao evitar re-renderizações desnecessárias.
-*🧭 Navegação	Wouter	Alternativa leve ao React Router.
-*✅ Validações	React Hook Form + Zod	Validações robustas e intuitivas nos formulários.
-*📊 Gráficos	Recharts	Exibição eficiente de métricas e relatórios.
-*🎭 Ícones	Lucide React	Ícones modernos e minimalistas.
-*🚀 Backend	Node.js + Express.js	Escalável, performático e compatível com APIs REST.
-*🔑 Autenticação	Passport.js	Login seguro via e-mail e redes sociais.
-*🗄 Banco de Dados	PostgreSQL	Alta confiabilidade e suporte a consultas complexas.
-*🛠 ORM	Drizzle ORM	Consultas SQL eficientes e tipadas.
-*🔒 Segurança	JWT (JSON Web Token)	Autenticação segura.
-*🔐 Criptografia	bcrypt.js + TLS	Segurança para senhas e transmissão de dados.
-*☁️ Infraestrutura	Google Cloud / AWS / Azure	Hospedagem escalável e confiável.
+* Camada	Tecnologia	Motivo da Escolha
+* 🖥 Frontend	React Native (com TypeScript)	Desempenho nativo para Android e iOS.
+* 🎨 UI/UX	Tailwind CSS + Radix UI + shadcn/ui	Estilização eficiente e moderna.
+* ⚡ Gerenciamento de Estado	TanStack Query (React Query)	Melhora a performance ao evitar re-renderizações desnecessárias.
+* 🧭 Navegação	Wouter	Alternativa leve ao React Router.
+* ✅ Validações	React Hook Form + Zod	Validações robustas e intuitivas nos formulários.
+* 📊 Gráficos	Recharts	Exibição eficiente de métricas e relatórios.
+* 🎭 Ícones	Lucide React	Ícones modernos e minimalistas.
+* 🚀 Backend	Node.js + Express.js	Escalável, performático e compatível com APIs REST.
+* 🔑 Autenticação	Passport.js	Login seguro via e-mail e redes sociais.
+* 🗄 Banco de Dados	PostgreSQL	Alta confiabilidade e suporte a consultas complexas.
+* 🛠 ORM	Drizzle ORM	Consultas SQL eficientes e tipadas.
+* 🔒 Segurança	JWT (JSON Web Token)	Autenticação segura.
+* 🔐 Criptografia	bcrypt.js + TLS	Segurança para senhas e transmissão de dados.
+* ☁️ Infraestrutura	Google Cloud / AWS / Azure	Hospedagem escalável e confiável.
 
 ---
 
-##📌 4.0 Requisitos de Performance e Qualidade
+## 📌 4.0 Requisitos de Performance e Qualidade
 
 **📌 4.1 Tempo de Resposta**
 
-*🎯 Meta de performance:
-*≤ 500ms para requisições simples.
-*≤ 1s para cálculos complexos.
+* 🎯 Meta de performance:
+* ≤ 500ms para requisições simples.
+* ≤ 1s para cálculos complexos.
 
 *🔹 Otimizações Aplicadas:
 *📌 Índices e cache no PostgreSQL → Melhora a leitura dos dados.
