@@ -137,13 +137,11 @@ O aplicativo é voltado para motoristas de aplicativos que desejam um maior cont
 * Modo Offline (PWA para Web e Cache para Mobile) 📶.
 * Painel de Estatísticas Interativo 📊 com gráficos dinâmicos de ganhos, gastos e consumo de combustível. 
 
-## 2.3 Estrutura do Banco de Dados
-
-**#2.1 Estrutura do Banco de Dados**
+**#2.3 Estrutura do Banco de Dados**
 
 O banco de dados será PostgreSQL, armazenado na nuvem (Google Cloud, AWS ou Azure).
 
-**## 2.2 Regras Gerais do Banco de Dados**
+**## 2.3.1 Regras Gerais do Banco de Dados**
 
 * E-mail será a chave principal de login (índice para otimizar consultas).
 * Cada usuário pode cadastrar múltiplos veículos, mas apenas um pode estar ativo por vez.
@@ -155,18 +153,18 @@ O banco de dados será PostgreSQL, armazenado na nuvem (Google Cloud, AWS ou Azu
 * Enums serão usados para valores fixos como tipo_combustivel, tipo_despesa e tipo_uso, evitando registros inconsistentes.
 * Criptografia (pgcrypto) será aplicada para proteger e-mails e telefones dos usuários. 
 
-2.3 Estrutura das Tabelas
+**## 2.3.2 Estrutura das Tabelas
 Cada tabela foi projetada para otimizar desempenho, segurança e consultas rápidas.
 
-📌 Principais otimizações aplicadas:
+Principais otimizações aplicadas:
 
-Soft Delete (deleted_at) para evitar exclusões definitivas.
-Índices nos campos mais pesquisados para melhorar desempenho.
-Constraints e validações para manter a integridade dos dados.
-Enums para padronizar valores fixos e evitar inconsistências.
+Soft Delete (deleted_at): Evita exclusões definitivas, permitindo a recuperação de dados.
+Índices nos campos mais pesquisados: Melhora o desempenho de consultas.
+Constraints e validações: Mantém a integridade dos dados, garantindo a consistência.
+Enums: Padroniza valores fixos, evitando inconsistências.
 
-2.4 Tabela: usuarios (Cadastro de Usuários)
-📌 Objetivo: Armazena dados dos motoristas cadastrados.
+**## 2.3.3 Tabela: usuarios (Cadastro de Usuários)
+Objetivo: Armazena dados dos motoristas cadastrados.
 
 CREATE TABLE usuarios (
     id_usuario UUID PRIMARY KEY,               -- Identificador único do usuário.
@@ -180,13 +178,14 @@ CREATE TABLE usuarios (
     data_criacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Data do cadastro.
     deleted_at TIMESTAMP NULL                   -- Soft Delete (marcação para exclusão).
 );
-📌 Otimizações:
+
+Otimizações:
 
 Índice no campo email para melhorar consultas de login.
-Criptografia para e-mail e telefone.
+Criptografia para email e telefone.
 
-2.5 Tabela: veiculos (Cadastro de Veículos)
-📌 Objetivo: Armazena os veículos cadastrados pelos motoristas.
+**## 2.3.4 Tabela: veiculos (Cadastro de Veículos)
+Objetivo: Armazena os veículos cadastrados pelos motoristas.
 
 CREATE TABLE veiculos (
     id_veiculo UUID PRIMARY KEY,                -- Identificador único do veículo.
@@ -203,13 +202,14 @@ CREATE TABLE veiculos (
     media_consumo NUMERIC(5,2),                 -- Média de KM/L baseada nos abastecimentos.
     deleted_at TIMESTAMP NULL                   -- Soft Delete para permitir recuperação.
 );
-📌 Otimizações:
+
+Otimizações:
 
 Índice em id_usuario para melhorar a busca de veículos por usuário.
 Soft Delete (deleted_at) para permitir restauração de veículos excluídos.
 
-2.6 Tabela: jornadas (Registro de Trabalho)
-📌 Objetivo: Registrar cada jornada de trabalho do motorista.
+**## 2.3.5 Tabela: jornadas (Registro de Trabalho)
+Objetivo: Registrar cada jornada de trabalho do motorista.
 
 CREATE TABLE jornadas (
     id_jornada UUID PRIMARY KEY,                 -- Identificador único da jornada.
@@ -227,13 +227,14 @@ CREATE TABLE jornadas (
     observacoes TEXT NULL,                       -- Anotações do motorista sobre a jornada.
     deleted_at TIMESTAMP NULL                    -- Soft Delete para remoção segura.
 );
-📌 Otimizações:
+
+Otimizações:
 
 Índice em data_inicio para otimizar consultas por período.
 Notificação automática após 8h, 10h, 12h e 18h se a jornada não for finalizada.
 
-2.7 Tabela: abastecimentos
-📌 Objetivo: Registrar todos os abastecimentos feitos pelo motorista.
+**## 2.3.6 Tabela: abastecimentos
+Objetivo: Registrar todos os abastecimentos feitos pelo motorista.
 
 CREATE TABLE abastecimentos (
     id_abastecimento UUID PRIMARY KEY,          -- Identificador único do abastecimento.
@@ -247,104 +248,41 @@ CREATE TABLE abastecimentos (
     total_pago NUMERIC(10,2) CHECK (total_pago > 0), -- Valor total do abastecimento.
     deleted_at TIMESTAMP NULL                    -- Soft Delete para remoção segura.
 );
-📌 Otimizações:
+
+Otimizações:
 
 Índice em data_abastecimento para otimizar consultas.
 Tabela historico_preco_combustivel para armazenar a variação dos preços.
 
-2.8 Tabela: despesas
-📌 Objetivo: Registrar todas as despesas do motorista.
+**## 2.3.7 Tabela: despesas
+Objetivo: Registrar todas as despesas do motorista.
 
 CREATE TABLE despesas (
     id_despesa UUID PRIMARY KEY,                -- Identificador único da despesa.
     id_usuario UUID REFERENCES usuarios(id_usuario), -- Relacionado ao usuário.
-    id_veiculo UUID REFERENCES veiculos(id_veiculo), -- Relacionado ao veículo, 
-    data_despesa TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Data e hora da despesa.
-    tipo_despesa ENUM('Manutenção', 'Pneu', 'Seguro', 'IPVA', 'Pedágio', 'Outros') NOT NULL, -- Tipo de despesa.
-    descricao TEXT,                             -- Descrição detalhada da despesa.
-    valor NUMERIC(10,2) CHECK (valor > 0),     -- Valor da despesa.
-    data_pagamento TIMESTAMP NULL,              -- Data do pagamento da despesa.
-    forma_pagamento ENUM('Dinheiro', 'Cartão', 'Pix', 'Boleto') NOT NULL, -- Forma de pagamento.
+    id_veiculo UUID REFERENCES veiculos(id_veiculo), -- Relacionado ao veículo,
+    data_despesa TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Data da despesa.
+    descricao VARCHAR(255) NOT NULL,          -- Descrição da despesa.
+    valor NUMERIC(10,2) CHECK (valor > 0),      -- Valor da despesa.
+    tipo_despesa ENUM('Manutenção', 'Pneus', 'Seguro', 'Outros') NOT NULL, -- Tipo de despesa.
     deleted_at TIMESTAMP NULL                    -- Soft Delete para remoção segura.
 );
-📌 Otimizações:
+
+Otimizações:
 
 Índice em data_despesa para otimizar consultas por período.
-Tabela historico_despesas para armazenar o histórico de despesas.
+A tabela despesas pode ser utilizada para registrar despesas relacionadas a cada veículo, como manutenção, pneus, seguro, etc.
 
-2.9 Tabela: historico_preco_combustivel
-📌 Objetivo: Armazenar o histórico de preços dos combustíveis.
-
-CREATE TABLE historico_preco_combustivel (
-    id_historico UUID PRIMARY KEY,            -- Identificador único do histórico.
-    tipo_combustivel ENUM('Gasolina', 'Álcool', 'Diesel', 'GNV') NOT NULL, -- Tipo de combustível.
-    data_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Data do registro.
-    preco_por_litro NUMERIC(5,2) CHECK (preco_por_litro > 0), -- Preço por litro.
-    deleted_at TIMESTAMP NULL                    -- Soft Delete para remoção segura.
-);
-📌 Otimizações:
-
-Índice em data_registro para otimizar consultas.
-
-2.10 Tabela: historico_despesas
-📌 Objetivo: Armazenar o histórico de despesas do motorista.
-
-CREATE TABLE historico_despesas (
-    id_historico UUID PRIMARY KEY,            -- Identificador único do histórico.
-    id_despesa UUID REFERENCES despesas(id_despesa), -- Relacionado à despesa.
-    data_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Data do registro.
-    tipo_acao ENUM('Criado', 'Editado', 'Excluído') NOT NULL, -- Tipo de ação realizada.
-    usuario_responsavel UUID REFERENCES usuarios(id_usuario), -- Usuário que realizou a ação.
-    detalhes TEXT,                             -- Detalhes da ação realizada.
-    deleted_at TIMESTAMP NULL                    -- Soft Delete para remoção segura.
-);
-📌 Otimizações:
-
-Índice em data_registro para otimizar consultas.
-
-2.11 Tabela: notificacoes
-📌 Objetivo: Armazenar as notificações enviadas aos usuários.
-
-CREATE TABLE notificacoes (
-    id_notificacao UUID PRIMARY KEY,         -- Identificador único da notificação.
-    id_usuario UUID REFERENCES usuarios(id_usuario), -- Relacionado ao usuário.
-    titulo VARCHAR(100) NOT NULL,            -- Título da notificação.
-    mensagem TEXT NOT NULL,                  -- Mensagem da notificação.
-    data_envio TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Data e hora do envio.
-    lida BOOLEAN DEFAULT false,               -- Indica se a notificação foi lida.
-    tipo_notificacao ENUM('Jornada', 'Abastecimento', 'Despesa', 'Sistema') NOT NULL, -- Tipo de notificação.
-    deleted_at TIMESTAMP NULL                    -- Soft Delete para remoção segura.
-);
-📌 Otimizações:
-
-Índice em data_envio para otimizar consultas.
-Tabela historico_notificacoes para armazenar o histórico de notificações.
-
-2.12 Tabela: historico_notificacoes
-📌 Objetivo: Armazenar o histórico de notificações.
-
-CREATE TABLE historico_notificacoes (
-    id_historico UUID PRIMARY KEY,            -- Identificador único do histórico.
-    id_notificacao UUID REFERENCES notificacoes(id_notificacao), -- Relacionado à notificação.
-    data_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Data do registro.
-    tipo_acao ENUM('Criado', 'Editado', 'Excluído') NOT NULL, -- Tipo de ação realizada.
-    usuario_responsavel UUID REFERENCES usuarios(id_usuario), -- Usuário que realizou a ação.
-    detalhes TEXT,                             -- Detalhes da ação realizada.
-    deleted_at TIMESTAMP NULL                    -- Soft Delete para remoção segura.
-);
-
-3.0 Requisitos Técnicos
+**## 3.0 Requisitos Técnicos
 O aplicativo será desenvolvido como uma aplicação full-stack, utilizando tecnologias modernas para garantir performance, escalabilidade e segurança.
 
-3.1 Tecnologias Utilizadas e Arquitetura do Sistema
+**## 3.1 Tecnologias Utilizadas e Arquitetura do Sistema
+Adições importantes:
 
-📌 Adições importantes:
-
-Redis para cache de sessões, tokens e requisições frequentes, melhorando a escalabilidade.
-Sentry ou LogRocket para monitoramento de erros no frontend e backend.
-Especificação da versão mínima do Node.js e PostgreSQL para garantir compatibilidade futura.
-
-📌 Tecnologias Utilizadas
+Redis: Utilizado para cache de sessões, tokens e requisições frequentes, melhorando a escalabilidade.
+Sentry ou LogRocket: Para monitoramento de erros no frontend e backend.
+Especificação da versão mínima do Node.js e PostgreSQL: Garante compatibilidade futura.
+Tecnologias Utilizadas:
 
 Camada	Tecnologia	Motivo da Escolha
 🖥 Frontend	React Native (com TypeScript)	Desempenho nativo para Android e iOS.
@@ -362,31 +300,30 @@ Camada	Tecnologia	Motivo da Escolha
 🔐 Criptografia	bcrypt.js + TLS	Segurança para senhas e transmissão de dados.
 ☁️ Infraestrutura	Google Cloud / AWS / Azure	Hospedagem escalável e confiável.
 
-4.0 Requisitos de Performance e Qualidade
-4.1 Tempo de Resposta
-📌 Meta de performance:
+**## 4.0 Requisitos de Performance e Qualidade
+**## 4.1 Tempo de Resposta
+Meta de performance:
 
 ≤ 500ms para requisições simples.
 ≤ 1s para cálculos complexos.
 
-📌 Otimizações:
+Otimizações:
 
 Índices e cache no PostgreSQL para otimizar leitura.
 TanStack Query (React Query) para evitar chamadas desnecessárias.
 Compressão GZIP no Express.js para reduzir tempo de resposta.
 Cache em endpoints estáticos (tabelas de preços, regras de negócio).
 
-4.2 Responsividade
-📌 Totalmente responsivo para Android, iOS e Web.
-
-📌 Tecnologias para responsividade:
+**## 4.2 Responsividade
+Totalmente responsivo para Android, iOS e Web.
+Tecnologias para responsividade:
 
 Tailwind CSS + Radix UI + shadcn/ui.
 Suporte a Dark Mode baseado nas preferências do sistema.
 Testes de acessibilidade (WCAG) para suporte a usuários com deficiência.
 
-4.3 Usabilidade
-📌 Regras para melhor experiência do usuário:
+**## **4.3 Usabilidade
+Regras para melhor experiência do usuário:
 
 Interface intuitiva, organizada em abas.
 Confirmações para ações irreversíveis.
@@ -395,16 +332,19 @@ Autopreenchimento inteligente nos formulários.
 Suporte a diferentes idiomas (i18n).
 Tutoriais interativos na primeira vez que o usuário acessa cada funcionalidade.
 
-4.4 Disponibilidade
-📌 Uptime garantido: 99,9% com hospedagem em Google Cloud, AWS ou Azure.
+**## 4.4 Disponibilidade
+Uptime garantido: 99,9% com hospedagem em Google Cloud, AWS ou Azure.
 
 Banco de dados replicado para evitar falhas.
+
 Monitoramento automático com alertas de falha.
+
 Failover automático para outro servidor em caso de problema.
+
 Logs centralizados (Loggly, Datadog, ELK Stack).
 
-4.5 Escalabilidade
-📌 Técnicas para escalabilidade:
+**## 4.5 Escalabilidade
+Técnicas para escalabilidade:
 
 Backend desacoplado para permitir crescimento sem comprometer performance.
 Cache de dados para reduzir carga no banco de dados.
@@ -413,10 +353,9 @@ Load Balancer para distribuir tráfego.
 JSONB no PostgreSQL para armazenar logs e preferências personalizadas.
 Tabela de logs de atividades (logs_atividades) para auditoria.
 
-5.0 Requisitos de Segurança
-
-5.1 Proteção de Dados
-📌 Criptografia e segurança:
+**## 5.0 Requisitos de Segurança
+**## 5.1 Proteção de Dados
+Criptografia e segurança:
 
 Senhas armazenadas com hash bcrypt (NÃO reversível).
 Token JWT seguro para autenticação.
@@ -428,8 +367,8 @@ Rate Limiting para prevenir ataques de força bruta.
 Monitoramento de atividades suspeitas.
 MFA (Autenticação de Dois Fatores) opcional.
 
-5.2 Regras de Segurança
-📌 Medidas para evitar ataques:
+**## 5.2 Regras de Segurança
+Medidas para evitar ataques:
 
 Bloqueio temporário após 5 tentativas de login falhas.
 Permissões de usuário para restringir acessos indevidos.
@@ -440,29 +379,106 @@ Rate Limiting e Proteção contra DDoS.
 ReCaptcha v3 no Login e Cadastro.
 Detectar logins suspeitos (localização/IP).
 
-#9.0 Estrutura do Projeto para UX
+**## 5.3 Requisitos Técnicos
+O aplicativo será desenvolvido como uma aplicação full-stack, utilizando tecnologias modernas para garantir performance, escalabilidade e segurança.
 
-✅ React Native (Expo) para rodar em Android e iOS.
-✅ Backend em Node.js (Express) + PostgreSQL.
-✅ Gerenciamento de estado com Zustand ou TanStack Query.
-✅ Design com shadcn/ui + Tailwind CSS.
-✅ Barra de Progresso para Metas:
+**## 5.4 Tecnologias Utilizadas e Arquitetura do Sistema
+📌 Adições importantes:
+Redis: Utilizado para cache de sessões, tokens e requisições frequentes, melhorando a escalabilidade.
 
-Exibição de progresso diário, semanal e mensal.
-Animação suave ao atualizar o progresso.
-✅ Feedback Visual ao Cadastrar Jornadas e Abastecimentos:
+Sentry ou LogRocket: Para monitoramento de erros no frontend e backend.
 
-Confirmação animada ao registrar um abastecimento ou jornada.
-Loading effects ao salvar dados.
-✅ Mudanças Dinâmicas no Ranking:
+Especificação da versão mínima do Node.js e PostgreSQL: Garante compatibilidade futura.
 
-Animação ao subir ou descer no ranking (Framer Motion).
-Destaque no TOP 3 motoristas com efeito especial.
+📌 Tecnologias Utilizadas
+Camada	Tecnologia	Motivo da Escolha
+🖥 Frontend	React Native (com TypeScript)	Desempenho nativo para Android e iOS.
+🎨 UI/UX	Tailwind CSS + Radix UI + shadcn/ui	Estilização eficiente e moderna.
+⚡ Gerenciamento de Estado	TanStack Query (React Query)	Melhora a performance ao evitar re-renderizações desnecessárias.
+🧭 Navegação	Wouter	Alternativa leve ao React Router.
+✅ Validações	React Hook Form + Zod	Validações robustas e intuitivas nos formulários.
+📊 Gráficos	Recharts	Exibição eficiente de métricas e relatórios.
+🎭 Ícones	Lucide React	Ícones modernos e minimalistas.
+🚀 Backend	Node.js + Express.js	Escalável, performático e compatível com APIs REST.
+🔑 Autenticação	Passport.js	Login seguro via e-mail e redes sociais.
+🗄 Banco de Dados	PostgreSQL	Alta confiabilidade e suporte a consultas complexas.
+🛠 ORM	Drizzle ORM	Consultas SQL eficientes e tipadas.
+🔒 Segurança	JWT (JSON Web Token)	Autenticação segura.
+🔐 Criptografia	bcrypt.js + TLS	Segurança para senhas e transmissão de dados.
+☁️ Infraestrutura	Google Cloud / AWS / Azure	Hospedagem escalável e confiável.
 
-##9.1 Compatibilidade com Android e iOS
-✅ React Native com Expo garante compatibilidade desde o início.
-✅ Shadcn/ui + Tailwind CSS garante adaptação para diferentes telas.
-✅ Expo Notifications para notificações push.
+**## 6.0 Requisitos de Performance e Qualidade
+**## 6.1 Tempo de Resposta
+📌 Meta de performance:
+≤ 500ms para requisições simples.
+
+≤ 1s para cálculos complexos.
+
+📌 Otimizações:
+Índices e cache no PostgreSQL para otimizar leitura.
+TanStack Query (React Query) para evitar chamadas desnecessárias.
+Compressão GZIP no Express.js para reduzir tempo de resposta.
+Cache em endpoints estáticos (tabelas de preços, regras de negócio).
+
+6.2 Responsividade
+📌 Totalmente responsivo para Android, iOS e Web.
+📌 Tecnologias para responsividade:
+Tailwind CSS + Radix UI + shadcn/ui.
+
+Suporte a Dark Mode baseado nas preferências do sistema.
+Testes de acessibilidade (WCAG) para suporte a usuários com deficiência.
+
+6.3 Usabilidade
+📌 Regras para melhor experiência do usuário:
+Interface intuitiva, organizada em abas.
+
+Confirmações para ações irreversíveis.
+Mensagens de erro claras e diretas.
+Autopreenchimento inteligente nos formulários.
+Suporte a diferentes idiomas (i18n).
+Tutoriais interativos na primeira vez que o usuário acessa cada funcionalidade.
+
+6.4 Disponibilidade
+📌 Uptime garantido: 99,9% com hospedagem em Google Cloud, AWS ou Azure.
+📌 Medidas de disponibilidade:
+Banco de dados replicado para evitar falhas.
+Monitoramento automático com alertas de falha.
+Failover automático para outro servidor em caso de problema.
+Logs centralizados (Loggly, Datadog, ELK Stack).
+
+6.5 Escalabilidade
+📌 Técnicas para escalabilidade:
+Backend desacoplado para permitir crescimento sem comprometer performance.
+Cache de dados para reduzir carga no banco de dados.
+Uso de CDN para servir imagens e arquivos estáticos.
+Load Balancer para distribuir tráfego.
+JSONB no PostgreSQL para armazenar logs e preferências personalizadas.
+Tabela de logs de atividades (logs_atividades) para auditoria.
+
+7.0 Requisitos de Segurança
+7.1 Proteção de Dados
+
+📌 Criptografia e segurança:
+Senhas armazenadas com hash bcrypt (NÃO reversível).
+Token JWT seguro para autenticação.
+Criptografia TLS em todas as comunicações.
+Criptografia AES-256 para dados sensíveis.
+Refresh Token para renovação segura de sessões.
+CORS configurado corretamente.
+Rate Limiting para prevenir ataques de força bruta.
+Monitoramento de atividades suspeitas.
+MFA (Autenticação de Dois Fatores) opcional.
+
+7.2 Regras de Segurança
+📌 Medidas para evitar ataques:
+Bloqueio temporário após 5 tentativas de login falhas.
+Permissões de usuário para restringir acessos indevidos.
+Logs de atividades para rastrear ações suspeitas.
+Proteção contra SQL Injection, XSS e CSRF.
+OAuth para login social (Google, Facebook, Apple ID).
+Rate Limiting e Proteção contra DDoS.
+ReCaptcha v3 no Login e Cadastro.
+Detectar logins suspeitos (localização/IP).
 
 # 10.0 Funcionalidades e Regras de Negócio
 
