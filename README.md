@@ -141,7 +141,7 @@ O aplicativo é voltado para motoristas de aplicativos que desejam um maior cont
 
 * O banco de dados será PostgreSQL, armazenado na nuvem (Google Cloud, AWS ou Azure).
 
-** 2.3.1 Regras Gerais do Banco de Dados**
+**📌 2.3.1 Regras Gerais do Banco de Dados**
 
 * E-mail será a chave principal de login (índice para otimizar consultas).
 * Cada usuário pode cadastrar múltiplos veículos, mas apenas um pode estar ativo por vez.
@@ -159,7 +159,7 @@ O aplicativo é voltado para motoristas de aplicativos que desejam um maior cont
 
 *  Principais otimizações aplicadas:
 * 🗑️ Soft Delete (deleted_at) → Evita exclusões definitivas, permitindo a recuperação de dados.
-*⚡ Índices nos campos mais pesquisados → Melhora o desempenho das consultas.
+* ⚡ Índices nos campos mais pesquisados → Melhora o desempenho das consultas.
 * 🔒 Constraints e validações → Mantêm a integridade dos dados, garantindo consistência.
 * 📌 Enums → Padronizam valores fixos, evitando inconsistências.
 * 📌 2.3.3 Tabela: usuarios (Cadastro de Usuários)
