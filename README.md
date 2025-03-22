@@ -137,11 +137,11 @@ O aplicativo é voltado para motoristas de aplicativos que desejam um maior cont
 * Modo Offline (PWA para Web e Cache para Mobile) 📶.
 * Painel de Estatísticas Interativo 📊 com gráficos dinâmicos de ganhos, gastos e consumo de combustível. 
 
-**#2.3 Estrutura do Banco de Dados**
+##2.3 Estrutura do Banco de Dados
 
-O banco de dados será PostgreSQL, armazenado na nuvem (Google Cloud, AWS ou Azure).
+* O banco de dados será PostgreSQL, armazenado na nuvem (Google Cloud, AWS ou Azure).
 
-**## 2.3.1 Regras Gerais do Banco de Dados**
+** 2.3.1 Regras Gerais do Banco de Dados**
 
 * E-mail será a chave principal de login (índice para otimizar consultas).
 * Cada usuário pode cadastrar múltiplos veículos, mas apenas um pode estar ativo por vez.
@@ -153,22 +153,23 @@ O banco de dados será PostgreSQL, armazenado na nuvem (Google Cloud, AWS ou Azu
 * Enums serão usados para valores fixos como tipo_combustivel, tipo_despesa e tipo_uso, evitando registros inconsistentes.
 * Criptografia (pgcrypto) será aplicada para proteger e-mails e telefones dos usuários. 
 
-📌 2.3.2 Estrutura das Tabelas
-Cada tabela foi projetada para otimizar desempenho, segurança e consultas rápidas.
+**📌 2.3.2 Estrutura das Tabelas**
 
-🔹 Principais otimizações aplicadas:
-🗑️ Soft Delete (deleted_at) → Evita exclusões definitivas, permitindo a recuperação de dados.
+*Cada tabela foi projetada para otimizar desempenho, segurança e consultas rápidas.
 
-⚡ Índices nos campos mais pesquisados → Melhora o desempenho das consultas.
+*🔹 Principais otimizações aplicadas:
+*🗑️ Soft Delete (deleted_at) → Evita exclusões definitivas, permitindo a recuperação de dados.
+*⚡ Índices nos campos mais pesquisados → Melhora o desempenho das consultas.
+*🔒 Constraints e validações → Mantêm a integridade dos dados, garantindo consistência.
+*📌 Enums → Padronizam valores fixos, evitando inconsistências.
+*📌 2.3.3 Tabela: usuarios (Cadastro de Usuários)
 
-🔒 Constraints e validações → Mantêm a integridade dos dados, garantindo consistência.
+**📌 Tabelas**
 
-📌 Enums → Padronizam valores fixos, evitando inconsistências.
+*🎯 Objetivo:
 
-📌 2.3.3 Tabela: usuarios (Cadastro de Usuários)
-🎯 Objetivo:
-Armazena os dados dos motoristas cadastrados na plataforma.
-
+*Armazena os dados dos motoristas cadastrados na plataforma.
+```
 CREATE TABLE usuarios (
     id_usuario UUID PRIMARY KEY,               -- Identificador único do usuário.
     nome VARCHAR(100) NOT NULL,                -- Nome completo do usuário.
@@ -181,17 +182,17 @@ CREATE TABLE usuarios (
     data_criacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Data do cadastro.
     deleted_at TIMESTAMP NULL                   -- Soft Delete (marcação para exclusão).
 );
+```
+*🔹 Otimizações Aplicadas:
+*📌 Índice no campo email → Melhora a performance das consultas de login.
+*🔒 Criptografia aplicada para senha usando bcrypt.
+*🔐 Possibilidade de criptografia para email e telefone, garantindo maior segurança.
 
-🔹 Otimizações Aplicadas:
-📌 Índice no campo email → Melhora a performance das consultas de login.
-🔒 Criptografia aplicada para senha usando bcrypt.
-🔐 Possibilidade de criptografia para email e telefone, garantindo maior segurança.
+##📌 2.3.4 Tabela: veiculos (Cadastro de Veículos)
+**🎯 Objetivo:**
 
-📌 2.3.4 Tabela: veiculos (Cadastro de Veículos)
-🎯 Objetivo:
-
-Armazena os veículos cadastrados pelos motoristas.
-
+*Armazena os veículos cadastrados pelos motoristas.
+```
 CREATE TABLE veiculos (
     id_veiculo UUID PRIMARY KEY,                -- Identificador único do veículo.
     id_usuario UUID REFERENCES usuarios(id_usuario), -- Relacionado ao usuário dono do veículo.
@@ -207,15 +208,15 @@ CREATE TABLE veiculos (
     media_consumo NUMERIC(5,2),                 -- Média de KM/L baseada nos abastecimentos.
     deleted_at TIMESTAMP NULL                   -- Soft Delete para permitir recuperação.
 );
-🔹 Otimizações Aplicadas:
-📌 Índice em id_usuario → Melhora a busca de veículos por usuário.
+```
+*🔹 Otimizações Aplicadas:
+*📌 Índice em id_usuario → Melhora a busca de veículos por usuário.
+*🗑️ Soft Delete (deleted_at) → Permite restauração de veículos excluídos.
 
-🗑️ Soft Delete (deleted_at) → Permite restauração de veículos excluídos.
-
-📌 2.3.5 Tabela: jornadas (Registro de Trabalho)
-🎯 Objetivo:
-Registrar cada jornada de trabalho do motorista.
-
+##📌 2.3.5 Tabela: jornadas (Registro de Trabalho)
+*🎯 Objetivo:
+*Registrar cada jornada de trabalho do motorista.
+```
 CREATE TABLE jornadas (
     id_jornada UUID PRIMARY KEY,                 -- Identificador único da jornada.
     id_usuario UUID REFERENCES usuarios(id_usuario), -- Relacionado ao usuário.
@@ -232,15 +233,15 @@ CREATE TABLE jornadas (
     observacoes TEXT NULL,                       -- Anotações do motorista sobre a jornada.
     deleted_at TIMESTAMP NULL                    -- Soft Delete para remoção segura.
 );
-🔹 Otimizações Aplicadas:
-📌 Índice em data_inicio → Otimiza consultas por período.
+```
+*🔹 Otimizações Aplicadas:
+*📌 Índice em data_inicio → Otimiza consultas por período.
+*🔔 Notificação automática se a jornada não for finalizada após 8h, 10h, 12h e 18h.
 
-🔔 Notificação automática se a jornada não for finalizada após 8h, 10h, 12h e 18h.
-
-📌 2.3.6 Tabela: abastecimentos
-🎯 Objetivo:
-Registrar todos os abastecimentos feitos pelo motorista.
-
+**📌 2.3.6 Tabela: abastecimentos**
+*🎯 Objetivo:
+*Registrar todos os abastecimentos feitos pelo motorista.
+```
 CREATE TABLE abastecimentos (
     id_abastecimento UUID PRIMARY KEY,          -- Identificador único do abastecimento.
     id_usuario UUID REFERENCES usuarios(id_usuario), -- Relacionado ao usuário.
@@ -253,15 +254,15 @@ CREATE TABLE abastecimentos (
     total_pago NUMERIC(10,2) CHECK (total_pago > 0), -- Valor total do abastecimento.
     deleted_at TIMESTAMP NULL                    -- Soft Delete para remoção segura.
 );
-🔹 Otimizações Aplicadas:
-📌 Índice em data_abastecimento → Otimiza consultas por período.
+```
+*🔹 Otimizações Aplicadas:
+*📌 Índice em data_abastecimento → Otimiza consultas por período.
+*⛽ Criação da tabela historico_preco_combustivel → Permite armazenar a variação dos preços ao longo do tempo.
 
-⛽ Criação da tabela historico_preco_combustivel → Permite armazenar a variação dos preços ao longo do tempo.
-
-📌 2.3.7 Tabela: despesas
-🎯 Objetivo:
-Registrar todas as despesas do motorista.
-
+**📌 2.3.7 Tabela: despesas**
+*🎯 Objetivo:
+*Registrar todas as despesas do motorista.
+```
 CREATE TABLE despesas (
     id_despesa UUID PRIMARY KEY,                -- Identificador único da despesa.
     id_usuario UUID REFERENCES usuarios(id_usuario), -- Relacionado ao usuário.
@@ -272,225 +273,226 @@ CREATE TABLE despesas (
     tipo_despesa ENUM('Manutenção', 'Pneus', 'Seguro', 'Outros') NOT NULL, -- Tipo de despesa.
     deleted_at TIMESTAMP NULL                    -- Soft Delete para remoção segura.
 );
-🔹 Otimizações Aplicadas:
-📌 Índice em data_despesa → Otimiza consultas por período.
+```
+*🔹 Otimizações Aplicadas:
+*📌 Índice em data_despesa → Otimiza consultas por período.
+*🔹 Uso da tabela despesas para registrar gastos relacionados a cada veículo, como manutenção, pneus, seguro, entre outros.
 
-🔹 Uso da tabela despesas para registrar gastos relacionados a cada veículo, como manutenção, pneus, seguro, entre outros.
+---
 
+##📌 3.0 Requisitos Técnicos
+*O aplicativo será desenvolvido como uma aplicação full-stack, utilizando tecnologias modernas para garantir *performance, escalabilidade e segurança.
 
-📌 3.0 Requisitos Técnicos
-O aplicativo será desenvolvido como uma aplicação full-stack, utilizando tecnologias modernas para garantir performance, escalabilidade e segurança.
+**📌 3.1 Tecnologias Utilizadas e Arquitetura do Sistema**
+*🔹 Adições importantes:
+*🛑 Redis → Utilizado para cache de sessões, tokens e requisições frequentes, melhorando a escalabilidade.
+*🔍 Sentry ou LogRocket → Para monitoramento de erros no frontend e backend.
+*⚙️ Especificação da versão mínima do Node.js e PostgreSQL → Garante compatibilidade futura.
 
-📌 3.1 Tecnologias Utilizadas e Arquitetura do Sistema
-🔹 Adições importantes:
-🛑 Redis → Utilizado para cache de sessões, tokens e requisições frequentes, melhorando a escalabilidade.
+**🔹 Tecnologias Utilizadas**
+*Camada	Tecnologia	Motivo da Escolha
+*🖥 Frontend	React Native (com TypeScript)	Desempenho nativo para Android e iOS.
+*🎨 UI/UX	Tailwind CSS + Radix UI + shadcn/ui	Estilização eficiente e moderna.
+*⚡ Gerenciamento de Estado	TanStack Query (React Query)	Melhora a performance ao evitar re-renderizações desnecessárias.
+*🧭 Navegação	Wouter	Alternativa leve ao React Router.
+*✅ Validações	React Hook Form + Zod	Validações robustas e intuitivas nos formulários.
+*📊 Gráficos	Recharts	Exibição eficiente de métricas e relatórios.
+*🎭 Ícones	Lucide React	Ícones modernos e minimalistas.
+*🚀 Backend	Node.js + Express.js	Escalável, performático e compatível com APIs REST.
+*🔑 Autenticação	Passport.js	Login seguro via e-mail e redes sociais.
+*🗄 Banco de Dados	PostgreSQL	Alta confiabilidade e suporte a consultas complexas.
+*🛠 ORM	Drizzle ORM	Consultas SQL eficientes e tipadas.
+*🔒 Segurança	JWT (JSON Web Token)	Autenticação segura.
+*🔐 Criptografia	bcrypt.js + TLS	Segurança para senhas e transmissão de dados.
+*☁️ Infraestrutura	Google Cloud / AWS / Azure	Hospedagem escalável e confiável.
 
-🔍 Sentry ou LogRocket → Para monitoramento de erros no frontend e backend.
+---
 
-⚙️ Especificação da versão mínima do Node.js e PostgreSQL → Garante compatibilidade futura.
+##📌 4.0 Requisitos de Performance e Qualidade
 
-🔹 Tecnologias Utilizadas
-Camada	Tecnologia	Motivo da Escolha
-🖥 Frontend	React Native (com TypeScript)	Desempenho nativo para Android e iOS.
-🎨 UI/UX	Tailwind CSS + Radix UI + shadcn/ui	Estilização eficiente e moderna.
-⚡ Gerenciamento de Estado	TanStack Query (React Query)	Melhora a performance ao evitar re-renderizações desnecessárias.
-🧭 Navegação	Wouter	Alternativa leve ao React Router.
-✅ Validações	React Hook Form + Zod	Validações robustas e intuitivas nos formulários.
-📊 Gráficos	Recharts	Exibição eficiente de métricas e relatórios.
-🎭 Ícones	Lucide React	Ícones modernos e minimalistas.
-🚀 Backend	Node.js + Express.js	Escalável, performático e compatível com APIs REST.
-🔑 Autenticação	Passport.js	Login seguro via e-mail e redes sociais.
-🗄 Banco de Dados	PostgreSQL	Alta confiabilidade e suporte a consultas complexas.
-🛠 ORM	Drizzle ORM	Consultas SQL eficientes e tipadas.
-🔒 Segurança	JWT (JSON Web Token)	Autenticação segura.
-🔐 Criptografia	bcrypt.js + TLS	Segurança para senhas e transmissão de dados.
-☁️ Infraestrutura	Google Cloud / AWS / Azure	Hospedagem escalável e confiável.
+**📌 4.1 Tempo de Resposta**
 
-📌 4.0 Requisitos de Performance e Qualidade
+*🎯 Meta de performance:
+*≤ 500ms para requisições simples.
+*≤ 1s para cálculos complexos.
 
-📌 4.1 Tempo de Resposta
+*🔹 Otimizações Aplicadas:
+*📌 Índices e cache no PostgreSQL → Melhora a leitura dos dados.
+*⚡ TanStack Query (React Query) → Evita chamadas desnecessárias ao backend.
+*📦 Compressão GZIP no Express.js → Reduz tempo de resposta.
+*🗂️ Cache em endpoints estáticos → Tabelas de preços, regras de negócio, etc.
 
-🎯 Meta de performance:
-≤ 500ms para requisições simples.
-≤ 1s para cálculos complexos.
+**📌 4.2 Responsividade**
 
-🔹 Otimizações Aplicadas:
-📌 Índices e cache no PostgreSQL → Melhora a leitura dos dados.
-⚡ TanStack Query (React Query) → Evita chamadas desnecessárias ao backend.
-📦 Compressão GZIP no Express.js → Reduz tempo de resposta.
-🗂️ Cache em endpoints estáticos → Tabelas de preços, regras de negócio, etc.
+*✅ Totalmente responsivo para Android, iOS e Web.
+*🔹 Tecnologias para responsividade:
+*🎨 Tailwind CSS + Radix UI + shadcn/ui → Facilita a adaptação da interface.
+*🌙 Suporte a Dark Mode → Baseado nas preferências do sistema do usuário.
+*♿ Testes de acessibilidade (WCAG) → Garante suporte a usuários com deficiência.
 
-📌 4.2 Responsividade
-✅ Totalmente responsivo para Android, iOS e Web.
+**📌 4.3 Usabilidade**
 
-🔹 Tecnologias para responsividade:
-🎨 Tailwind CSS + Radix UI + shadcn/ui → Facilita a adaptação da interface.
-🌙 Suporte a Dark Mode → Baseado nas preferências do sistema do usuário.
-♿ Testes de acessibilidade (WCAG) → Garante suporte a usuários com deficiência.
+*🔹 Regras para melhor experiência do usuário:
+*📌 Interface intuitiva e organizada em abas para facilitar a navegação.
+*🔄 Confirmações para ações irreversíveis, evitando erros acidentais.
+*⚠️ Mensagens de erro claras e diretas, sem termos técnicos complicados.
+*✍️ Autopreenchimento inteligente nos formulários para agilizar o uso.
+*🌍 Suporte a diferentes idiomas (i18n) para expandir a acessibilidade global.
+*📚 Tutoriais interativos para novos usuários na primeira vez que acessam cada funcionalidade.
 
-📌 4.3 Usabilidade
+**📌 4.4 Disponibilidade**
 
-🔹 Regras para melhor experiência do usuário:
-📌 Interface intuitiva e organizada em abas para facilitar a navegação.
-🔄 Confirmações para ações irreversíveis, evitando erros acidentais.
-⚠️ Mensagens de erro claras e diretas, sem termos técnicos complicados.
-✍️ Autopreenchimento inteligente nos formulários para agilizar o uso.
-🌍 Suporte a diferentes idiomas (i18n) para expandir a acessibilidade global.
-📚 Tutoriais interativos para novos usuários na primeira vez que acessam cada funcionalidade.
+*✅ Uptime garantido: 99,9% com hospedagem em Google Cloud, AWS ou Azure.
+*🔹 Medidas de Alta Disponibilidade:
+*🗄️ Banco de dados replicado para evitar falhas e perda de dados.
+*📡 Monitoramento automático com alertas de falha.
+*🔄 Failover automático → Em caso de falha, o sistema migra para outro servidor sem interrupção.
+*📜 Logs centralizados utilizando Loggly, Datadog ou ELK Stack.
 
-📌 4.4 Disponibilidade
-✅ Uptime garantido: 99,9% com hospedagem em Google Cloud, AWS ou Azure.
+**📌 4.5 Escalabilidade**
 
-🔹 Medidas de Alta Disponibilidade:
-🗄️ Banco de dados replicado para evitar falhas e perda de dados.
-📡 Monitoramento automático com alertas de falha.
-🔄 Failover automático → Em caso de falha, o sistema migra para outro servidor sem interrupção.
-📜 Logs centralizados utilizando Loggly, Datadog ou ELK Stack.
+*🔹 Técnicas para garantir crescimento contínuo:
+*🏗️ Backend desacoplado → Permite crescimento sem comprometer a performance.
+*⚡ Cache de dados (Redis) → Reduz carga no banco de dados.
+*🌍 Uso de CDN → Acelera o carregamento de imagens e arquivos estáticos.
+*⚖️ Load Balancer → Distribui tráfego de forma eficiente.
+*🗂️ Uso de JSONB no PostgreSQL → Para armazenar logs e preferências personalizadas.
+*🔍 Tabela logs_atividades → Registra ações dos usuários para auditoria e segurança.
 
-📌 4.5 Escalabilidade
+---
 
-🔹 Técnicas para garantir crescimento contínuo:
+##📌 5.0 Requisitos de Segurança
 
-🏗️ Backend desacoplado → Permite crescimento sem comprometer a performance.
-⚡ Cache de dados (Redis) → Reduz carga no banco de dados.
-🌍 Uso de CDN → Acelera o carregamento de imagens e arquivos estáticos.
-⚖️ Load Balancer → Distribui tráfego de forma eficiente.
-🗂️ Uso de JSONB no PostgreSQL → Para armazenar logs e preferências personalizadas.
-🔍 Tabela logs_atividades → Registra ações dos usuários para auditoria e segurança.
+**📌 5.1 Proteção de Dados**
 
-📌 5.0 Requisitos de Segurança
+*🔒 Criptografia e segurança aplicadas:
+*🔑 Senhas armazenadas com hash bcrypt (NÃO reversível).
+*🔐 Token JWT seguro para autenticação.
+*🔗 Criptografia TLS em todas as comunicações.
+*🛡️ Criptografia AES-256 para dados sensíveis.
+*🔄 Refresh Token para renovação segura de sessões.
+*🌍 CORS configurado corretamente para evitar acessos não autorizados.
+*⚡ Rate Limiting para prevenir ataques de força bruta.
+*🕵️ Monitoramento de atividades suspeitas.
+*🔑 MFA (Autenticação de Dois Fatores) opcional para maior segurança.
 
-📌 5.1 Proteção de Dados
+**📌 5.2 Regras de Segurança**
 
-🔒 Criptografia e segurança aplicadas:
-🔑 Senhas armazenadas com hash bcrypt (NÃO reversível).
-🔐 Token JWT seguro para autenticação.
-🔗 Criptografia TLS em todas as comunicações.
-🛡️ Criptografia AES-256 para dados sensíveis.
-🔄 Refresh Token para renovação segura de sessões.
-🌍 CORS configurado corretamente para evitar acessos não autorizados.
-⚡ Rate Limiting para prevenir ataques de força bruta.
-🕵️ Monitoramento de atividades suspeitas.
-🔑 MFA (Autenticação de Dois Fatores) opcional para maior segurança.
+*🚨 Medidas para evitar ataques cibernéticos:
+*🔒 Bloqueio temporário após 5 tentativas de login falhas.
+*🔑 Permissões de usuário para restringir acessos indevidos.
+*📜 Logs de atividades para rastrear ações suspeitas.
 
-📌 5.2 Regras de Segurança
+**🛡️ Proteção contra ataques:**
 
-🚨 Medidas para evitar ataques cibernéticos:
-🔒 Bloqueio temporário após 5 tentativas de login falhas.
-🔑 Permissões de usuário para restringir acessos indevidos.
-📜 Logs de atividades para rastrear ações suspeitas.
+*SQL Injection
+*XSS (Cross-Site Scripting)
+*CSRF (Cross-Site Request Forgery)
 
-🛡️ Proteção contra ataques:
+*🔑 OAuth para login social (Google, Facebook, Apple ID).
+*⚡ Rate Limiting e Proteção contra DDoS para evitar sobrecarga do servidor.
+*🔍 ReCaptcha v3 no Login e Cadastro para evitar bots.
+*🌍 Detecção de logins suspeitos (analisando localização/IP).
 
-SQL Injection
-XSS (Cross-Site Scripting)
-CSRF (Cross-Site Request Forgery)
+**📌 5.3 Requisitos Técnicos**
+*✅ O aplicativo será desenvolvido como uma aplicação full-stack, utilizando tecnologias modernas para garantir performance, escalabilidade e segurança.
 
-🔑 OAuth para login social (Google, Facebook, Apple ID).
-⚡ Rate Limiting e Proteção contra DDoS para evitar sobrecarga do servidor.
-🔍 ReCaptcha v3 no Login e Cadastro para evitar bots.
-🌍 Detecção de logins suspeitos (analisando localização/IP).
-
-📌 5.3 Requisitos Técnicos
-✅ O aplicativo será desenvolvido como uma aplicação full-stack, utilizando tecnologias modernas para garantir performance, escalabilidade e segurança.
-
-**## 5.4 Tecnologias Utilizadas e Arquitetura do Sistema
+** 5.4 Tecnologias Utilizadas e Arquitetura do Sistema**
 📌 Adições importantes:
 Redis: Utilizado para cache de sessões, tokens e requisições frequentes, melhorando a escalabilidade.
-
 Sentry ou LogRocket: Para monitoramento de erros no frontend e backend.
-
 Especificação da versão mínima do Node.js e PostgreSQL: Garante compatibilidade futura.
 
-📌 Tecnologias Utilizadas
-Camada	Tecnologia	Motivo da Escolha
-🖥 Frontend	React Native (com TypeScript)	Desempenho nativo para Android e iOS.
-🎨 UI/UX	Tailwind CSS + Radix UI + shadcn/ui	Estilização eficiente e moderna.
-⚡ Gerenciamento de Estado	TanStack Query (React Query)	Melhora a performance ao evitar re-renderizações desnecessárias.
-🧭 Navegação	Wouter	Alternativa leve ao React Router.
-✅ Validações	React Hook Form + Zod	Validações robustas e intuitivas nos formulários.
-📊 Gráficos	Recharts	Exibição eficiente de métricas e relatórios.
-🎭 Ícones	Lucide React	Ícones modernos e minimalistas.
-🚀 Backend	Node.js + Express.js	Escalável, performático e compatível com APIs REST.
-🔑 Autenticação	Passport.js	Login seguro via e-mail e redes sociais.
-🗄 Banco de Dados	PostgreSQL	Alta confiabilidade e suporte a consultas complexas.
-🛠 ORM	Drizzle ORM	Consultas SQL eficientes e tipadas.
-🔒 Segurança	JWT (JSON Web Token)	Autenticação segura.
-🔐 Criptografia	bcrypt.js + TLS	Segurança para senhas e transmissão de dados.
-☁️ Infraestrutura	Google Cloud / AWS / Azure	Hospedagem escalável e confiável.
+**📌 Tecnologias Utilizadas**
+*Camada	Tecnologia	Motivo da Escolha
+*🖥 Frontend	React Native (com TypeScript)	Desempenho nativo para Android e iOS.
+*🎨 UI/UX	Tailwind CSS + Radix UI + shadcn/ui	Estilização eficiente e moderna.
+*⚡ Gerenciamento de Estado	TanStack Query (React Query)	Melhora a performance ao evitar re-renderizações desnecessárias.
+*🧭 Navegação	Wouter	Alternativa leve ao React Router.
+*✅ Validações	React Hook Form + Zod	Validações robustas e intuitivas nos formulários.
+*📊 Gráficos	Recharts	Exibição eficiente de métricas e relatórios.
+*🎭 Ícones	Lucide React	Ícones modernos e minimalistas.
+*🚀 Backend	Node.js + Express.js	Escalável, performático e compatível com APIs REST.
+*🔑 Autenticação	Passport.js	Login seguro via e-mail e redes sociais.
+*🗄 Banco de Dados	PostgreSQL	Alta confiabilidade e suporte a consultas complexas.
+*🛠 ORM	Drizzle ORM	Consultas SQL eficientes e tipadas.
+*🔒 Segurança	JWT (JSON Web Token)	Autenticação segura.
+*🔐 Criptografia	bcrypt.js + TLS	Segurança para senhas e transmissão de dados.
+*☁️ Infraestrutura	Google Cloud / AWS / Azure	Hospedagem escalável e confiável.
 
-**## 6.0 Requisitos de Performance e Qualidade
-**## 6.1 Tempo de Resposta
-📌 Meta de performance:
-≤ 500ms para requisições simples.
+---
 
-≤ 1s para cálculos complexos.
+## 6.0 Requisitos de Performance e Qualidade
+** 6.1 Tempo de Resposta**
+*📌 Meta de performance:
+*≤ 500ms para requisições simples.
+*≤ 1s para cálculos complexos.
 
-📌 Otimizações:
-Índices e cache no PostgreSQL para otimizar leitura.
-TanStack Query (React Query) para evitar chamadas desnecessárias.
-Compressão GZIP no Express.js para reduzir tempo de resposta.
-Cache em endpoints estáticos (tabelas de preços, regras de negócio).
+**📌 Otimizações:**
+*Índices e cache no PostgreSQL para otimizar leitura.
+*TanStack Query (React Query) para evitar chamadas desnecessárias.
+*Compressão GZIP no Express.js para reduzir tempo de resposta.
+*Cache em endpoints estáticos (tabelas de preços, regras de negócio).
 
-6.2 Responsividade
-📌 Totalmente responsivo para Android, iOS e Web.
-📌 Tecnologias para responsividade:
-Tailwind CSS + Radix UI + shadcn/ui.
+**6.2 Responsividade**
+*📌 Totalmente responsivo para Android, iOS e Web.
+*📌 Tecnologias para responsividade:
+*Tailwind CSS + Radix UI + shadcn/ui.
+*Suporte a Dark Mode baseado nas preferências do sistema.
+*Testes de acessibilidade (WCAG) para suporte a usuários com deficiência.
 
-Suporte a Dark Mode baseado nas preferências do sistema.
-Testes de acessibilidade (WCAG) para suporte a usuários com deficiência.
+**6.3 Usabilidade**
+*📌 Regras para melhor experiência do usuário:
+*Interface intuitiva, organizada em abas.
+*Confirmações para ações irreversíveis.
+*Mensagens de erro claras e diretas.
+*Autopreenchimento inteligente nos formulários.
+*Suporte a diferentes idiomas (i18n).
+*Tutoriais interativos na primeira vez que o usuário acessa cada funcionalidade.
 
-6.3 Usabilidade
-📌 Regras para melhor experiência do usuário:
-Interface intuitiva, organizada em abas.
+**6.4 Disponibilidade**
+*📌 Uptime garantido: 99,9% com hospedagem em Google Cloud, AWS ou Azure.
+*📌 Medidas de disponibilidade:
+*Banco de dados replicado para evitar falhas.
+*Monitoramento automático com alertas de falha.
+*Failover automático para outro servidor em caso de problema.
+*Logs centralizados (Loggly, Datadog, ELK Stack).
 
-Confirmações para ações irreversíveis.
-Mensagens de erro claras e diretas.
-Autopreenchimento inteligente nos formulários.
-Suporte a diferentes idiomas (i18n).
-Tutoriais interativos na primeira vez que o usuário acessa cada funcionalidade.
+**6.5 Escalabilidade**
+*📌 Técnicas para escalabilidade:
+*Backend desacoplado para permitir crescimento sem comprometer performance.
+*Cache de dados para reduzir carga no banco de dados.
+*Uso de CDN para servir imagens e arquivos estáticos.
+*Load Balancer para distribuir tráfego.
+*JSONB no PostgreSQL para armazenar logs e preferências personalizadas.
+*Tabela de logs de atividades (logs_atividades) para auditoria.
 
-6.4 Disponibilidade
-📌 Uptime garantido: 99,9% com hospedagem em Google Cloud, AWS ou Azure.
-📌 Medidas de disponibilidade:
-Banco de dados replicado para evitar falhas.
-Monitoramento automático com alertas de falha.
-Failover automático para outro servidor em caso de problema.
-Logs centralizados (Loggly, Datadog, ELK Stack).
+---
 
-6.5 Escalabilidade
-📌 Técnicas para escalabilidade:
-Backend desacoplado para permitir crescimento sem comprometer performance.
-Cache de dados para reduzir carga no banco de dados.
-Uso de CDN para servir imagens e arquivos estáticos.
-Load Balancer para distribuir tráfego.
-JSONB no PostgreSQL para armazenar logs e preferências personalizadas.
-Tabela de logs de atividades (logs_atividades) para auditoria.
+##7.0 Requisitos de Segurança
+**7.1 Proteção de Dados**
 
-7.0 Requisitos de Segurança
-7.1 Proteção de Dados
+**📌 Criptografia e segurança:**
+*Senhas armazenadas com hash bcrypt (NÃO reversível).
+*Token JWT seguro para autenticação.
+*Criptografia TLS em todas as comunicações.
+*Criptografia AES-256 para dados sensíveis.
+*Refresh Token para renovação segura de sessões.
+*CORS configurado corretamente.
+*Rate Limiting para prevenir ataques de força bruta.
+*Monitoramento de atividades suspeitas.
+*MFA (Autenticação de Dois Fatores) opcional.
 
-📌 Criptografia e segurança:
-Senhas armazenadas com hash bcrypt (NÃO reversível).
-Token JWT seguro para autenticação.
-Criptografia TLS em todas as comunicações.
-Criptografia AES-256 para dados sensíveis.
-Refresh Token para renovação segura de sessões.
-CORS configurado corretamente.
-Rate Limiting para prevenir ataques de força bruta.
-Monitoramento de atividades suspeitas.
-MFA (Autenticação de Dois Fatores) opcional.
-
-7.2 Regras de Segurança
-📌 Medidas para evitar ataques:
-Bloqueio temporário após 5 tentativas de login falhas.
-Permissões de usuário para restringir acessos indevidos.
-Logs de atividades para rastrear ações suspeitas.
-Proteção contra SQL Injection, XSS e CSRF.
-OAuth para login social (Google, Facebook, Apple ID).
-Rate Limiting e Proteção contra DDoS.
-ReCaptcha v3 no Login e Cadastro.
-Detectar logins suspeitos (localização/IP).
+**7.2 Regras de Segurança**
+**📌 Medidas para evitar ataques:**
+*Bloqueio temporário após 5 tentativas de login falhas.
+*Permissões de usuário para restringir acessos indevidos.
+*Logs de atividades para rastrear ações suspeitas.
+*Proteção contra SQL Injection, XSS e CSRF.
+*OAuth para login social (Google, Facebook, Apple ID).
+*Rate Limiting e Proteção contra DDoS.
+*ReCaptcha v3 no Login e Cadastro.
+*Detectar logins suspeitos (localização/IP).
 
 # 10.0 Funcionalidades e Regras de Negócio
 
