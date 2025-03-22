@@ -188,8 +188,8 @@ CREATE TABLE usuarios (
 * 🔒 Criptografia aplicada para senha usando bcrypt.
 * 🔐 Possibilidade de criptografia para email e telefone, garantindo maior segurança.
 
-##📌 2.3.4 Tabela: veiculos (Cadastro de Veículos)
-**🎯 Objetivo:**
+**📌 2.3.4 Tabela: veiculos (Cadastro de Veículos)**
+*🎯 Objetivo:*
 
 * Armazena os veículos cadastrados pelos motoristas.
 ```
@@ -213,7 +213,7 @@ CREATE TABLE veiculos (
 * 📌 Índice em id_usuario → Melhora a busca de veículos por usuário.
 * 🗑️ Soft Delete (deleted_at) → Permite restauração de veículos excluídos.
 
-## 📌 2.3.5 Tabela: jornadas (Registro de Trabalho)
+**📌 2.3.5 Tabela: jornadas (Registro de Trabalho)//
 * 🎯 Objetivo:
 * Registrar cada jornada de trabalho do motorista.
 ```
