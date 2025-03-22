@@ -164,7 +164,7 @@ O aplicativo é voltado para motoristas de aplicativos que desejam um maior cont
 * 📌 Enums → Padronizam valores fixos, evitando inconsistências.
 * 📌 2.3.3 Tabela: usuarios (Cadastro de Usuários)
 
-###📌 Tabelas###
+##📌 Tabelas##
 
 * 🎯 Objetivo:
 
@@ -286,6 +286,7 @@ CREATE TABLE despesas (
 *O aplicativo será desenvolvido como uma aplicação full-stack, utilizando tecnologias modernas para garantir *performance, escalabilidade e segurança.
 
 ** 📌 3.1 Tecnologias Utilizadas e Arquitetura do Sistema**
+
 * 🔹 Adições importantes:
 * 🛑 Redis → Utilizado para cache de sessões, tokens e requisições frequentes, melhorando a escalabilidade.
 * 🔍 Sentry ou LogRocket → Para monitoramento de erros no frontend e backend.
@@ -409,21 +410,24 @@ CREATE TABLE despesas (
 
 **📌 Tecnologias Utilizadas**
 
-| Camada | Tecnologia | Motivo da Escolha
-|🖥 Frontend |	React Native (com TypeScript) |	Desempenho nativo para Android e iOS.
-|🎨 UI/UX |	Tailwind CSS + Radix UI + shadcn/ui |	Estilização eficiente e moderna.
-|⚡ Gerenciamento de Estado |	TanStack Query (React Query) |	Melhora a performance ao evitar re-renderizações desnecessárias.
-|🧭 Navegação |	Wouter |	Alternativa leve ao React Router.
-|✅ Validações |	React Hook Form + Zod |	Validações robustas e intuitivas nos formulários.
-|📊 Gráficos |	Recharts |	Exibição eficiente de métricas e relatórios.
-|🎭 Ícones |	Lucide React |	Ícones modernos e minimalistas.
-|🚀 Backend	 | Node.js + Express.js |	Escalável, performático e compatível com APIs REST.
-|🔑 Autenticação |	Passport.js |	Login seguro via e-mail e redes sociais.
-|🗄 Banco de Dados |	PostgreSQL |	Alta confiabilidade e suporte a consultas complexas.
-|🛠 ORM	Drizzle | ORM |	Consultas SQL eficientes e tipadas.
-|🔒 Segurança |	JWT (JSON Web Token) |	Autenticação segura.
-|🔐 Criptografia |	bcrypt.js + TLS |	Segurança para senhas e transmissão de dados.
-|☁️ Infraestrutura |	Google Cloud / AWS / Azure	| Hospedagem escalável e confiável.
+📌 Tecnologias Utilizadas
+
+| Camada               | Tecnologia                          | Motivo da Escolha                                      |
+|----------------------|-------------------------------------|-------------------------------------------------------|
+| 🖥 Frontend          | React Native (com TypeScript)       | Desempenho nativo para Android e iOS.                 |
+| 🎨 UI/UX             | Tailwind CSS + Radix UI + shadcn/ui | Estilização eficiente e moderna.                     |
+| ⚡ Gerenciamento de Estado | TanStack Query (React Query)   | Melhora a performance ao evitar re-renderizações desnecessárias. |
+| 🧭 Navegação         | Wouter                             | Alternativa leve ao React Router.                     |
+| ✅ Validações        | React Hook Form + Zod              | Validações robustas e intuitivas nos formulários.     |
+| 📊 Gráficos         | Recharts                           | Exibição eficiente de métricas e relatórios.          |
+| 🎭 Ícones           | Lucide React                       | Ícones modernos e minimalistas.                      |
+| 🚀 Backend           | Node.js + Express.js               | Escalável, performático e compatível com APIs REST.   |
+| 🔑 Autenticação      | Passport.js                        | Login seguro via e-mail e redes sociais.              |
+| 🗄 Banco de Dados    | PostgreSQL                         | Alta confiabilidade e suporte a consultas complexas.  |
+| 🛠 ORM               | Drizzle                            | Consultas SQL eficientes e tipadas.                  |
+| 🔒 Segurança         | JWT (JSON Web Token)               | Autenticação segura.                                 |
+| 🔐 Criptografia      | bcrypt.js + TLS                    | Segurança para senhas e transmissão de dados.        |
+| ☁️ Infraestrutura    | Google Cloud / AWS / Azure         | Hospedagem escalável e confiável.                    |
 
 ---
 
