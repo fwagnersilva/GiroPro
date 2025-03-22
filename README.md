@@ -164,7 +164,7 @@ O aplicativo é voltado para motoristas de aplicativos que desejam um maior cont
 * 📌 Enums → Padronizam valores fixos, evitando inconsistências.
 * 📌 2.3.3 Tabela: usuarios (Cadastro de Usuários)
 
-**📌 Tabelas**
+###📌 Tabelas###
 
 * 🎯 Objetivo:
 
@@ -213,7 +213,7 @@ CREATE TABLE veiculos (
 * 📌 Índice em id_usuario → Melhora a busca de veículos por usuário.
 * 🗑️ Soft Delete (deleted_at) → Permite restauração de veículos excluídos.
 
-**📌 2.3.5 Tabela: jornadas (Registro de Trabalho)//
+**📌 2.3.5 Tabela: jornadas (Registro de Trabalho)
 * 🎯 Objetivo:
 * Registrar cada jornada de trabalho do motorista.
 ```
@@ -239,6 +239,7 @@ CREATE TABLE jornadas (
 * 🔔 Notificação automática se a jornada não for finalizada após 8h, 10h, 12h e 18h.
 
 **📌 2.3.6 Tabela: abastecimentos**
+
 * 🎯 Objetivo:
 * Registrar todos os abastecimentos feitos pelo motorista.
 ```
@@ -260,6 +261,7 @@ CREATE TABLE abastecimentos (
 * ⛽ Criação da tabela historico_preco_combustivel → Permite armazenar a variação dos preços ao longo do tempo.
 
 **📌 2.3.7 Tabela: despesas**
+
 * 🎯 Objetivo:
 * Registrar todas as despesas do motorista.
 ```
