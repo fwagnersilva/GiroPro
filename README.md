@@ -162,9 +162,12 @@ O aplicativo é voltado para motoristas de aplicativos que desejam um maior cont
 * ⚡ Índices nos campos mais pesquisados → Melhora o desempenho das consultas.
 * 🔒 Constraints e validações → Mantêm a integridade dos dados, garantindo consistência.
 * 📌 Enums → Padronizam valores fixos, evitando inconsistências.
-* 📌 2.3.3 Tabela: usuarios (Cadastro de Usuários)
+*🔹 Otimizações Aplicadas:
+*📌 Índice em data_despesa → Otimiza consultas por período.
+*🔹 Uso da tabela despesas para registrar gastos relacionados a cada veículo, como manutenção, pneus, seguro, entre outros.
 
-##📌 Tabelas##
+
+## 📌 2.3.3 Tabela: usuarios (Cadastro de Usuários)
 
 * 🎯 Objetivo:
 
@@ -188,7 +191,7 @@ CREATE TABLE usuarios (
 * 🔒 Criptografia aplicada para senha usando bcrypt.
 * 🔐 Possibilidade de criptografia para email e telefone, garantindo maior segurança.
 
-**📌 2.3.4 Tabela: veiculos (Cadastro de Veículos)**
+## 📌 2.3.4 Tabela: veiculos (Cadastro de Veículos)**
 *🎯 Objetivo:*
 
 * Armazena os veículos cadastrados pelos motoristas.
@@ -213,7 +216,7 @@ CREATE TABLE veiculos (
 * 📌 Índice em id_usuario → Melhora a busca de veículos por usuário.
 * 🗑️ Soft Delete (deleted_at) → Permite restauração de veículos excluídos.
 
-**📌 2.3.5 Tabela: jornadas (Registro de Trabalho)
+## 📌 2.3.5 Tabela: jornadas (Registro de Trabalho)
 * 🎯 Objetivo:
 * Registrar cada jornada de trabalho do motorista.
 ```
@@ -238,7 +241,7 @@ CREATE TABLE jornadas (
 * 📌 Índice em data_inicio → Otimiza consultas por período.
 * 🔔 Notificação automática se a jornada não for finalizada após 8h, 10h, 12h e 18h.
 
-**📌 2.3.6 Tabela: abastecimentos**
+## 📌 2.3.6 Tabela: abastecimentos**
 
 * 🎯 Objetivo:
 * Registrar todos os abastecimentos feitos pelo motorista.
@@ -260,7 +263,7 @@ CREATE TABLE abastecimentos (
 * 📌 Índice em data_abastecimento → Otimiza consultas por período.
 * ⛽ Criação da tabela historico_preco_combustivel → Permite armazenar a variação dos preços ao longo do tempo.
 
-**📌 2.3.7 Tabela: despesas**
+## 📌 2.3.7 Tabela: despesas**
 
 * 🎯 Objetivo:
 * Registrar todas as despesas do motorista.
@@ -276,9 +279,47 @@ CREATE TABLE despesas (
     deleted_at TIMESTAMP NULL                    -- Soft Delete para remoção segura.
 );
 ```
-*🔹 Otimizações Aplicadas:
-*📌 Índice em data_despesa → Otimiza consultas por período.
-*🔹 Uso da tabela despesas para registrar gastos relacionados a cada veículo, como manutenção, pneus, seguro, entre outros.
+## 📌 2.3.8 Tabela: metas
+
+🎯 Objetivo: Armazenar as metas financeiras do motorista (diária, semanal e mensal), permitindo que o sistema exiba o progresso.
+
+´´
+CREATE TABLE metas (
+    id_meta UUID PRIMARY KEY,                -- Identificador único da meta.
+    id_usuario UUID REFERENCES usuarios(id_usuario), -- Relacionado ao usuário.
+    tipo_meta ENUM('diaria', 'semanal', 'mensal') NOT NULL, -- Tipo de meta.
+    valor_meta NUMERIC(10,2) CHECK (valor_meta > 0), -- Valor da meta definida.
+    data_criacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Data de criação da meta.
+    deleted_at TIMESTAMP NULL                    -- Soft Delete para remoção segura.
+);
+´´
+
+## 📌 2.3.9 Tabela: historico_preco_combustivel
+
+🎯 Objetivo: Armazenar a variação do preço dos combustíveis ao longo do tempo, permitindo previsões mais precisas.
+´´
+CREATE TABLE historico_preco_combustivel (
+    id_registro UUID PRIMARY KEY,            -- Identificador único do registro.
+    id_usuario UUID REFERENCES usuarios(id_usuario), -- Relacionado ao usuário (opcional).
+    tipo_combustivel ENUM('Gasolina', 'Álcool', 'Diesel', 'GNV') NOT NULL, -- Tipo de combustível.
+    preco_por_litro NUMERIC(5,2) CHECK (preco_por_litro > 0), -- Valor registrado.
+    data_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Data do registro.
+);
+´´
+
+## 📌 2.3.10  Tabela: logs_atividades
+
+🎯 Objetivo: Registrar ações importantes realizadas pelo motorista, garantindo auditoria e segurança.
+
+´´
+CREATE TABLE logs_atividades (
+    id_log UUID PRIMARY KEY,                 -- Identificador único do log.
+    id_usuario UUID REFERENCES usuarios(id_usuario), -- Relacionado ao usuário.
+    tipo_acao VARCHAR(50) NOT NULL,          -- Tipo de ação (ex: "iniciar jornada", "finalizar jornada").
+    descricao TEXT,                          -- Descrição detalhada do evento.
+    data_acao TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Data e hora do evento.
+);
+´´
 
 ---
 
@@ -544,106 +585,271 @@ Para criar uma conta, o usuário precisará preencher os seguintes campos:
 
 A tela inicial do aplicativo funcionará como um painel de controle financeiro, onde o motorista poderá ver um resumo rápido do seu desempenho e tomar decisões sobre sua jornada de trabalho.
 
-### 📊 Resumo da Semana
-* O painel carregará automaticamente os dados do mês atual.
-* Exibição de indicadores financeiros em cards interativos.
+## 📌 1️⃣ Card Principal → "Situação Atual"
 
-### 📌 Indicadores Principais (Cards)
-*Os seguintes indicadores serão exibidos no painel:
-* ✅ **Ganho do Dia** → Total faturado no dia.
-* ✅ **Ganho da Semana** → Total faturado na semana.
-* ✅ **Lucro Líquido** → Faturamento menos custos operacionais.
-* ✅ **Gastos com Combustível** → Gasto diário e semanal com abastecimento.
-* ✅ **Ganho por KM Rodado** → Média de faturamento por quilômetro percorrido.
+💡 Objetivo: Exibir uma mensagem direta com a meta financeira e o que falta para atingi-la.
 
-### Como calcular:
+🔹 Lógica de Cálculo:
+Obter a meta diária do motorista (meta_diaria).
 
-#### 📌 3.1 Ganho do Dia
-**O que exibe?** Total faturado pelo motorista no dia atual.
+Obter o faturamento do dia (faturamento_hoje).
 
-**Campos do Banco de Dados:**
+Calcular o valor restante para atingir a meta:
 
-  - Tabela: `jornadas`
-  - Campos:
-    - `data_jornada` (para filtrar o dia atual)
-    - `faturamento` (para somar os ganhos do dia)
+´´
+SELECT meta_diaria - faturamento_hoje AS restante_meta
+FROM metas
+WHERE id_usuario = :id_usuario
+´´
 
-- **Query SQL (Exemplo em PostgreSQL):**
-  ```
-  SELECT COALESCE(SUM(faturamento), 0) AS ganho_do_dia
-  FROM jornadas
-  WHERE DATE(data_jornada) = CURRENT_DATE;
+- Construir a mensagem:
 
- 📌 3.2 Ganho da Semana
+Se restante_meta > 0: "Faltam R$ X para atingir sua meta de hoje."
+Se restante_meta <= 0: "Parabéns! Você já atingiu sua meta diária."
 
-📌 O que exibe? Total faturado pelo motorista nos últimos 7 dias.
+🔹 Exemplo de JSON para o Frontend:
 
-📌 Campos do Banco de Dados:
-Tabela: jornadas
-Campos:
-data_jornada (para filtrar os últimos 7 dias)
-faturamento (para somar os ganhos)
+´´{
+  "mensagem": "Faltam R$ 150 para atingir sua meta de hoje.",
+  "meta_diaria": 300,
+  "faturamento_hoje": 150
+}
+´´
 
-📌 Query SQL:
-SELECT COALESCE(SUM(faturamento), 0) AS ganho_da_semana
-FROM jornadas
-WHERE DATE(data_jornada) >= CURRENT_DATE - INTERVAL '7 days';
 
-📌 3.3 Lucro Líquido
-📌 O que exibe?
-Quanto o motorista realmente lucrou, descontando custos operacionais (combustível, aluguel do carro, manutenção, taxas de app).
+## 📌 2️⃣ Card "Meta do Dia"
+💡 Objetivo: Exibir a meta diária do motorista e o quanto já foi faturado.
 
-📌 Campos do Banco de Dados:
-Tabela: jornadas e despesas
-Campos:
-faturamento (para obter o total faturado)
-valor da tabela despesas (para subtrair os custos)
+🔹 Lógica de Cálculo:
+Obter a meta diária do motorista (meta_diaria).
+Obter o faturamento do dia (faturamento_hoje).
 
-📌 Query SQL:
-SELECT 
-  COALESCE(SUM(j.faturamento), 0) - COALESCE(SUM(d.valor), 0) AS lucro_liquido
-FROM jornadas j
-LEFT JOIN despesas d ON j.id_usuario = d.id_usuario
-WHERE DATE(j.data_jornada) = CURRENT_DATE;
+Calcular o progresso da meta:
+´´
+SELECT (faturamento_hoje / meta_diaria) * 100 AS percentual_meta
+FROM metas
+WHERE id_usuario = :id_usuario
+´´
+Formatar percentual entre 0% e 100%.
 
-📌 3.4 Gastos com Combustível
-📌 O que exibe?
-Gasto total com combustível, exibido por dia e semana.
+🔹 Exemplo de JSON para o Frontend:
+´´
+{
+  "meta_diaria": 300,
+  "faturamento_hoje": 150,
+  "percentual_meta": 50
+}
+´´
 
-📌 Campos do Banco de Dados:
-Tabela: abastecimentos
-Campos:
-data_abastecimento (para filtrar por dia ou semana)
-total_pago (para calcular o gasto total com combustível)
+## 📌 3️⃣ Card "Gasto com Combustível"
+💡 Objetivo: Mostrar quanto foi gasto hoje e a previsão do mês.
 
-📌 Query SQL (Gasto do Dia):
-SELECT COALESCE(SUM(total_pago), 0) AS gasto_combustivel_dia
+🔹 Lógica de Cálculo:
+Obter o gasto de combustível do dia:
+
+´´
+SELECT SUM(total_pago) AS gasto_combustivel_hoje
 FROM abastecimentos
-WHERE DATE(data_abastecimento) = CURRENT_DATE;
+WHERE id_usuario = :id_usuario
+AND DATE(data_abastecimento) = CURRENT_DATE
+´´
 
-📌 Query SQL (Gasto da Semana):
-SELECT COALESCE(SUM(total_pago), 0) AS gasto_combustivel_semana
+Obter o gasto médio diário com base no histórico dos últimos 30 dias:
+´´
+SELECT AVG(total_pago) AS media_gasto_diario
 FROM abastecimentos
-WHERE DATE(data_abastecimento) >= CURRENT_DATE - INTERVAL '7 days';
+WHERE id_usuario = :id_usuario
+AND data_abastecimento >= NOW() - INTERVAL '30 days'
+´´
+Prever o gasto total no mês:
+´´
+SELECT media_gasto_diario * 30 AS previsao_gasto_combustivel
+´´
 
-📌 3.5 Ganho por KM Rodado
-📌 O que exibe? Quanto o motorista ganha por quilômetro rodado.
+🔹 Exemplo de JSON para o Frontend:
 
-📌 Campos do Banco de Dados:
-Tabela: jornadas
-Campos:
-faturamento (para obter o total faturado)
-km_total (para calcular a quilometragem percorrida)
+´´
+{
+  "gasto_combustivel_hoje": 80,
+  "media_gasto_diario": 75,
+  "previsao_gasto_combustivel": 2250
+}
+´´
+## 📌 4️⃣ Card "Lucro Real"
+💡 Objetivo: Mostrar quanto realmente sobrou depois das despesas.
 
-📌 Query SQL:
-SELECT 
-  CASE 
-    WHEN SUM(km_total) > 0 THEN SUM(faturamento) / SUM(km_total)
-    ELSE 0
-  END AS ganho_por_km
+🔹 Lógica de Cálculo:
+
+Obter o faturamento do dia (faturamento_hoje).
+Obter os custos do dia (custos_diarios).
+
+´´
+SELECT SUM(valor) AS custos_diarios
+FROM despesas
+WHERE id_usuario = :id_usuario
+AND DATE(data_despesa) = CURRENT_DATE
+´´
+Calcular o lucro real do dia:
+´´
+SELECT faturamento_hoje - custos_diarios AS lucro_real
+´´
+
+🔹 Exemplo de JSON para o Frontend:
+´´
+{
+  "faturamento_hoje": 320,
+  "custos_diarios": 100,
+  "lucro_real": 220
+}
+´´
+## 📌 5️⃣ Card "Previsão de Gasto com Combustível"
+💡 Objetivo: Prever quanto o motorista gastará com combustível no mês com base no consumo médio.
+
+🔹 Lógica de Cálculo:
+Obter a média de gasto diário (media_gasto_diario).
+
+Multiplicar pela quantidade de dias restantes no mês:
+´´
+SELECT media_gasto_diario * (30 - EXTRACT(DAY FROM CURRENT_DATE)) AS previsao_restante
+´´
+🔹 Exemplo de JSON para o Frontend:
+´´{
+  "media_gasto_diario": 75,
+  "previsao_restante": 1500
+}
+´´
+## 📌 6️⃣ Card "Previsão de Faturamento Mensal"
+💡 Objetivo: Mostrar quanto o motorista irá faturar se continuar no ritmo atual.
+
+🔹 Lógica de Cálculo:
+Obter a média diária de faturamento:
+´´
+SELECT AVG(faturamento_total) AS media_faturamento_diario
 FROM jornadas
-WHERE DATE(data_jornada) = CURRENT_DATE;
+WHERE id_usuario = :id_usuario
+AND data_inicio >= NOW() - INTERVAL '30 days'
+´´
+Multiplicar pela quantidade de dias restantes no mês:
+´´
+SELECT media_faturamento_diario * (30 - EXTRACT(DAY FROM CURRENT_DATE)) AS previsao_faturamento
+´´
+🔹 Exemplo de JSON para o Frontend:
+´´{
+  "media_faturamento_diario": 200,
+  "previsao_faturamento": 6000
+}
+´´
 
+## 📌 7️⃣ Card "Ganho da Semana"
+💡 Objetivo: Mostrar quanto já foi faturado na semana e a comparação com a meta semanal.
+
+🔹 Lógica de Cálculo:
+Obter o faturamento da semana:
+´´
+SELECT SUM(faturamento_total) AS faturamento_semana
+FROM jornadas
+WHERE id_usuario = :id_usuario
+AND data_inicio >= date_trunc('week', CURRENT_DATE)
+´´
+Obter a meta semanal do motorista:
+´´
+SELECT meta_semanal FROM metas WHERE id_usuario = :id_usuario
+´´
+Calcular o percentual da meta atingida:
+´´
+SELECT (faturamento_semana / meta_semanal) * 100 AS percentual_meta_semanal
+´´
+
+🔹 Exemplo de JSON para o Frontend:
+´´
+{
+  "faturamento_semana": 1500,
+  "meta_semanal": 2000,
+  "percentual_meta_semanal": 75
+}
+´´
+
+## 📌 8️⃣ Card "Ganho do Dia"
+💡 Objetivo: Mostrar o total faturado no dia, ajudando o motorista a entender o desempenho diário.
+
+🔹 Lógica de Cálculo:
+Obter o faturamento do dia:
+´´
+SELECT SUM(faturamento_total) AS faturamento_hoje
+FROM jornadas
+WHERE id_usuario = :id_usuario
+AND DATE(data_inicio) = CURRENT_DATE
+´´
+🔹 Exemplo de JSON para o Frontend:
+´´
+{
+  "faturamento_hoje": 320
+}
+´´
+
+## 📌 9️⃣ Card "Ganho por KM Rodado"
+💡 Objetivo: Mostrar quanto o motorista está faturando por quilômetro rodado, uma métrica muito importante para ele otimizar seu trabalho.
+
+🔹 Lógica de Cálculo:
+Obter o faturamento do dia:
+´´
+SELECT SUM(faturamento_total) AS faturamento_hoje
+FROM jornadas
+WHERE id_usuario = :id_usuario
+AND DATE(data_inicio) = CURRENT_DATE
+´´
+Obter a quilometragem percorrida no dia:
+
+´´
+SELECT SUM(km_total) AS km_rodado_hoje
+FROM jornadas
+WHERE id_usuario = :id_usuario
+AND DATE(data_inicio) = CURRENT_DATE
+´´
+
+Calcular o ganho por KM rodado:
+´´
+SELECT faturamento_hoje / km_rodado_hoje AS ganho_por_km
+´´
+🔹 Exemplo de JSON para o Frontend:
+´´
+{
+  "faturamento_hoje": 320,
+  "km_rodado_hoje": 80,
+  "ganho_por_km": 4.0
+}
+´´
+
+## 📌 1️⃣0️⃣ Card "Lucro Real do Dia"
+💡 Objetivo: Exibir o quanto realmente sobrou depois de descontar combustível e despesas.
+
+🔹 Lógica de Cálculo:
+Obter o faturamento do dia:
+´´
+SELECT SUM(faturamento_total) AS faturamento_hoje
+FROM jornadas
+WHERE id_usuario = :id_usuario
+AND DATE(data_inicio) = CURRENT_DATE
+´´
+Obter os custos do dia (combustível + despesas):
+´´
+SELECT SUM(valor) AS custos_diarios
+FROM despesas
+WHERE id_usuario = :id_usuario
+AND DATE(data_despesa) = CURRENT_DATE
+´´
+Calcular o lucro real do dia:
+´´
+SELECT faturamento_hoje - custos_diarios AS lucro_real_dia
+´´
+🔹 Exemplo de JSON para o Frontend:
+´´
+{
+  "faturamento_hoje": 320,
+  "custos_diarios": 100,
+  "lucro_real_dia": 220
+}
+´´
 
 ⚙ Personalização do Painel
 
@@ -659,7 +865,7 @@ Se os gastos com combustível estiverem acima da média usual do motorista, um a
 ✅ Painel personalizado, exibindo as informações mais relevantes para cada motorista.
 ✅ Alertas financeiros inteligentes, ajudando a manter um melhor controle de custos.
 
-##10.3 Jornadas de Trabalho
+## 10.3 Jornadas de Trabalho
 A funcionalidade de Jornadas de Trabalho permitirá ao motorista registrar cada período de trabalho de forma detalhada, incluindo quilometragem, faturamento e tempo trabalhado.
 
 🚗 Início de Jornada
@@ -1000,39 +1206,83 @@ Esta seção descreve a experiência do usuário (UX) e a interface gráfica (UI
 
 ---
 
-## 11.2 Tela Inicial (Dashboard)
+## 📌 11.2 Tela Inicial (Dashboard)
 
 ### 🎯 Objetivo
-- Apresentar um resumo do desempenho financeiro do motorista de forma clara e dinâmica.
-- Permitir personalização dos cards exibidos.
-- Atualizar os dados dinamicamente sem recarregar a tela.
-- Exibir **skeleton loaders** enquanto os dados carregam.
-- Criar transições suaves nos valores quando novos dados forem inseridos.
-- Permitir um widget opcional para exibir **"Faturamento do Dia"** e **"Progresso da Meta"** diretamente na tela inicial do celular.
+A Tela Inicial deve ser clara, direta e objetiva, fornecendo informações essenciais para que o motorista compreenda rapidamente sua situação financeira e progresso nas metas.
 
-### ✅ Componentes
-#### 📌 Cards Resumo:
-- 💰 **Ganhos do Dia**.
-- 📊 **Lucro Líquido**.
-- 🚗 **KM Rodados**.
-- ⛽ **Gasto com Combustível**.
+✅ Destaques:
 
-#### 📌 Card de Metas:
-- Exibe progresso da meta diária, semanal ou mensal.
-- Botão **"Trocar Meta"** para alternar entre metas.
+- Apresentação simples e sem sobrecarga de informações.
+- Foco no status financeiro atual, ajudando o motorista a entender o que precisa fazer no dia.
+- Previsões financeiras para que o motorista se antecipe aos gastos e ganhos.
+- Atualização dinâmica dos dados sem precisar recarregar a tela.
+- Skeleton loaders para evitar tela vazia enquanto os dados carregam.
+- Animações suaves ao exibir novos valores.
+- Acesso rápido a ações essenciais como iniciar jornada e registrar abastecimento.
 
-#### 📌 Atalhos Rápidos:
-- 📌 **Iniciar Jornada**.
-- 📌 **Registrar Abastecimento**.
-- 📌 **Ver Relatórios**.
+### ✅ Componentes da Tela Inicial
+#### 📌 1️⃣ Card Principal → "Situação Atual"
 
-#### 📌 Widget Opcional:
-- Mini-widget para **Faturamento do Dia + Progresso da Meta** fixo na tela inicial do celular.
+-- 📌 O card principal deve ser destacado de forma mais chamativa com um gráfico de progresso mostrando visualmente o quanto falta para a meta.
+-- 📌 Pode incluir um botão "Ver Detalhes", que leva o usuário a um relatório mais completo.
+-- 📌 Mensagem personalizada sobre o status financeiro atual.
+Exemplos:
 
-### 💡 Tecnologias
-- ✅ **TanStack Query** → Atualização em tempo real dos ganhos.
-- ✅ **Shadcn/ui + Tailwind CSS** → Layout responsivo e moderno.
-- ✅ **Framer Motion** → Suavização de animações e transições de valores.
+💬 "Você precisa faturar R$ 180 hoje para cobrir seus custos fixos."
+💬 "No ritmo atual, seu lucro mensal será de R$ 3.500. Você precisa de R$ 500 a mais para atingir sua meta."
+💬 "Você já gastou R$ 500 com combustível este mês. Seu gasto previsto é de R$ 1.200."
+
+Motivo: Ajuda o motorista a entender rapidamente sua situação sem precisar interpretar números soltos.
+
+#### 📌 2️⃣ Cards Resumo (Indicadores Principais)
+
+- 💰 Ganho do Dia → Total faturado hoje.
+- 📊 Lucro Líquido → Quanto sobrou depois dos custos.
+- 🚗 Ganho por KM Rodado → Quanto está faturando por quilômetro.
+- ⛽ Gasto com Combustível → Valor gasto no dia e previsão mensal.
+- 📅 Meta da Semana → Progresso percentual e valor restante.
+- 🎯 Meta do Mês → Previsão de faturamento mensal e comparação com meta.
+
+### 📌 3️⃣ Card de Metas
+
+- Exibe o progresso da meta diária, semanal ou mensal.
+- Botão "Trocar Meta" → O motorista pode alternar entre metas.
+- Indicação visual (barra de progresso) para facilitar a leitura rápida.
+
+### 📌 4️⃣ Atalhos Rápidos
+
+- 🚀 Iniciar Jornada → Botão para registrar início da jornada.
+- ⛽ Registrar Abastecimento → Acesso direto à tela de abastecimento.
+- 📊 Ver Relatórios → Navegação rápida para as análises completas.
+
+### 📌 5️⃣ Widget Opcional
+
+- Um mini-widget fixo na tela inicial do celular, exibindo:
+- Faturamento do Dia (ganhos acumulados).
+- Progresso da Meta (quanto já atingiu e quanto falta).
+
+- Motivo: Permite ao motorista visualizar seu desempenho sem abrir o app.
+
+### 📌 Cards Dinâmicos e Interativos
+
+ - Para evitar sobrecarga visual, os cards menos usados podem ser colapsáveis ou acessíveis via um botão “Ver mais”.
+
+### 📌 Alertas Inteligentes Mais Aprofundados
+
+📌 Além dos alertas sobre combustível, o app pode avisar quando:
+
+✔️ A rentabilidade por KM estiver abaixo da média.
+✔️ O faturamento semanal estiver muito distante da meta.
+✔️ O motorista estiver rodando muitas horas com baixo retorno financeiro.
+
+
+## 💡 Tecnologias Utilizadas
+
+- ✅ TanStack Query → Atualização em tempo real dos ganhos e metas.
+- ✅ Shadcn/ui + Tailwind CSS → Layout responsivo e moderno.
+- ✅ Framer Motion → Suavização de animações e transições de valores.
+- ✅ Local Storage / Async Storage → Para salvar preferências do usuário.
 
 ---
 
@@ -1199,6 +1449,77 @@ Esta seção descreve a experiência do usuário (UX) e a interface gráfica (UI
 | 5️⃣ **Despesas**       | Gerenciamento financeiro          | Cadastro e exportação de despesas                                                    |
 | 6️⃣ **Relatórios**     | Estatísticas detalhadas           | Gráficos e exportação de dados                                                       |
 | 7️⃣ **Notificações**   | Engajamento                       | Alertas e notificações push                                                          |
+
+## 11.9 Notificações
+
+📌 Wizard de Configuração Inicial
+📢 Objetivo:
+🔹 Auxiliar o motorista a preencher as informações essenciais logo no primeiro acesso.
+🔹 Evitar sobrecarga de dados → Mostrar apenas o necessário de forma rápida.
+🔹 Garantir que o sistema tenha os dados mínimos para funcionar corretamente.
+
+
+## 📌 Estrutura do Wizard  
+O wizard será composto por 4 etapas principais, organizadas de forma rápida e objetiva.
+
+📌 Passo 1 → Cadastro do Veículo  
+📌 Passo 2 → Configuração da Meta Financeira  
+📌 Passo 3 → Registro de Custos Fixos  
+📌 Passo 4 → Finalização e Dicas Iniciais  
+
+### 📌 🏎️ Passo 1 → Cadastro do Veículo  
+🔹 Perguntar se o motorista quer cadastrar seu veículo agora ou depois.  
+🔹 Se ele quiser cadastrar agora, preencher os seguintes dados:  
+
+- Fabricante e modelo (Ex: Toyota Corolla).  
+- Ano (Ex: 2020).  
+- Placa do veículo (Opcional).  
+- Uso do veículo (Próprio, Alugado ou Financiado).  
+- Consumo médio de combustível (km/L).  
+
+✅ Se ele pular essa etapa, o sistema exibirá um aviso:  
+"Você poderá cadastrar seu veículo depois no menu ‘Veículos’  
+
+### 📌 💰 Passo 2 → Configuração da Meta Financeira  
+🔹 Perguntar: “Quanto você quer faturar por mês?”  
+🔹 O sistema divide automaticamente essa meta em:  
+
+- Meta diária = meta_mensal / 30  
+- Meta semanal = meta_mensal / 4  
+🔹 O motorista pode ajustar manualmente as metas se quiser.  
+
+✅ Se ele pular essa etapa, o sistema definirá um valor padrão de R$ 5.000 como meta mensal.  
+
+### 📌 🛠️ Passo 3 → Registro de Custos Fixos  
+🔹 Perguntar: “Quais são seus custos mensais?”  
+🔹 Opções para preencher rapidamente (valores são editáveis):  
+
+- Aluguel do carro (se for alugado).  
+- Prestação do carro (se for financiado).  
+- Seguro do carro.  
+- Média mensal de gasto com combustível (pode ser estimada).  
+✅ Se ele pular essa etapa, o sistema assumirá um valor médio com base nos motoristas cadastrados na mesma cidade.  
+
+### 📌 ✅ Passo 4 → Finalização e Dicas Iniciais  
+📌 Mensagem de boas-vindas:  
+"Tudo pronto! Agora você pode começar a registrar suas jornadas e acompanhar seus ganhos."  
+
+📌 Opções para acessar diretamente:  
+🚀 Iniciar Jornada Agora  
+⛽ Registrar Primeiro Abastecimento  
+📊 Ver Painel Financeiro 
+
+## 📌 Implementação Técnica
+🔹 Estrutura do Wizard
+✅ Armazenar progresso do wizard no banco de dados, na tabela usuarios:
+
+´´ALTER TABLE usuarios ADD COLUMN wizard_completado BOOLEAN DEFAULT false;
+´´
+✅ O frontend verifica se wizard_completado = false para exibir o wizard.
+✅ Após a finalização, atualizar o banco:
+´´
+UPDATE usuarios SET wizard_completado = true WHERE id_usuario = :id_usuario;
+´´
 
 # 12.0 Plano de Monetização
 
