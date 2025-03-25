@@ -1134,9 +1134,9 @@ O motorista poderá cadastrar três tipos de metas:
 
 ## 7.4 Análises e Relatórios
 
-A funcionalidade de Análises e Relatórios fornecerá aos motoristas uma visão detalhada sobre seu desempenho financeiro e eficiência operacional.
+- A funcionalidade de Análises e Relatórios fornecerá aos motoristas uma visão detalhada sobre seu desempenho financeiro e eficiência operacional.
 
-O sistema oferecerá relatórios básicos e avançados, permitindo que o motorista acompanhe sua evolução, compare seu desempenho com outros motoristas da cidade e identifique os melhores períodos para trabalhar.
+- O sistema oferecerá relatórios básicos e avançados, permitindo que o motorista acompanhe sua evolução, compare seu desempenho com outros motoristas da cidade e identifique os melhores períodos para trabalhar.
 
 ### 📊 Relatórios Básicos
 
@@ -1146,35 +1146,35 @@ O sistema oferecerá relatórios básicos e avançados, permitindo que o motoris
 - ✅ **Comparação de Faturamento entre Aplicativos** – Mostra qual app (Uber, 99, InDrive) gerou mais receita.
 
 ### 📊 Relatórios Avançados
-Os relatórios avançados permitirão ao motorista fazer análises mais aprofundadas sobre seu desempenho, comparação com outros motoristas e tendências financeiras.
+- Os relatórios avançados permitirão ao motorista fazer análises mais aprofundadas sobre seu desempenho, comparação com outros motoristas e tendências financeiras.
 
-🔹 **Ranking de Melhores Motoristas em Faturamento** – Lista dos motoristas com maior faturamento.
-🔹 **Ranking de Melhores Motoristas em Lucro** – Lista dos motoristas que obtiveram maior lucro líquido.
-🔹 **Ranking de Motoristas com Maiores Quilometragens** – Comparação de quilometragem percorrida.
-🔹 **Sua Posição no Ranking** – Mostra sua colocação em relação aos outros motoristas da cidade, baseado em faturamento, quilometragem e lucro separadamente.
-🔹 **Média de Faturamento e Quilometragem por Dia da Semana** – Ajuda a identificar os dias mais lucrativos.
-🔹 **Gráfico de Evolução das Últimas 8 Semanas** – Comparação entre faturamento e gastos ao longo do tempo.
-🔹 **Previsão de Faturamento e Lucro** – Estimativa dos ganhos para a próxima semana e mês, baseada no histórico do motorista.
-🔹 **Gráfico Comparativo dos Aplicativos** – Mostra qual plataforma (Uber, 99, InDrive) trouxe mais ganhos ao longo do tempo.
+- 🔹 **Ranking de Melhores Motoristas em Faturamento** – Lista dos motoristas com maior faturamento.
+- 🔹 **Ranking de Melhores Motoristas em Lucro** – Lista dos motoristas que obtiveram maior lucro líquido.
+- 🔹 **Ranking de Motoristas com Maiores Quilometragens** – Comparação de quilometragem percorrida.
+- 🔹 **Sua Posição no Ranking** – Mostra sua colocação em relação aos outros motoristas da cidade, baseado em faturamento, quilometragem e lucro separadamente.
+- 🔹 **Média de Faturamento e Quilometragem por Dia da Semana** – Ajuda a identificar os dias mais lucrativos.
+- 🔹 **Gráfico de Evolução das Últimas 8 Semanas** – Comparação entre faturamento e gastos ao longo do tempo.
+- 🔹 **Previsão de Faturamento e Lucro** – Estimativa dos ganhos para a próxima semana e mês, baseada no histórico do motorista.
+- 🔹 **Gráfico Comparativo dos Aplicativos** – Mostra qual plataforma (Uber, 99, InDrive) trouxe mais ganhos ao longo do tempo.
 
 ### 📂 Exportação de Dados e Personalização
 
-✅ Exportação de Relatórios em **PDF, Excel (XLSX)** e **CSV**.
-✅ Filtros por Data → O padrão será exibir o mês atual, mas o motorista pode escolher períodos personalizados.
-✅ Modo de Exibição Otimizado → Um card por vez, com rolagem automática para facilitar a navegação.
+- ✅ Exportação de Relatórios em **PDF, Excel (XLSX)** e **CSV**.
+- ✅ Filtros por Data → O padrão será exibir o mês atual, mas o motorista pode escolher períodos personalizados.
+- ✅ Modo de Exibição Otimizado → Um card por vez, com rolagem automática para facilitar a navegação.
 
 ### � Motivação e Benefícios
-✅ Facilidade para analisar o desempenho financeiro e identificar tendências.
-✅ Ajuda o motorista a entender quais dias e horários são mais rentáveis.
-✅ Comparação entre diferentes aplicativos para otimizar os ganhos.
-✅ Possibilidade de se motivar ao ver seu desempenho no ranking da cidade.
-✅ Estimativa de faturamento futuro, auxiliando no planejamento financeiro.
+- ✅ Facilidade para analisar o desempenho financeiro e identificar tendências.
+- ✅ Ajuda o motorista a entender quais dias e horários são mais rentáveis.
+- ✅ Comparação entre diferentes aplicativos para otimizar os ganhos.
+- ✅ Possibilidade de se motivar ao ver seu desempenho no ranking da cidade.
+- ✅ Estimativa de faturamento futuro, auxiliando no planejamento financeiro.
 
 ---
 
 # 8.0 Frontend UX/UI
 
-Esta seção descreve a experiência do usuário (UX) e a interface gráfica (UI) do aplicativo, garantindo que o design seja intuitivo, funcional e responsivo.
+- Esta seção descreve a experiência do usuário (UX) e a interface gráfica (UI) do aplicativo, garantindo que o design seja intuitivo, funcional e responsivo.
 
 ## 8.1 Tela de Login e Cadastro
 
@@ -1206,16 +1206,16 @@ Esta seção descreve a experiência do usuário (UX) e a interface gráfica (UI
 - Animações sutis ao carregar o login/cadastro.
 
 ### 💡 Tecnologias
-✅ **React Hook Form + Zod** → Validação de formulários.
-✅ **Firebase Auth ou Supabase** → Autenticação segura.
-✅ **Tailwind CSS** → Layout responsivo e moderno.
+- ✅ **React Hook Form + Zod** → Validação de formulários.
+- ✅ **Firebase Auth ou Supabase** → Autenticação segura.
+- ✅ **Tailwind CSS** → Layout responsivo e moderno.
 
 ---
 
 ## 📌 8.2 Tela Inicial (Dashboard)
 
 ### 🎯 Objetivo
-A Tela Inicial deve ser clara, direta e objetiva, fornecendo informações essenciais para que o motorista compreenda rapidamente sua situação financeira e progresso nas metas.
+- A Tela Inicial deve ser clara, direta e objetiva, fornecendo informações essenciais para que o motorista compreenda rapidamente sua situação financeira e progresso nas metas.
 
 ✅ Destaques:
 
@@ -1231,9 +1231,9 @@ A Tela Inicial deve ser clara, direta e objetiva, fornecendo informações essen
 
 #### 📌 1️⃣ Card Principal → "Situação Atual"
 
-📌 O card principal deve ser destacado de forma mais chamativa com um gráfico de progresso mostrando visualmente o quanto falta para a meta.
-📌 Pode incluir um botão "Ver Detalhes", que leva o usuário a um relatório mais completo.
-📌 Mensagem personalizada sobre o status financeiro atual.
+- 📌 O card principal deve ser destacado de forma mais chamativa com um gráfico de progresso mostrando visualmente o quanto falta para a meta.
+- 📌 Pode incluir um botão "Ver Detalhes", que leva o usuário a um relatório mais completo.
+- 📌 Mensagem personalizada sobre o status financeiro atual.
 
 Exemplos:
 ```
@@ -1475,23 +1475,23 @@ Motivo: Ajuda o motorista a entender rapidamente sua situação sem precisar int
 
 **📢 Objetivo:**
 
-🔹 Auxiliar o motorista a preencher as informações essenciais logo no primeiro acesso.
-🔹 Evitar sobrecarga de dados → Mostrar apenas o necessário de forma rápida.
-🔹 Garantir que o sistema tenha os dados mínimos para funcionar corretamente.
+- 🔹 Auxiliar o motorista a preencher as informações essenciais logo no primeiro acesso.
+- 🔹 Evitar sobrecarga de dados → Mostrar apenas o necessário de forma rápida.
+- 🔹 Garantir que o sistema tenha os dados mínimos para funcionar corretamente.
 
 
 ## 📌 Estrutura do Wizard  
 
 O wizard será composto por 4 etapas principais, organizadas de forma rápida e objetiva.
 
-📌 Passo 1 → Cadastro do Veículo  
-📌 Passo 2 → Configuração da Meta Financeira  
-📌 Passo 3 → Registro de Custos Fixos  
-📌 Passo 4 → Finalização e Dicas Iniciais  
-
+- 📌 Passo 1 → Cadastro do Veículo  
+- 📌 Passo 2 → Configuração da Meta Financeira  
+- 📌 Passo 3 → Registro de Custos Fixos  
+- 📌 Passo 4 → Finalização e Dicas Iniciais  
+  
 ### 📌 🏎️ Passo 1 → Cadastro do Veículo  
-🔹 Perguntar se o motorista quer cadastrar seu veículo agora ou depois.  
-🔹 Se ele quiser cadastrar agora, preencher os seguintes dados:  
+- 🔹 Perguntar se o motorista quer cadastrar seu veículo agora ou depois.  
+- 🔹 Se ele quiser cadastrar agora, preencher os seguintes dados:  
 
 - Fabricante e modelo (Ex: Toyota Corolla).  
 - Ano (Ex: 2020).  
@@ -1499,52 +1499,53 @@ O wizard será composto por 4 etapas principais, organizadas de forma rápida e 
 - Uso do veículo (Próprio, Alugado ou Financiado).  
 - Consumo médio de combustível (km/L).  
 
-✅ Se ele pular essa etapa, o sistema exibirá um aviso:  
-"Você poderá cadastrar seu veículo depois no menu ‘Veículos’  
+- ✅ Se ele pular essa etapa, o sistema exibirá um aviso:  
+- "Você poderá cadastrar seu veículo depois no menu ‘Veículos’  
 
 ### 📌 💰 Passo 2 → Configuração da Meta Financeira  
 
-🔹 Perguntar: “Quanto você quer faturar por mês?”  
-🔹 O sistema divide automaticamente essa meta em:  
+- 🔹 Perguntar: “Quanto você quer faturar por mês?”  
+- 🔹 O sistema divide automaticamente essa meta em:  
 
 - Meta diária = meta_mensal / 30  
 - Meta semanal = meta_mensal / 4  
 
-🔹 O motorista pode ajustar manualmente as metas se quiser.  
+- 🔹 O motorista pode ajustar manualmente as metas se quiser.  
 
-✅ Se ele pular essa etapa, o sistema definirá um valor padrão de R$ 5.000 como meta mensal.  
+- ✅ Se ele pular essa etapa, o sistema definirá um valor padrão de R$ 5.000 como meta mensal.  
 
 ### 📌 🛠️ Passo 3 → Registro de Custos Fixos  
-🔹 Perguntar: “Quais são seus custos mensais?”  
-🔹 Opções para preencher rapidamente (valores são editáveis):  
+- 🔹 Perguntar: “Quais são seus custos mensais?”  
+- 🔹 Opções para preencher rapidamente (valores são editáveis):  
 
 - Aluguel do carro (se for alugado).  
 - Prestação do carro (se for financiado).  
 - Seguro do carro.  
 - Média mensal de gasto com combustível (pode ser estimada).  
 
-✅ Se ele pular essa etapa, o sistema assumirá um valor médio com base nos motoristas cadastrados na mesma cidade.  
+- ✅ Se ele pular essa etapa, o sistema assumirá um valor médio com base nos motoristas cadastrados na mesma cidade.  
 
 ### 📌 ✅ Passo 4 → Finalização e Dicas Iniciais  
-📌 Mensagem de boas-vindas:  
-"Tudo pronto! Agora você pode começar a registrar suas jornadas e acompanhar seus ganhos."  
+- 📌 Mensagem de boas-vindas:  
+- "Tudo pronto! Agora você pode começar a registrar suas jornadas e acompanhar seus ganhos."  
 
-📌 Opções para acessar diretamente:  
-🚀 Iniciar Jornada Agora  
-⛽ Registrar Primeiro Abastecimento  
-📊 Ver Painel Financeiro 
+- 📌 Opções para acessar diretamente:  
+- 🚀 Iniciar Jornada Agora  
+- ⛽ Registrar Primeiro Abastecimento  
+- 📊 Ver Painel Financeiro 
 
 ## 📌 Implementação Técnica
 
 🔹 Estrutura do Wizard
 
-✅ Armazenar progresso do wizard no banco de dados, na tabela usuarios:
+- ✅ Armazenar progresso do wizard no banco de dados, na tabela usuarios:
+
 ```
 ALTER TABLE usuarios ADD COLUMN wizard_completado BOOLEAN DEFAULT false;
 ```
 
-✅ O frontend verifica se wizard_completado = false para exibir o wizard.
-✅ Após a finalização, atualizar o banco:
+- ✅ O frontend verifica se wizard_completado = false para exibir o wizard.
+- ✅ Após a finalização, atualizar o banco:
 
 ```
 UPDATE usuarios SET wizard_completado = true WHERE id_usuario = :id_usuario;
@@ -1553,14 +1554,14 @@ UPDATE usuarios SET wizard_completado = true WHERE id_usuario = :id_usuario;
 ## 8.10 Configurações do Aplicativo
 
 📢 Objetivo:
-🔹 Permitir que o motorista personalize o aplicativo e ajuste preferências essenciais para sua experiência.
-🔹 Garantir que as configurações sejam salvas e aplicadas automaticamente.
+- 🔹 Permitir que o motorista personalize o aplicativo e ajuste preferências essenciais para sua experiência.
+- 🔹 Garantir que as configurações sejam salvas e aplicadas automaticamente.
 
 ## 📌 7.1 Seções da Tela de Configurações
-A tela de Configurações será dividida em categorias, facilitando o acesso e a organização das opções.
+- A tela de Configurações será dividida em categorias, facilitando o acesso e a organização das opções.
 
 ###📌 1️⃣ Perfil do Usuário
-📌 Campos:
+-📌 Campos:
 
 * Nome completo.
 * E-mail (não editável).
@@ -1575,7 +1576,7 @@ A tela de Configurações será dividida em categorias, facilitando o acesso e a
 * ✅ Configurar autenticação de dois fatores (MFA).
 
 ###📌 2️⃣ Preferências de Exibição
-* 📌 Opções Disponíveis:
+- 📌 Opções Disponíveis:
 
 * 🌙 Modo Escuro / Claro / Automático (Dark Mode).
 * 📏 Unidade de Medida → Km/L ou Milhas/Galão.
@@ -1585,9 +1586,9 @@ A tela de Configurações será dividida em categorias, facilitando o acesso e a
 
 ### Implementação Técnica
 
-✅ Alterar Senha (com verificação de senha atual)
+- ✅ Alterar Senha (com verificação de senha atual)
 
-´´´
+```
 app.put('/usuario/senha', autenticarUsuario, async (req, res) => {
     const { senha_atual, nova_senha } = req.body;
     const id_usuario = req.usuario.id;
@@ -1604,11 +1605,11 @@ app.put('/usuario/senha', autenticarUsuario, async (req, res) => {
 
     res.json({ mensagem: "Senha alterada com sucesso!" });
 });
-´´´
+```
 
-✅ Excluir Conta (Processo Seguro)
+-  ✅ Excluir Conta (Processo Seguro)
 
-´´´
+```
 app.delete('/usuario/excluir', autenticarUsuario, async (req, res) => {
     const id_usuario = req.usuario.id;
 
@@ -1616,11 +1617,11 @@ app.delete('/usuario/excluir', autenticarUsuario, async (req, res) => {
 
     res.json({ mensagem: "Conta excluída com sucesso. Seus dados foram desativados." });
 });
-´´´
+```
 
-✅ Ativar/Desativar Autenticação de Dois Fatores (MFA)
+- ✅ Ativar/Desativar Autenticação de Dois Fatores (MFA)
 
-´´´
+```
 app.put('/usuario/mfa', autenticarUsuario, async (req, res) => {
     const { ativar } = req.body;
     const id_usuario = req.usuario.id;
@@ -1629,13 +1630,13 @@ app.put('/usuario/mfa', autenticarUsuario, async (req, res) => {
 
     res.json({ mensagem: ativar ? "MFA ativado com sucesso!" : "MFA desativado." });
 });
-´´´
+```
 
 ### Preferências de Exibição
 
-📌 Criar Tabela para Configurações do Usuário:
+- 📌 Criar Tabela para Configurações do Usuário:
 
-´´´
+```
 CREATE TABLE configuracoes (
     id_configuracao UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     id_usuario UUID REFERENCES usuarios(id_usuario) UNIQUE,
@@ -1645,12 +1646,13 @@ CREATE TABLE configuracoes (
     tamanho_fonte ENUM('pequeno', 'medio', 'grande') DEFAULT 'medio',
     notificacoes_ativas BOOLEAN DEFAULT true
 );
-´´´
+```
 
-📌 Endpoints no Backend:
+### 📌 Endpoints no Backend:
 
-✅ Atualizar Preferências de Exibição
-´´´
+- ✅ Atualizar Preferências de Exibição
+
+```
 app.put('/usuario/configuracoes', autenticarUsuario, async (req, res) => {
     const { modo_escuro, unidade_medida, idioma, tamanho_fonte, notificacoes_ativas } = req.body;
     const id_usuario = req.usuario.id;
@@ -1661,10 +1663,11 @@ app.put('/usuario/configuracoes', autenticarUsuario, async (req, res) => {
 
     res.json({ mensagem: "Configurações atualizadas!" });
 });
-´´´
+```
 
-✅ Obter Preferências do Usuário
-´´´
+- ✅ Obter Preferências do Usuário
+
+```
 app.get('/usuario/configuracoes', autenticarUsuario, async (req, res) => {
     const id_usuario = req.usuario.id;
 
@@ -1672,7 +1675,7 @@ app.get('/usuario/configuracoes', autenticarUsuario, async (req, res) => {
 
     res.json(configuracoes);
 });
-´´´
+```
 
 ---
 
