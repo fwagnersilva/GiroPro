@@ -366,35 +366,35 @@ O aplicativo será desenvolvido como uma aplicação full-stack, utilizando tecn
 
 **📌 4.1 Tempo de Resposta**
 
-🎯 Meta de performance:
-≤ 500ms para requisições simples.
-≤ 1s para cálculos complexos.
+- 🎯 Meta de performance:
+- ≤ 500ms para requisições simples.
+- ≤ 1s para cálculos complexos.
 
 **Otimizações Aplicadas:**
 
-📌 Índices e cache no PostgreSQL → Melhora a leitura dos dados.
-⚡ TanStack Query (React Query) → Evita chamadas desnecessárias ao backend.
-📦 Compressão GZIP no Express.js → Reduz tempo de resposta.
-🗂️ Cache em endpoints estáticos → Tabelas de preços, regras de negócio, etc.
+- 📌 Índices e cache no PostgreSQL → Melhora a leitura dos dados.
+- ⚡ TanStack Query (React Query) → Evita chamadas desnecessárias ao backend.
+- 📦 Compressão GZIP no Express.js → Reduz tempo de resposta.
+- 🗂️ Cache em endpoints estáticos → Tabelas de preços, regras de negócio, etc.
 
 **📌 4.2 Responsividade**
 
 * ✅ Totalmente responsivo para Android, iOS e Web.
 
 **🔹 Tecnologias para responsividade:**
-🎨 Tailwind CSS + Radix UI + shadcn/ui → Facilita a adaptação da interface.
-🌙 Suporte a Dark Mode → Baseado nas preferências do sistema do usuário.
+-🎨 Tailwind CSS + Radix UI + shadcn/ui → Facilita a adaptação da interface.
+-🌙 Suporte a Dark Mode → Baseado nas preferências do sistema do usuário.
 
 **📌 4.3 Usabilidade**
 
 * 🔹 Regras para melhor experiência do usuário:
 
-1. 📌 Interface intuitiva e organizada em abas para facilitar a navegação.
-2. 🔄 Confirmações para ações irreversíveis, evitando erros acidentais.
-3. ⚠️ Mensagens de erro claras e diretas, sem termos técnicos complicados.
-4. ✍️ Autopreenchimento inteligente nos formulários para agilizar o uso.
-5. 🌍 Suporte a diferentes idiomas (i18n) para expandir a acessibilidade global.
-6. 📚 Tutoriais interativos para novos usuários na primeira vez que acessam cada funcionalidade.
+- 📌 Interface intuitiva e organizada em abas para facilitar a navegação.
+-  🔄 Confirmações para ações irreversíveis, evitando erros acidentais.
+- ⚠️ Mensagens de erro claras e diretas, sem termos técnicos complicados.
+- ✍️ Autopreenchimento inteligente nos formulários para agilizar o uso.
+- 🌍 Suporte a diferentes idiomas (i18n) para expandir a acessibilidade global.
+- 📚 Tutoriais interativos para novos usuários na primeira vez que acessam cada funcionalidade.
 
 **📌 4.4 Disponibilidade**
 
@@ -402,21 +402,21 @@ O aplicativo será desenvolvido como uma aplicação full-stack, utilizando tecn
 
 **🔹 Medidas de Alta Disponibilidade:**
 
-1. 🗄️ Banco de dados replicado para evitar falhas e perda de dados.
-2. 📡 Monitoramento automático com alertas de falha.
-3. 🔄 Failover automático → Em caso de falha, o sistema migra para outro servidor sem interrupção.
-4. 📜 Logs centralizados utilizando Loggly, Datadog ou ELK Stack.
+- 🗄️ Banco de dados replicado para evitar falhas e perda de dados.
+- 📡 Monitoramento automático com alertas de falha.
+- 🔄 Failover automático → Em caso de falha, o sistema migra para outro servidor sem interrupção.
+- 📜 Logs centralizados utilizando Loggly, Datadog ou ELK Stack.
 
 **📌 4.5 Escalabilidade**
 
 🔹 Técnicas para garantir crescimento contínuo:
 
-1. 🏗️ Backend desacoplado → Permite crescimento sem comprometer a performance.
-2. ⚡ Cache de dados (Redis) → Reduz carga no banco de dados.
-3. 🌍 Uso de CDN → Acelera o carregamento de imagens e arquivos estáticos.
-4. ⚖️ Load Balancer → Distribui tráfego de forma eficiente.
-5. 🗂️ Uso de JSONB no PostgreSQL → Para armazenar logs e preferências personalizadas.
-6. 🔍 Tabela logs_atividades → Registra ações dos usuários para auditoria e segurança.
+- 🏗️ Backend desacoplado → Permite crescimento sem comprometer a performance.
+- ⚡ Cache de dados (Redis) → Reduz carga no banco de dados.
+- 🌍 Uso de CDN → Acelera o carregamento de imagens e arquivos estáticos.
+- ⚖️ Load Balancer → Distribui tráfego de forma eficiente.
+- 🗂️ Uso de JSONB no PostgreSQL → Para armazenar logs e preferências personalizadas.
+- 🔍 Tabela logs_atividades → Registra ações dos usuários para auditoria e segurança.
 
 ---
 
