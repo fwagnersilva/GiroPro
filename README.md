@@ -843,18 +843,18 @@ Se os gastos com combustível estiverem acima da média usual do motorista, um a
 * A funcionalidade de Jornadas de Trabalho permitirá ao motorista registrar cada período de trabalho de forma detalhada, incluindo quilometragem, faturamento e tempo trabalhado.
 
 * 🚗 Início de Jornada
-
-* O motorista inicia uma jornada registrando:
-  
-- ✅ Horário de início → Registrado automaticamente.
-- ✅ Quilometragem inicial → Inserida manualmente (apenas números entre 000000 e 999999).
+> 
+> * O motorista inicia uma jornada registrando:
+>   
+> - ✅ Horário de início → Registrado automaticamente.
+> - ✅ Quilometragem inicial → Inserida manualmente (apenas números entre 000000 e 999999).
 
 * 🛑 Finalização de Jornada
-- Ao encerrar a jornada, o motorista insere:
-
-- ✅ Quilometragem final → Deve ser maior ou igual à inicial.
-- ✅ Número de corridas realizadas.
-- ✅ Faturamento total da jornada (campo numérico com máscara R$ 9.999,99).
+> - Ao encerrar a jornada, o motorista insere:
+> 
+> - ✅ Quilometragem final → Deve ser maior ou igual à inicial.
+> - ✅ Número de corridas realizadas.
+> - ✅ Faturamento total da jornada (campo numérico com máscara R$ 9.999,99).
 
 * 🔢 Cálculos Automáticos
 - Ao finalizar a jornada, o aplicativo calculará automaticamente:
