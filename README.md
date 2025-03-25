@@ -840,43 +840,44 @@ Se os gastos com combustível estiverem acima da média usual do motorista, um a
 
 ## 7.0 Jornadas de Trabalho
 
-A funcionalidade de Jornadas de Trabalho permitirá ao motorista registrar cada período de trabalho de forma detalhada, incluindo quilometragem, faturamento e tempo trabalhado.
+* A funcionalidade de Jornadas de Trabalho permitirá ao motorista registrar cada período de trabalho de forma detalhada, incluindo quilometragem, faturamento e tempo trabalhado.
 
-🚗 Início de Jornada
+* 🚗 Início de Jornada
 
-O motorista inicia uma jornada registrando:
-✅ Horário de início → Registrado automaticamente.
-✅ Quilometragem inicial → Inserida manualmente (apenas números entre 000000 e 999999).
+* O motorista inicia uma jornada registrando:
+  
+- ✅ Horário de início → Registrado automaticamente.
+- ✅ Quilometragem inicial → Inserida manualmente (apenas números entre 000000 e 999999).
 
-🛑 Finalização de Jornada
-Ao encerrar a jornada, o motorista insere:
+* 🛑 Finalização de Jornada
+- Ao encerrar a jornada, o motorista insere:
 
-✅ Quilometragem final → Deve ser maior ou igual à inicial.
-✅ Número de corridas realizadas.
-✅ Faturamento total da jornada (campo numérico com máscara R$ 9.999,99).
+- ✅ Quilometragem final → Deve ser maior ou igual à inicial.
+- ✅ Número de corridas realizadas.
+- ✅ Faturamento total da jornada (campo numérico com máscara R$ 9.999,99).
 
-🔢 Cálculos Automáticos
-Ao finalizar a jornada, o aplicativo calculará automaticamente:
+* 🔢 Cálculos Automáticos
+- Ao finalizar a jornada, o aplicativo calculará automaticamente:
 
-🔹 Quilometragem percorrida.
-🔹 Tempo total trabalhado.
-🔹 Gasto estimado com combustível (baseado na quilometragem percorrida na jornada).
-🔹 Lucro líquido da jornada (faturamento menos despesas).
+- 🔹 Quilometragem percorrida.
+- 🔹 Tempo total trabalhado.
+- 🔹 Gasto estimado com combustível (baseado na quilometragem percorrida na jornada).
+- 🔹 Lucro líquido da jornada (faturamento menos despesas).
 
-Calculo:
+* Calculo:
 
-📌 4.1 Quilometragem Percorrida
-📌 O que exibe?
-Distância total rodada durante a jornada.
+- 📌 7.1 Quilometragem Percorrida
+- 📌 O que exibe?
+- Distância total rodada durante a jornada.
 
-📌 Campos do Banco de Dados:
+* 📌 Campos do Banco de Dados:
 
 Tabela: jornadas
 Campos:
 km_inicio → Quilometragem inicial.
 km_fim → Quilometragem final.
 
-📌 Query SQL:
+* 📌 Query SQL:
 
 ```
 SELECT 
@@ -885,12 +886,12 @@ FROM jornadas
 WHERE id_jornada = 'ID_DA_JORNADA';
 ```
 
-📌 4.2 Tempo Total Trabalhado
+* 📌 7.2 Tempo Total Trabalhado
 
-📌 O que exibe?
-Duração da jornada, do início ao fim.
+* 📌 O que exibe?
+- Duração da jornada, do início ao fim.
 
-📌 Campos do Banco de Dados:
+* 📌 Campos do Banco de Dados:
 
 Tabela: jornadas
 Campos:
@@ -905,12 +906,12 @@ FROM jornadas
 WHERE id_jornada = 'ID_DA_JORNADA';
 ```
 
-📌 4.3 Gasto Estimado com Combustível
+* 📌 7.3 Gasto Estimado com Combustível
 
-📌 O que exibe?
-Quanto foi gasto em combustível nessa jornada, com base na média de consumo do veículo.
+* 📌 O que exibe?
+- Quanto foi gasto em combustível nessa jornada, com base na média de consumo do veículo.
 
-📌 Campos do Banco de Dados:
+* 📌 Campos do Banco de Dados:
 
 Tabela: veiculos e abastecimentos
 Campos:
@@ -918,7 +919,7 @@ km_percorridos (calculado acima).
 media_consumo (média de KM/L do veículo).
 preco_medio_combustivel (média do preço por litro, baseado nos últimos abastecimentos).
 
-📌 Query SQL para obter o preço médio do combustível:
+* 📌 Query SQL para obter o preço médio do combustível:
 
 ```
 SELECT 
@@ -926,7 +927,9 @@ SELECT
 FROM abastecimentos
 WHERE id_veiculo = 'ID_DO_VEICULO';
 ```
-📌 Query SQL para calcular o gasto estimado:
+
+* 📌 Query SQL para calcular o gasto estimado:
+
 ```
 SELECT 
   ( (km_fim - km_inicio) / v.media_consumo ) * preco_medio_combustivel AS gasto_combustivel
@@ -940,12 +943,12 @@ JOIN (
 WHERE j.id_jornada = 'ID_DA_JORNADA';
 ```
 
-📌 Lucro Líquido da Jornada
+* 📌 Lucro Líquido da Jornada
 
-📌 O que exibe?
-Quanto o motorista realmente lucrou, descontando custos operacionais.
+* 📌 O que exibe?
+- Quanto o motorista realmente lucrou, descontando custos operacionais.
 
-📌 Campos do Banco de Dados:
+* 📌 Campos do Banco de Dados:
 
 Tabela: jornadas, despesas e abastecimentos
 Campos:
@@ -953,7 +956,7 @@ faturamento (total ganho na jornada).
 gasto_combustivel (calculado acima).
 valor da tabela despesas (somar todas as despesas dessa jornada).
 
-📌 Query SQL para calcular o lucro líquido:
+* 📌 Query SQL para calcular o lucro líquido:
 
 ```
 SELECT 
