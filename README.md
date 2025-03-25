@@ -1,5 +1,7 @@
 ## Aplicativo para Motoristas de Aplicativos - Versão 1.0
 
+---
+
 ### 1. Visão Geral do Projeto
 
 #### 1.1 Objetivo do Aplicativo
@@ -80,6 +82,9 @@ O aplicativo é voltado para motoristas de aplicativos que desejam um maior cont
  ✔ Motoristas que precisam calcular seus lucros líquidos e planejar despesas futuras para evitar surpresas financeiras.
  ✔ Motoristas que querem identificar os melhores dias e horários para trabalhar e maximizar seus rendimentos.
  ✔ Profissionais que utilizam mais de um aplicativo e desejam comparar qual plataforma está sendo mais rentável. 
+
+---
+
 
 ## 2.0 Arquitetura do Sistema
 
@@ -376,14 +381,15 @@ O aplicativo será desenvolvido como uma aplicação full-stack, utilizando tecn
 **📌 4.2 Responsividade**
 
 * ✅ Totalmente responsivo para Android, iOS e Web.
+
 * 🔹 Tecnologias para responsividade:
 * 🎨 Tailwind CSS + Radix UI + shadcn/ui → Facilita a adaptação da interface.
 * 🌙 Suporte a Dark Mode → Baseado nas preferências do sistema do usuário.
-* ♿ Testes de acessibilidade (WCAG) → Garante suporte a usuários com deficiência.
 
 **📌 4.3 Usabilidade**
 
 * 🔹 Regras para melhor experiência do usuário:
+
 * 📌 Interface intuitiva e organizada em abas para facilitar a navegação.
 * 🔄 Confirmações para ações irreversíveis, evitando erros acidentais.
 * ⚠️ Mensagens de erro claras e diretas, sem termos técnicos complicados.
@@ -394,7 +400,8 @@ O aplicativo será desenvolvido como uma aplicação full-stack, utilizando tecn
 **📌 4.4 Disponibilidade**
 
 * ✅ Uptime garantido: 99,9% com hospedagem em Google Cloud, AWS ou Azure.
-* 🔹 Medidas de Alta Disponibilidade:
+
+🔹 Medidas de Alta Disponibilidade:
 * 🗄️ Banco de dados replicado para evitar falhas e perda de dados.
 * 📡 Monitoramento automático com alertas de falha.
 * 🔄 Failover automático → Em caso de falha, o sistema migra para outro servidor sem interrupção.
@@ -402,7 +409,8 @@ O aplicativo será desenvolvido como uma aplicação full-stack, utilizando tecn
 
 **📌 4.5 Escalabilidade**
 
-* 🔹 Técnicas para garantir crescimento contínuo:
+🔹 Técnicas para garantir crescimento contínuo:
+
 * 🏗️ Backend desacoplado → Permite crescimento sem comprometer a performance.
 * ⚡ Cache de dados (Redis) → Reduz carga no banco de dados.
 * 🌍 Uso de CDN → Acelera o carregamento de imagens e arquivos estáticos.
@@ -416,7 +424,8 @@ O aplicativo será desenvolvido como uma aplicação full-stack, utilizando tecn
 
 **📌 5.1 Proteção de Dados**
 
-* 🔒 Criptografia e segurança aplicadas:
+🔒 Criptografia e segurança aplicadas:
+
 * 🔑 Senhas armazenadas com hash bcrypt (NÃO reversível).
 * 🔐 Token JWT seguro para autenticação.
 * 🔗 Criptografia TLS em todas as comunicações.
@@ -425,13 +434,12 @@ O aplicativo será desenvolvido como uma aplicação full-stack, utilizando tecn
 * 🌍 CORS configurado corretamente para evitar acessos não autorizados.
 * ⚡ Rate Limiting para prevenir ataques de força bruta.
 * 🕵️ Monitoramento de atividades suspeitas.
-* 🔑 MFA (Autenticação de Dois Fatores) opcional para maior segurança.
 
 **📌 5.2 Regras de Segurança**
 
-* 🚨 Medidas para evitar ataques cibernéticos:
+🚨 Medidas para evitar ataques cibernéticos:
+
 * 🔒 Bloqueio temporário após 5 tentativas de login falhas.
-* 🔑 Permissões de usuário para restringir acessos indevidos.
 * 📜 Logs de atividades para rastrear ações suspeitas.
 
 **🛡️ Proteção contra ataques:**
@@ -445,11 +453,9 @@ O aplicativo será desenvolvido como uma aplicação full-stack, utilizando tecn
 * 🔍 ReCaptcha v3 no Login e Cadastro para evitar bots.
 * 🌍 Detecção de logins suspeitos (analisando localização/IP).
 
-**📌 5.3 Requisitos Técnicos**
+Aplicação full-stack, utilizando tecnologias modernas para garantir performance, escalabilidade e segurança.
 
-* ✅ O aplicativo será desenvolvido como uma aplicação full-stack, utilizando tecnologias modernas para garantir performance, escalabilidade e segurança.
-
-**5.4 Tecnologias Utilizadas e Arquitetura do Sistema**
+## 5.3 Tecnologias Utilizadas e Arquitetura do Sistema
 
 **📌 Adições importantes:**
 
@@ -478,94 +484,9 @@ O aplicativo será desenvolvido como uma aplicação full-stack, utilizando tecn
 
 ---
 
-## 6.0 Requisitos de Performance e Qualidade
+# 6.0 Funcionalidades e Regras de Negócio
 
-**6.1 Tempo de Resposta**
-
-* Meta de performance:
-* ≤ 500ms para requisições simples.
-* ≤ 1s para cálculos complexos.
-
-**📌 Otimizações:**
-
-* Índices e cache no PostgreSQL para otimizar leitura.
-* TanStack Query (React Query) para evitar chamadas desnecessárias.
-* Compressão GZIP no Express.js para reduzir tempo de resposta.
-* Cache em endpoints estáticos (tabelas de preços, regras de negócio).
-
-**6.2 Responsividade**
-
-* Totalmente responsivo para Android, iOS e Web.
-* Tecnologias para responsividade:
-* Tailwind CSS + Radix UI + shadcn/ui.
-* Suporte a Dark Mode baseado nas preferências do sistema.
-* Testes de acessibilidade (WCAG) para suporte a usuários com deficiência.
-
-**6.3 Usabilidade**
-
-* Regras para melhor experiência do usuário:
-* Interface intuitiva, organizada em abas.
-* Confirmações para ações irreversíveis.
-* Mensagens de erro claras e diretas.
-* Autopreenchimento inteligente nos formulários.
-* Suporte a diferentes idiomas (i18n).
-* Tutoriais interativos na primeira vez que o usuário acessa cada funcionalidade.
-
-**6.4 Disponibilidade**
-
-* Uptime garantido: 99,9% com hospedagem em Google Cloud, AWS ou Azure.
-* Medidas de disponibilidade:
-* Banco de dados replicado para evitar falhas.
-* Monitoramento automático com alertas de falha.
-* Failover automático para outro servidor em caso de problema.
-* Logs centralizados (Loggly, Datadog, ELK Stack).
-
-**6.5 Escalabilidade**
-
-* Técnicas para escalabilidade:
-* Backend desacoplado para permitir crescimento sem comprometer performance.
-* Cache de dados para reduzir carga no banco de dados.
-* Uso de CDN para servir imagens e arquivos estáticos.
-* Load Balancer para distribuir tráfego.
-* JSONB no PostgreSQL para armazenar logs e preferências personalizadas.
-* Tabela de logs de atividades (logs_atividades) para auditoria.
-
----
-
-## 7.0 Requisitos de Segurança
-
-**7.1 Proteção de Dados**
-
-**📌 Criptografia e segurança:**
-
-* Senhas armazenadas com hash bcrypt (NÃO reversível).
-* Token JWT seguro para autenticação.
-* Criptografia TLS em todas as comunicações.
-* Criptografia AES-256 para dados sensíveis.
-* Refresh Token para renovação segura de sessões.
-* CORS configurado corretamente.
-* Rate Limiting para prevenir ataques de força bruta.
-* Monitoramento de atividades suspeitas.
-* MFA (Autenticação de Dois Fatores) opcional.
-
-**7.2 Regras de Segurança**
-
-**📌 Medidas para evitar ataques:**
-
-* Bloqueio temporário após 5 tentativas de login falhas.
-* Permissões de usuário para restringir acessos indevidos.
-* Logs de atividades para rastrear ações suspeitas.
-* Proteção contra SQL Injection, XSS e CSRF.
-* OAuth para login social (Google, Facebook, Apple ID).
-* Rate Limiting e Proteção contra DDoS.
-* ReCaptcha v3 no Login e Cadastro.
-* Detectar logins suspeitos (localização/IP).
-
-# 10.0 Funcionalidades e Regras de Negócio
-
----
-
-## 10.1 Tela de Login e Cadastro
+## 6.1 Tela de Login e Cadastro
 
 * A tela de login e cadastro permitirá que os motoristas acessem suas contas de forma rápida, segura e sincronizada em todos os dispositivos.
 
@@ -598,7 +519,7 @@ Para criar uma conta, o usuário precisará preencher os seguintes campos:
 
 ---
 
-## 10.2 Tela Inicial (Painel)
+## 6.2 Tela Inicial (Painel)
 
 A tela inicial do aplicativo funcionará como um painel de controle financeiro, onde o motorista poderá ver um resumo rápido do seu desempenho e tomar decisões sobre sua jornada de trabalho.
 
@@ -607,10 +528,9 @@ A tela inicial do aplicativo funcionará como um painel de controle financeiro, 
 💡 Objetivo: Exibir uma mensagem direta com a meta financeira e o que falta para atingi-la.
 
 🔹 Lógica de Cálculo:
+
 Obter a meta diária do motorista (meta_diaria).
-
 Obter o faturamento do dia (faturamento_hoje).
-
 Calcular o valor restante para atingir a meta:
 
 ```
@@ -633,7 +553,6 @@ Se restante_meta <= 0: "Parabéns! Você já atingiu sua meta diária."
   "faturamento_hoje": 150
 }
 ```
-
 
 ## 📌 2️⃣ Card "Meta do Dia"
 💡 Objetivo: Exibir a meta diária do motorista e o quanto já foi faturado.
@@ -671,7 +590,6 @@ FROM abastecimentos
 WHERE id_usuario = :id_usuario
 AND DATE(data_abastecimento) = CURRENT_DATE
 ```
-
 Obter o gasto médio diário com base no histórico dos últimos 30 dias:
 ```
 SELECT AVG(total_pago) AS media_gasto_diario
@@ -693,7 +611,9 @@ SELECT media_gasto_diario * 30 AS previsao_gasto_combustivel
   "previsao_gasto_combustivel": 2250
 }
 ```
+
 ## 📌 4️⃣ Card "Lucro Real"
+
 💡 Objetivo: Mostrar quanto realmente sobrou depois das despesas.
 
 🔹 Lógica de Cálculo:
@@ -720,13 +640,15 @@ SELECT faturamento_hoje - custos_diarios AS lucro_real
   "lucro_real": 220
 }
 ```
+
 ## 📌 5️⃣ Card "Previsão de Gasto com Combustível"
+
 💡 Objetivo: Prever quanto o motorista gastará com combustível no mês com base no consumo médio.
 
 🔹 Lógica de Cálculo:
 Obter a média de gasto diário (media_gasto_diario).
-
 Multiplicar pela quantidade de dias restantes no mês:
+
 ```
 SELECT media_gasto_diario * (30 - EXTRACT(DAY FROM CURRENT_DATE)) AS previsao_restante
 ```
@@ -737,7 +659,9 @@ SELECT media_gasto_diario * (30 - EXTRACT(DAY FROM CURRENT_DATE)) AS previsao_re
   "previsao_restante": 1500
 }
 ```
+
 ## 📌 6️⃣ Card "Previsão de Faturamento Mensal"
+
 💡 Objetivo: Mostrar quanto o motorista irá faturar se continuar no ritmo atual.
 
 🔹 Lógica de Cálculo:
@@ -748,11 +672,15 @@ FROM jornadas
 WHERE id_usuario = :id_usuario
 AND data_inicio >= NOW() - INTERVAL '30 days'
 ```
+
 Multiplicar pela quantidade de dias restantes no mês:
+
 ```
 SELECT media_faturamento_diario * (30 - EXTRACT(DAY FROM CURRENT_DATE)) AS previsao_faturamento
 ```
+
 🔹 Exemplo de JSON para o Frontend:
+
 ```
 {
   "media_faturamento_diario": 200,
@@ -761,21 +689,27 @@ SELECT media_faturamento_diario * (30 - EXTRACT(DAY FROM CURRENT_DATE)) AS previ
 ```
 
 ## 📌 7️⃣ Card "Ganho da Semana"
+
 💡 Objetivo: Mostrar quanto já foi faturado na semana e a comparação com a meta semanal.
 
 🔹 Lógica de Cálculo:
 Obter o faturamento da semana:
+
 ```
 SELECT SUM(faturamento_total) AS faturamento_semana
 FROM jornadas
 WHERE id_usuario = :id_usuario
 AND data_inicio >= date_trunc('week', CURRENT_DATE)
 ```
+
 Obter a meta semanal do motorista:
+
 ```
 SELECT meta_semanal FROM metas WHERE id_usuario = :id_usuario
 ```
+
 Calcular o percentual da meta atingida:
+
 ```
 SELECT (faturamento_semana / meta_semanal) * 100 AS percentual_meta_semanal
 ```
@@ -790,17 +724,21 @@ SELECT (faturamento_semana / meta_semanal) * 100 AS percentual_meta_semanal
 ```
 
 ## 📌 8️⃣ Card "Ganho do Dia"
+
 💡 Objetivo: Mostrar o total faturado no dia, ajudando o motorista a entender o desempenho diário.
 
 🔹 Lógica de Cálculo:
 Obter o faturamento do dia:
+
 ```
 SELECT SUM(faturamento_total) AS faturamento_hoje
 FROM jornadas
 WHERE id_usuario = :id_usuario
 AND DATE(data_inicio) = CURRENT_DATE
 ```
+
 🔹 Exemplo de JSON para o Frontend:
+
 ```
 {
   "faturamento_hoje": 320
@@ -808,16 +746,20 @@ AND DATE(data_inicio) = CURRENT_DATE
 ```
 
 ## 📌 9️⃣ Card "Ganho por KM Rodado"
+
 💡 Objetivo: Mostrar quanto o motorista está faturando por quilômetro rodado, uma métrica muito importante para ele otimizar seu trabalho.
 
 🔹 Lógica de Cálculo:
+
 Obter o faturamento do dia:
+
 ```
 SELECT SUM(faturamento_total) AS faturamento_hoje
 FROM jornadas
 WHERE id_usuario = :id_usuario
 AND DATE(data_inicio) = CURRENT_DATE
 ```
+
 Obter a quilometragem percorrida no dia:
 
 ```
@@ -828,10 +770,13 @@ AND DATE(data_inicio) = CURRENT_DATE
 ```
 
 Calcular o ganho por KM rodado:
+
 ```
 SELECT faturamento_hoje / km_rodado_hoje AS ganho_por_km
 ```
+
 🔹 Exemplo de JSON para o Frontend:
+
 ```
 {
   "faturamento_hoje": 320,
@@ -841,28 +786,36 @@ SELECT faturamento_hoje / km_rodado_hoje AS ganho_por_km
 ```
 
 ## 📌 1️⃣0️⃣ Card "Lucro Real do Dia"
+
 💡 Objetivo: Exibir o quanto realmente sobrou depois de descontar combustível e despesas.
 
 🔹 Lógica de Cálculo:
 Obter o faturamento do dia:
+
 ```
 SELECT SUM(faturamento_total) AS faturamento_hoje
 FROM jornadas
 WHERE id_usuario = :id_usuario
 AND DATE(data_inicio) = CURRENT_DATE
 ```
+
 Obter os custos do dia (combustível + despesas):
+
 ```
 SELECT SUM(valor) AS custos_diarios
 FROM despesas
 WHERE id_usuario = :id_usuario
 AND DATE(data_despesa) = CURRENT_DATE
 ```
+
 Calcular o lucro real do dia:
+
 ```
 SELECT faturamento_hoje - custos_diarios AS lucro_real_dia
 ```
+
 🔹 Exemplo de JSON para o Frontend:
+
 ```
 {
   "faturamento_hoje": 320,
@@ -885,24 +838,29 @@ Se os gastos com combustível estiverem acima da média usual do motorista, um a
 ✅ Painel personalizado, exibindo as informações mais relevantes para cada motorista.
 ✅ Alertas financeiros inteligentes, ajudando a manter um melhor controle de custos.
 
-## 10.3 Jornadas de Trabalho
+## 7.0 Jornadas de Trabalho
+
 A funcionalidade de Jornadas de Trabalho permitirá ao motorista registrar cada período de trabalho de forma detalhada, incluindo quilometragem, faturamento e tempo trabalhado.
 
 🚗 Início de Jornada
+
 O motorista inicia uma jornada registrando:
 ✅ Horário de início → Registrado automaticamente.
 ✅ Quilometragem inicial → Inserida manualmente (apenas números entre 000000 e 999999).
+
 🛑 Finalização de Jornada
 Ao encerrar a jornada, o motorista insere:
+
 ✅ Quilometragem final → Deve ser maior ou igual à inicial.
 ✅ Número de corridas realizadas.
 ✅ Faturamento total da jornada (campo numérico com máscara R$ 9.999,99).
+
 🔢 Cálculos Automáticos
 Ao finalizar a jornada, o aplicativo calculará automaticamente:
 
 🔹 Quilometragem percorrida.
 🔹 Tempo total trabalhado.
-🔹 Gasto estimado com combustível (baseado na média do veículo).
+🔹 Gasto estimado com combustível (baseado na quilometragem percorrida na jornada).
 🔹 Lucro líquido da jornada (faturamento menos despesas).
 
 Calculo:
@@ -926,7 +884,9 @@ SELECT
 FROM jornadas
 WHERE id_jornada = 'ID_DA_JORNADA';
 ```
+
 📌 4.2 Tempo Total Trabalhado
+
 📌 O que exibe?
 Duração da jornada, do início ao fim.
 
@@ -944,7 +904,9 @@ SELECT
 FROM jornadas
 WHERE id_jornada = 'ID_DA_JORNADA';
 ```
+
 📌 4.3 Gasto Estimado com Combustível
+
 📌 O que exibe?
 Quanto foi gasto em combustível nessa jornada, com base na média de consumo do veículo.
 
@@ -978,7 +940,7 @@ JOIN (
 WHERE j.id_jornada = 'ID_DA_JORNADA';
 ```
 
-📌 4.4 Lucro Líquido da Jornada
+📌 Lucro Líquido da Jornada
 
 📌 O que exibe?
 Quanto o motorista realmente lucrou, descontando custos operacionais.
@@ -992,6 +954,7 @@ gasto_combustivel (calculado acima).
 valor da tabela despesas (somar todas as despesas dessa jornada).
 
 📌 Query SQL para calcular o lucro líquido:
+
 ```
 SELECT 
   j.faturamento - (
@@ -1016,24 +979,28 @@ GROUP BY j.id_jornada, j.faturamento, v.media_consumo, preco_medio_combustivel;
 - O motorista pode editar ou excluir jornadas passadas, caso tenha inserido alguma informação errada.
 
 ### 📅 Filtro por Data
+
 - O motorista pode filtrar as jornadas por período.
 - Filtro padrão: Exibir apenas as jornadas do mês atual.
 
 ### 🔔 Notificações Inteligentes
+
 - O app enviará lembretes para evitar que o motorista esqueça de finalizar a jornada ao fim do dia.
 
 ### 🎯 Motivação e Benefícios
+
 - ✅ Registro preciso das jornadas, permitindo um acompanhamento detalhado.
 - ✅ Evita esquecimentos, garantindo que todas as informações sejam salvas corretamente.
 - ✅ Análises financeiras mais precisas, ajudando o motorista a entender seus lucros e custos diários.
 
 ---
 
-## 10.4 Gestão de Combustível
+## 7.1 Gestão de Combustível
 
 A funcionalidade de Gestão de Combustível permitirá que o motorista registre cada abastecimento, acompanhe seus gastos e analise a eficiência do consumo do veículo.
 
 ### 📌 Registro de Abastecimento
+
 Cada abastecimento registrado terá os seguintes campos:
 - ✅ **Data e Hora** – O sistema captura automaticamente, mas permite edição.
 - ✅ **Tipo de Combustível** – Opções: Gasolina, Álcool, Diesel, GNV.
@@ -1047,6 +1014,7 @@ Cada abastecimento registrado terá os seguintes campos:
 - O aplicativo calculará automaticamente a média de consumo do veículo com base nos últimos abastecimentos.
 
 ### ⚠ Aviso de Consumo Elevado
+
 - Se o consumo médio do carro subir muito em comparação com os últimos registros, o sistema exibirá um alerta para o motorista verificar possíveis problemas mecânicos ou estratégias para economizar combustível.
 
 ### 🎯 Motivação e Benefícios
@@ -1056,11 +1024,12 @@ Cada abastecimento registrado terá os seguintes campos:
 
 ---
 
-## 10.5 Controle de Despesas
+## 7.2 Controle de Despesas
 
 Esta funcionalidade ajudará o motorista a registrar e gerenciar despesas operacionais, permitindo um controle financeiro eficiente.
 
 ### 📌 Cadastro de Despesas
+
 - O motorista pode cadastrar despesas avulsas ou recorrentes (mensais, trimestrais, anuais, etc.).
 - As despesas podem ser vinculadas a um veículo específico (caso o motorista tenha mais de um carro).
 - **Categorias de despesas incluem:**
@@ -1070,17 +1039,20 @@ Esta funcionalidade ajudará o motorista a registrar e gerenciar despesas operac
   - 🔹 **Taxas da plataforma** (Uber, 99, InDrive, etc.).
 
 ### 📊 Parcelamento e Pagamentos
+
 - Caso uma despesa seja parcelada, o sistema permitirá:
   - ✅ Definir o número de parcelas.
   - ✅ Pagar parcelas antecipadamente (o sistema sugere remover as parcelas futuras, mas o usuário pode negar e ajustar manualmente).
   - ✅ Se o motorista pagar um valor diferente do previsto, o sistema não redistribuirá automaticamente, mas permitirá ajustes manuais.
 
 ### 📂 Histórico e Exportação de Dados
+
 - Todas as despesas ficam salvas e podem ser acessadas no histórico.
 - O motorista pode editar ou excluir despesas passadas, se necessário.
 - Exportação dos dados para **PDF, Excel (XLSX)** e **CSV** para análises mais detalhadas.
 
 ### 📊 Gráficos Visuais de Gastos
+
 - Exibição da distribuição dos gastos em um gráfico de pizza:
   - 🔹 **40% combustível**
   - 🔹 **30% manutenção**
@@ -1088,9 +1060,11 @@ Esta funcionalidade ajudará o motorista a registrar e gerenciar despesas operac
   - 🔹 **10% outros gastos**
 
 ### 🔔 Lembretes Inteligentes
+
 - Se houver uma despesa importante chegando (como IPVA ou seguro), o aplicativo enviará alertas com antecedência para lembrar o motorista.
 
 ### 🎯 Motivação e Benefícios
+
 - ✅ Controle financeiro mais eficiente com categorização de despesas.
 - ✅ Facilidade para acompanhar gastos fixos e variáveis.
 - ✅ Flexibilidade para pagamentos antecipados e ajustes manuais.
@@ -1098,11 +1072,12 @@ Esta funcionalidade ajudará o motorista a registrar e gerenciar despesas operac
 
 ---
 
-## 10.6 Metas para Motoristas
+## 7.3 Metas para Motoristas
 
 A funcionalidade de metas ajudará os motoristas a planejar seus ganhos e acompanhar seu desempenho ao longo do tempo.
 
 ### 🎯 Objetivo da Funcionalidade
+
 - ✔ O motorista pode definir metas diárias, semanais e mensais.
 - ✔ Um card na tela inicial mostrará o progresso da meta em tempo real.
 - ✔ O sistema enviará alertas caso o motorista esteja abaixo da meta.
@@ -1123,9 +1098,11 @@ O motorista poderá cadastrar três tipos de metas:
 - As metas não são acumulativas (exemplo: a meta semanal não soma automaticamente as metas diárias).
 
 ### 📊 Monitoramento do Progresso
+
 - Será adicionado um card dinâmico na tela inicial, mostrando o progresso da meta escolhida.
 - O motorista poderá alternar entre visualizar o progresso diário, semanal ou mensal.
 - Exibição do progresso em percentual e valores.
+
 - **Exemplo de Card na Tela Inicial:**
   - 🔹 🎯 **Meta Semanal:** R$ 1.750
   - 🔹 📊 **Progresso:** R$ 1.200 / R$ 1.750 (68%)
@@ -1141,11 +1118,13 @@ O motorista poderá cadastrar três tipos de metas:
 | **Abaixo de 50% ⚠️** | "Você está abaixo da sua meta. Que tal rodar mais um pouco?" |
 
 ### 📌 Integração na Tela Inicial
+
 - ✔ O card de metas será adicionado ao painel principal.
 - ✔ O motorista poderá trocar entre meta diária, semanal ou mensal.
 - ✔ O progresso será atualizado em tempo real, com base no faturamento registrado.
 
 ### 🎯 Motivação e Benefícios
+
 - ✅ Ajuda o motorista a organizar melhor seus ganhos e definir objetivos claros.
 - ✅ Monitoramento visual e intuitivo do progresso financeiro.
 - ✅ Notificações motivacionais para incentivar maior faturamento.
@@ -1153,13 +1132,14 @@ O motorista poderá cadastrar três tipos de metas:
 
 ---
 
-## 10.7 Análises e Relatórios
+## 7.4 Análises e Relatórios
 
 A funcionalidade de Análises e Relatórios fornecerá aos motoristas uma visão detalhada sobre seu desempenho financeiro e eficiência operacional.
 
 O sistema oferecerá relatórios básicos e avançados, permitindo que o motorista acompanhe sua evolução, compare seu desempenho com outros motoristas da cidade e identifique os melhores períodos para trabalhar.
 
 ### 📊 Relatórios Básicos
+
 - ✅ **Faturamento Diário, Semanal e Mensal** – Exibição do valor total recebido por período.
 - ✅ **Gastos com Combustível por Dia** – Relatório detalhado sobre os custos de abastecimento.
 - ✅ **Ganho por KM Rodado** – Média de faturamento por quilômetro percorrido.
@@ -1168,24 +1148,20 @@ O sistema oferecerá relatórios básicos e avançados, permitindo que o motoris
 ### 📊 Relatórios Avançados
 Os relatórios avançados permitirão ao motorista fazer análises mais aprofundadas sobre seu desempenho, comparação com outros motoristas e tendências financeiras.
 
-🔹 **Ranking de Faturamento na Cidade** – Mostra os motoristas com maiores ganhos.
 🔹 **Ranking de Melhores Motoristas em Faturamento** – Lista dos motoristas com maior faturamento.
 🔹 **Ranking de Melhores Motoristas em Lucro** – Lista dos motoristas que obtiveram maior lucro líquido.
 🔹 **Ranking de Motoristas com Maiores Quilometragens** – Comparação de quilometragem percorrida.
-🔹 **Sua Posição no Ranking** – Mostra sua colocação em relação aos outros motoristas da cidade, baseado em faturamento e lucro.
+🔹 **Sua Posição no Ranking** – Mostra sua colocação em relação aos outros motoristas da cidade, baseado em faturamento, quilometragem e lucro separadamente.
 🔹 **Média de Faturamento e Quilometragem por Dia da Semana** – Ajuda a identificar os dias mais lucrativos.
 🔹 **Gráfico de Evolução das Últimas 8 Semanas** – Comparação entre faturamento e gastos ao longo do tempo.
 🔹 **Previsão de Faturamento e Lucro** – Estimativa dos ganhos para a próxima semana e mês, baseada no histórico do motorista.
 🔹 **Gráfico Comparativo dos Aplicativos** – Mostra qual plataforma (Uber, 99, InDrive) trouxe mais ganhos ao longo do tempo.
 
 ### 📂 Exportação de Dados e Personalização
+
 ✅ Exportação de Relatórios em **PDF, Excel (XLSX)** e **CSV**.
 ✅ Filtros por Data → O padrão será exibir o mês atual, mas o motorista pode escolher períodos personalizados.
 ✅ Modo de Exibição Otimizado → Um card por vez, com rolagem automática para facilitar a navegação.
-
-### 🏆 Ranking Opcional
-- O aplicativo oferecerá um ranking dos melhores motoristas baseado em faturamento e lucro líquido.
-- O motorista poderá escolher se deseja aparecer no ranking ou não. Essa configuração poderá ser ajustada dentro das configurações do app.
 
 ### � Motivação e Benefícios
 ✅ Facilidade para analisar o desempenho financeiro e identificar tendências.
@@ -1196,19 +1172,21 @@ Os relatórios avançados permitirão ao motorista fazer análises mais aprofund
 
 ---
 
-# 11.0 Frontend UX/UI
+# 8.0 Frontend UX/UI
 
 Esta seção descreve a experiência do usuário (UX) e a interface gráfica (UI) do aplicativo, garantindo que o design seja intuitivo, funcional e responsivo.
 
-## 11.1 Tela de Login e Cadastro
+## 8.1 Tela de Login e Cadastro
 
 ### 🎯 Objetivo
+
 - Permitir que o motorista faça login ou crie uma conta de forma rápida e segura.
 - Suporte a **Dark Mode**, respeitando as configurações do sistema operacional.
 - **Login biométrico** (Face ID / Digital) e **PIN de 4 a 6 dígitos** como alternativa rápida.
 - Exibir validação instantânea do e-mail, avisando se já está cadastrado antes do envio do formulário.
 
 ### ✅ Componentes
+
 #### 📌 Login:
 - **Campos:** E-mail e senha.
 - Botão **"Entrar"**.
@@ -1234,7 +1212,7 @@ Esta seção descreve a experiência do usuário (UX) e a interface gráfica (UI
 
 ---
 
-## 📌 11.2 Tela Inicial (Dashboard)
+## 📌 8.2 Tela Inicial (Dashboard)
 
 ### 🎯 Objetivo
 A Tela Inicial deve ser clara, direta e objetiva, fornecendo informações essenciais para que o motorista compreenda rapidamente sua situação financeira e progresso nas metas.
@@ -1290,7 +1268,6 @@ Motivo: Ajuda o motorista a entender rapidamente sua situação sem precisar int
 ### 📌 5️⃣ Widget Opcional
 
 - Um mini-widget fixo na tela inicial do celular, exibindo:
-- Faturamento do Dia (ganhos acumulados).
 - Progresso da Meta (quanto já atingiu e quanto falta).
 
 - Motivo: Permite ao motorista visualizar seu desempenho sem abrir o app.
@@ -1317,12 +1294,13 @@ Motivo: Ajuda o motorista a entender rapidamente sua situação sem precisar int
 
 ---
 
-## 11.3 Tela de Jornadas de Trabalho
+## 8.3 Tela de Jornadas de Trabalho
 
 ### 🎯 Objetivo
 - Registrar e acompanhar jornadas de trabalho.
 - Permitir pausas sem contar no tempo de serviço (para intervalos, almoço, etc.).
 - Exibir métricas úteis como:
+
   - 🚀 **Melhor dia da semana para faturamento**.
   - ⏳ **Duração média das jornadas**.
 
@@ -1351,7 +1329,7 @@ Motivo: Ajuda o motorista a entender rapidamente sua situação sem precisar int
 - ✅ **Shadcn/ui + Tailwind CSS** → Design responsivo e leve.
 - ✅ **TanStack Query** → Atualização instantânea dos dados.
 
-## 11.4 Tela de Abastecimentos
+## 8.4 Tela de Abastecimentos
 
 ### 🎯 Objetivo
 - Permitir que o motorista registre e acompanhe abastecimentos.
@@ -1359,6 +1337,7 @@ Motivo: Ajuda o motorista a entender rapidamente sua situação sem precisar int
 - Exibir gráficos de consumo médio do veículo em vez de apenas uma lista.
 
 ### ✅ Componentes
+
 #### 📌 Registrar Abastecimento:
 - 📆 **Data e Hora** (registradas automaticamente).
 - ⛽ **Tipo de Combustível** (Gasolina, Álcool, Diesel, GNV).
@@ -1369,6 +1348,7 @@ Motivo: Ajuda o motorista a entender rapidamente sua situação sem precisar int
 - Botão **"Salvar Abastecimento"**.
 
 #### 📌 Histórico de Abastecimentos:
+
 - Listagem dos últimos abastecimentos.
 - Gráfico de barras mostrando o consumo médio do veículo.
 
@@ -1379,7 +1359,7 @@ Motivo: Ajuda o motorista a entender rapidamente sua situação sem precisar int
 
 ---
 
-## 11.5 Tela de Despesas
+## 8.5 Tela de Despesas
 
 ### 🎯 Objetivo
 - Registrar e visualizar despesas do motorista.
@@ -1409,9 +1389,10 @@ Motivo: Ajuda o motorista a entender rapidamente sua situação sem precisar int
 
 ---
 
-## 11.6 Tela de Relatórios e Análises
+## 8.6 Tela de Relatórios e Análises
 
 ### 🎯 Objetivo
+
 - Exibir estatísticas financeiras detalhadas para o motorista.
 - Criar um gráfico de tendência de lucro dos últimos 3 meses.
 - Implementar um sistema de insights com sugestões automáticas:
@@ -1421,11 +1402,13 @@ Motivo: Ajuda o motorista a entender rapidamente sua situação sem precisar int
 
 ### ✅ Componentes
 #### 📌 Relatórios Básicos:
+
 - 📆 **Faturamento diário, semanal e mensal**.
 - ⛽ **Gastos com combustível por período**.
 - 🚗 **Média de KM rodado por dia**.
 
 #### 📌 Relatórios Avançados:
+
 - 🔹 **Comparação de ganhos entre Uber, 99, InDrive**.
 - 📈 **Gráfico de evolução dos últimos 3 meses**.
 - 🔮 **Previsão de ganhos futuros**.
@@ -1433,17 +1416,19 @@ Motivo: Ajuda o motorista a entender rapidamente sua situação sem precisar int
 - Ranking de melhores faturamentos, lucros e quilometragens.
 
 #### 📌 Filtros e Exportação:
+
 - Filtro de período.
 - Botão **"Exportar Relatório"** (PDF, Excel).
 
 ### 💡 Tecnologias
+
 - ✅ **Recharts** → Gráficos interativos.
 - ✅ **SheetJS** → Exportação de relatórios.
 - ✅ **TanStack Query** → Atualização dos dados.
 
 ---
 
-## 11.7 Notificações
+## 8.7 Notificações
 
 ### 🎯 Objetivo
 
@@ -1472,7 +1457,7 @@ Motivo: Ajuda o motorista a entender rapidamente sua situação sem precisar int
 
 ---
 
-## 11.8 Resumo Final das Telas do App
+## 8.8 Resumo Final das Telas do App
 
 | Tela               | Objetivo                          | Principais Componentes                                                                 |
 |---------------------|-----------------------------------|---------------------------------------------------------------------------------------|
@@ -1484,7 +1469,7 @@ Motivo: Ajuda o motorista a entender rapidamente sua situação sem precisar int
 | 6️⃣ **Relatórios**     | Estatísticas detalhadas           | Gráficos e exportação de dados                                                       |
 | 7️⃣ **Notificações**   | Engajamento                       | Alertas e notificações push                                                          |
 
-## 11.9 Notificações
+## 8.9 Notificações
 
 📌 Wizard de Configuração Inicial
 
@@ -1565,9 +1550,135 @@ ALTER TABLE usuarios ADD COLUMN wizard_completado BOOLEAN DEFAULT false;
 UPDATE usuarios SET wizard_completado = true WHERE id_usuario = :id_usuario;
 ```
 
-# 12.0 Plano de Monetização
+## 8.10 Configurações do Aplicativo
 
-## 12.1 Modelo de Negócio
+📢 Objetivo:
+🔹 Permitir que o motorista personalize o aplicativo e ajuste preferências essenciais para sua experiência.
+🔹 Garantir que as configurações sejam salvas e aplicadas automaticamente.
+
+## 📌 7.1 Seções da Tela de Configurações
+A tela de Configurações será dividida em categorias, facilitando o acesso e a organização das opções.
+
+###📌 1️⃣ Perfil do Usuário
+📌 Campos:
+
+* Nome completo.
+* E-mail (não editável).
+* Telefone (com autenticação via SMS).
+* Cidade de operação.
+* Senha (opção para alterar).
+* 🚨 Excluir Conta → Processo seguro para remoção definitiva dos dados.
+
+📌 Ações disponíveis:
+* ✅ Atualizar informações pessoais.
+* ✅ Alterar senha com verificação de segurança.
+* ✅ Configurar autenticação de dois fatores (MFA).
+
+###📌 2️⃣ Preferências de Exibição
+* 📌 Opções Disponíveis:
+
+* 🌙 Modo Escuro / Claro / Automático (Dark Mode).
+* 📏 Unidade de Medida → Km/L ou Milhas/Galão.
+* 💬 Idioma → Suporte a múltiplos idiomas (i18n).
+* 🎨 Tamanho da Fonte → Pequeno, Médio, Grande.
+* 🔔 Ativar/Desativar Notificações → Alertas de lembrete e resumo financeiro.
+
+### Implementação Técnica
+
+✅ Alterar Senha (com verificação de senha atual)
+
+´´´
+app.put('/usuario/senha', autenticarUsuario, async (req, res) => {
+    const { senha_atual, nova_senha } = req.body;
+    const id_usuario = req.usuario.id;
+
+    const usuario = await db('usuarios').where({ id_usuario }).first();
+    
+    if (!bcrypt.compareSync(senha_atual, usuario.senha)) {
+        return res.status(400).json({ erro: "Senha atual incorreta!" });
+    }
+
+    const senha_criptografada = bcrypt.hashSync(nova_senha, 10);
+
+    await db('usuarios').where({ id_usuario }).update({ senha: senha_criptografada });
+
+    res.json({ mensagem: "Senha alterada com sucesso!" });
+});
+´´´
+
+✅ Excluir Conta (Processo Seguro)
+
+´´´
+app.delete('/usuario/excluir', autenticarUsuario, async (req, res) => {
+    const id_usuario = req.usuario.id;
+
+    await db('usuarios').where({ id_usuario }).update({ deleted_at: new Date() });
+
+    res.json({ mensagem: "Conta excluída com sucesso. Seus dados foram desativados." });
+});
+´´´
+
+✅ Ativar/Desativar Autenticação de Dois Fatores (MFA)
+
+´´´
+app.put('/usuario/mfa', autenticarUsuario, async (req, res) => {
+    const { ativar } = req.body;
+    const id_usuario = req.usuario.id;
+
+    await db('usuarios').where({ id_usuario }).update({ autenticacao_dois_fatores: ativar });
+
+    res.json({ mensagem: ativar ? "MFA ativado com sucesso!" : "MFA desativado." });
+});
+´´´
+
+### Preferências de Exibição
+
+📌 Criar Tabela para Configurações do Usuário:
+
+´´´
+CREATE TABLE configuracoes (
+    id_configuracao UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    id_usuario UUID REFERENCES usuarios(id_usuario) UNIQUE,
+    modo_escuro BOOLEAN DEFAULT false,
+    unidade_medida ENUM('km/l', 'mpg') DEFAULT 'km/l',
+    idioma VARCHAR(10) DEFAULT 'pt-BR',
+    tamanho_fonte ENUM('pequeno', 'medio', 'grande') DEFAULT 'medio',
+    notificacoes_ativas BOOLEAN DEFAULT true
+);
+´´´
+
+📌 Endpoints no Backend:
+
+✅ Atualizar Preferências de Exibição
+´´´
+app.put('/usuario/configuracoes', autenticarUsuario, async (req, res) => {
+    const { modo_escuro, unidade_medida, idioma, tamanho_fonte, notificacoes_ativas } = req.body;
+    const id_usuario = req.usuario.id;
+
+    await db('configuracoes')
+        .where({ id_usuario })
+        .update({ modo_escuro, unidade_medida, idioma, tamanho_fonte, notificacoes_ativas });
+
+    res.json({ mensagem: "Configurações atualizadas!" });
+});
+´´´
+
+✅ Obter Preferências do Usuário
+´´´
+app.get('/usuario/configuracoes', autenticarUsuario, async (req, res) => {
+    const id_usuario = req.usuario.id;
+
+    const configuracoes = await db('configuracoes').where({ id_usuario }).first();
+
+    res.json(configuracoes);
+});
+´´´
+
+---
+
+# 9.0 Plano de Monetização
+
+## 9.1 Modelo de Negócio
 📌 **Modelo Freemium** com planos pagos para desbloquear funcionalidades avançadas.
 
 📌 **Tipos de monetização:**
@@ -1579,7 +1690,7 @@ UPDATE usuarios SET wizard_completado = true WHERE id_usuario = :id_usuario;
 
 ---
 
-## 12.2 Plano Básico - Gratuito
+## 9.2 Plano Básico - Gratuito
 📌 **Funcionalidades incluídas:**
 - ✅ Cadastro e Login.
 - ✅ Registro de Jornadas.
@@ -1601,7 +1712,7 @@ UPDATE usuarios SET wizard_completado = true WHERE id_usuario = :id_usuario;
 
 ---
 
-## 12.3 Plano Premium - Pago
+## 9.3 Plano Premium - Pago
 📌 **Funcionalidades desbloqueadas:**
 - ✅ Histórico ilimitado de abastecimentos e despesas.
 - ✅ Cadastro de múltiplos veículos.
@@ -1617,7 +1728,7 @@ UPDATE usuarios SET wizard_completado = true WHERE id_usuario = :id_usuario;
 
 ---
 
-## 12.4 Estratégia para Incentivar a Assinatura
+## 9.4 Estratégia para Incentivar a Assinatura
 📌 **Técnicas para aumentar conversão:**
 - ✅ Teste grátis de 7 dias para novos usuários.
 - ✅ Mensagens dentro do app promovendo o plano premium.
