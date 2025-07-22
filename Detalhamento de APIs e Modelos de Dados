@@ -1,0 +1,1047 @@
+Detalhamento de APIs e Modelos de Dados do GiroPro
+
+Este documento fornece uma visão detalhada das APIs do backend e dos modelos de dados (schemas do banco de dados) utilizados no projeto GiroPro. Ele serve como referência para desenvolvedores que precisam interagir com a API ou entender a estrutura de dados.
+
+1. Modelos de Dados (Schemas do Banco de Dados)
+
+Os modelos de dados são definidos usando Drizzle ORM no backend, mapeando diretamente para as tabelas do PostgreSQL. As definições abaixo representam a estrutura lógica das tabelas.
+
+1.1. usuarios
+
+Representa os usuários do aplicativo (motoristas).
+
+TypeScript
+
+
+import { pgTable, uuid, varchar, text, timestamp, boolean, pgEnum } from 'drizzle-orm/pg-core';
+
+export const statusContaEnum = pgEnum('status_conta', ['Ativo', 'Inativo', 'Suspenso']);
+
+export const usuarios = pgTable('usuarios', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  nome: varchar('nome', { length: 255 }).notNull(),
+  email: varchar('email', { length: 255 }).notNull().unique(),
+  senha_hash: text('senha_hash').notNull(),
+  status_conta: statusContaEnum('status_conta').default('Ativo').notNull(),
+  data_cadastro: timestamp('data_cadastro').defaultNow().notNull(),
+  deleted_at: timestamp('deleted_at'), // Soft delete
+});
+
+
+Justificativas:
+
+•
+id (UUID): Garante unicidade global e facilita a escalabilidade em ambientes distribuídos.
+
+•
+email (UNIQUE): Garante que cada usuário tenha um email único para login.
+
+•
+senha_hash: Armazena o hash da senha, nunca a senha em texto claro, para segurança.
+
+•
+status_conta: ENUM para estados predefinidos da conta, garantindo consistência.
+
+•
+deleted_at: Implementa soft delete, preservando dados históricos e permitindo recuperação.
+
+1.2. veiculos
+
+Representa os veículos utilizados pelos motoristas.
+
+TypeScript
+
+
+import { pgTable, uuid, varchar, integer, timestamp, pgEnum } from 'drizzle-orm/pg-core';
+import { usuarios } from './usuarios';
+
+export const tipoCombustivelEnum = pgEnum('tipo_combustivel', ['Gasolina', 'Etanol', 'Diesel', 'GNV', 'Flex']);
+export const tipoUsoEnum = pgEnum('tipo_uso', ['Proprio', 'Alugado', 'Financiado']);
+
+export const veiculos = pgTable('veiculos', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  id_usuario: uuid('id_usuario').notNull().references(() => usuarios.id),
+  marca: varchar('marca', { length: 100 }).notNull(),
+  modelo: varchar('modelo', { length: 100 }).notNull(),
+  ano: integer('ano').notNull(),
+  placa: varchar('placa', { length: 7 }).notNull().unique(), // Formato Mercosul ou antigo
+  tipo_combustivel: tipoCombustivelEnum('tipo_combustivel').notNull(),
+  tipo_uso: tipoUsoEnum('tipo_uso').notNull(),
+  valor_aluguel: integer('valor_aluguel'), // Apenas se tipo_uso = 'Alugado'
+  valor_prestacao: integer('valor_prestacao'), // Apenas se tipo_uso = 'Financiado'
+  media_consumo: integer('media_consumo'), // Calculado com base nos abastecimentos
+  data_cadastro: timestamp('data_cadastro').defaultNow().notNull(),
+  deleted_at: timestamp('deleted_at'),
+});
+
+
+Justificativas:
+
+•
+id_usuario: Chave estrangeira para usuarios, indicando o proprietário do veículo.
+
+•
+placa (UNIQUE): Garante que cada placa seja única no sistema.
+
+•
+tipo_combustivel, tipo_uso: ENUMs para padronizar as opções.
+
+•
+valor_aluguel, valor_prestacao: Campos opcionais para tipos de uso específicos. No futuro, pode ser refatorado para um modelo mais flexível (e.g., JSONB ou tabela de atributos).
+
+•
+media_consumo: Campo para armazenar a média de consumo, a ser atualizado por gatilho ou serviço.
+
+1.3. jornadas
+
+Registra as jornadas de trabalho dos motoristas.
+
+TypeScript
+
+
+import { pgTable, uuid, timestamp, integer, text } from 'drizzle-orm/pg-core';
+import { usuarios } from './usuarios';
+import { veiculos } from './veiculos';
+
+export const jornadas = pgTable('jornadas', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  id_usuario: uuid('id_usuario').notNull().references(() => usuarios.id),
+  id_veiculo: uuid('id_veiculo').notNull().references(() => veiculos.id),
+  data_inicio: timestamp('data_inicio', { withTimezone: true }).notNull(),
+  km_inicio: integer('km_inicio').notNull(),
+  data_fim: timestamp('data_fim', { withTimezone: true }),
+  km_fim: integer('km_fim'),
+  ganho_bruto: integer('ganho_bruto'),
+  km_total: integer('km_total'), // Calculado
+  tempo_total: integer('tempo_total'), // Calculado em minutos
+  observacoes: text('observacoes'),
+  deleted_at: timestamp('deleted_at'),
+});
+
+
+Justificativas:
+
+•
+id_usuario, id_veiculo: Chaves estrangeiras para associar a jornada ao usuário e veículo.
+
+•
+data_inicio, data_fim (withTimezone: true): Armazenam datas e horas com fuso horário, preferencialmente em UTC, para evitar problemas de fuso horário.
+
+•
+km_total, tempo_total: Campos calculados para facilitar consultas e relatórios.
+
+1.4. abastecimentos
+
+Registra os abastecimentos de combustível.
+
+TypeScript
+
+
+import { pgTable, uuid, timestamp, integer, text } from 'drizzle-orm/pg-core';
+import { usuarios } from './usuarios';
+import { veiculos } from './veiculos';
+import { tipoCombustivelEnum } from './veiculos'; // Reutiliza o ENUM
+
+export const abastecimentos = pgTable('abastecimentos', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  id_usuario: uuid('id_usuario').notNull().references(() => usuarios.id),
+  id_veiculo: uuid('id_veiculo').notNull().references(() => veiculos.id),
+  data_abastecimento: timestamp('data_abastecimento', { withTimezone: true }).notNull(),
+  tipo_combustivel: tipoCombustivelEnum('tipo_combustivel').notNull(),
+  quantidade_litros: integer('quantidade_litros').notNull(),
+  valor_litro: integer('valor_litro').notNull(),
+  valor_total: integer('valor_total').notNull(), // Calculado
+  km_atual: integer('km_atual'), // Quilometragem do veículo no momento do abastecimento
+  nome_posto: varchar('nome_posto', { length: 255 }), // Opcional, para análise futura
+  deleted_at: timestamp('deleted_at'),
+});
+
+
+Justificativas:
+
+•
+id_usuario, id_veiculo: Chaves estrangeiras.
+
+•
+valor_total: Campo calculado (quantidade_litros * valor_litro).
+
+•
+km_atual: Importante para calcular a média de consumo.
+
+•
+nome_posto: Adicionado para permitir análises futuras por posto, se necessário.
+
+1.5. despesas
+
+Registra as despesas diversas do motorista.
+
+TypeScript
+
+
+import { pgTable, uuid, timestamp, integer, text, varchar } from 'drizzle-orm/pg-core';
+import { usuarios } from './usuarios';
+import { veiculos } from './veiculos';
+
+export const tipoDespesaEnum = pgEnum('tipo_despesa', ['Manutencao', 'Pneus', 'Seguro', 'Outros']);
+
+export const despesas = pgTable('despesas', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  id_usuario: uuid('id_usuario').notNull().references(() => usuarios.id),
+  id_veiculo: uuid('id_veiculo').references(() => veiculos.id), // Opcional
+  data_despesa: timestamp('data_despesa', { withTimezone: true }).notNull(),
+  tipo_despesa: tipoDespesaEnum('tipo_despesa').notNull(),
+  valor_despesa: integer('valor_despesa').notNull(),
+  descricao: text('descricao'),
+  deleted_at: timestamp('deleted_at'),
+});
+
+
+Justificativas:
+
+•
+id_veiculo: Opcional, pois algumas despesas podem não estar diretamente ligadas a um veículo específico.
+
+•
+tipo_despesa: ENUM para categorias básicas. Para o futuro, pode ser uma tabela separada para maior flexibilidade.
+
+1.6. historico_preco_combustivel
+
+Registra o histórico de preços médios de combustível por cidade/região.
+
+TypeScript
+
+
+import { pgTable, uuid, varchar, integer, timestamp } from 'drizzle-orm/pg-core';
+import { tipoCombustivelEnum } from './veiculos';
+
+export const historicoPrecoCombustivel = pgTable('historico_preco_combustivel', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  cidade: varchar('cidade', { length: 255 }).notNull(),
+  estado: varchar('estado', { length: 2 }).notNull(),
+  tipo_combustivel: tipoCombustivelEnum('tipo_combustivel').notNull(),
+  preco_medio: integer('preco_medio').notNull(), // Preço em centavos
+  data_registro: timestamp('data_registro', { withTimezone: true }).defaultNow().notNull(),
+  deleted_at: timestamp('deleted_at'),
+});
+
+
+Justificativas:
+
+•
+id_usuario removido: Conforme decisão, este histórico é global/regional.
+
+•
+cidade, estado: Para granularidade regional dos preços.
+
+•
+preco_medio: Preço médio do combustível na região.
+
+1.7. logs_atividades
+
+Registra atividades importantes do usuário para auditoria.
+
+TypeScript
+
+
+import { pgTable, uuid, timestamp, text, varchar } from 'drizzle-orm/pg-core';
+import { usuarios } from './usuarios';
+
+export const logsAtividades = pgTable('logs_atividades', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  id_usuario: uuid('id_usuario').references(() => usuarios.id), // Pode ser nulo para atividades do sistema
+  tipo_acao: varchar('tipo_acao', { length: 100 }).notNull(),
+  descricao: text('descricao'),
+  data_acao: timestamp('data_acao', { withTimezone: true }).defaultNow().notNull(),
+  deleted_at: timestamp('deleted_at'),
+});
+
+
+Justificativas:
+
+•
+id_usuario: Opcional, para registrar ações do sistema ou anônimas.
+
+•
+tipo_acao, descricao: Para categorizar e detalhar a atividade.
+
+1.8. metas (Pendente para fase futura)
+
+Representa as metas financeiras ou de produtividade do motorista.
+
+TypeScript
+
+
+// Modelo de dados pendente para versões futuras (v0.4.0+)
+// Exemplo de estrutura:
+/*
+import { pgTable, uuid, timestamp, integer, varchar, pgEnum } from 'drizzle-orm/pg-core';
+import { usuarios } from './usuarios';
+
+export const tipoMetaEnum = pgEnum('tipo_meta', ['Faturamento', 'Economia', 'Quilometragem']);
+export const periodoMetaEnum = pgEnum('periodo_meta', ['Diaria', 'Semanal', 'Mensal']);
+
+export const metas = pgTable('metas', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  id_usuario: uuid('id_usuario').notNull().references(() => usuarios.id),
+  tipo_meta: tipoMetaEnum('tipo_meta').notNull(),
+  periodo_meta: periodoMetaEnum('periodo_meta').notNull(),
+  valor_alvo: integer('valor_alvo').notNull(),
+  data_inicio: timestamp('data_inicio', { withTimezone: true }).notNull(),
+  data_fim: timestamp('data_fim', { withTimezone: true }).notNull(),
+  progresso_atual: integer('progresso_atual').default(0).notNull(),
+  atingida: boolean('atingida').default(false).notNull(),
+  deleted_at: timestamp('deleted_at'),
+});
+*/
+
+
+Justificativas:
+
+•
+Será implementado na v0.4.0. A estrutura proposta permite flexibilidade na definição de metas.
+
+2. APIs (Endpoints)
+
+As APIs são construídas seguindo o padrão RESTful, utilizando JSON para comunicação. Os endpoints são versionados (/api/v1/) para permitir evoluções futuras sem quebrar clientes existentes.
+
+2.1. Autenticação
+
+POST /api/v1/auth/register
+
+•
+Descrição: Registra um novo usuário.
+
+•
+Payload (Request Body):
+
+•
+Resposta (Status 201 Created):
+
+POST /api/v1/auth/login
+
+•
+Descrição: Autentica um usuário e retorna um token JWT.
+
+•
+Payload (Request Body):
+
+•
+Resposta (Status 200 OK):
+
+2.2. Usuários
+
+GET /api/v1/users/me
+
+•
+Descrição: Retorna os dados do usuário autenticado.
+
+•
+Autenticação: Requer token JWT válido no cabeçalho Authorization: Bearer <token>.
+
+•
+Resposta (Status 200 OK):
+
+2.3. Veículos
+
+POST /api/v1/vehicles
+
+•
+Descrição: Cadastra um novo veículo para o usuário autenticado.
+
+•
+Autenticação: Requer token JWT válido.
+
+•
+Payload (Request Body):
+
+•
+Resposta (Status 201 Created):
+
+GET /api/v1/vehicles
+
+•
+Descrição: Lista os veículos do usuário autenticado.
+
+•
+Autenticação: Requer token JWT válido.
+
+•
+Resposta (Status 200 OK):
+
+2.4. Jornadas
+
+POST /api/v1/journeys/start
+
+•
+Descrição: Inicia uma nova jornada.
+
+•
+Autenticação: Requer token JWT válido.
+
+•
+Payload (Request Body):
+
+•
+Resposta (Status 201 Created):
+
+PUT /api/v1/journeys/:id/end
+
+•
+Descrição: Finaliza uma jornada existente.
+
+•
+Autenticação: Requer token JWT válido.
+
+•
+Parâmetros de Rota: id (UUID da jornada).
+
+•
+Payload (Request Body):
+
+•
+Resposta (Status 200 OK):
+
+GET /api/v1/journeys
+
+•
+Descrição: Lista as jornadas do usuário autenticado.
+
+•
+Autenticação: Requer token JWT válido.
+
+•
+Query Params (Opcional):
+
+•
+startDate: Data de início para filtro (ISO 8601).
+
+•
+endDate: Data de fim para filtro (ISO 8601).
+
+•
+page: Número da página (default: 1).
+
+•
+limit: Itens por página (default: 10).
+
+
+
+•
+Resposta (Status 200 OK):
+
+2.5. Abastecimentos
+
+POST /api/v1/fuelings
+
+•
+Descrição: Registra um novo abastecimento.
+
+•
+Autenticação: Requer token JWT válido.
+
+•
+Payload (Request Body):
+
+•
+Resposta (Status 201 Created):
+
+GET /api/v1/fuelings
+
+•
+Descrição: Lista os abastecimentos do usuário autenticado.
+
+•
+Autenticação: Requer token JWT válido.
+
+•
+Query Params (Opcional): startDate, endDate, page, limit.
+
+•
+Resposta (Status 200 OK):
+
+2.6. Despesas
+
+POST /api/v1/expenses
+
+•
+Descrição: Registra uma nova despesa.
+
+•
+Autenticação: Requer token JWT válido.
+
+•
+Payload (Request Body):
+
+•
+Resposta (Status 201 Created):
+
+GET /api/v1/expenses
+
+•
+Descrição: Lista as despesas do usuário autenticado.
+
+•
+Autenticação: Requer token JWT válido.
+
+•
+Query Params (Opcional): startDate, endDate, page, limit.
+
+•
+Resposta (Status 200 OK):
+
+2.7. Dashboard (MVP)
+
+GET /api/v1/dashboard/summary
+
+•
+Descrição: Retorna um resumo financeiro para o dashboard do usuário autenticado.
+
+•
+Autenticação: Requer token JWT válido.
+
+•
+Query Params (Opcional):
+
+•
+period: Período para o resumo (e.g., today, yesterday, last7days, last30days). Default: today.
+
+
+
+•
+Resposta (Status 200 OK):
+
+2.8. Histórico de Preço de Combustível
+
+GET /api/v1/fuel-prices
+
+•
+Descrição: Retorna o histórico de preços médios de combustível por cidade/região.
+
+•
+Autenticação: Não requer autenticação (dados públicos).
+
+•
+Query Params (Opcional):
+
+•
+cidade: Nome da cidade para filtro.
+
+•
+estado: Sigla do estado para filtro.
+
+•
+tipo_combustivel: Tipo de combustível para filtro.
+
+•
+startDate: Data de início para filtro (ISO 8601).
+
+•
+endDate: Data de fim para filtro (ISO 8601).
+
+•
+page: Número da página (default: 1).
+
+•
+limit: Itens por página (default: 10).
+
+
+
+•
+Resposta (Status 200 OK):
+
+3. Fluxo do Sistema (MVP - v0.1.0)
+
+3.1. Fluxo de Autenticação e Cadastro
+
+mermaid
+
+Fonte
+
+
+
+
+
+3.2. Fluxo de Início e Fim de Jornada
+
+mermaid
+
+Fonte
+
+
+
+
+
+3.3. Fluxo de Registro de Abastecimento
+
+mermaid
+
+Fonte
+
+
+
+
+
+3.4. Fluxo de Registro de Despesa
+
+mermaid
+
+Fonte
+
+
+
+
+
+4. Regras de Negócio e Expressões Matemáticas
+
+Esta seção detalha as regras de negócio e as fórmulas matemáticas que governam o comportamento e os cálculos do sistema.
+
+4.1. Regras de Negócio (MVP - v0.1.0)
+
+•
+Autenticação:
+
+•
+Email deve ser único para cada usuário.
+
+•
+Senha deve ter no mínimo 8 caracteres, incluindo letras maiúsculas, minúsculas, números e caracteres especiais (validação no frontend e backend).
+
+
+
+•
+Veículos:
+
+•
+Placa deve ser única para cada veículo.
+
+•
+Ano do veículo deve ser maior ou igual a 1950.
+
+
+
+•
+Jornadas:
+
+•
+Uma jornada só pode ser iniciada se não houver outra jornada em andamento para o mesmo usuário/veículo.
+
+•
+km_fim deve ser maior ou igual a km_inicio.
+
+•
+data_fim deve ser maior ou igual a data_inicio.
+
+•
+ganho_bruto deve ser um valor positivo.
+
+
+
+•
+Abastecimentos:
+
+•
+quantidade_litros e valor_litro devem ser valores positivos.
+
+•
+km_atual deve ser maior ou igual ao km_fim da última jornada ou km_inicio da jornada atual (se houver).
+
+
+
+•
+Despesas:
+
+•
+valor_despesa deve ser um valor positivo.
+
+
+
+4.2. Expressões Matemáticas e Lógicas de Cálculo
+
+4.2.1. Jornadas
+
+•
+km_total (Quilometragem Total da Jornada):
+
+•
+Fórmula: km_total = km_fim - km_inicio
+
+•
+Variáveis: km_fim (quilometragem final), km_inicio (quilometragem inicial).
+
+•
+Justificativa: Calcula a distância percorrida na jornada.
+
+
+
+•
+tempo_total (Tempo Total da Jornada):
+
+•
+Fórmula: tempo_total = (data_fim - data_inicio) em minutos
+
+•
+Variáveis: data_fim (timestamp final), data_inicio (timestamp inicial).
+
+•
+Justificativa: Calcula a duração da jornada para análise de produtividade.
+
+
+
+4.2.2. Abastecimentos
+
+•
+valor_total (Valor Total do Abastecimento):
+
+•
+Fórmula: valor_total = quantidade_litros * valor_litro
+
+•
+Variáveis: quantidade_litros (litros abastecidos), valor_litro (preço por litro).
+
+•
+Justificativa: Calcula o custo total do abastecimento.
+
+
+
+4.2.3. Dashboard (MVP - Cálculos Diários)
+
+•
+faturamento_bruto_dia:
+
+•
+Fórmula: SUM(ganho_bruto) de todas as jornadas finalizadas no dia
+
+•
+Variáveis: ganho_bruto das jornadas.
+
+•
+Justificativa: Soma os ganhos brutos das jornadas para o período selecionado.
+
+
+
+•
+gasto_combustivel_dia:
+
+•
+Fórmula: SUM(valor_total) de todos os abastecimentos no dia
+
+•
+Variáveis: valor_total dos abastecimentos.
+
+•
+Justificativa: Soma os gastos com combustível para o período selecionado.
+
+
+
+•
+gasto_despesas_dia:
+
+•
+Fórmula: SUM(valor_despesa) de todas as despesas no dia
+
+•
+Variáveis: valor_despesa das despesas.
+
+•
+Justificativa: Soma os gastos com despesas para o período selecionado.
+
+
+
+•
+lucro_liquido_dia:
+
+•
+Fórmula: faturamento_bruto_dia - gasto_combustivel_dia - gasto_despesas_dia
+
+•
+Variáveis: faturamento_bruto_dia, gasto_combustivel_dia, gasto_despesas_dia.
+
+•
+Justificativa: Calcula o lucro real do motorista no período selecionado.
+
+
+
+5. Orientações para Rodar o Projeto Localmente
+
+5.1. Pré-requisitos
+
+Certifique-se de ter as seguintes ferramentas instaladas em seu ambiente:
+
+•
+Node.js: Versão 20.x ou superior.
+
+•
+npm ou Yarn: Gerenciador de pacotes (geralmente vem com o Node.js).
+
+•
+PostgreSQL: Versão 16.x ou superior. Certifique-se de que o serviço do PostgreSQL esteja em execução.
+
+•
+Git: Para clonar o repositório.
+
+•
+Expo CLI: Para o desenvolvimento do frontend React Native. Instale globalmente: npm install -g expo-cli.
+
+•
+Docker: (Opcional, mas recomendado) Para rodar o PostgreSQL em um contêiner.
+
+5.2. Configuração do Banco de Dados (PostgreSQL)
+
+Você pode configurar o PostgreSQL localmente ou usar Docker.
+
+Opção 1: Usando Docker (Recomendado)
+
+1.
+Crie um arquivo docker-compose.yml na raiz do projeto (ou em uma pasta infra/):
+
+2.
+Inicie o contêiner do PostgreSQL:
+
+Opção 2: Instalação Local
+
+1.
+Instale o PostgreSQL de acordo com o seu sistema operacional.
+
+2.
+Crie um novo banco de dados chamado giropro_db e um usuário (user) com senha (password) ou ajuste as credenciais no .env do backend.
+
+5.3. Clonar o Repositório
+
+Bash
+
+
+git clone https://github.com/fwagnersilva/GiroPro.git
+cd GiroPro
+
+
+5.4. Configurar e Rodar o Backend
+
+1.
+Navegue até o diretório do backend:
+
+2.
+Crie o arquivo de variáveis de ambiente a partir do exemplo:
+
+3.
+Edite o arquivo .env com as suas configurações de banco de dados. Exemplo:
+
+•
+Importante: Altere sua_chave_secreta_jwt_aqui para uma string longa e aleatória em ambiente de produção.
+
+
+
+4.
+Instale as dependências:
+
+5.
+Execute as migrações do banco de dados para criar as tabelas:
+
+6.
+Inicie o servidor backend:
+
+5.5. Configurar e Rodar o Frontend
+
+1.
+Navegue de volta para a raiz do projeto e depois para o diretório do frontend:
+
+2.
+Crie o arquivo de variáveis de ambiente a partir do exemplo:
+
+3.
+Edite o arquivo .env com a URL do seu backend. Se estiver rodando em um emulador/simulador, use o IP da sua máquina ou o IP do host do Docker. Exemplo:
+
+4.
+Instale as dependências:
+
+5.
+Inicie o servidor de desenvolvimento do Expo:
+
+6. Padrões Adotados
+
+6.1. Arquitetura
+
+O sistema GiroPro adota uma arquitetura Cliente-Servidor com uma API RESTful. O frontend (aplicativo móvel React Native) consome os recursos expostos pelo backend (servidor Node.js/Express). A comunicação é stateless e baseada em requisições HTTP.
+
+mermaid
+
+Fonte
+
+
+
+
+
+6.2. Versionamento de API
+
+As APIs são versionadas (/api/v1/) para permitir a evolução do backend sem quebrar versões antigas do aplicativo cliente. Novas versões da API (/api/v2/, etc.) serão introduzidas quando houver mudanças incompatíveis.
+
+6.3. Convenções de Código
+
+•
+TypeScript: Uso obrigatório de TypeScript para tipagem estática e melhor manutenibilidade.
+
+•
+ESLint e Prettier: Configurados para garantir consistência no estilo de código e identificar potenciais erros.
+
+•
+Convenções de Nomenclatura:
+
+•
+Variáveis e funções: camelCase
+
+•
+Classes e componentes: PascalCase
+
+•
+Constantes globais: UPPER_SNAKE_CASE
+
+•
+Arquivos: kebab-case para componentes/telas, snake_case para modelos de banco de dados.
+
+
+
+6.4. Tratamento de Erros
+
+O backend implementa um middleware centralizado para tratamento de erros, retornando respostas padronizadas (e.g., 400 Bad Request, 401 Unauthorized, 404 Not Found, 500 Internal Server Error) com mensagens claras.
+
+6.5. Segurança
+
+•
+Autenticação JWT: Para proteger as rotas da API.
+
+•
+Hash de Senhas: Utilização de bcrypt para armazenar senhas de forma segura.
+
+•
+Validação de Entrada: Validação rigorosa de todos os dados de entrada no backend usando Zod para prevenir ataques como SQL Injection e XSS.
+
+•
+HTTPS/TLS: (Em produção) A comunicação entre frontend e backend deve ser sempre via HTTPS para criptografia.
+
+•
+Armazenamento Seguro: Tokens JWT e outras informações sensíveis no frontend devem ser armazenados usando expo-secure-store ou equivalente.
+
+7. Checklist para Contribuição no GitHub
+
+Este projeto é open source e aceita contribuições! Siga estas diretrizes para garantir um processo de colaboração suave.
+
+7.1. Como Reportar Bugs
+
+1.
+Verifique se o bug já foi reportado nas Issues.
+
+2.
+Se não, abra uma nova Issue com o título [BUG] Breve descrição do problema.
+
+3.
+Inclua:
+
+•
+Passos para reproduzir o bug.
+
+•
+Comportamento esperado vs. comportamento atual.
+
+•
+Capturas de tela ou vídeos (se aplicável).
+
+•
+Informações do ambiente (OS, versão do Node.js, etc.).
+
+
+
+7.2. Como Sugerir Novas Funcionalidades
+
+1.
+Verifique se a funcionalidade já foi sugerida nas Issues.
+
+2.
+Se não, abra uma nova Issue com o título [FEATURE] Breve descrição da funcionalidade.
+
+3.
+Descreva a funcionalidade, seu propósito e como ela beneficiaria os usuários.
+
+7.3. Processo de Desenvolvimento
+
+1.
+Faça um fork do repositório.
+
+2.
+Clone seu fork localmente.
+
+3.
+Crie uma nova branch para sua feature ou correção de bug:
+
+4.
+Faça suas alterações, seguindo as Convenções de Código.
+
+5.
+Escreva testes para suas alterações e garanta que todos os testes passem.
+
+6.
+Execute o linter e o formatador de código:
+
+7.
+Faça commits atômicos e com mensagens claras e descritivas.
+
+7.4. Processo de Pull Request (PR)
+
+1.
+Certifique-se de que sua branch está atualizada com a main do repositório original.
+
+2.
+Abra um Pull Request para a branch main do repositório original.
+
+3.
+No PR, inclua:
+
+•
+Um título claro e conciso.
+
+•
+Uma descrição detalhada das alterações.
+
+•
+Referências a Issues relacionadas (e.g., Closes #123).
+
+•
+Capturas de tela ou GIFs (se aplicável).
+
+
+
+4.
+Seu PR será revisado. Esteja aberto a feedback e faça as alterações solicitadas.
+
+8. Licença
+
+Este projeto está licenciado sob a Licença MIT.
+
+Plain Text
+
+
+MIT License
+
+Copyright (c) [Ano] [Seu Nome ou Nome da Organização]
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+
+9. Contato
+
+Para dúvidas, sugestões ou suporte, entre em contato através das Issues do GitHub ou diretamente com o mantenedor do projeto: fwagnersilva.
+
