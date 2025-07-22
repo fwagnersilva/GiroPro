@@ -1,23 +1,23 @@
-# Roadmap do Projeto GiroPro
+# 🗺️ Roadmap do Projeto GiroPro
 
 Este documento detalha o roadmap de desenvolvimento do **GiroPro**, organizado por versões seguindo o versionamento semântico (**SemVer**). O foco é na entrega incremental de valor, priorizando simplicidade e estabilidade.
 
-## Filosofia de Desenvolvimento
+## 💡 Filosofia de Desenvolvimento
 
 *   **Simplicidade Primeiro:** Cada versão deve entregar funcionalidades simples e bem testadas antes de adicionar complexidade.
 *   **Feedback do Usuário:** As versões iniciais devem ser lançadas rapidamente para coletar feedback real dos usuários.
 *   **Escalabilidade Gradual:** A arquitetura deve suportar crescimento, mas sem *over-engineering* prematuro.
 *   **Qualidade sobre Quantidade:** Melhor ter poucas funcionalidades que funcionem perfeitamente do que muitas com problemas.
 
-## Versão 0.1.0 - MVP Básico (Prioridade Máxima)
+## 🚀 Versão 0.1.0 - MVP Básico (Prioridade Máxima)
 
 **Objetivo:** Lançar um produto mínimo viável que permita aos motoristas registrar jornadas, abastecimentos e despesas básicas, com um dashboard simples.
 
 **Duração Estimada:** 4-6 semanas
 
-### Funcionalidades Incluídas
+### ✨ Funcionalidades Incluídas
 
-#### Autenticação e Usuário
+#### 🔑 Autenticação e Usuário
 
 *   ✅ Cadastro de usuário (nome, email, senha)
 *   ✅ Login/Logout
@@ -25,52 +25,52 @@ Este documento detalha o roadmap de desenvolvimento do **GiroPro**, organizado p
 *   ✅ Hash de senhas com `bcrypt`
 *   ✅ Autenticação JWT
 
-#### Gerenciamento de Veículos
+#### 🚗 Gerenciamento de Veículos
 
 *   ✅ Cadastro de um veículo principal
 *   ✅ Campos básicos: marca, modelo, ano, placa, tipo_combustivel, tipo_uso
 *   ✅ Validação de placa (formato brasileiro)
 
-#### Registro de Jornadas
+#### 🛣️ Registro de Jornadas
 
 *   ✅ Iniciar jornada (`km_inicio`, `data_inicio`)
 *   ✅ Finalizar jornada (`km_fim`, `data_fim`, `ganho_bruto`)
 *   ✅ Validações básicas (`km_fim >= km_inicio`, `data_fim >= data_inicio`)
 *   ✅ Cálculo automático de `km_total` e `tempo_total`
 
-#### Registro de Abastecimentos
+#### ⛽ Registro de Abastecimentos
 
 *   ✅ Registro de abastecimento (data, tipo_combustivel, quantidade_litros, valor_litro, valor_total)
 *   ✅ Associação com veículo
 *   ✅ Validações básicas (valores positivos)
 
-#### Registro de Despesas
+#### 💸 Registro de Despesas
 
 *   ✅ Registro de despesas básicas (data, tipo_despesa, valor_despesa, descricao)
 *   ✅ Tipos: Manutenção, Pneus, Seguro, Outros
 *   ✅ Associação opcional com veículo
 
-#### Dashboard Básico
+#### 📈 Dashboard Básico
 
 *   ✅ Cards simples: Faturamento do Dia, Gasto Combustível do Dia, Gasto Despesas do Dia, Lucro Líquido do Dia
 *   ✅ Filtro por período (hoje, ontem, últimos 7 dias, últimos 30 dias)
 *   ✅ Cálculos em tempo real (sem cache)
 
-#### Interface de Usuário
+#### 🖥️ Interface de Usuário
 
 *   ✅ Design responsivo e intuitivo
 *   ✅ Navegação simples entre telas
 *   ✅ Formulários com validação em tempo real
 *   ✅ Feedback visual para ações do usuário
 
-### Tecnologias Confirmadas
+### 🛠️ Tecnologias Confirmadas
 
 *   **Frontend:** React Native, TypeScript, TanStack Query, React Hook Form, Zod
 *   **Backend:** Node.js, Express.js, TypeScript, Drizzle ORM, Zod
 *   **Banco de Dados:** PostgreSQL
 *   **Autenticação:** JWT + bcrypt
 
-### Critérios de Aceitação
+### ✅ Critérios de Aceitação
 
 *   ✅ Usuário pode se cadastrar e fazer login
 *   ✅ Usuário pode cadastrar um veículo
@@ -81,15 +81,15 @@ Este documento detalha o roadmap de desenvolvimento do **GiroPro**, organizado p
 *   ✅ Todas as funcionalidades têm testes unitários básicos
 *   ✅ API está documentada com exemplos
 
-## Versão 0.2.0 - Melhorias de UX e Relatórios Básicos
+## 🌟 Versão 0.2.0 - Melhorias de UX e Relatórios Básicos
 
 **Objetivo:** Melhorar a experiência do usuário e adicionar relatórios básicos para análise de dados.
 
 **Duração Estimada:** 3-4 semanas
 
-### Funcionalidades Incluídas
+### ✨ Funcionalidades Incluídas
 
-#### Melhorias de UX
+#### 🎨 Melhorias de UX
 
 *   ✅ Wizard de configuração inicial para novos usuários
 *   ✅ Atalhos rápidos no dashboard (iniciar jornada, registrar abastecimento)
@@ -98,26 +98,26 @@ Este documento detalha o roadmap de desenvolvimento do **GiroPro**, organizado p
 *   ✅ Histórico de despesas com paginação
 *   ✅ Busca e filtros básicos nos históricos
 
-#### Relatórios Básicos
+#### 📊 Relatórios Básicos
 
 *   ✅ Relatório semanal (faturamento, despesas, lucro)
 *   ✅ Relatório mensal (faturamento, despesas, lucro)
 *   ✅ Gráfico simples de faturamento por dia (últimos 30 dias)
 *   ✅ Exportação de dados em CSV
 
-#### Configurações
+#### ⚙️ Configurações
 
 *   ✅ Perfil do usuário (editar nome, email)
 *   ✅ Configurações básicas (unidade de medida, moeda)
 *   ✅ Alterar senha
 
-#### Performance
+#### ⚡ Performance
 
 *   ✅ Cache básico com TanStack Query
 *   ✅ Otimização de queries do dashboard
 *   ✅ Paginação em todas as listagens
 
-### Critérios de Aceitação
+### ✅ Critérios de Aceitação
 
 *   ✅ Novos usuários passam por um wizard de configuração
 *   ✅ Usuários podem visualizar relatórios semanais e mensais
@@ -125,176 +125,176 @@ Este documento detalha o roadmap de desenvolvimento do **GiroPro**, organizado p
 *   ✅ Performance do dashboard melhorada (carregamento < 2s)
 *   ✅ Dados podem ser exportados em CSV
 
-## Versão 0.3.0 - Múltiplos Veículos e Análises Avançadas
+## 🚗 Versão 0.3.0 - Múltiplos Veículos e Análises Avançadas
 
 **Objetivo:** Permitir o gerenciamento de múltiplos veículos e introduzir análises mais avançadas.
 
 **Duração Estimada:** 4-5 semanas
 
-### Funcionalidades Incluídas
+### ✨ Funcionalidades Incluídas
 
-#### Múltiplos Veículos
+#### 🚘 Múltiplos Veículos
 
 *   ✅ Cadastro de múltiplos veículos
 *   ✅ Seleção de veículo ao iniciar jornada
 *   ✅ Relatórios por veículo
 *   ✅ Comparação de performance entre veículos
 
-#### Análises Avançadas
+#### 🧠 Análises Avançadas
 
 *   ✅ Cálculo de consumo médio por veículo
 *   ✅ Análise de produtividade (ganho por hora, ganho por km)
 *   ✅ Identificação de padrões (melhores dias/horários)
 *   ✅ Previsão simples de ganhos mensais
 
-#### Melhorias no Dashboard
+#### 📊 Melhorias no Dashboard
 
 *   ✅ Cards dinâmicos e personalizáveis
 *   ✅ Gráficos mais detalhados (consumo, produtividade)
 *   ✅ Comparação com períodos anteriores
 
-#### Notificações
+#### 🔔 Notificações
 
 *   ✅ Notificação de jornada não finalizada
 *   ✅ Lembretes de manutenção básica (baseado em km)
 
-### Critérios de Aceitação
+### ✅ Critérios de Aceitação
 
 *   ✅ Usuários podem gerenciar múltiplos veículos
 *   ✅ Análises de produtividade estão funcionais
 *   ✅ Dashboard é personalizável
 *   ✅ Notificações básicas funcionam
 
-## Versão 0.4.0 - Metas e Gamificação Básica
+## 🎯 Versão 0.4.0 - Metas e Gamificação Básica
 
 **Objetivo:** Introduzir sistema de metas e elementos básicos de gamificação.
 
 **Duração Estimada:** 3-4 semanas
 
-### Funcionalidades Incluídas
+### ✨ Funcionalidades Incluídas
 
-#### Sistema de Metas
+#### 🏆 Sistema de Metas
 
 *   ✅ Definição de metas diárias, semanais e mensais
 *   ✅ Acompanhamento de progresso das metas
 *   ✅ Tipos de metas: faturamento, economia, quilometragem
 
-#### Gamificação Básica
+#### 🎮 Gamificação Básica
 
 *   ✅ Sistema de conquistas simples
 *   ✅ Pontuação baseada em metas atingidas
 *   ✅ Badges para marcos importantes
 
-#### Melhorias de Relatórios
+#### 📈 Melhorias de Relatórios
 
 *   ✅ Relatórios comparativos (mês atual vs anterior)
 *   ✅ Análise de tendências
 *   ✅ Sugestões automáticas de otimização
 
-### Critérios de Aceitação
+### ✅ Critérios de Aceitação
 
 *   ✅ Usuários podem definir e acompanhar metas
 *   ✅ Sistema de conquistas está funcional
 *   ✅ Relatórios comparativos estão disponíveis
 
-## Versão 1.0.0 - Primeira Versão Estável
+## 🏁 Versão 1.0.0 - Primeira Versão Estável
 
 **Objetivo:** Consolidar todas as funcionalidades anteriores, melhorar a estabilidade e preparar para lançamento público.
 
 **Duração Estimada:** 4-6 semanas
 
-### Funcionalidades Incluídas
+### ✨ Funcionalidades Incluídas
 
-#### Estabilidade e Performance
+#### 🔒 Estabilidade e Performance
 
 *   ✅ Otimização completa de performance
 *   ✅ Cache avançado (Redis)
 *   ✅ Tratamento robusto de erros
 *   ✅ Logs detalhados para monitoramento
 
-#### Segurança
+#### 🛡️ Segurança
 
 *   ✅ Auditoria de segurança completa
 *   ✅ Rate limiting
 *   ✅ Validação rigorosa de dados
 *   ✅ Backup automático de dados
 
-#### Documentação
+#### 📝 Documentação
 
 *   ✅ Documentação completa da API
 *   ✅ Guias de usuário
 *   ✅ Documentação técnica atualizada
 
-#### Testes
+#### 🧪 Testes
 
 *   ✅ Cobertura de testes > 80%
 *   ✅ Testes end-to-end
 *   ✅ Testes de performance
 
-### Critérios de Aceitação
+### ✅ Critérios de Aceitação
 
 *   ✅ Aplicativo é estável em produção
 *   ✅ Performance atende aos requisitos (< 2s carregamento)
 *   ✅ Segurança auditada e aprovada
 *   ✅ Documentação completa e atualizada
 
-## Funcionalidades Futuras (Versões 1.1.0+)
+## 🔮 Funcionalidades Futuras (Versões 1.1.0+)
 
-### Versão 1.1.0 - Integração com Apps de Transporte
+### 🚕 Versão 1.1.0 - Integração com Apps de Transporte
 
 *   🔄 Pendente para fase futura
 *   Integração com APIs do Uber, 99, iFood
 *   Importação automática de dados de corridas
 *   Sincronização de ganhos em tempo real
 
-### Versão 1.2.0 - Modo Offline Avançado
+### 📶 Versão 1.2.0 - Modo Offline Avançado
 
 *   🔄 Pendente para fase futura
 *   Sincronização offline robusta
 *   Resolução de conflitos de dados
 *   Cache inteligente de dados
 
-### Versão 1.3.0 - Análises Preditivas
+### 📈 Versão 1.3.0 - Análises Preditivas
 
 *   🔄 Pendente para fase futura
 *   Machine Learning para previsões
 *   Otimização de rotas
 *   Análise de demanda por região
 
-### Versão 1.4.0 - Recursos Sociais
+### 🤝 Versão 1.4.0 - Recursos Sociais
 
 *   🔄 Pendente para fase futura
 *   Rankings entre motoristas
 *   Comunidade de motoristas
 *   Compartilhamento de dicas
 
-### Versão 1.5.0 - Gestão Fiscal
+### 💰 Versão 1.5.0 - Gestão Fiscal
 
 *   🔄 Pendente para fase futura
 *   Cálculo de impostos
 *   Geração de relatórios fiscais
 *   Integração com contadores
 
-## Notas Técnicas
+## 📚 Notas Técnicas
 
-### Estratégia de Migração de Dados
+### 💾 Estratégia de Migração de Dados
 
 *   Todas as versões devem incluir scripts de migração do banco de dados
 *   *Backward compatibility* deve ser mantida por pelo menos 2 versões
 *   Dados críticos devem ter backup automático antes de migrações
 
-### Estratégia de Deploy
+### ☁️ Estratégia de Deploy
 
 *   **Versões 0.x.0:** Deploy manual com testes em ambiente de *staging*
 *   **Versões 1.x.0+:** CI/CD automatizado com deploy gradual
 
-### Monitoramento e Métricas
+### 📊 Monitoramento e Métricas
 
 *   Implementar métricas de uso desde a v0.1.0
 *   Monitoramento de performance desde a v0.2.0
 *   Analytics de usuário desde a v0.3.0
 
-## Conclusão
+## 🎉 Conclusão
 
 Este roadmap prioriza a entrega de valor incremental, começando com funcionalidades essenciais e evoluindo gradualmente para recursos mais avançados. A abordagem garante que o produto seja útil desde a primeira versão, enquanto constrói uma base sólida para crescimento futuro.
 
