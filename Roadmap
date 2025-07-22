@@ -129,49 +129,29 @@ Autenticação: JWT + bcrypt
 
 Critérios de Aceitação
 
+•
+✅ Usuário pode se cadastrar e fazer login
 
+•
+✅ Usuário pode cadastrar um veículo
 
+•
+✅ Usuário pode iniciar e finalizar jornadas
 
-Usuário pode se cadastrar e fazer login
+•
+✅ Usuário pode registrar abastecimentos e despesas
 
+•
+✅ Dashboard mostra dados básicos do dia atual
 
+•
+✅ Aplicativo funciona offline para visualização de dados já carregados
 
+•
+✅ Todas as funcionalidades têm testes unitários básicos
 
-Usuário pode cadastrar um veículo
-
-
-
-
-Usuário pode iniciar e finalizar jornadas
-
-
-
-
-Usuário pode registrar abastecimentos e despesas
-
-
-
-
-Dashboard mostra dados básicos do dia atual
-
-
-
-
-Aplicativo funciona offline para visualização de dados já carregados
-
-
-
-
-Todas as funcionalidades têm testes unitários básicos
-
-
-
-
-API está documentada com exemplos
-
-
-
-
+•
+✅ API está documentada com exemplos
 
 Versão 0.2.0 - Melhorias de UX e Relatórios Básicos
 
@@ -239,34 +219,20 @@ Performance
 
 Critérios de Aceitação
 
+•
+✅ Novos usuários passam por um wizard de configuração
 
+•
+✅ Usuários podem visualizar relatórios semanais e mensais
 
+•
+✅ Históricos têm busca e filtros funcionais
 
-Novos usuários passam por um wizard de configuração
+•
+✅ Performance do dashboard melhorada (carregamento < 2s)
 
-
-
-
-Usuários podem visualizar relatórios semanais e mensais
-
-
-
-
-Históricos têm busca e filtros funcionais
-
-
-
-
-Performance do dashboard melhorada (carregamento < 2s)
-
-
-
-
-Dados podem ser exportados em CSV
-
-
-
-
+•
+✅ Dados podem ser exportados em CSV
 
 Versão 0.3.0 - Múltiplos Veículos e Análises Avançadas
 
@@ -325,29 +291,17 @@ Notificações
 
 Critérios de Aceitação
 
+•
+✅ Usuários podem gerenciar múltiplos veículos
 
+•
+✅ Análises de produtividade estão funcionais
 
+•
+✅ Dashboard é personalizável
 
-Usuários podem gerenciar múltiplos veículos
-
-
-
-
-Análises de produtividade estão funcionais
-
-
-
-
-Dashboard é personalizável
-
-
-
-
-Notificações básicas funcionam
-
-
-
-
+•
+✅ Notificações básicas funcionam
 
 Versão 0.4.0 - Metas e Gamificação Básica
 
@@ -392,24 +346,14 @@ Melhorias de Relatórios
 
 Critérios de Aceitação
 
+•
+✅ Usuários podem definir e acompanhar metas
 
+•
+✅ Sistema de conquistas está funcional
 
-
-Usuários podem definir e acompanhar metas
-
-
-
-
-Sistema de conquistas está funcional
-
-
-
-
-Relatórios comparativos estão disponíveis
-
-
-
-
+•
+✅ Relatórios comparativos estão disponíveis
 
 Versão 1.0.0 - Primeira Versão Estável
 
@@ -471,29 +415,17 @@ Testes
 
 Critérios de Aceitação
 
+•
+✅ Aplicativo é estável em produção
 
+•
+✅ Performance atende aos requisitos (< 2s carregamento)
 
+•
+✅ Segurança auditada e aprovada
 
-Aplicativo é estável em produção
-
-
-
-
-Performance atende aos requisitos (< 2s carregamento)
-
-
-
-
-Segurança auditada e aprovada
-
-
-
-
-Documentação completa e atualizada
-
-
-
-
+•
+✅ Documentação completa e atualizada
 
 Funcionalidades Futuras (Versões 1.1.0+)
 
