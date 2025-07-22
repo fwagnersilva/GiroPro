@@ -1,44 +1,33 @@
-Guia de Contribuição do GiroPro ✨
-Obrigado por considerar contribuir com o GiroPro! Este documento fornece diretrizes claras para colaboradores em potencial, garantindo um processo de desenvolvimento colaborativo e eficiente.
+# Guia de Contribuição do GiroPro ✨
 
-Código de Conduta 🤝
-Ao participar deste projeto, você concorda em seguir nosso Código de Conduta. Esperamos que todos os colaboradores mantenham um ambiente respeitoso e inclusivo.
+Obrigado por considerar contribuir com o GiroPro! Este documento traz diretrizes claras para colaboradores, garantindo um processo colaborativo e eficiente.
 
-Como Contribuir 🚀
-1. Reportar Bugs 🐞
-Se você encontrou um bug, por favor, siga estas etapas:
+## Código de Conduta 🤝
 
-Verifique se já foi reportado: Procure nas Issues existentes para ver se o problema já foi identificado.
+Ao participar, você concorda em seguir nosso **Código de Conduta**. Queremos um ambiente respeitoso e inclusivo para todos.
 
-Crie uma nova Issue: Se o bug não foi reportado, abra uma nova Issue com o seguinte formato:
+## Como Contribuir 🚀
 
-Título: [BUG] Breve descrição do problema
+### 1. Reportar Bugs 🐞
 
-Descrição detalhada incluindo:
+Se você encontrou um bug, siga estas etapas para reportá-lo:
 
-Passos para reproduzir o bug (quanto mais detalhado, melhor!)
+*   **Cheque se já foi reportado:** Antes de criar uma nova Issue, verifique as **Issues existentes** para evitar duplicidade.
+*   **Crie uma nova Issue:** Se o bug ainda não foi reportado, crie uma nova Issue seguindo o formato abaixo:
 
-Comportamento esperado vs. comportamento atual
-
-Capturas de tela ou vídeos (se aplicável, para visualização rápida)
-
-Informações do ambiente (OS, versão do Node.js, versão do app, etc.)
-
-Logs de erro (se disponíveis, anexe-os!)
-
-Exemplo de Issue de Bug:
+```markdown
 [BUG] Dashboard não carrega dados após login
 
 **Passos para reproduzir:**
-1. Fazer login no aplicativo.
+1. Fazer login no app.
 2. Navegar para o dashboard.
 3. Aguardar carregamento.
 
 **Comportamento esperado:**
-Dashboard deve exibir cards com dados financeiros do usuário.
+Dashboard mostra os cards com dados financeiros.
 
 **Comportamento atual:**
-Dashboard fica em loading infinito.
+Fica em loading infinito.
 
 **Ambiente:**
 - OS: Android 12
@@ -46,199 +35,210 @@ Dashboard fica em loading infinito.
 - Dispositivo: Samsung Galaxy S21
 
 **Logs:**
-[Anexar logs se disponíveis, ex: link para Gist ou arquivo .txt]
-2. Sugerir Novas Funcionalidades ✨
-Para sugerir melhorias ou novas funcionalidades, siga este processo:
+[Anexar logs ou links, ex: Gist]
+```
 
-Verifique o roadmap: Consulte o ROADMAP.md para ver se a funcionalidade já está planejada.
+### 2. Sugerir Novas Funcionalidades ✨
 
-Crie uma Issue de Feature: Se a funcionalidade não está planejada, abra uma nova Issue com:
+Quer sugerir uma melhoria ou nova funcionalidade? Siga estas diretrizes:
 
-Título: [FEATURE] Breve descrição da funcionalidade
+*   **Cheque o roadmap:** Consulte o arquivo `ROADMAP.md` para ver se a funcionalidade já está planejada.
+*   **Abra uma Issue de Feature:** Se a funcionalidade não estiver no roadmap, abra uma nova Issue de Feature com o seguinte formato:
 
-Descrição incluindo:
-
-Problema que a funcionalidade resolve
-
-Solução proposta
-
-Benefícios para os usuários
-
-Mockups ou exemplos (se aplicável, para facilitar a visualização)
-
-Exemplo de Issue de Feature:
+```markdown
 [FEATURE] Exportação de relatórios em PDF
 
 **Problema:**
-Usuários precisam compartilhar relatórios financeiros com contadores ou para arquivo pessoal, mas atualmente só podem visualizar na tela.
+Usuários querem compartilhar relatórios, mas só podem visualizar.
 
 **Solução proposta:**
-Adicionar um botão "Exportar PDF" nos relatórios mensais e semanais.
+Adicionar botão "Exportar PDF" nos relatórios mensais e semanais.
 
 **Benefícios:**
-- Facilita o compartilhamento de dados.
-- Permite arquivo físico dos relatórios.
-- Melhora a experiência do usuário.
+- Compartilhamento fácil.
+- Arquivo físico.
+- Melhor experiência.
 
 **Mockup:**
-[Anexar imagem do botão proposto ou link para um Figma/Excalidraw]
-3. Processo de Desenvolvimento 👨‍💻
-3.1. Configuração do Ambiente ⚙️
-Faça um Fork do repositório no GitHub.
+[Anexar imagem ou link para protótipo]
+```
 
-Clone seu fork localmente:
+### 3. Processo de Desenvolvimento 👨‍💻
 
-Bash
+#### 3.1 Configuração do Ambiente ⚙️
 
+Para configurar seu ambiente de desenvolvimento, siga estes passos:
+
+*   Faça **fork** do repositório no GitHub.
+*   Clone seu fork localmente:
+
+```bash
 git clone https://github.com/seu-usuario/GiroPro.git
-Configure o upstream para sincronizar com o repositório original:
+```
 
-Bash
+*   Configure o `upstream` para sincronizar com o repositório original:
 
+```bash
 git remote add upstream https://github.com/GiroPro/GiroPro.git
-Configure o ambiente seguindo as instruções detalhadas no README.md.
+```
 
-3.2. Fluxo de Trabalho Git 🔄
-Sincronize com o repositório original para ter a versão mais recente:
+*   Siga as instruções detalhadas no `README` para configurar o ambiente de desenvolvimento.
 
-Crie uma nova branch para sua contribuição. Use nomes descritivos:
+#### 3.2 Fluxo de Trabalho Git 🔄
 
-Faça suas alterações, seguindo nossas convenções de código.
+Utilize o seguinte fluxo de trabalho Git para suas contribuições:
 
-Teste suas alterações localmente (muito importante!).
+*   Sempre **sincronize com o `upstream`** para pegar as atualizações mais recentes:
 
-Commit suas alterações com mensagens claras e descritivas:
+```bash
+git fetch upstream
+git checkout main
+git merge upstream/main
+```
 
-3.3. Convenções de Commit 💬
-Utilizamos o padrão . Alguns exemplos comuns:
+*   Crie **branches descritivas** para suas tarefas:
 
-feat: Adiciona uma nova funcionalidade
+```bash
+git checkout -b feat/nova-funcionalidade
+```
 
-fix: Corrige um bug (ex: fix: corrige bug no cálculo de lucro)
+*   Faça **commits claros e atômicos**, testando tudo localmente antes de enviar suas alterações.
 
-docs: Atualiza a documentação (ex: docs: atualiza documentação da API)
+#### 3.3 Convenções de Commit 💬
 
-style: Corrige formatação, sem alteração de código (ex: style: corrige formatação do código)
+Use os **prefixes padrão** para suas mensagens de commit:
 
-refactor: Refatora código sem alterar comportamento (ex: refactor: refatora componente de dashboard)
+*   `feat`: para **funcionalidades** novas
+*   `fix`: para **correções** de bugs
+*   `docs`: para alterações na **documentação**
+*   `style`: para **formatação** de código sem alterar a lógica
+*   `refactor`: para **refatoração** de código
+*   `test`: para adição ou modificação de **testes**
+*   `chore`: para **atualizações de build/dependências** ou tarefas de manutenção
 
-test: Adiciona ou corrige testes (ex: test: adiciona testes para jornadas)
+### 4. Padrões de Código 📐
 
-chore: Atualiza dependências ou outras tarefas de build (ex: chore: atualiza dependências)
+#### 4.1 TypeScript 🟦
 
-4. Padrões de Código 📐
-4.1. TypeScript 🟦
-Uso obrigatório de TypeScript em todo o código.
+*   Utilize **tipagem explícita** sempre que possível.
+*   **Evite** o uso de `any`.
 
-Tipagem explícita sempre que possível.
+#### 4.2 Nomenclatura 🏷️
 
-Evite any – use tipos específicos ou unknown.
+Siga as convenções de nomenclatura:
 
-4.2. Nomenclatura 🏷️
-Variáveis e funções: camelCase (ex: calcularTotal)
+*   **Variáveis e funções:** `camelCase`
+*   **Classes/componentes:** `PascalCase`
+*   **Constantes globais:** `UPPER_SNAKE_CASE`
+*   **Arquivos:**
+    *   **componentes:** `kebab-case`
+    *   **modelos:** `snake_case`
 
-Classes e componentes: PascalCase (ex: DashboardComponent)
+#### 4.3 Estrutura de Arquivos 📂
 
-Constantes globais: UPPER_SNAKE_CASE (ex: MAX_ITEMS)
+*   **Backend:** (detalhar se quiser)
+*   **Frontend:** (detalhar se quiser)
 
-Arquivos: kebab-case para componentes (ex: dashboard-card.tsx), snake_case para modelos (ex: user_model.ts)
+#### 4.4 Linting e Formatação 🧹
 
-4.3. Estrutura de Arquivos 📂
-Backend:
+Antes de realizar o commit, execute os seguintes comandos para garantir a qualidade do código:
 
-Frontend:
+```bash
+npm run lint
+npm run format
+```
 
-4.4. Linting e Formatação 🧹
-Antes de fazer commit, execute os seguintes comandos para garantir a padronização:
+### 5. Testes ✅
 
-5. Testes ✅
-5.1. Requisitos de Teste 📝
-Novas funcionalidades devem incluir testes.
+#### 5.1 Requisitos 📝
 
-Correções de bugs devem incluir testes que reproduzam o bug para evitar regressões futuras.
+*   Novas features e correções de bugs **devem ter testes** correspondentes.
+*   A **cobertura mínima** de testes é de `70%`.
 
-Almejamos uma cobertura mínima de 70% para novas funcionalidades.
+#### 5.2 Rodando Testes 🏃‍♀️
 
-5.2. Executando Testes 🏃‍♀️
-Para rodar os testes localmente:
+Para rodar os testes, utilize o comando:
 
-5.3. Tipos de Teste 🧪
-Unitários: Testam funções e componentes isoladamente.
+```bash
+npm run test
+```
 
-Integração: Testam a interação entre diferentes módulos.
+#### 5.3 Tipos de Testes 🧪
 
-E2E (End-to-End): Testam fluxos completos do usuário (para funcionalidades críticas).
+Nós utilizamos os seguintes tipos de testes:
 
-6. Pull Request (PR) ⬆️
-6.1. Antes de Abrir o PR ✍️
-Sincronize sua branch com a main para evitar conflitos:
+*   **Unitários**
+*   **Integração**
+*   **E2E** (End-to-End)
 
-Execute todos os testes e garanta que passem.
+### 6. Pull Request (PR) ⬆️
 
-Execute o linter e corrija todos os problemas.
+#### 6.1 Antes de abrir um PR ✍️
 
-Teste manualmente suas alterações para garantir que tudo funciona como esperado.
+Antes de abrir seu Pull Request, certifique-se de:
 
-6.2. Criando o PR 🚀
-Push sua branch para seu fork no GitHub:
+*   **Sincronizar** sua branch com a `main`.
+*   **Rodar testes e lint** localmente.
+*   **Testar manualmente** suas alterações.
 
-Abra um Pull Request no GitHub com:
+#### 6.2 Criando um PR 🚀
 
-Título claro seguindo o padrão de commits.
+Para criar um Pull Request, siga estes passos:
 
-Descrição detalhada incluindo:
+*   Faça o **push** da sua branch para o seu fork.
+*   Abra um PR no GitHub com as seguintes informações:
+    *   **Título claro** (seguindo o padrão de commits).
+    *   **Descrição** detalhada do que mudou e por quê.
+    *   **Como testar** as alterações.
+    *   **Screenshots/GIFs** se aplicável.
+    *   **Referência a Issues** relacionadas.
 
-O que foi alterado e por quê.
+#### 6.3 Revisão do PR 🔍
 
-Como testar as alterações (passos simples e claros).
+O processo de revisão inclui:
 
-Screenshots/GIFs (se aplicável, para demonstração visual).
+*   **Testes e lint automáticos**.
+*   **Revisão manual** pelos mantenedores.
+*   Esteja **aberto a feedback** e discussões.
 
-Referências a Issues (ex: Closes #123, Fixes #456).
+Após a aprovação, seu PR será mergeado 🎉
 
-Template de PR:
-6.3. Processo de Revisão 🔍
-Revisão automática: GitHub Actions executará testes e linting automaticamente.
+### 7. Configuração de Desenvolvimento 🛠️
 
-Revisão manual: Mantenedores revisarão seu código com atenção.
+#### 7.1 Variáveis de Ambiente 🔑
 
-Feedback: Esteja aberto a sugestões e faça as alterações solicitadas.
+*   **Backend:** Utilize o arquivo `.env`.
+*   **Frontend:** Utilize o arquivo `.env`.
 
-Aprovação: Após a aprovação, seu PR será merged! 🎉
+#### 7.2 Banco de Dados 🗄️
 
-7. Configuração de Desenvolvimento 🛠️
-7.1. Variáveis de Ambiente 🔑
-Backend (.env):
+É **recomendado** o uso de Docker para o banco de dados:
 
-Frontend (.env):
+*   Utilize o arquivo `docker-compose.yml`.
+*   Para iniciar o banco de dados, execute:
 
-7.2. Banco de Dados 🗄️
-Para desenvolvimento, recomendamos usar Docker para o banco de dados:
+```bash
+docker-compose up -d
+```
 
-docker-compose.yml:
+### 8. Debugging 🐛
 
-Para iniciar o banco de dados:
+#### 8.1 Backend 💻
 
-8. Debugging 🐛
-8.1. Backend 💻
-Use o VS Code com a extensão Node.js para depuração:
+Para depurar o backend, utilize o **VS Code** com a extensão **Node.js Debug**.
 
-.vscode/launch.json:
+#### 8.2 Frontend 📱
 
-8.2. Frontend 📱
-Utilize o Flipper ou React Native Debugger para depurar o React Native.
+Para depurar o frontend, utilize **Flipper** ou **React Native Debugger**.
 
-9. Recursos Úteis 📚
+### 9. Recursos Úteis 📚
 
+(Adicione links, docs, templates aqui)
 
+### 10. Dúvidas e Suporte 🙋‍♀️
 
+Para dúvidas e suporte, utilize os seguintes canais:
 
-
-10. Dúvidas e Suporte 🙋‍♀️
-Issues: Para bugs e sugestões de funcionalidades.
-
-Discussions: Para perguntas gerais e discussões com a comunidade.
-
-Email: [Seu email de contato]
-
-Obrigado! Sua contribuição é muito valiosa para o crescimento do GiroPro. Juntos, podemos criar uma ferramenta que realmente ajude motoristas de aplicativo a gerenciar melhor suas finanças!
+*   **Issues** para bugs e sugestões
+*   **Discussions** para dúvidas gerais
+*   **Email:** `[seu-email@exemplo.com]`
