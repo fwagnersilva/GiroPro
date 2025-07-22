@@ -1,0 +1,514 @@
+Guia de Contribuição do GiroPro
+
+Obrigado por considerar contribuir com o GiroPro! Este documento fornece diretrizes para colaboradores em potencial, garantindo um processo de desenvolvimento colaborativo e eficiente.
+
+Código de Conduta
+
+Ao participar deste projeto, você concorda em seguir nosso Código de Conduta. Esperamos que todos os colaboradores mantenham um ambiente respeitoso e inclusivo.
+
+Como Contribuir
+
+1. Reportar Bugs
+
+Se você encontrou um bug, por favor:
+
+1.
+Verifique se já foi reportado: Procure nas Issues existentes para ver se o problema já foi identificado.
+
+2.
+Crie uma nova Issue: Se o bug não foi reportado, abra uma nova Issue com:
+
+•
+Título: [BUG] Breve descrição do problema
+
+•
+Descrição detalhada incluindo:
+
+•
+Passos para reproduzir o bug
+
+•
+Comportamento esperado vs. comportamento atual
+
+•
+Capturas de tela ou vídeos (se aplicável)
+
+•
+Informações do ambiente (OS, versão do Node.js, versão do app, etc.)
+
+•
+Logs de erro (se disponíveis)
+
+
+
+
+
+Exemplo de Issue de Bug:
+
+Plain Text
+
+
+[BUG] Dashboard não carrega dados após login
+
+**Passos para reproduzir:**
+1. Fazer login no aplicativo
+2. Navegar para o dashboard
+3. Aguardar carregamento
+
+**Comportamento esperado:**
+Dashboard deve exibir cards com dados financeiros do usuário
+
+**Comportamento atual:**
+Dashboard fica em loading infinito
+
+**Ambiente:**
+- OS: Android 12
+- Versão do App: 0.1.0
+- Dispositivo: Samsung Galaxy S21
+
+**Logs:**
+[Anexar logs se disponíveis]
+
+
+2. Sugerir Novas Funcionalidades
+
+Para sugerir melhorias ou novas funcionalidades:
+
+1.
+Verifique o roadmap: Consulte o ROADMAP.md para ver se a funcionalidade já está planejada.
+
+2.
+Crie uma Issue de Feature: Se a funcionalidade não está planejada, abra uma Issue com:
+
+•
+Título: [FEATURE] Breve descrição da funcionalidade
+
+•
+Descrição incluindo:
+
+•
+Problema que a funcionalidade resolve
+
+•
+Solução proposta
+
+•
+Benefícios para os usuários
+
+•
+Mockups ou exemplos (se aplicável)
+
+
+
+
+
+Exemplo de Issue de Feature:
+
+Plain Text
+
+
+[FEATURE] Exportação de relatórios em PDF
+
+**Problema:**
+Usuários precisam compartilhar relatórios financeiros com contadores ou para arquivo pessoal, mas atualmente só podem visualizar na tela.
+
+**Solução proposta:**
+Adicionar botão "Exportar PDF" nos relatórios mensais e semanais.
+
+**Benefícios:**
+- Facilita compartilhamento de dados
+- Permite arquivo físico dos relatórios
+- Melhora a experiência do usuário
+
+**Mockup:**
+[Anexar imagem do botão proposto]
+
+
+3. Processo de Desenvolvimento
+
+3.1. Configuração do Ambiente
+
+1.
+Fork o repositório no GitHub
+
+2.
+Clone seu fork localmente:
+
+3.
+Configure o upstream para sincronizar com o repositório original:
+
+4.
+Configure o ambiente seguindo as instruções no README.md
+
+3.2. Fluxo de Trabalho Git
+
+1.
+Sincronize com o repositório original:
+
+2.
+Crie uma nova branch para sua contribuição:
+
+3.
+Faça suas alterações seguindo as convenções de código
+
+4.
+Teste suas alterações localmente
+
+5.
+Commit suas alterações com mensagens claras:
+
+3.3. Convenções de Commit
+
+Utilizamos o padrão Conventional Commits. Exemplos:
+
+•
+feat: adiciona nova funcionalidade
+
+•
+fix: corrige bug no cálculo de lucro
+
+•
+docs: atualiza documentação da API
+
+•
+style: corrige formatação do código
+
+•
+refactor: refatora componente de dashboard
+
+•
+test: adiciona testes para jornadas
+
+•
+chore: atualiza dependências
+
+4. Padrões de Código
+
+4.1. TypeScript
+
+•
+Uso obrigatório de TypeScript em todo o código
+
+•
+Tipagem explícita sempre que possível
+
+•
+Evitar any - use tipos específicos ou unknown
+
+4.2. Nomenclatura
+
+•
+Variáveis e funções: camelCase
+
+•
+Classes e componentes: PascalCase
+
+•
+Constantes globais: UPPER_SNAKE_CASE
+
+•
+Arquivos: kebab-case para componentes, snake_case para modelos
+
+4.3. Estrutura de Arquivos
+
+Backend:
+
+Plain Text
+
+
+src/
+├── controllers/     # Lógica de controle das rotas
+├── services/        # Lógica de negócio
+├── db/             # Schemas e configuração do banco
+├── middlewares/    # Middlewares Express
+├── routes/         # Definição das rotas
+├── utils/          # Funções utilitárias
+└── types/          # Definições de tipos TypeScript
+
+
+Frontend:
+
+Plain Text
+
+
+src/
+├── components/     # Componentes reutilizáveis
+├── screens/        # Telas do aplicativo
+├── hooks/          # Hooks personalizados
+├── services/       # Comunicação com API
+├── contexts/       # Contextos React
+├── utils/          # Funções utilitárias
+└── types/          # Definições de tipos TypeScript
+
+
+4.4. Linting e Formatação
+
+Antes de fazer commit, execute:
+
+Bash
+
+
+# No backend
+cd backend
+npm run lint
+npm run format
+
+# No frontend
+cd frontend
+npm run lint
+npm run format
+
+
+5. Testes
+
+5.1. Requisitos de Teste
+
+•
+Novas funcionalidades devem incluir testes
+
+•
+Correções de bugs devem incluir testes que reproduzam o bug
+
+•
+Cobertura mínima de 70% para novas funcionalidades
+
+5.2. Executando Testes
+
+Bash
+
+
+# Backend
+cd backend
+npm test
+npm run test:coverage
+
+# Frontend
+cd frontend
+npm test
+npm run test:coverage
+
+
+5.3. Tipos de Teste
+
+•
+Unitários: Testam funções e componentes isoladamente
+
+•
+Integração: Testam a interação entre módulos
+
+•
+E2E: Testam fluxos completos do usuário (para funcionalidades críticas)
+
+6. Pull Request (PR)
+
+6.1. Antes de Abrir o PR
+
+1.
+Sincronize sua branch com a main:
+
+2.
+Execute todos os testes e garanta que passem
+
+3.
+Execute o linter e corrija todos os problemas
+
+4.
+Teste manualmente suas alterações
+
+6.2. Criando o PR
+
+1.
+Push sua branch para seu fork:
+
+2.
+Abra um PR no GitHub com:
+
+•
+Título claro seguindo o padrão de commits
+
+•
+Descrição detalhada incluindo:
+
+•
+O que foi alterado e por quê
+
+•
+Como testar as alterações
+
+•
+Screenshots/GIFs (se aplicável)
+
+•
+Referências a Issues (Closes #123, Fixes #456)
+
+
+
+
+
+Template de PR:
+
+Markdown
+
+
+## Descrição
+Breve descrição das alterações realizadas.
+
+## Tipo de Mudança
+- [ ] Bug fix (correção que resolve um problema)
+- [ ] Nova funcionalidade (mudança que adiciona funcionalidade)
+- [ ] Breaking change (mudança que quebra compatibilidade)
+- [ ] Documentação (mudança apenas na documentação)
+
+## Como Testar
+1. Passo 1
+2. Passo 2
+3. Passo 3
+
+## Screenshots/GIFs
+[Se aplicável]
+
+## Checklist
+- [ ] Meu código segue as convenções do projeto
+- [ ] Realizei uma auto-revisão do meu código
+- [ ] Comentei partes complexas do código
+- [ ] Adicionei testes que provam que minha correção/funcionalidade funciona
+- [ ] Testes novos e existentes passam localmente
+- [ ] Atualizei a documentação (se necessário)
+
+## Issues Relacionadas
+Closes #123
+
+
+6.3. Processo de Revisão
+
+1.
+Revisão automática: GitHub Actions executará testes e linting
+
+2.
+Revisão manual: Mantenedores revisarão o código
+
+3.
+Feedback: Esteja aberto a sugestões e faça as alterações solicitadas
+
+4.
+Aprovação: Após aprovação, o PR será merged
+
+7. Configuração de Desenvolvimento
+
+7.1. Variáveis de Ambiente
+
+Backend (.env):
+
+Plain Text
+
+
+DATABASE_URL="postgresql://user:password@localhost:5432/giropro_db"
+JWT_SECRET="sua_chave_secreta_jwt_muito_longa_e_segura"
+PORT=3000
+NODE_ENV="development"
+
+
+Frontend (.env):
+
+Plain Text
+
+
+EXPO_PUBLIC_API_URL="http://localhost:3000"
+EXPO_PUBLIC_ENV="development"
+
+
+7.2. Banco de Dados
+
+Para desenvolvimento, use Docker:
+
+YAML
+
+
+# docker-compose.yml
+version: '3.8'
+services:
+  db:
+    image: postgres:16
+    restart: always
+    environment:
+      POSTGRES_DB: giropro_db
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+volumes:
+  db_data:
+
+
+Bash
+
+
+docker-compose up -d db
+
+
+8. Debugging
+
+8.1. Backend
+
+Use o VS Code com a extensão Node.js:
+
+JSON
+
+
+// .vscode/launch.json
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug Backend",
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceFolder}/backend/src/app.ts",
+      "outFiles": ["${workspaceFolder}/backend/dist/**/*.js"],
+      "runtimeArgs": ["-r", "ts-node/register"],
+      "env": {
+        "NODE_ENV": "development"
+      }
+    }
+  ]
+}
+
+
+8.2. Frontend
+
+Use o Flipper ou React Native Debugger para debug do React Native.
+
+9. Recursos Úteis
+
+•
+Documentação do React Native
+
+•
+Documentação do Express.js
+
+•
+Documentação do Drizzle ORM
+
+•
+Documentação do PostgreSQL
+
+•
+Conventional Commits
+
+10. Dúvidas e Suporte
+
+•
+Issues: Para bugs e sugestões
+
+•
+Discussions: Para perguntas gerais e discussões
+
+•
+Email: [Seu email de contato]
+
+Obrigado!
+
+Sua contribuição é muito valiosa para o crescimento do GiroPro. Juntos, podemos criar uma ferramenta que realmente ajude motoristas de aplicativo a gerenciar melhor suas finanças!
+
