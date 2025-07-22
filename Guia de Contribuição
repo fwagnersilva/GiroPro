@@ -1,14 +1,14 @@
-# Guia de Contribuição do GiroPro ✨
+# 🤝 Guia de Contribuição do GiroPro ✨
 
 Obrigado por considerar contribuir com o GiroPro! Este documento traz diretrizes claras para colaboradores, garantindo um processo colaborativo e eficiente.
 
-## Código de Conduta 🤝
+## 📜 Código de Conduta
 
-Ao participar, você concorda em seguir nosso **Código de Conduta**. Queremos um ambiente respeitoso e inclusivo para todos.
+Ao participar, você concorda em seguir nosso **[Código de Conduta](CODE_OF_CONDUCT.md)**. Queremos um ambiente respeitoso e inclusivo para todos.
 
-## Como Contribuir 🚀
+## 🚀 Como Contribuir
 
-### 1. Reportar Bugs 🐞
+### 1. 🐞 Reportar Bugs
 
 Se você encontrou um bug, siga estas etapas para reportá-lo:
 
@@ -38,7 +38,7 @@ Fica em loading infinito.
 [Anexar logs ou links, ex: Gist]
 ```
 
-### 2. Sugerir Novas Funcionalidades ✨
+### 2. ✨ Sugerir Novas Funcionalidades
 
 Quer sugerir uma melhoria ou nova funcionalidade? Siga estas diretrizes:
 
@@ -63,9 +63,9 @@ Adicionar botão "Exportar PDF" nos relatórios mensais e semanais.
 [Anexar imagem ou link para protótipo]
 ```
 
-### 3. Processo de Desenvolvimento 👨‍💻
+### 3. 👨‍💻 Processo de Desenvolvimento
 
-#### 3.1 Configuração do Ambiente ⚙️
+#### 3.1 ⚙️ Configuração do Ambiente
 
 Para configurar seu ambiente de desenvolvimento, siga estes passos:
 
@@ -84,7 +84,7 @@ git remote add upstream https://github.com/GiroPro/GiroPro.git
 
 *   Siga as instruções detalhadas no `README` para configurar o ambiente de desenvolvimento.
 
-#### 3.2 Fluxo de Trabalho Git 🔄
+#### 3.2 🔄 Fluxo de Trabalho Git
 
 Utilize o seguinte fluxo de trabalho Git para suas contribuições:
 
@@ -104,7 +104,7 @@ git checkout -b feat/nova-funcionalidade
 
 *   Faça **commits claros e atômicos**, testando tudo localmente antes de enviar suas alterações.
 
-#### 3.3 Convenções de Commit 💬
+#### 3.3 💬 Convenções de Commit
 
 Use os **prefixes padrão** para suas mensagens de commit:
 
@@ -116,14 +116,14 @@ Use os **prefixes padrão** para suas mensagens de commit:
 *   `test`: para adição ou modificação de **testes**
 *   `chore`: para **atualizações de build/dependências** ou tarefas de manutenção
 
-### 4. Padrões de Código 📐
+### 4. 📐 Padrões de Código
 
-#### 4.1 TypeScript 🟦
+#### 4.1 🟦 TypeScript
 
 *   Utilize **tipagem explícita** sempre que possível.
 *   **Evite** o uso de `any`.
 
-#### 4.2 Nomenclatura 🏷️
+#### 4.2 🏷️ Nomenclatura
 
 Siga as convenções de nomenclatura:
 
@@ -134,12 +134,10 @@ Siga as convenções de nomenclatura:
     *   **componentes:** `kebab-case`
     *   **modelos:** `snake_case`
 
-#### 4.3 Estrutura de Arquivos 📂
+#### 4.3 📂 Estrutura de Arquivos
 
-*   **Backend:** (detalhar se quiser)
-*   **Frontend:** (detalhar se quiser)
-
-#### 4.4 Linting e Formatação 🧹
+(A estrutura de arquivos é detalhada no `README.md` principal do projeto.)
+#### 4.4 🧹 Linting e Formatação
 
 Antes de realizar o commit, execute os seguintes comandos para garantir a qualidade do código:
 
@@ -148,14 +146,14 @@ npm run lint
 npm run format
 ```
 
-### 5. Testes ✅
+### 5. ✅ Testes
 
-#### 5.1 Requisitos 📝
+#### 5.1 📝 Requisitos
 
 *   Novas features e correções de bugs **devem ter testes** correspondentes.
 *   A **cobertura mínima** de testes é de `70%`.
 
-#### 5.2 Rodando Testes 🏃‍♀️
+#### 5.2 🏃‍♀️ Rodando Testes
 
 Para rodar os testes, utilize o comando:
 
@@ -163,7 +161,7 @@ Para rodar os testes, utilize o comando:
 npm run test
 ```
 
-#### 5.3 Tipos de Testes 🧪
+#### 5.3 🧪 Tipos de Testes
 
 Nós utilizamos os seguintes tipos de testes:
 
@@ -171,9 +169,9 @@ Nós utilizamos os seguintes tipos de testes:
 *   **Integração**
 *   **E2E** (End-to-End)
 
-### 6. Pull Request (PR) ⬆️
+### 6. ⬆️ Pull Request (PR)
 
-#### 6.1 Antes de abrir um PR ✍️
+#### 6.1 ✍️ Antes de abrir um PR
 
 Antes de abrir seu Pull Request, certifique-se de:
 
@@ -181,7 +179,7 @@ Antes de abrir seu Pull Request, certifique-se de:
 *   **Rodar testes e lint** localmente.
 *   **Testar manualmente** suas alterações.
 
-#### 6.2 Criando um PR 🚀
+#### 6.2 🚀 Criando um PR
 
 Para criar um Pull Request, siga estes passos:
 
@@ -193,7 +191,7 @@ Para criar um Pull Request, siga estes passos:
     *   **Screenshots/GIFs** se aplicável.
     *   **Referência a Issues** relacionadas.
 
-#### 6.3 Revisão do PR 🔍
+#### 6.3 🔍 Revisão do PR
 
 O processo de revisão inclui:
 
@@ -203,14 +201,14 @@ O processo de revisão inclui:
 
 Após a aprovação, seu PR será mergeado 🎉
 
-### 7. Configuração de Desenvolvimento 🛠️
+### 7. 🛠️ Configuração de Desenvolvimento
 
-#### 7.1 Variáveis de Ambiente 🔑
+#### 7.1 🔑 Variáveis de Ambiente
 
 *   **Backend:** Utilize o arquivo `.env`.
 *   **Frontend:** Utilize o arquivo `.env`.
 
-#### 7.2 Banco de Dados 🗄️
+#### 7.2 🗄️ Banco de Dados
 
 É **recomendado** o uso de Docker para o banco de dados:
 
@@ -221,24 +219,21 @@ Após a aprovação, seu PR será mergeado 🎉
 docker-compose up -d
 ```
 
-### 8. Debugging 🐛
+### 8. 🐛 Debugging
 
-#### 8.1 Backend 💻
+#### 8.1 💻 Backend
 
 Para depurar o backend, utilize o **VS Code** com a extensão **Node.js Debug**.
 
-#### 8.2 Frontend 📱
+#### 8.2 📱 Frontend
 
 Para depurar o frontend, utilize **Flipper** ou **React Native Debugger**.
 
-### 9. Recursos Úteis 📚
 
-(Adicione links, docs, templates aqui)
-
-### 10. Dúvidas e Suporte 🙋‍♀️
+### 10. 🙋‍♀️ Dúvidas e Suporte
 
 Para dúvidas e suporte, utilize os seguintes canais:
 
 *   **Issues** para bugs e sugestões
 *   **Discussions** para dúvidas gerais
-*   **Email:** `[fwagnersilva@gmail.com]`
+*   **Email: `fwagnersilva@gmail.com`
