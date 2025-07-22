@@ -1,539 +1,301 @@
-Roadmap do Projeto GiroPro
+# Roadmap do Projeto GiroPro
 
-Este documento detalha o roadmap de desenvolvimento do GiroPro, organizado por versões seguindo o versionamento semântico (SemVer). O foco é na entrega incremental de valor, priorizando simplicidade e estabilidade.
+Este documento detalha o roadmap de desenvolvimento do **GiroPro**, organizado por versões seguindo o versionamento semântico (**SemVer**). O foco é na entrega incremental de valor, priorizando simplicidade e estabilidade.
 
-Filosofia de Desenvolvimento
+## Filosofia de Desenvolvimento
 
-•
-Simplicidade Primeiro: Cada versão deve entregar funcionalidades simples e bem testadas antes de adicionar complexidade.
+*   **Simplicidade Primeiro:** Cada versão deve entregar funcionalidades simples e bem testadas antes de adicionar complexidade.
+*   **Feedback do Usuário:** As versões iniciais devem ser lançadas rapidamente para coletar feedback real dos usuários.
+*   **Escalabilidade Gradual:** A arquitetura deve suportar crescimento, mas sem *over-engineering* prematuro.
+*   **Qualidade sobre Quantidade:** Melhor ter poucas funcionalidades que funcionem perfeitamente do que muitas com problemas.
 
-•
-Feedback do Usuário: As versões iniciais devem ser lançadas rapidamente para coletar feedback real dos usuários.
+## Versão 0.1.0 - MVP Básico (Prioridade Máxima)
 
-•
-Escalabilidade Gradual: A arquitetura deve suportar crescimento, mas sem over-engineering prematuro.
+**Objetivo:** Lançar um produto mínimo viável que permita aos motoristas registrar jornadas, abastecimentos e despesas básicas, com um dashboard simples.
 
-•
-Qualidade sobre Quantidade: Melhor ter poucas funcionalidades que funcionem perfeitamente do que muitas com problemas.
+**Duração Estimada:** 4-6 semanas
 
-Versão 0.1.0 - MVP Básico (Prioridade Máxima)
+### Funcionalidades Incluídas
 
-Objetivo: Lançar um produto mínimo viável que permita aos motoristas registrar jornadas, abastecimentos e despesas básicas, com um dashboard simples.
+#### Autenticação e Usuário
 
-Duração Estimada: 4-6 semanas
+*   ✅ Cadastro de usuário (nome, email, senha)
+*   ✅ Login/Logout
+*   ✅ Validação básica de dados
+*   ✅ Hash de senhas com `bcrypt`
+*   ✅ Autenticação JWT
 
-Funcionalidades Incluídas
+#### Gerenciamento de Veículos
 
-Autenticação e Usuário
+*   ✅ Cadastro de um veículo principal
+*   ✅ Campos básicos: marca, modelo, ano, placa, tipo_combustivel, tipo_uso
+*   ✅ Validação de placa (formato brasileiro)
 
-•
-✅ Cadastro de usuário (nome, email, senha)
+#### Registro de Jornadas
 
-•
-✅ Login/Logout
+*   ✅ Iniciar jornada (`km_inicio`, `data_inicio`)
+*   ✅ Finalizar jornada (`km_fim`, `data_fim`, `ganho_bruto`)
+*   ✅ Validações básicas (`km_fim >= km_inicio`, `data_fim >= data_inicio`)
+*   ✅ Cálculo automático de `km_total` e `tempo_total`
 
-•
-✅ Validação básica de dados
+#### Registro de Abastecimentos
 
-•
-✅ Hash de senhas com bcrypt
+*   ✅ Registro de abastecimento (data, tipo_combustivel, quantidade_litros, valor_litro, valor_total)
+*   ✅ Associação com veículo
+*   ✅ Validações básicas (valores positivos)
 
-•
-✅ Autenticação JWT
+#### Registro de Despesas
 
-Gerenciamento de Veículos
+*   ✅ Registro de despesas básicas (data, tipo_despesa, valor_despesa, descricao)
+*   ✅ Tipos: Manutenção, Pneus, Seguro, Outros
+*   ✅ Associação opcional com veículo
 
-•
-✅ Cadastro de um veículo principal
+#### Dashboard Básico
 
-•
-✅ Campos básicos: marca, modelo, ano, placa, tipo_combustivel, tipo_uso
+*   ✅ Cards simples: Faturamento do Dia, Gasto Combustível do Dia, Gasto Despesas do Dia, Lucro Líquido do Dia
+*   ✅ Filtro por período (hoje, ontem, últimos 7 dias, últimos 30 dias)
+*   ✅ Cálculos em tempo real (sem cache)
 
-•
-✅ Validação de placa (formato brasileiro)
+#### Interface de Usuário
 
-Registro de Jornadas
+*   ✅ Design responsivo e intuitivo
+*   ✅ Navegação simples entre telas
+*   ✅ Formulários com validação em tempo real
+*   ✅ Feedback visual para ações do usuário
 
-•
-✅ Iniciar jornada (km_inicio, data_inicio)
+### Tecnologias Confirmadas
 
-•
-✅ Finalizar jornada (km_fim, data_fim, ganho_bruto)
+*   **Frontend:** React Native, TypeScript, TanStack Query, React Hook Form, Zod
+*   **Backend:** Node.js, Express.js, TypeScript, Drizzle ORM, Zod
+*   **Banco de Dados:** PostgreSQL
+*   **Autenticação:** JWT + bcrypt
 
-•
-✅ Validações básicas (km_fim >= km_inicio, data_fim >= data_inicio)
+### Critérios de Aceitação
 
-•
-✅ Cálculo automático de km_total e tempo_total
+*   ✅ Usuário pode se cadastrar e fazer login
+*   ✅ Usuário pode cadastrar um veículo
+*   ✅ Usuário pode iniciar e finalizar jornadas
+*   ✅ Usuário pode registrar abastecimentos e despesas
+*   ✅ Dashboard mostra dados básicos do dia atual
+*   ✅ Aplicativo funciona offline para visualização de dados já carregados
+*   ✅ Todas as funcionalidades têm testes unitários básicos
+*   ✅ API está documentada com exemplos
 
-Registro de Abastecimentos
+## Versão 0.2.0 - Melhorias de UX e Relatórios Básicos
 
-•
-✅ Registro de abastecimento (data, tipo_combustivel, quantidade_litros, valor_litro, valor_total)
+**Objetivo:** Melhorar a experiência do usuário e adicionar relatórios básicos para análise de dados.
 
-•
-✅ Associação com veículo
+**Duração Estimada:** 3-4 semanas
 
-•
-✅ Validações básicas (valores positivos)
+### Funcionalidades Incluídas
 
-Registro de Despesas
+#### Melhorias de UX
 
-•
-✅ Registro de despesas básicas (data, tipo_despesa, valor_despesa, descricao)
+*   ✅ Wizard de configuração inicial para novos usuários
+*   ✅ Atalhos rápidos no dashboard (iniciar jornada, registrar abastecimento)
+*   ✅ Histórico de jornadas com paginação
+*   ✅ Histórico de abastecimentos com paginação
+*   ✅ Histórico de despesas com paginação
+*   ✅ Busca e filtros básicos nos históricos
 
-•
-✅ Tipos: Manutenção, Pneus, Seguro, Outros
+#### Relatórios Básicos
 
-•
-✅ Associação opcional com veículo
+*   ✅ Relatório semanal (faturamento, despesas, lucro)
+*   ✅ Relatório mensal (faturamento, despesas, lucro)
+*   ✅ Gráfico simples de faturamento por dia (últimos 30 dias)
+*   ✅ Exportação de dados em CSV
 
-Dashboard Básico
+#### Configurações
 
-•
-✅ Cards simples: Faturamento do Dia, Gasto Combustível do Dia, Gasto Despesas do Dia, Lucro Líquido do Dia
+*   ✅ Perfil do usuário (editar nome, email)
+*   ✅ Configurações básicas (unidade de medida, moeda)
+*   ✅ Alterar senha
 
-•
-✅ Filtro por período (hoje, ontem, últimos 7 dias, últimos 30 dias)
+#### Performance
 
-•
-✅ Cálculos em tempo real (sem cache)
+*   ✅ Cache básico com TanStack Query
+*   ✅ Otimização de queries do dashboard
+*   ✅ Paginação em todas as listagens
 
-Interface de Usuário
+### Critérios de Aceitação
 
-•
-✅ Design responsivo e intuitivo
+*   ✅ Novos usuários passam por um wizard de configuração
+*   ✅ Usuários podem visualizar relatórios semanais e mensais
+*   ✅ Históricos têm busca e filtros funcionais
+*   ✅ Performance do dashboard melhorada (carregamento < 2s)
+*   ✅ Dados podem ser exportados em CSV
 
-•
-✅ Navegação simples entre telas
+## Versão 0.3.0 - Múltiplos Veículos e Análises Avançadas
 
-•
-✅ Formulários com validação em tempo real
+**Objetivo:** Permitir o gerenciamento de múltiplos veículos e introduzir análises mais avançadas.
 
-•
-✅ Feedback visual para ações do usuário
+**Duração Estimada:** 4-5 semanas
 
-Tecnologias Confirmadas
+### Funcionalidades Incluídas
 
-•
-Frontend: React Native, TypeScript, TanStack Query, React Hook Form, Zod
+#### Múltiplos Veículos
 
-•
-Backend: Node.js, Express.js, TypeScript, Drizzle ORM, Zod
+*   ✅ Cadastro de múltiplos veículos
+*   ✅ Seleção de veículo ao iniciar jornada
+*   ✅ Relatórios por veículo
+*   ✅ Comparação de performance entre veículos
 
-•
-Banco de Dados: PostgreSQL
+#### Análises Avançadas
 
-•
-Autenticação: JWT + bcrypt
+*   ✅ Cálculo de consumo médio por veículo
+*   ✅ Análise de produtividade (ganho por hora, ganho por km)
+*   ✅ Identificação de padrões (melhores dias/horários)
+*   ✅ Previsão simples de ganhos mensais
 
-Critérios de Aceitação
+#### Melhorias no Dashboard
 
-•
-✅ Usuário pode se cadastrar e fazer login
+*   ✅ Cards dinâmicos e personalizáveis
+*   ✅ Gráficos mais detalhados (consumo, produtividade)
+*   ✅ Comparação com períodos anteriores
 
-•
-✅ Usuário pode cadastrar um veículo
+#### Notificações
 
-•
-✅ Usuário pode iniciar e finalizar jornadas
+*   ✅ Notificação de jornada não finalizada
+*   ✅ Lembretes de manutenção básica (baseado em km)
 
-•
-✅ Usuário pode registrar abastecimentos e despesas
+### Critérios de Aceitação
 
-•
-✅ Dashboard mostra dados básicos do dia atual
+*   ✅ Usuários podem gerenciar múltiplos veículos
+*   ✅ Análises de produtividade estão funcionais
+*   ✅ Dashboard é personalizável
+*   ✅ Notificações básicas funcionam
 
-•
-✅ Aplicativo funciona offline para visualização de dados já carregados
+## Versão 0.4.0 - Metas e Gamificação Básica
 
-•
-✅ Todas as funcionalidades têm testes unitários básicos
+**Objetivo:** Introduzir sistema de metas e elementos básicos de gamificação.
 
-•
-✅ API está documentada com exemplos
+**Duração Estimada:** 3-4 semanas
 
-Versão 0.2.0 - Melhorias de UX e Relatórios Básicos
+### Funcionalidades Incluídas
 
-Objetivo: Melhorar a experiência do usuário e adicionar relatórios básicos para análise de dados.
+#### Sistema de Metas
 
-Duração Estimada: 3-4 semanas
+*   ✅ Definição de metas diárias, semanais e mensais
+*   ✅ Acompanhamento de progresso das metas
+*   ✅ Tipos de metas: faturamento, economia, quilometragem
 
-Funcionalidades Incluídas
+#### Gamificação Básica
 
-Melhorias de UX
+*   ✅ Sistema de conquistas simples
+*   ✅ Pontuação baseada em metas atingidas
+*   ✅ Badges para marcos importantes
 
-•
-✅ Wizard de configuração inicial para novos usuários
+#### Melhorias de Relatórios
 
-•
-✅ Atalhos rápidos no dashboard (iniciar jornada, registrar abastecimento)
+*   ✅ Relatórios comparativos (mês atual vs anterior)
+*   ✅ Análise de tendências
+*   ✅ Sugestões automáticas de otimização
 
-•
-✅ Histórico de jornadas com paginação
+### Critérios de Aceitação
 
-•
-✅ Histórico de abastecimentos com paginação
+*   ✅ Usuários podem definir e acompanhar metas
+*   ✅ Sistema de conquistas está funcional
+*   ✅ Relatórios comparativos estão disponíveis
 
-•
-✅ Histórico de despesas com paginação
+## Versão 1.0.0 - Primeira Versão Estável
 
-•
-✅ Busca e filtros básicos nos históricos
+**Objetivo:** Consolidar todas as funcionalidades anteriores, melhorar a estabilidade e preparar para lançamento público.
 
-Relatórios Básicos
+**Duração Estimada:** 4-6 semanas
 
-•
-✅ Relatório semanal (faturamento, despesas, lucro)
+### Funcionalidades Incluídas
 
-•
-✅ Relatório mensal (faturamento, despesas, lucro)
+#### Estabilidade e Performance
 
-•
-✅ Gráfico simples de faturamento por dia (últimos 30 dias)
+*   ✅ Otimização completa de performance
+*   ✅ Cache avançado (Redis)
+*   ✅ Tratamento robusto de erros
+*   ✅ Logs detalhados para monitoramento
 
-•
-✅ Exportação de dados em CSV
+#### Segurança
 
-Configurações
+*   ✅ Auditoria de segurança completa
+*   ✅ Rate limiting
+*   ✅ Validação rigorosa de dados
+*   ✅ Backup automático de dados
 
-•
-✅ Perfil do usuário (editar nome, email)
+#### Documentação
 
-•
-✅ Configurações básicas (unidade de medida, moeda)
+*   ✅ Documentação completa da API
+*   ✅ Guias de usuário
+*   ✅ Documentação técnica atualizada
 
-•
-✅ Alterar senha
+#### Testes
 
-Performance
+*   ✅ Cobertura de testes > 80%
+*   ✅ Testes end-to-end
+*   ✅ Testes de performance
 
-•
-✅ Cache básico com TanStack Query
+### Critérios de Aceitação
 
-•
-✅ Otimização de queries do dashboard
+*   ✅ Aplicativo é estável em produção
+*   ✅ Performance atende aos requisitos (< 2s carregamento)
+*   ✅ Segurança auditada e aprovada
+*   ✅ Documentação completa e atualizada
 
-•
-✅ Paginação em todas as listagens
+## Funcionalidades Futuras (Versões 1.1.0+)
 
-Critérios de Aceitação
+### Versão 1.1.0 - Integração com Apps de Transporte
 
-•
-✅ Novos usuários passam por um wizard de configuração
+*   🔄 Pendente para fase futura
+*   Integração com APIs do Uber, 99, iFood
+*   Importação automática de dados de corridas
+*   Sincronização de ganhos em tempo real
 
-•
-✅ Usuários podem visualizar relatórios semanais e mensais
+### Versão 1.2.0 - Modo Offline Avançado
 
-•
-✅ Históricos têm busca e filtros funcionais
+*   🔄 Pendente para fase futura
+*   Sincronização offline robusta
+*   Resolução de conflitos de dados
+*   Cache inteligente de dados
 
-•
-✅ Performance do dashboard melhorada (carregamento < 2s)
+### Versão 1.3.0 - Análises Preditivas
 
-•
-✅ Dados podem ser exportados em CSV
+*   🔄 Pendente para fase futura
+*   Machine Learning para previsões
+*   Otimização de rotas
+*   Análise de demanda por região
 
-Versão 0.3.0 - Múltiplos Veículos e Análises Avançadas
+### Versão 1.4.0 - Recursos Sociais
 
-Objetivo: Permitir o gerenciamento de múltiplos veículos e introduzir análises mais avançadas.
+*   🔄 Pendente para fase futura
+*   Rankings entre motoristas
+*   Comunidade de motoristas
+*   Compartilhamento de dicas
 
-Duração Estimada: 4-5 semanas
+### Versão 1.5.0 - Gestão Fiscal
 
-Funcionalidades Incluídas
+*   🔄 Pendente para fase futura
+*   Cálculo de impostos
+*   Geração de relatórios fiscais
+*   Integração com contadores
 
-Múltiplos Veículos
+## Notas Técnicas
 
-•
-✅ Cadastro de múltiplos veículos
+### Estratégia de Migração de Dados
 
-•
-✅ Seleção de veículo ao iniciar jornada
+*   Todas as versões devem incluir scripts de migração do banco de dados
+*   *Backward compatibility* deve ser mantida por pelo menos 2 versões
+*   Dados críticos devem ter backup automático antes de migrações
 
-•
-✅ Relatórios por veículo
+### Estratégia de Deploy
 
-•
-✅ Comparação de performance entre veículos
+*   **Versões 0.x.0:** Deploy manual com testes em ambiente de *staging*
+*   **Versões 1.x.0+:** CI/CD automatizado com deploy gradual
 
-Análises Avançadas
+### Monitoramento e Métricas
 
-•
-✅ Cálculo de consumo médio por veículo
+*   Implementar métricas de uso desde a v0.1.0
+*   Monitoramento de performance desde a v0.2.0
+*   Analytics de usuário desde a v0.3.0
 
-•
-✅ Análise de produtividade (ganho por hora, ganho por km)
-
-•
-✅ Identificação de padrões (melhores dias/horários)
-
-•
-✅ Previsão simples de ganhos mensais
-
-Melhorias no Dashboard
-
-•
-✅ Cards dinâmicos e personalizáveis
-
-•
-✅ Gráficos mais detalhados (consumo, produtividade)
-
-•
-✅ Comparação com períodos anteriores
-
-Notificações
-
-•
-✅ Notificação de jornada não finalizada
-
-•
-✅ Lembretes de manutenção básica (baseado em km)
-
-Critérios de Aceitação
-
-•
-✅ Usuários podem gerenciar múltiplos veículos
-
-•
-✅ Análises de produtividade estão funcionais
-
-•
-✅ Dashboard é personalizável
-
-•
-✅ Notificações básicas funcionam
-
-Versão 0.4.0 - Metas e Gamificação Básica
-
-Objetivo: Introduzir sistema de metas e elementos básicos de gamificação.
-
-Duração Estimada: 3-4 semanas
-
-Funcionalidades Incluídas
-
-Sistema de Metas
-
-•
-✅ Definição de metas diárias, semanais e mensais
-
-•
-✅ Acompanhamento de progresso das metas
-
-•
-✅ Tipos de metas: faturamento, economia, quilometragem
-
-Gamificação Básica
-
-•
-✅ Sistema de conquistas simples
-
-•
-✅ Pontuação baseada em metas atingidas
-
-•
-✅ Badges para marcos importantes
-
-Melhorias de Relatórios
-
-•
-✅ Relatórios comparativos (mês atual vs anterior)
-
-•
-✅ Análise de tendências
-
-•
-✅ Sugestões automáticas de otimização
-
-Critérios de Aceitação
-
-•
-✅ Usuários podem definir e acompanhar metas
-
-•
-✅ Sistema de conquistas está funcional
-
-•
-✅ Relatórios comparativos estão disponíveis
-
-Versão 1.0.0 - Primeira Versão Estável
-
-Objetivo: Consolidar todas as funcionalidades anteriores, melhorar a estabilidade e preparar para lançamento público.
-
-Duração Estimada: 4-6 semanas
-
-Funcionalidades Incluídas
-
-Estabilidade e Performance
-
-•
-✅ Otimização completa de performance
-
-•
-✅ Cache avançado (Redis)
-
-•
-✅ Tratamento robusto de erros
-
-•
-✅ Logs detalhados para monitoramento
-
-Segurança
-
-•
-✅ Auditoria de segurança completa
-
-•
-✅ Rate limiting
-
-•
-✅ Validação rigorosa de dados
-
-•
-✅ Backup automático de dados
-
-Documentação
-
-•
-✅ Documentação completa da API
-
-•
-✅ Guias de usuário
-
-•
-✅ Documentação técnica atualizada
-
-Testes
-
-•
-✅ Cobertura de testes > 80%
-
-•
-✅ Testes end-to-end
-
-•
-✅ Testes de performance
-
-Critérios de Aceitação
-
-•
-✅ Aplicativo é estável em produção
-
-•
-✅ Performance atende aos requisitos (< 2s carregamento)
-
-•
-✅ Segurança auditada e aprovada
-
-•
-✅ Documentação completa e atualizada
-
-Funcionalidades Futuras (Versões 1.1.0+)
-
-Versão 1.1.0 - Integração com Apps de Transporte
-
-•
-🔄 Pendente para fase futura
-
-•
-Integração com APIs do Uber, 99, iFood
-
-•
-Importação automática de dados de corridas
-
-•
-Sincronização de ganhos em tempo real
-
-Versão 1.2.0 - Modo Offline Avançado
-
-•
-🔄 Pendente para fase futura
-
-•
-Sincronização offline robusta
-
-•
-Resolução de conflitos de dados
-
-•
-Cache inteligente de dados
-
-Versão 1.3.0 - Análises Preditivas
-
-•
-🔄 Pendente para fase futura
-
-•
-Machine Learning para previsões
-
-•
-Otimização de rotas
-
-•
-Análise de demanda por região
-
-Versão 1.4.0 - Recursos Sociais
-
-•
-🔄 Pendente para fase futura
-
-•
-Rankings entre motoristas
-
-•
-Comunidade de motoristas
-
-•
-Compartilhamento de dicas
-
-Versão 1.5.0 - Gestão Fiscal
-
-•
-🔄 Pendente para fase futura
-
-•
-Cálculo de impostos
-
-•
-Geração de relatórios fiscais
-
-•
-Integração com contadores
-
-Notas Técnicas
-
-Estratégia de Migração de Dados
-
-•
-Todas as versões devem incluir scripts de migração do banco de dados
-
-•
-Backward compatibility deve ser mantida por pelo menos 2 versões
-
-•
-Dados críticos devem ter backup automático antes de migrações
-
-Estratégia de Deploy
-
-•
-Versões 0.x.0: Deploy manual com testes em ambiente de staging
-
-•
-Versões 1.x.0+: CI/CD automatizado com deploy gradual
-
-Monitoramento e Métricas
-
-•
-Implementar métricas de uso desde a v0.1.0
-
-•
-Monitoramento de performance desde a v0.2.0
-
-•
-Analytics de usuário desde a v0.3.0
-
-Conclusão
+## Conclusão
 
 Este roadmap prioriza a entrega de valor incremental, começando com funcionalidades essenciais e evoluindo gradualmente para recursos mais avançados. A abordagem garante que o produto seja útil desde a primeira versão, enquanto constrói uma base sólida para crescimento futuro.
 
 Cada versão deve ser completamente testada e estável antes do lançamento da próxima. O feedback dos usuários deve ser coletado e incorporado nas versões subsequentes.
-
