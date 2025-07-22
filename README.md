@@ -1,10 +1,10 @@
-# GiroPro: Gestão Financeira para Motoristas de Aplicativo
+# 🚀 GiroPro: Gestão Financeira para Motoristas de Aplicativo
 
-## Visão Geral
+## 💡 Visão Geral
 
 O **GiroPro** é um aplicativo móvel inovador projetado para auxiliar motoristas de aplicativo a gerenciar suas finanças de forma eficiente. Com foco na simplicidade e usabilidade, o aplicativo permite o registro detalhado de jornadas, controle de despesas, acompanhamento de abastecimentos e visualização de métricas financeiras essenciais para otimizar a lucratividade e a produtividade.
 
-## Objetivo do Aplicativo
+## 🎯 Objetivo do Aplicativo
 
 Capacitar motoristas de aplicativo com ferramentas intuitivas para:
 
@@ -12,7 +12,7 @@ Capacitar motoristas de aplicativo com ferramentas intuitivas para:
 *   **Otimizar a Produtividade:** Monitore o desempenho de suas jornadas e identifique oportunidades de melhoria.
 *   **Tomar Decisões Financeiras Inteligentes:** Acesse relatórios e análises que o ajudarão a maximizar seus lucros.
 
-## Tecnologias Utilizadas
+## 🛠️ Tecnologias Utilizadas
 
 | Categoria       | Tecnologia      | Versão (Sug.) | Descrição                                                              | Status    | Link Oficial       |
 | :-------------- | :-------------- | :------------ | :--------------------------------------------------------------------- | :-------- | :----------------- |
@@ -36,7 +36,7 @@ Capacitar motoristas de aplicativo com ferramentas intuitivas para:
 |                 | ESLint          | ^8.0.0        | Ferramenta de linting para identificar e reportar padrões em JavaScript/TypeScript. | Essencial | ESLint             |
 |                 | Prettier        | ^3.0.0        | Formatador de código opinativo.                                        | Essencial | Prettier           |
 
-## Estrutura de Pastas e Organização do Código
+## 📂 Estrutura de Pastas e Organização do Código
 
 O projeto segue uma estrutura modular, separando o frontend (aplicativo móvel) do backend (API). Dentro de cada módulo, a organização visa clareza e manutenibilidade.
 
@@ -77,7 +77,7 @@ giropro/
 └── README.md # Este arquivo
 ```
 
-## Requisitos Técnicos
+## ⚙️ Requisitos Técnicos
 
 Para rodar o GiroPro localmente, você precisará ter instalado:
 
@@ -87,18 +87,18 @@ Para rodar o GiroPro localmente, você precisará ter instalado:
 *   **Git:** Para clonar o repositório.
 *   **Expo CLI:** Para o desenvolvimento do frontend React Native.
 
-## Instruções de Instalação e Uso
+## 🚀 Instruções de Instalação e Uso
 
 Siga os passos abaixo para configurar e rodar o projeto GiroPro em seu ambiente local.
 
-### 1. Clonar o Repositório
+### 1. ⬇️ Clonar o Repositório
 
 ```bash
 git clone https://github.com/fwagnersilva/GiroPro.git
 cd GiroPro
 ```
 
-### 2. Configurar o Backend
+### 2. 🖥️ Configurar o Backend
 
 ```bash
 cd backend
@@ -109,7 +109,7 @@ npm run migrate # Executa as migrações do banco de dados
 npm run dev # Inicia o servidor backend
 ```
 
-### 3. Configurar o Frontend
+### 3. 📱 Configurar o Frontend
 
 ```bash
 cd ../frontend
@@ -121,7 +121,7 @@ npm start # Inicia o servidor de desenvolvimento do Expo
 
 Após iniciar o servidor Expo, você pode escanear o QR code com o aplicativo Expo Go no seu celular ou rodar o aplicativo em um emulador/simulador.
 
-## Fluxo do Sistema (MVP - v0.1.0)
+## 🔄 Fluxo do Sistema (MVP - v0.1.0)
 
 O fluxo inicial do sistema foca nas funcionalidades essenciais para o MVP, permitindo que o motorista registre suas jornadas e despesas básicas.
 
@@ -132,11 +132,11 @@ O fluxo inicial do sistema foca nas funcionalidades essenciais para o MVP, permi
 5.  **Registro de Despesas:** Registro de despesas básicas (manutenção, pneus, seguro, outros).
 6.  **Dashboard Básico:** Visualização de faturamento, despesas e lucro líquido do dia/período atual.
 
-## Detalhamento de APIs e Modelos de Dados
+## 🗄️ Detalhamento de APIs e Modelos de Dados
 
 Para o detalhamento completo das APIs (endpoints, payloads, respostas) e a estrutura detalhada dos modelos de dados (schemas do banco de dados), consulte o arquivo `docs/API_DATA_MODELS.md`.
 
-## Regras de Negócio Implementadas (MVP - v0.1.0)
+## 📐 Regras de Negócio Implementadas (MVP - v0.1.0)
 
 *   **Jornada:**
     *   Uma jornada é iniciada com `km_inicio` e `data_inicio`.
@@ -159,20 +159,20 @@ Para o detalhamento completo das APIs (endpoints, payloads, respostas) e a estru
     *   **Gasto com Despesas do Dia:** Soma de `valor_despesa` de todas as despesas no dia.
     *   **Lucro Líquido do Dia:** Faturamento do Dia - Gasto com Combustível do Dia - Gasto com Despesas do Dia.
 
-## Roadmap do Projeto
+## 🛣️ Roadmap do Projeto
 
 O desenvolvimento do GiroPro seguirá um roadmap baseado em versionamento semântico, priorizando a entrega de valor incremental e a estabilidade. As funcionalidades mais complexas serão introduzidas em versões futuras.
 
 Para o roadmap detalhado por versão, incluindo funcionalidades futuras e pendências, consulte o arquivo `docs/ROADMAP.md`.
 
-## Como Contribuir
+## 🤝 Como Contribuir
 
 Se você deseja contribuir com o projeto GiroPro, por favor, leia nosso **Guia de Contribuição**.
 
-## Licença
+## ⚖️ Licença
 
 Este projeto está licenciado sob a **Licença MIT**. Veja o arquivo `LICENSE` para mais detalhes.
 
-## Contato
+## ✉️ Contato
 
 Para dúvidas ou suporte, entre em contato com `fwagnersilva`.
