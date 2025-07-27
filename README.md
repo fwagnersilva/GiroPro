@@ -1,178 +1,293 @@
-# 🚀 GiroPro: Gestão Financeira para Motoristas de Aplicativo
+# 🚀 Projeto GiroPro
 
-## 💡 Visão Geral
+Bem-vindo ao repositório principal do GiroPro! Este projeto visa fornecer um aplicativo de gestão financeira robusto e intuitivo para motoristas de aplicativo, ajudando-os a otimizar seus ganhos e despesas.
 
-O **GiroPro** é um aplicativo móvel inovador projetado para auxiliar motoristas de aplicativo a gerenciar suas finanças de forma eficiente. Com foco na simplicidade e usabilidade, o aplicativo permite o registro detalhado de jornadas, controle de despesas, acompanhamento de abastecimentos e visualização de métricas financeiras essenciais para otimizar a lucratividade e a produtividade.
+Este `README.md` serve como seu guia de onboarding completo, projetado para que tanto desenvolvedores humanos quanto agentes de IA possam configurar, entender e contribuir para o projeto de forma rápida e eficiente.
 
-## 🎯 Objetivo do Aplicativo
+## 🌟 Status do Projeto
 
-Capacitar motoristas de aplicativo com ferramentas intuitivas para:
+- **Backend:** ✅ 100% COMPLETO (API robusta, segura e escalável)
+- **Frontend:** ✅ FUNCIONALIDADES PRINCIPAIS IMPLEMENTADAS (login, cadastro, dashboard, gestão de abastecimentos, gestão de despesas, sistema de preços de combustível, persistência de autenticação)
+- **Versão Atual:** `v0.5.0` (Refinamento da Experiência do Usuário e Implementação de Testes Automatizados)
 
-*   **Controlar Ganhos e Despesas:** Tenha uma visão clara do seu faturamento e para onde seu dinheiro está indo.
-*   **Otimizar a Produtividade:** Monitore o desempenho de suas jornadas e identifique oportunidades de melhoria.
-*   **Tomar Decisões Financeiras Inteligentes:** Acesse relatórios e análises que o ajudarão a maximizar seus lucros.
+## 🎯 Objetivos do Onboarding
 
-## 🛠️ Tecnologias Utilizadas
+Nosso objetivo é que você, seja um desenvolvedor humano ou uma IA, consiga:
 
-| Categoria       | Tecnologia      | Versão (Sug.) | Descrição                                                              | Status    | Link Oficial       |
-| :-------------- | :-------------- | :------------ | :--------------------------------------------------------------------- | :-------- | :----------------- |
-| **Frontend**    | React Native    | ^0.73.0       | Framework para desenvolvimento de aplicativos móveis multiplataforma. | Essencial | React Native       |
-|                 | TypeScript      | ^5.0.0        | Superset do JavaScript que adiciona tipagem estática.                  | Essencial | TypeScript         |
-|                 | Tailwind CSS    | ^3.0.0        | Framework CSS utilitário para estilização rápida e responsiva.         | Essencial | Tailwind CSS       |
-|                 | TanStack Query  | ^5.0.0        | Biblioteca para gerenciamento de estado de servidor e cache de dados.  | Essencial | TanStack Query     |
-|                 | React Hook Form | ^7.0.0        | Biblioteca para gerenciamento de formulários com validação.            | Essencial | React Hook Form    |
-|                 | Zod             | ^3.0.0        | Biblioteca para validação de schemas.                                  | Essencial | Zod                |
-|                 | Radix UI / shadcn/ui | N/A           | Componentes de UI acessíveis e personalizáveis.                        | Essencial | Radix UI / shadcn/ui |
-| **Backend**     | Node.js         | ^20.0.0       | Ambiente de execução JavaScript assíncrono e orientado a eventos.     | Essencial | Node.js            |
-|                 | Express.js      | ^4.18.0       | Framework web minimalista e flexível para Node.js.                     | Essencial | Express.js         |
-|                 | TypeScript      | ^5.0.0        | Superset do JavaScript que adiciona tipagem estática.                  | Essencial | TypeScript         |
-|                 | Drizzle ORM     | ^0.29.0       | ORM TypeScript para bancos de dados relacionais.                       | Essencial | Drizzle ORM        |
-|                 | Zod             | ^3.0.0        | Biblioteca para validação de schemas.                                  | Essencial | Zod                |
-|                 | bcrypt          | ^5.1.0        | Biblioteca para hash de senhas.                                        | Essencial | bcrypt             |
-|                 | jsonwebtoken    | ^9.0.0        | Implementação de JSON Web Tokens para autenticação.                    | Essencial | jsonwebtoken       |
-| **Banco de Dados** | PostgreSQL      | ^16.0         | Sistema de gerenciamento de banco de dados relacional robusto e de código aberto. | Essencial | PostgreSQL         |
-| **Ferramentas** | Git             | N/A           | Sistema de controle de versão distribuído.                             | Essencial | Git                |
-|                 | Docker          | N/A           | Plataforma para desenvolver, enviar e executar aplicativos em contêineres. | Recomendado | Docker             |
-|                 | ESLint          | ^8.0.0        | Ferramenta de linting para identificar e reportar padrões em JavaScript/TypeScript. | Essencial | ESLint             |
-|                 | Prettier        | ^3.0.0        | Formatador de código opinativo.                                        | Essencial | Prettier           |
+1.  **Configurar o Ambiente:** Ter o projeto rodando em sua máquina local em minutos.
+2.  **Entender a Estrutura:** Compreender a arquitetura e a organização do código.
+3.  **Executar Testes:** Rodar os testes existentes para garantir a integridade do ambiente.
+4.  **Contribuir:** Estar apto a desenvolver novas funcionalidades e corrigir bugs.
 
-## 📂 Estrutura de Pastas e Organização do Código
+## 🛠️ Pré-requisitos
 
-O projeto segue uma estrutura modular, separando o frontend (aplicativo móvel) do backend (API). Dentro de cada módulo, a organização visa clareza e manutenibilidade.
+Certifique-se de ter as seguintes ferramentas instaladas em seu sistema:
 
-```
-giropro/
-├── backend/ # Código do servidor Node.js
-│   ├── src/
-│   │   ├── config/ # Configurações do ambiente, banco de dados, etc.
-│   │   ├── controllers/ # Lógica de negócio e manipulação de requisições HTTP
-│   │   ├── db/ # Configuração do Drizzle ORM e schemas do banco de dados
-│   │   ├── middlewares/ # Funções intermediárias (autenticação, tratamento de erros)
-│   │   ├── routes/ # Definição das rotas da API
-│   │   ├── services/ # Lógica de negócio complexa e interação com o banco de dados
-│   │   ├── utils/ # Funções utilitárias e helpers
-│   │   └── app.ts # Ponto de entrada da aplicação Express
-│   ├── tests/ # Testes unitários e de integração do backend
-│   ├── .env.example # Exemplo de variáveis de ambiente
-│   ├── package.json # Dependências e scripts do backend
-│   └── tsconfig.json # Configuração do TypeScript para o backend
-├── frontend/ # Código do aplicativo React Native
-│   ├── src/
-│   │   ├── assets/ # Imagens, ícones, fontes
-│   │   ├── components/ # Componentes de UI reutilizáveis
-│   │   ├── contexts/ # Contextos React para gerenciamento de estado global
-│   │   ├── hooks/ # Hooks personalizados
-│   │   ├── navigation/ # Configuração de navegação (React Navigation)
-│   │   ├── screens/ # Telas principais do aplicativo
-│   │   ├── services/ # Funções para comunicação com a API do backend
-│   │   ├── utils/ # Funções utilitárias e helpers
-│   │   └── App.tsx # Ponto de entrada do aplicativo React Native
-│   ├── tests/ # Testes unitários e de integração do frontend
-│   ├── .env.example # Exemplo de variáveis de ambiente
-│   ├── app.json # Configuração do Expo/React Native
-│   ├── package.json # Dependências e scripts do frontend
-│   └── tsconfig.json # Configuração do TypeScript para o frontend
-├── .gitignore # Arquivos e pastas a serem ignorados pelo Git
-├── LICENSE # Licença do projeto
-└── README.md # Este arquivo
-```
+-   **Node.js:** Versão 18.x ou superior. Recomendamos usar `nvm` para gerenciar versões.
+    ```bash
+    # Verificar versão do Node.js
+    node -v
+    ```
+-   **npm:** Versão 8.x ou superior (geralmente vem com o Node.js).
+    ```bash
+    # Verificar versão do npm
+    npm -v
+    ```
+-   **TypeScript:** Versão 5.x ou superior.
+    ```bash
+    # Verificar versão do TypeScript
+    tsc -v
+    ```
+-   **Git:** Para clonar o repositório.
+    ```bash
+    # Verificar versão do Git
+    git --version
+    ```
+-   **Docker & Docker Compose:** (Essencial para o setup automatizado do banco de dados PostgreSQL. Se você não usa Docker, consulte a seção 'Configuração Manual do Banco de Dados' abaixo.)
+    ```bash
+    # Verificar versão do Docker
+    docker -v
+    # Verificar versão do Docker Compose
+    docker compose version
+    ```
 
-## ⚙️ Requisitos Técnicos
+## 📦 Configuração do Projeto (Passo a Passo)
 
-Para rodar o GiroPro localmente, você precisará ter instalado:
+Siga estes passos para configurar o projeto GiroPro em seu ambiente local:
 
-*   **Node.js:** Versão 20.x ou superior.
-*   **npm ou Yarn:** Gerenciador de pacotes (geralmente vem com o Node.js).
-*   **PostgreSQL:** Versão 16.x ou superior.
-*   **Git:** Para clonar o repositório.
-*   **Expo CLI:** Para o desenvolvimento do frontend React Native.
+### Passo 1: Clonar o Repositório
 
-## 🚀 Instruções de Instalação e Uso
-
-Siga os passos abaixo para configurar e rodar o projeto GiroPro em seu ambiente local.
-
-### 1. ⬇️ Clonar o Repositório
+Abra seu terminal ou prompt de comando e execute:
 
 ```bash
-git clone https://github.com/fwagnersilva/GiroPro.git
+git clone https://github.com/GiroPro/GiroPro.git # Substitua pelo link real do seu repositório
 cd GiroPro
 ```
 
-### 2. 🖥️ Configurar o Backend
+### Passo 2: Configurar o Backend
+
+O backend é construído com Node.js, Express e TypeScript, utilizando PostgreSQL como banco de dados.
+
+1.  **Navegar para o diretório do Backend:**
+    ```bash
+    cd backend
+    ```
+
+2.  **Instalar Dependências:**
+    ```bash
+    npm install
+    ```
+
+3.  **Configurar Variáveis de Ambiente:**
+    Crie um arquivo `.env` na raiz do diretório `backend` com base no arquivo `.env.example`.
+    ```bash
+    cp .env.example .env
+    ```
+    Edite o arquivo `.env` e preencha as variáveis, especialmente as de conexão com o banco de dados. Se estiver usando Docker Compose, as variáveis já estarão configuradas para o contêiner do PostgreSQL.
+
+    Exemplo de `.env` (ajuste conforme necessário):
+    ```
+    PORT=3000
+    DATABASE_URL="postgresql://user:password@localhost:5432/giropro_db"
+    JWT_SECRET="sua_chave_secreta_jwt_aqui"
+    ```
+
+4.  **Configurar Banco de Dados (com Docker Compose - Recomendado):**
+    Se você tem Docker e Docker Compose instalados, pode iniciar o banco de dados com um único comando:
+    ```bash
+    docker compose up -d postgres_db
+    ```
+    Isso iniciará um contêiner PostgreSQL em segundo plano. As credenciais e a URL de conexão estarão no seu arquivo `.env`.
+
+5.  **Executar Migrações do Banco de Dados:**
+    Após o banco de dados estar rodando, execute as migrações para criar as tabelas necessárias:
+    ```bash
+    npm run db:migrate
+    ```
+
+6.  **Iniciar o Backend:**
+    Em modo de desenvolvimento (com `nodemon` para auto-reload):
+    ```bash
+    npm run dev
+    ```
+    Ou em modo de produção:
+    ```bash
+    npm start
+    ```
+    O backend estará rodando em `http://localhost:3000` (ou na porta configurada no `.env`).
+
+### Passo 3: Configurar o Frontend
+
+O frontend é desenvolvido com React Native (compatível com Web, iOS e Android) e TypeScript.
+
+1.  **Navegar para o diretório do Frontend:**
+    ```bash
+    cd ../frontend # Se você estiver no diretório 'backend'
+    # ou
+    # cd frontend # Se você estiver na raiz do projeto
+    ```
+
+2.  **Instalar Dependências:**
+    ```bash
+    npm install
+    ```
+
+3.  **Configurar Variáveis de Ambiente:**
+    Crie um arquivo `.env` na raiz do diretório `frontend` com base no arquivo `.env.example`.
+    ```bash
+    cp .env.example .env
+    ```
+    Edite o arquivo `.env` e preencha as variáveis, especialmente a URL da API do backend.
+
+    Exemplo de `.env`:
+    ```
+    EXPO_PUBLIC_API_URL="http://localhost:3000/api/v1"
+    ```
+
+4.  **Iniciar o Frontend:**
+    Para rodar a versão web (recomendado para desenvolvimento rápido):
+    ```bash
+    npm run web
+    ```
+    Isso abrirá o aplicativo no seu navegador padrão em `http://localhost:8081`.
+
+    Para rodar em emulador iOS/Android ou dispositivo físico (requer Expo Go):
+    ```bash
+    npm start
+    ```
+    Siga as instruções no terminal para abrir no emulador ou escanear o QR code com o Expo Go.
+
+## 🧪 Executando Testes
+
+É crucial rodar os testes para garantir que seu ambiente está configurado corretamente e que nenhuma alteração quebre funcionalidades existentes.
+
+### Testes do Backend
+
+No diretório `backend`:
 
 ```bash
-cd backend
-cp .env.example .env
-# Edite o arquivo .env com suas configurações de banco de dados
-npm install # ou yarn install
-npm run migrate # Executa as migrações do banco de dados
-npm run dev # Inicia o servidor backend
+npm test
 ```
 
-### 3. 📱 Configurar o Frontend
+### Testes do Frontend
+
+No diretório `frontend`:
 
 ```bash
-cd ../frontend
-cp .env.example .env
-# Edite o arquivo .env com a URL do seu backend (ex: EXPO_PUBLIC_API_URL=http://localhost:3000)
-npm install # ou yarn install
-npm start # Inicia o servidor de desenvolvimento do Expo
+npm test
 ```
 
-Após iniciar o servidor Expo, você pode escanear o QR code com o aplicativo Expo Go no seu celular ou rodar o aplicativo em um emulador/simulador.
+## 📂 Estrutura do Projeto
 
-## 🔄 Fluxo do Sistema (MVP - v0.1.0)
-
-O fluxo inicial do sistema foca nas funcionalidades essenciais para o MVP, permitindo que o motorista registre suas jornadas e despesas básicas.
-
-1.  **Autenticação de Usuário:** Cadastro e Login.
-2.  **Gerenciamento de Veículos:** Cadastro de um veículo principal.
-3.  **Registro de Jornadas:** Início e fim de jornada com registro de quilometragem e ganhos.
-4.  **Registro de Abastecimentos:** Registro de abastecimentos com tipo de combustível, quantidade e valor.
-5.  **Registro de Despesas:** Registro de despesas básicas (manutenção, pneus, seguro, outros).
-6.  **Dashboard Básico:** Visualização de faturamento, despesas e lucro líquido do dia/período atual.
-
-## 🗄️ Detalhamento de APIs e Modelos de Dados
-
-Para o detalhamento completo das APIs (endpoints, payloads, respostas) e a estrutura detalhada dos modelos de dados (schemas do banco de dados), consulte o arquivo `docs/API_DATA_MODELS.md`.
-
-## 📐 Regras de Negócio Implementadas (MVP - v0.1.0)
-
-*   **Jornada:**
-    *   Uma jornada é iniciada com `km_inicio` e `data_inicio`.
-    *   Uma jornada é finalizada com `km_fim` e `data_fim`.
-    *   `km_fim` deve ser maior ou igual a `km_inicio`.
-    *   `data_fim` deve ser maior ou igual a `data_inicio`.
-    *   O `ganho_bruto` da jornada é informado pelo usuário.
-
-*   **Abastecimento:**
-    *   Deve estar associado a um veículo e um usuário.
-    *   `valor_litro` e `quantidade_litros` devem ser valores positivos.
-
-*   **Despesa:**
-    *   Deve estar associada a um usuário e, opcionalmente, a um veículo.
-    *   `valor_despesa` deve ser um valor positivo.
-
-*   **Cálculos Básicos (Dashboard):**
-    *   **Faturamento do Dia:** Soma de `ganho_bruto` de todas as jornadas finalizadas no dia.
-    *   **Gasto com Combustível do Dia:** Soma de `valor_total` de todos os abastecimentos no dia.
-    *   **Gasto com Despesas do Dia:** Soma de `valor_despesa` de todas as despesas no dia.
-    *   **Lucro Líquido do Dia:** Faturamento do Dia - Gasto com Combustível do Dia - Gasto com Despesas do Dia.
-
-## 🛣️ Roadmap do Projeto
-
-O desenvolvimento do GiroPro seguirá um roadmap baseado em versionamento semântico, priorizando a entrega de valor incremental e a estabilidade. As funcionalidades mais complexas serão introduzidas em versões futuras.
-
-Para o roadmap detalhado por versão, incluindo funcionalidades futuras e pendências, consulte o arquivo `docs/ROADMAP.md`.
+```
+GiroPro/
+├── backend/                # Código-fonte do backend (Node.js, Express, TypeScript)
+│   ├── src/
+│   │   ├── controllers/    # Lógica de negócio das rotas
+│   │   ├── db/             # Configuração do banco de dados e schemas (Drizzle ORM)
+│   │   ├── middlewares/    # Middlewares (autenticação, tratamento de erros)
+│   │   ├── routes/         # Definição das rotas da API
+│   │   ├── services/       # Lógica de serviço (interação com o banco, etc.)
+│   │   ├── utils/          # Funções utilitárias e validações
+│   │   └── app.ts          # Ponto de entrada da aplicação
+│   ├── __tests__/          # Testes unitários e de integração do backend
+│   ├── .env.example        # Exemplo de variáveis de ambiente
+│   ├── package.json        # Dependências e scripts do backend
+│   └── tsconfig.json       # Configuração do TypeScript
+├── frontend/               # Código-fonte do frontend (React Native, TypeScript)
+│   ├── src/
+│   │   ├── assets/         # Imagens, fontes, etc.
+│   │   ├── components/     # Componentes reutilizáveis da UI
+│   │   ├── contexts/       # Contextos globais (autenticação, temas)
+│   │   ├── hooks/          # Hooks customizados
+│   │   ├── navigation/     # Configuração de navegação (React Navigation)
+│   │   ├── screens/        # Telas principais do aplicativo
+│   │   ├── services/       # Integração com a API do backend
+│   │   ├── styles/         # Definição de estilos e temas
+│   │   ├── utils/          # Funções utilitárias
+│   │   └── App.tsx         # Ponto de entrada da aplicação
+│   ├── __tests__/          # Testes unitários de componentes e telas do frontend
+│   ├── .env.example        # Exemplo de variáveis de ambiente
+│   ├── package.json        # Dependências e scripts do frontend
+│   ├── tsconfig.json       # Configuração do TypeScript
+│   └── jest.config.js      # Configuração do Jest
+├── docs/                   # Documentação adicional do projeto
+│   ├── development-progress-report-v0.5.0.md # Relatório de progresso
+│   ├── release-notes-v0.5.0.md             # Notas de lançamento da v0.5.0
+│   └── plano_desenvolvimento_v0.5.0.md     # Plano de desenvolvimento original
+├── .gitignore              # Arquivos e pastas a serem ignorados pelo Git
+├── CHANGELOG_v0.5.0.md     # Histórico de mudanças da v0.5.0
+└── README.md               # Este arquivo
+```
 
 ## 🤝 Como Contribuir
 
-Se você deseja contribuir com o projeto GiroPro, por favor, leia nosso **Guia de Contribuição**.
+Valorizamos muito suas contribuições! Para garantir um fluxo de trabalho eficiente e de alta qualidade, siga estas diretrizes:
 
-## ⚖️ Licença
+1.  **Fork e Clone:** Faça um fork do repositório e clone sua cópia local.
+2.  **Crie uma Branch:** Crie uma nova branch para sua funcionalidade ou correção (`git checkout -b feature/minha-nova-feature` ou `bugfix/corrigir-erro-x`).
+3.  **Desenvolva:** Implemente suas mudanças, seguindo os padrões de código e as melhores práticas.
+4.  **Testes:** Escreva testes para suas novas funcionalidades ou para reproduzir e corrigir bugs. Certifique-se de que todos os testes existentes continuem passando.
+5.  **Lint e Formate:** Utilize o ESLint e o Prettier para garantir a qualidade e a consistência do código. Você pode rodar manualmente:
+    ```bash
+    # No diretório do backend
+    npm run lint
+    npm run format
+    # No diretório do frontend
+    npm run lint
+    npm run format
+    ```
+    Recomendamos configurar seu editor de código para formatar automaticamente ao salvar.
+6.  **Commits Semânticos:** Escreva mensagens de commit claras e descritivas, seguindo a convenção de commits semânticos (ex: `feat: adicionar nova funcionalidade de dashboard`, `fix: corrigir erro de login`).
+7.  **Pull Request (PR):** Abra um Pull Request para a branch `main` (ou `develop`, se houver). Descreva suas mudanças detalhadamente, incluindo o problema que resolve e como ele foi resolvido.
+8.  **Revisão de Código:** Participe ativamente da revisão de código, respondendo a comentários e fazendo as alterações solicitadas.
 
-Este projeto está licenciado sob a **Licença MIT**. Veja o arquivo `LICENSE` para mais detalhes.
+## ❓ Suporte e Dúvidas
 
-## ✉️ Contato
+Se você tiver alguma dúvida ou encontrar algum problema durante o onboarding ou desenvolvimento, por favor, abra uma [Issue](https://github.com/GiroPro/GiroPro/issues) neste repositório. Descreva seu problema com o máximo de detalhes possível, incluindo passos para reproduzir, mensagens de erro e seu ambiente.
 
-Para dúvidas ou suporte, entre em contato com `fwagnersilva`.
+## 📄 Licença
+
+Este projeto está licenciado sob a licença MIT. Veja o arquivo `LICENSE` para mais detalhes.
+
+---
+
+**Desenvolvido com 💙 por Manus AI**
+
+*Última Atualização: 27 de Julho de 2025*
+
+
+
+### Configuração Manual do Banco de Dados (Sem Docker)
+
+Se você não pode ou não deseja usar Docker, siga estas instruções para configurar o PostgreSQL manualmente:
+
+1.  **Instalar PostgreSQL:**
+    Instale o PostgreSQL em seu sistema. As instruções variam de acordo com o sistema operacional:
+    -   **Ubuntu/Debian:** `sudo apt update && sudo apt install postgresql postgresql-contrib`
+    -   **macOS (Homebrew):** `brew install postgresql`
+    -   **Windows:** Baixe o instalador em [postgresql.org/download/](https://www.postgresql.org/download/)
+
+2.  **Criar Usuário e Banco de Dados:**
+    Após a instalação, acesse o terminal do PostgreSQL (geralmente `psql -U postgres`) e crie um usuário e um banco de dados para o GiroPro. Certifique-se de que as credenciais correspondam às do seu arquivo `.env`.
+    ```sql
+    CREATE USER giropro_user WITH PASSWORD 'giropro_password';
+    CREATE DATABASE giropro_db OWNER giropro_user;
+    \q
+    ```
+    *Substitua `giropro_user` e `giropro_password` pelas credenciais que você usará no seu `.env`.*
+
+3.  **Configurar Variáveis de Ambiente:**
+    No seu arquivo `.env` do backend, certifique-se de que `DATABASE_URL` aponte para sua instalação manual do PostgreSQL:
+    ```
+    DATABASE_URL="postgresql://giropro_user:giropro_password@localhost:5432/giropro_db"
+    ```
+
+4.  **Executar Migrações:**
+    Com o banco de dados rodando e configurado, execute as migrações conforme o Passo 2.5 da seção de configuração do backend:
+    ```bash
+    npm run db:migrate
+    ```
+
+Para facilitar este processo, você pode usar o script `setup_db_manual.sh` (disponível na raiz do projeto) que automatiza os passos 2 e 4. Certifique-se de ter o PostgreSQL instalado e o usuário `postgres` configurado corretamente antes de executá-lo.
+
