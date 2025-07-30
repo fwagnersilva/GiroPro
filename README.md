@@ -1,293 +1,208 @@
-# 🚀 Projeto GiroPro
+# GiroPro - Gestão Financeira para Motoristas de Aplicativo
 
-Bem-vindo ao repositório principal do GiroPro! Este projeto visa fornecer um aplicativo de gestão financeira robusto e intuitivo para motoristas de aplicativo, ajudando-os a otimizar seus ganhos e despesas.
+![GiroPro Logo](https://via.placeholder.com/400x100/4A90E2/FFFFFF?text=GiroPro)
 
-Este `README.md` serve como seu guia de onboarding completo, projetado para que tanto desenvolvedores humanos quanto agentes de IA possam configurar, entender e contribuir para o projeto de forma rápida e eficiente.
+## 📱 Sobre o Projeto
 
-## 🌟 Status do Projeto
+O **GiroPro** é um aplicativo completo de gestão financeira desenvolvido especificamente para motoristas de aplicativo. Com interface intuitiva e funcionalidades robustas, o app permite controle total sobre ganhos, despesas e lucratividade, ajudando motoristas a maximizar seus resultados.
 
-- **Backend:** ✅ 100% COMPLETO (API robusta, segura e escalável)
-- **Frontend:** ✅ FUNCIONALIDADES PRINCIPAIS IMPLEMENTADAS (login, cadastro, dashboard, gestão de abastecimentos, gestão de despesas, sistema de preços de combustível, persistência de autenticação)
-- **Versão Atual:** `v0.5.0` (Refinamento da Experiência do Usuário e Implementação de Testes Automatizados)
+**Status Atual:** ✅ Versão 1.0 - Pronta para testes beta  
+**Última Atualização:** 28 de Julho de 2025
 
-## 🎯 Objetivos do Onboarding
+## 🚀 Funcionalidades Principais
 
-Nosso objetivo é que você, seja um desenvolvedor humano ou uma IA, consiga:
+### 💰 Gestão Financeira Completa
+- **Dashboard Intuitivo** com métricas em tempo real
+- **Controle de Jornadas** com registro detalhado de viagens
+- **Gestão de Abastecimentos** com histórico completo
+- **Controle de Despesas** categorizadas
+- **Relatórios Avançados** com insights inteligentes
 
-1.  **Configurar o Ambiente:** Ter o projeto rodando em sua máquina local em minutos.
-2.  **Entender a Estrutura:** Compreender a arquitetura e a organização do código.
-3.  **Executar Testes:** Rodar os testes existentes para garantir a integridade do ambiente.
-4.  **Contribuir:** Estar apto a desenvolver novas funcionalidades e corrigir bugs.
+### 📊 Analytics e Insights
+- Métricas de performance personalizadas
+- Gráficos interativos de faturamento
+- Indicadores de tendência
+- Comparações temporais (dia, semana, mês, ano)
+- Sugestões de otimização baseadas em dados
 
-## 🛠️ Pré-requisitos
+### 🎨 Experiência do Usuário
+- **Onboarding Interativo** em 4 etapas
+- **Dashboard Visual** com cards modulares
+- **Modo Condução** otimizado para uso durante direção
+- **Animações Suaves** e feedback visual
+- **Design Responsivo** para todos os dispositivos
 
-Certifique-se de ter as seguintes ferramentas instaladas em seu sistema:
+## 🛠️ Tecnologias Utilizadas
 
--   **Node.js:** Versão 18.x ou superior. Recomendamos usar `nvm` para gerenciar versões.
-    ```bash
-    # Verificar versão do Node.js
-    node -v
-    ```
--   **npm:** Versão 8.x ou superior (geralmente vem com o Node.js).
-    ```bash
-    # Verificar versão do npm
-    npm -v
-    ```
--   **TypeScript:** Versão 5.x ou superior.
-    ```bash
-    # Verificar versão do TypeScript
-    tsc -v
-    ```
--   **Git:** Para clonar o repositório.
-    ```bash
-    # Verificar versão do Git
-    git --version
-    ```
--   **Docker & Docker Compose:** (Essencial para o setup automatizado do banco de dados PostgreSQL. Se você não usa Docker, consulte a seção 'Configuração Manual do Banco de Dados' abaixo.)
-    ```bash
-    # Verificar versão do Docker
-    docker -v
-    # Verificar versão do Docker Compose
-    docker compose version
-    ```
+### Backend
+- **Node.js** com TypeScript
+- **Express.js** para API REST
+- **PostgreSQL** com Drizzle ORM
+- **JWT** para autenticação
+- **Redis** para cache (opcional)
+- **Jest** para testes automatizados
 
-## 📦 Configuração do Projeto (Passo a Passo)
+### Frontend
+- **React Native** com Expo
+- **TypeScript** para tipagem estática
+- **React Navigation** para navegação
+- **React Native Chart Kit** para gráficos
+- **Expo Vector Icons** para ícones
+- **Jest** e **Testing Library** para testes
 
-Siga estes passos para configurar o projeto GiroPro em seu ambiente local:
+### DevOps e Build
+- **EAS Build** para geração de APK/IPA
+- **Docker** para containerização
+- **GitHub Actions** para CI/CD (configuração futura)
 
-### Passo 1: Clonar o Repositório
-
-Abra seu terminal ou prompt de comando e execute:
-
-```bash
-git clone https://github.com/GiroPro/GiroPro.git # Substitua pelo link real do seu repositório
-cd GiroPro
-```
-
-### Passo 2: Configurar o Backend
-
-O backend é construído com Node.js, Express e TypeScript, utilizando PostgreSQL como banco de dados.
-
-1.  **Navegar para o diretório do Backend:**
-    ```bash
-    cd backend
-    ```
-
-2.  **Instalar Dependências:**
-    ```bash
-    npm install
-    ```
-
-3.  **Configurar Variáveis de Ambiente:**
-    Crie um arquivo `.env` na raiz do diretório `backend` com base no arquivo `.env.example`.
-    ```bash
-    cp .env.example .env
-    ```
-    Edite o arquivo `.env` e preencha as variáveis, especialmente as de conexão com o banco de dados. Se estiver usando Docker Compose, as variáveis já estarão configuradas para o contêiner do PostgreSQL.
-
-    Exemplo de `.env` (ajuste conforme necessário):
-    ```
-    PORT=3000
-    DATABASE_URL="postgresql://user:password@localhost:5432/giropro_db"
-    JWT_SECRET="sua_chave_secreta_jwt_aqui"
-    ```
-
-4.  **Configurar Banco de Dados (com Docker Compose - Recomendado):**
-    Se você tem Docker e Docker Compose instalados, pode iniciar o banco de dados com um único comando:
-    ```bash
-    docker compose up -d postgres_db
-    ```
-    Isso iniciará um contêiner PostgreSQL em segundo plano. As credenciais e a URL de conexão estarão no seu arquivo `.env`.
-
-5.  **Executar Migrações do Banco de Dados:**
-    Após o banco de dados estar rodando, execute as migrações para criar as tabelas necessárias:
-    ```bash
-    npm run db:migrate
-    ```
-
-6.  **Iniciar o Backend:**
-    Em modo de desenvolvimento (com `nodemon` para auto-reload):
-    ```bash
-    npm run dev
-    ```
-    Ou em modo de produção:
-    ```bash
-    npm start
-    ```
-    O backend estará rodando em `http://localhost:3000` (ou na porta configurada no `.env`).
-
-### Passo 3: Configurar o Frontend
-
-O frontend é desenvolvido com React Native (compatível com Web, iOS e Android) e TypeScript.
-
-1.  **Navegar para o diretório do Frontend:**
-    ```bash
-    cd ../frontend # Se você estiver no diretório 'backend'
-    # ou
-    # cd frontend # Se você estiver na raiz do projeto
-    ```
-
-2.  **Instalar Dependências:**
-    ```bash
-    npm install
-    ```
-
-3.  **Configurar Variáveis de Ambiente:**
-    Crie um arquivo `.env` na raiz do diretório `frontend` com base no arquivo `.env.example`.
-    ```bash
-    cp .env.example .env
-    ```
-    Edite o arquivo `.env` e preencha as variáveis, especialmente a URL da API do backend.
-
-    Exemplo de `.env`:
-    ```
-    EXPO_PUBLIC_API_URL="http://localhost:3000/api/v1"
-    ```
-
-4.  **Iniciar o Frontend:**
-    Para rodar a versão web (recomendado para desenvolvimento rápido):
-    ```bash
-    npm run web
-    ```
-    Isso abrirá o aplicativo no seu navegador padrão em `http://localhost:8081`.
-
-    Para rodar em emulador iOS/Android ou dispositivo físico (requer Expo Go):
-    ```bash
-    npm start
-    ```
-    Siga as instruções no terminal para abrir no emulador ou escanear o QR code com o Expo Go.
-
-## 🧪 Executando Testes
-
-É crucial rodar os testes para garantir que seu ambiente está configurado corretamente e que nenhuma alteração quebre funcionalidades existentes.
-
-### Testes do Backend
-
-No diretório `backend`:
-
-```bash
-npm test
-```
-
-### Testes do Frontend
-
-No diretório `frontend`:
-
-```bash
-npm test
-```
-
-## 📂 Estrutura do Projeto
+## 📁 Estrutura do Projeto
 
 ```
 GiroPro/
-├── backend/                # Código-fonte do backend (Node.js, Express, TypeScript)
+├── backend/                 # API Backend
 │   ├── src/
-│   │   ├── controllers/    # Lógica de negócio das rotas
-│   │   ├── db/             # Configuração do banco de dados e schemas (Drizzle ORM)
-│   │   ├── middlewares/    # Middlewares (autenticação, tratamento de erros)
-│   │   ├── routes/         # Definição das rotas da API
-│   │   ├── services/       # Lógica de serviço (interação com o banco, etc.)
-│   │   ├── utils/          # Funções utilitárias e validações
-│   │   └── app.ts          # Ponto de entrada da aplicação
-│   ├── __tests__/          # Testes unitários e de integração do backend
-│   ├── .env.example        # Exemplo de variáveis de ambiente
-│   ├── package.json        # Dependências e scripts do backend
-│   └── tsconfig.json       # Configuração do TypeScript
-├── frontend/               # Código-fonte do frontend (React Native, TypeScript)
+│   │   ├── controllers/     # Controllers da API
+│   │   ├── routes/          # Rotas da API
+│   │   ├── services/        # Lógica de negócio
+│   │   ├── db/              # Configuração do banco
+│   │   ├── middleware/      # Middlewares
+│   │   └── __tests__/       # Testes automatizados
+│   ├── package.json
+│   └── tsconfig.json
+├── frontend/                # App React Native
 │   ├── src/
-│   │   ├── assets/         # Imagens, fontes, etc.
-│   │   ├── components/     # Componentes reutilizáveis da UI
-│   │   ├── contexts/       # Contextos globais (autenticação, temas)
-│   │   ├── hooks/          # Hooks customizados
-│   │   ├── navigation/     # Configuração de navegação (React Navigation)
-│   │   ├── screens/        # Telas principais do aplicativo
-│   │   ├── services/       # Integração com a API do backend
-│   │   ├── styles/         # Definição de estilos e temas
-│   │   ├── utils/          # Funções utilitárias
-│   │   └── App.tsx         # Ponto de entrada da aplicação
-│   ├── __tests__/          # Testes unitários de componentes e telas do frontend
-│   ├── .env.example        # Exemplo de variáveis de ambiente
-│   ├── package.json        # Dependências e scripts do frontend
-│   ├── tsconfig.json       # Configuração do TypeScript
-│   └── jest.config.js      # Configuração do Jest
-├── docs/                   # Documentação adicional do projeto
-│   ├── development-progress-report-v0.5.0.md # Relatório de progresso
-│   ├── release-notes-v0.5.0.md             # Notas de lançamento da v0.5.0
-│   └── plano_desenvolvimento_v0.5.0.md     # Plano de desenvolvimento original
-├── .gitignore              # Arquivos e pastas a serem ignorados pelo Git
-├── CHANGELOG_v0.5.0.md     # Histórico de mudanças da v0.5.0
-└── README.md               # Este arquivo
+│   │   ├── components/      # Componentes reutilizáveis
+│   │   ├── screens/         # Telas do aplicativo
+│   │   ├── services/        # Serviços de API
+│   │   ├── contexts/        # Contextos React
+│   │   └── __tests__/       # Testes de componentes
+│   ├── app.json             # Configuração do Expo
+│   ├── eas.json             # Configuração do EAS Build
+│   └── package.json
+├── docs/                    # Documentação
+│   ├── API_DATA_MODELS.md
+│   ├── CONTRIBUTING.md
+│   ├── DEVELOPMENT_PRINCIPLES.md
+│   ├── PRICING_STRATEGY.md
+│   ├── ROADMAP.md
+│   ├── SETUP_GUIDE.md
+│   ├── TECHNICAL_SPECIFICATIONS.md
+│   └── UX_IMPROVEMENTS.md
+├── CODE_OF_CONDUCT.md
+└── README.md
 ```
 
-## 🤝 Como Contribuir
+## 🚀 Como Executar o Projeto
 
-Valorizamos muito suas contribuições! Para garantir um fluxo de trabalho eficiente e de alta qualidade, siga estas diretrizes:
+### Pré-requisitos
+- Node.js 18+ instalado
+- PostgreSQL configurado
+- Expo CLI instalado globalmente
+- EAS CLI para builds (opcional)
 
-1.  **Fork e Clone:** Faça um fork do repositório e clone sua cópia local.
-2.  **Crie uma Branch:** Crie uma nova branch para sua funcionalidade ou correção (`git checkout -b feature/minha-nova-feature` ou `bugfix/corrigir-erro-x`).
-3.  **Desenvolva:** Implemente suas mudanças, seguindo os padrões de código e as melhores práticas.
-4.  **Testes:** Escreva testes para suas novas funcionalidades ou para reproduzir e corrigir bugs. Certifique-se de que todos os testes existentes continuem passando.
-5.  **Lint e Formate:** Utilize o ESLint e o Prettier para garantir a qualidade e a consistência do código. Você pode rodar manualmente:
-    ```bash
-    # No diretório do backend
-    npm run lint
-    npm run format
-    # No diretório do frontend
-    npm run lint
-    npm run format
-    ```
-    Recomendamos configurar seu editor de código para formatar automaticamente ao salvar.
-6.  **Commits Semânticos:** Escreva mensagens de commit claras e descritivas, seguindo a convenção de commits semânticos (ex: `feat: adicionar nova funcionalidade de dashboard`, `fix: corrigir erro de login`).
-7.  **Pull Request (PR):** Abra um Pull Request para a branch `main` (ou `develop`, se houver). Descreva suas mudanças detalhadamente, incluindo o problema que resolve e como ele foi resolvido.
-8.  **Revisão de Código:** Participe ativamente da revisão de código, respondendo a comentários e fazendo as alterações solicitadas.
+### Backend
+```bash
+cd backend
+npm install
+cp .env.example .env  # Configure as variáveis de ambiente
+npm run dev
+```
 
-## ❓ Suporte e Dúvidas
+### Frontend
+```bash
+cd frontend
+npm install --legacy-peer-deps
+npx expo start
+```
 
-Se você tiver alguma dúvida ou encontrar algum problema durante o onboarding ou desenvolvimento, por favor, abra uma [Issue](https://github.com/GiroPro/GiroPro/issues) neste repositório. Descreva seu problema com o máximo de detalhes possível, incluindo passos para reproduzir, mensagens de erro e seu ambiente.
+### Gerar APK
+```bash
+cd frontend
+eas login
+eas build --platform android --profile preview
+```
+
+## 🧪 Testes
+
+### Backend
+```bash
+cd backend
+npm test                    # Todos os testes
+npm run test:watch         # Modo watch
+npm run test:coverage      # Com cobertura
+```
+
+### Frontend
+```bash
+cd frontend
+npm test                   # Todos os testes
+npm run test:watch        # Modo watch
+```
+
+## 📱 Instalação do APK
+
+1. **Gere o APK** usando EAS Build (veja instruções acima)
+2. **Baixe o APK** do link fornecido pelo Expo
+3. **Habilite "Fontes desconhecidas"** nas configurações do Android
+4. **Instale o APK** no dispositivo
+5. **Configure a URL do backend** se necessário
+
+## 🎯 Roadmap
+
+### ✅ Versão 1.0 (Atual)
+- [x] Funcionalidades básicas completas
+- [x] Dashboard visual com gráficos
+- [x] Onboarding interativo
+- [x] Testes automatizados expandidos
+- [x] Configuração para build APK
+
+### 🔄 Versão 1.1 (Próxima)
+- [ ] Modo offline com sincronização
+- [ ] Notificações push
+- [ ] Backup automático na nuvem
+- [ ] Integração com APIs de combustível
+- [ ] Sistema de metas e conquistas
+
+### 🚀 Versão 2.0 (Futuro)
+- [ ] Funcionalidade de mentoria
+- [ ] Comunidade de motoristas
+- [ ] IA para otimização de rotas
+- [ ] Integração bancária
+- [ ] Marketplace de serviços
+
+## 🤝 Contribuindo
+
+1. **Fork** o projeto
+2. **Crie** uma branch para sua feature (`git checkout -b feature/AmazingFeature`)
+3. **Commit** suas mudanças (`git commit -m 'Add some AmazingFeature'`)
+4. **Push** para a branch (`git push origin feature/AmazingFeature`)
+5. **Abra** um Pull Request
+
+### Padrões de Código
+- Use **TypeScript** em todos os arquivos
+- Siga as configurações do **ESLint** e **Prettier**
+- Escreva **testes** para novas funcionalidades
+- Mantenha **cobertura de testes** acima de 80%
 
 ## 📄 Licença
 
-Este projeto está licenciado sob a licença MIT. Veja o arquivo `LICENSE` para mais detalhes.
+Este projeto está licenciado sob a Licença MIT - veja o arquivo [LICENSE](LICENSE) para detalhes.
+
+## 👥 Equipe
+
+- **Desenvolvedor Principal:** Manus AI
+- **Arquitetura:** Full-stack TypeScript
+- **Design UX/UI:** Interface nativa otimizada
+- **Testes:** Cobertura automatizada abrangente
+
+## 📞 Suporte
+
+- **Documentação:** Veja a pasta `/docs` para guias detalhados
+- **Issues:** Use o sistema de issues do GitHub
+- **Discussões:** Use as discussões do GitHub para perguntas
 
 ---
 
-**Desenvolvido com 💙 por Manus AI**
+**Desenvolvido com ❤️ para a comunidade de motoristas de aplicativo**
 
-*Última Atualização: 27 de Julho de 2025*
-
-
-
-### Configuração Manual do Banco de Dados (Sem Docker)
-
-Se você não pode ou não deseja usar Docker, siga estas instruções para configurar o PostgreSQL manualmente:
-
-1.  **Instalar PostgreSQL:**
-    Instale o PostgreSQL em seu sistema. As instruções variam de acordo com o sistema operacional:
-    -   **Ubuntu/Debian:** `sudo apt update && sudo apt install postgresql postgresql-contrib`
-    -   **macOS (Homebrew):** `brew install postgresql`
-    -   **Windows:** Baixe o instalador em [postgresql.org/download/](https://www.postgresql.org/download/)
-
-2.  **Criar Usuário e Banco de Dados:**
-    Após a instalação, acesse o terminal do PostgreSQL (geralmente `psql -U postgres`) e crie um usuário e um banco de dados para o GiroPro. Certifique-se de que as credenciais correspondam às do seu arquivo `.env`.
-    ```sql
-    CREATE USER giropro_user WITH PASSWORD 'giropro_password';
-    CREATE DATABASE giropro_db OWNER giropro_user;
-    \q
-    ```
-    *Substitua `giropro_user` e `giropro_password` pelas credenciais que você usará no seu `.env`.*
-
-3.  **Configurar Variáveis de Ambiente:**
-    No seu arquivo `.env` do backend, certifique-se de que `DATABASE_URL` aponte para sua instalação manual do PostgreSQL:
-    ```
-    DATABASE_URL="postgresql://giropro_user:giropro_password@localhost:5432/giropro_db"
-    ```
-
-4.  **Executar Migrações:**
-    Com o banco de dados rodando e configurado, execute as migrações conforme o Passo 2.5 da seção de configuração do backend:
-    ```bash
-    npm run db:migrate
-    ```
-
-Para facilitar este processo, você pode usar o script `setup_db_manual.sh` (disponível na raiz do projeto) que automatiza os passos 2 e 4. Certifique-se de ter o PostgreSQL instalado e o usuário `postgres` configurado corretamente antes de executá-lo.
-
+*Última atualização: 28 de Julho de 2025*
