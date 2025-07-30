@@ -1,7 +1,5 @@
 # GiroPro - Gestão Financeira para Motoristas de Aplicativo
 
-![GiroPro Logo](https://via.placeholder.com/400x100/4A90E2/FFFFFF?text=GiroPro)
-
 ## 📱 Sobre o Projeto
 
 O **GiroPro** é um aplicativo completo de gestão financeira desenvolvido especificamente para motoristas de aplicativo. Com interface intuitiva e funcionalidades robustas, o app permite controle total sobre ganhos, despesas e lucratividade, ajudando motoristas a maximizar seus resultados.
