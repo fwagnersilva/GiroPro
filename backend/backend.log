@@ -1,0 +1,6 @@
+nohup: ignoring input
+🚀 Servidor rodando na porta 3000
+📊 Health check: http://localhost:3000/health
+[2025-07-24T23:02:44.973Z] GET /health
+[2025-07-24T23:02:50.446Z] POST /api/v1/auth/register
+[2025-07-24T23:02:56.040Z] POST /api/v1/auth/register
