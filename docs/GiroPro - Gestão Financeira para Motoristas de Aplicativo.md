@@ -81,29 +81,47 @@ GiroPro/
 │   ├── package.json
 │   └── node_modules/        # Excluído do controle de versão (gerado por npm install)
 ├── docs/                    # Documentação
-│   ├── API_DATA_MODELS.md
-│   ├── CONTRIBUTING.md
-│   ├── DEVELOPMENT_PRINCIPLES.md
-│   ├── PRICING_STRATEGY.md
-│   ├── ROADMAP.md
-│   ├── SETUP_GUIDE.md
-│   ├── TECHNICAL_SPECIFICATIONS.md
-│   └── UX_IMPROVEMENTS.md
-├── CODE_OF_CONDUCT.md
-└── README.md
+│   ├── GiroPro - Gestão Financeira para Motoristas de Aplicativo.md
+│   ├── Relatório de Correções e Próximas Etapas para o Projeto GiroPro.md
+│   ├── Relatórios e Dashboards/
+│   ├── Roadmap do Projeto GiroPro - 2025-2026.md
+│   ├── relatorio-correcoes.md
+│   ├── ⚙️EspecificaçõesTécnicas-GiroPro.md
+│   ├── 💰 Estratégia de Precificação para o GiroPro_ Foco no Motorista de Aplicativo.md
+│   └── 🚀DetalhamentodeAPIseModelosdeDadosdoGiroPro.md
+├── docker-compose.yml
+├── relatorio_correcoes_schema.md
+├── setup.sh
+├── setup_db_manual.sh
+├── setup_sqlite.sh
+└── verify_setup.sh
 ```
 
 ## 🚀 Como Executar o Projeto
 
-Para configurar e executar o projeto GiroPro, siga os passos abaixo. Lembre-se que as pastas `node_modules` não estão incluídas no repositório e serão geradas ao executar `npm install`.
+Para configurar e executar o projeto GiroPro, siga os passos abaixo. É altamente recomendado utilizar os scripts de setup fornecidos para garantir um ambiente consistente. As pastas `node_modules` não estão incluídas no repositório e serão geradas ao executar `npm install`.
 
 ### Pré-requisitos
 - Node.js 18+ instalado
 - Expo CLI instalado globalmente
+- Docker e Docker Compose (para ambiente de desenvolvimento completo)
 
-### Backend
-- Node.js 18+ instalado
-- SQLite3
+### Setup Inicial (Recomendado)
+
+Para um setup completo do ambiente de desenvolvimento (backend, frontend e banco de dados), execute o script `setup.sh` na raiz do projeto:
+
+```bash
+./setup.sh
+```
+
+Este script irá:
+- Instalar as dependências do backend e frontend.
+- Configurar o banco de dados SQLite (ou PostgreSQL via Docker, se configurado).
+- Preparar o ambiente para execução.
+
+### Execução Manual
+
+#### Backend
 
 ```bash
 cd backend
@@ -112,7 +130,7 @@ cp .env.example .env  # Configure as variáveis de ambiente (JWT_SECRET, SQLITE_
 npm run dev
 ```
 
-### Frontend
+#### Frontend
 ```bash
 cd frontend
 npm install --legacy-peer-deps
@@ -124,6 +142,7 @@ npx expo start
 cd frontend
 eas login
 eas build --platform android --profile preview
+```
 ```
 
 ## 🧪 Testes
@@ -142,6 +161,21 @@ cd frontend
 npm test                   # Todos os testes
 npm run test:watch        # Modo watch
 ```
+
+### Status Atual dos Testes
+
+Recentemente, foram realizadas diversas correções no backend para resolver problemas de compilação (erros TS7030), gerenciamento de conexão com o banco de dados em ambiente de teste e inicialização do servidor Express. Essas correções visam estabilizar o ambiente de testes e permitir a execução completa dos testes automatizados.
+
+**Observações:**
+- O arquivo `src/__tests__/controllers/vehiclesController.test.ts` foi ajustado para corrigir importações duplicadas e garantir o fechamento adequado da conexão com o banco de dados após os testes.
+- As configurações do Jest (`jest.config.js`) foram modificadas para desabilitar `detectOpenHandles` e `forceExit`, prevenindo travamentos durante a execução dos testes.
+- A inicialização do servidor Express (`src/app.ts`) foi condicionada ao ambiente de teste, e a instância do servidor agora é exportada e fechada programaticamente no `src/tests/setup.ts`.
+- O banco de dados SQLite em memória (`:memory:`) está sendo utilizado para isolar as execuções de teste.
+
+**Próximos Passos:**
+Recomenda-se executar `npm test` no diretório `backend` para validar todas as correções e verificar o status atual de todos os testes. Quaisquer falhas restantes devem ser investigadas e priorizadas para correção.
+
+
 
 ## 📱 Instalação do APK
 
