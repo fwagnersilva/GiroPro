@@ -1,6 +1,13 @@
 import { sqliteTable, text, integer, real } from 'drizzle-orm/sqlite-core';
 import { relations } from 'drizzle-orm';
 
+// ENUMs
+export const tipoCombustivelEnum = ['Gasolina', 'Etanol', 'Diesel', 'GNV', 'Flex'] as const;
+export const tipoUsoEnum = ['Proprio', 'Alugado', 'Financiado'] as const;
+export const tipoDespesaEnum = ["Manutencao", "Pneus", "Seguro", "Outros"] as const;
+export const tipoMetaEnum = ["Faturamento", "Economia", "Quilometragem"] as const;
+export const periodoMetaEnum = ["Diaria", "Semanal", "Mensal"] as const;
+
 // Tables
 export const usuarios = sqliteTable("usuarios", {
   id: text('id').primaryKey(),
@@ -17,13 +24,13 @@ export const usuarios = sqliteTable("usuarios", {
 
 export const veiculos = sqliteTable("veiculos", {
   id: text('id').primaryKey(),
-  id_usuario: text('id_usuario').notNull(),
+  id_usuario: text('id_usuario').notNull().references(() => usuarios.id),
   marca: text('marca').notNull(),
   modelo: text('modelo').notNull(),
   ano: integer('ano').notNull(),
-  placa: text('placa').notNull(),
-  tipo_combustivel: text('tipo_combustivel').notNull(),
-  tipo_uso: text('tipo_uso').notNull(),
+  placa: text('placa').notNull().unique(),
+  tipo_combustivel: text('tipo_combustivel', { enum: tipoCombustivelEnum }).notNull(),
+  tipo_uso: text('tipo_uso', { enum: tipoUsoEnum }).notNull(),
   valor_aluguel: integer('valor_aluguel'),
   valor_prestacao: integer('valor_prestacao'),
   media_consumo: integer('media_consumo'),
@@ -32,9 +39,9 @@ export const veiculos = sqliteTable("veiculos", {
 });
 
 export const jornadas = sqliteTable("jornadas", {
-  id: text('id').primaryKey(),
-  id_usuario: text('id_usuario').notNull(),
-  id_veiculo: text('id_veiculo').notNull(),
+  id: text("id").primaryKey(),
+  id_usuario: text("id_usuario").notNull().references(() => usuarios.id),
+  id_veiculo: text("id_veiculo").notNull().references(() => veiculos.id),
   data_inicio: text('data_inicio').notNull(),
   km_inicio: integer('km_inicio').notNull(),
   data_fim: text('data_fim'),
@@ -47,37 +54,37 @@ export const jornadas = sqliteTable("jornadas", {
 });
 
 export const abastecimentos = sqliteTable("abastecimentos", {
-  id: text('id').primaryKey(),
-  id_usuario: text('id_usuario').notNull(),
-  id_veiculo: text('id_veiculo').notNull(),
-  data_abastecimento: text('data_abastecimento').notNull(),
-  km_atual: integer('km_atual').notNull(),
-  litros: real('litros').notNull(),
-  valor_total: integer('valor_total').notNull(),
-  preco_litro: integer('preco_litro').notNull(),
-  posto: text('posto'),
-  tipo_combustivel: text('tipo_combustivel').notNull(),
+  id: text("id").primaryKey(),
+  id_usuario: text("id_usuario").notNull().references(() => usuarios.id),
+  id_veiculo: text("id_veiculo").notNull().references(() => veiculos.id),
+  data_abastecimento: text("data_abastecimento").notNull(),
+  tipo_combustivel: text("tipo_combustivel", { enum: tipoCombustivelEnum }).notNull(),
+  litros: real("litros").notNull(),
+  preco_litro: integer("preco_litro").notNull(),
+  valor_total: integer("valor_total").notNull(),
+  km_atual: integer("km_atual"),
+  nome_posto: text("nome_posto"),
   deleted_at: text('deleted_at'),
 });
 
 export const despesas = sqliteTable("despesas", {
-  id: text('id').primaryKey(),
-  id_usuario: text('id_usuario').notNull(),
-  id_veiculo: text('id_veiculo'),
-  data_despesa: text('data_despesa').notNull(),
-  tipo_despesa: text('tipo_despesa').notNull(),
+  id: text("id").primaryKey(),
+  id_usuario: text("id_usuario").notNull().references(() => usuarios.id),
+  id_veiculo: text("id_veiculo").references(() => veiculos.id),
+  data_despesa: text("data_despesa").notNull(),
+  tipo_despesa: text("tipo_despesa", { enum: tipoDespesaEnum }).notNull(),
   valor_despesa: integer('valor_despesa').notNull(),
   descricao: text('descricao'),
   deleted_at: text('deleted_at'),
 });
 
 export const notificacoes = sqliteTable("notificacoes", {
-  id: text('id').primaryKey(),
-  id_usuario: text('id_usuario').notNull(),
+  id: text("id").primaryKey(),
+  id_usuario: text("id_usuario").notNull().references(() => usuarios.id),
   titulo: text('titulo').notNull(),
   mensagem: text('mensagem').notNull(),
   tipo: text('tipo').default('Sistema').notNull(),
-  lida: integer('lida').default(0).notNull(), // 0 = false, 1 = true
+  lida: integer('lida', { mode: "boolean" }).default(false).notNull(),
   data_envio: text('data_envio').notNull(),
   data_leitura: text('data_leitura'),
   dados_extras: text('dados_extras'),
@@ -143,16 +150,14 @@ export const notificacoesRelations = relations(notificacoes, ({ one }) => ({
   }),
 }));
 
-
-// Tabelas para funcionalidade de metas (futuras)
 export const metas = sqliteTable("metas", {
-  id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
-  id_usuario: text('id_usuario').notNull(),
-  id_veiculo: text('id_veiculo'),
-  titulo: text('titulo').notNull(),
-  descricao: text('descricao'),
-  tipo_meta: text('tipo_meta').notNull(),
-  periodo: text('periodo').notNull(),
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  id_usuario: text("id_usuario").notNull().references(() => usuarios.id),
+  id_veiculo: text("id_veiculo").references(() => veiculos.id),
+  titulo: text("titulo").notNull(),
+  descricao: text("descricao"),
+  tipo_meta: text("tipo_meta", { enum: tipoMetaEnum }).notNull(),
+  periodo: text("periodo", { enum: periodoMetaEnum }).notNull(),
   valor_objetivo: integer('valor_objetivo').notNull(),
   valor_atual: integer('valor_atual').default(0).notNull(),
   percentual_concluido: integer('percentual_concluido').default(0).notNull(),
@@ -167,8 +172,8 @@ export const metas = sqliteTable("metas", {
 });
 
 export const progressoMetas = sqliteTable("progresso_metas", {
-  id: text('id').primaryKey(),
-  id_meta: text('id_meta').notNull(),
+  id: text("id").primaryKey(),
+  id_meta: text("id_meta").notNull().references(() => metas.id),
   data_registro: text('data_registro').notNull(),
   valor_atual: integer('valor_atual').notNull(),
   valor_anterior: integer('valor_anterior').default(0).notNull(),

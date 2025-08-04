@@ -11,15 +11,15 @@ const createGoalSchema = z.object({
   id_veiculo: z.string().uuid().optional(),
   titulo: z.string().min(1, 'Título é obrigatório').max(255, 'Título muito longo'),
   descricao: z.string().optional(),
-  tipo_meta: z.enum(['Faturamento', 'Quilometragem', 'Jornadas', 'Economia', 'Lucro'], {
+  tipo_meta: z.enum(["Faturamento", "Economia", "Quilometragem"], {
     errorMap: () => ({ message: 'Tipo de meta inválido' })
   }),
   periodo: z.enum(['Semanal', 'Mensal', 'Trimestral', 'Anual'], {
     errorMap: () => ({ message: 'Período inválido' })
   }),
   valor_objetivo: z.number().positive('Valor objetivo deve ser maior que zero'),
-  data_inicio: z.string().datetime('Data de início deve estar no formato ISO 8601'),
-  data_fim: z.string().datetime('Data de fim deve estar no formato ISO 8601')
+  data_inicio: z.string().datetime("Data de início deve estar no formato ISO 8601").transform(val => new Date(val)),
+  data_fim: z.string().datetime("Data de fim deve estar no formato ISO 8601").transform(val => new Date(val))
 });
 
 const updateGoalSchema = createGoalSchema.partial().extend({
@@ -30,10 +30,8 @@ const goalsQuerySchema = z.object({
   page: z.string().optional().transform(val => val ? parseInt(val) : 1),
   limit: z.string().optional().transform(val => val ? parseInt(val) : 20),
   id_veiculo: z.string().uuid().optional(),
-  tipo_meta: z.enum(['Faturamento', 'Quilometragem', 'Jornadas', 'Economia', 'Lucro']).optional(),
-  status: z.enum(['Ativa', 'Pausada', 'Concluida', 'Expirada']).optional(),
-  periodo: z.enum(['Semanal', 'Mensal', 'Trimestral', 'Anual']).optional(),
-  sort_by: z.enum(['data_inicio', 'data_fim', 'percentual_concluido', 'valor_objetivo']).optional().default('data_inicio'),
+  tipo_meta: z.enum(["Faturamento", "Economia", "Quilometragem"]).optional(),
+  status: z.enum(["Ativa", "Pausada", "Concluida", "Expirada"]).optional(),
   sort_order: z.enum(['asc', 'desc']).optional().default('desc')
 });
 
@@ -256,8 +254,8 @@ export class GoalsController {
       }
 
       // Validar datas
-      const dataInicio = new Date(goalData.data_inicio);
-      const dataFim = new Date(goalData.data_fim);
+      const dataInicio = goalData.data_inicio;
+      const dataFim = goalData.data_fim;
 
       if (dataFim <= dataInicio) {
         return res.status(400).json({
@@ -534,24 +532,6 @@ export class GoalsController {
         );
       }
 
-      if (updateData.data_inicio) {
-        updateFields.data_inicio = new Date(updateData.data_inicio);
-      }
-
-      if (updateData.data_fim) {
-        updateFields.data_fim = new Date(updateData.data_fim);
-      }
-
-      // Validar datas se ambas foram fornecidas
-      if (updateFields.data_inicio && updateFields.data_fim) {
-        if (updateFields.data_fim <= updateFields.data_inicio) {
-          return res.status(400).json({
-            success: false,
-            error: { message: 'Data de fim deve ser posterior à data de início' }
-          });
-        }
-      }
-
       // Atualizar meta
       await db
         .update(metas)
@@ -746,7 +726,7 @@ export class GoalsController {
         .where(and(
           eq(metas.id_usuario, req.user?.id),
           eq(metas.status, 'Concluida'),
-          gte(metas.data_conclusao, dataInicio),
+          gte(metas.data_conclusao, dataInicio.toISOString()),
           isNull(metas.deleted_at)
         ))
         .orderBy(desc(metas.data_conclusao));

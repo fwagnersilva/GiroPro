@@ -26,14 +26,14 @@ export class NotificationService {
       titulo: data.titulo,
       mensagem: data.mensagem,
       dados_extras: data.dados_extras ? JSON.stringify(data.dados_extras) : null,
-      lida: 0,
+      lida: false,
       data_envio: new Date().toISOString(),
     };
 
     await db.insert(notificacoes).values(notification);
     return {
       ...notification,
-      lida: notification.lida === 1
+      lida: notification.lida
     };
   }
 
@@ -57,7 +57,7 @@ export class NotificationService {
     );
 
     if (onlyUnread) {
-      whereCondition = and(whereCondition, eq(notificacoes.lida, 0));
+      whereCondition = and(whereCondition, eq(notificacoes.lida, false));
     }
 
     if (tipo) {
@@ -85,7 +85,7 @@ export class NotificationService {
     const result = await db
       .update(notificacoes)
       .set({
-        lida: 1,
+        lida: true,
         data_leitura: new Date().toISOString(),
       })
       .where(
@@ -106,13 +106,13 @@ export class NotificationService {
     const result = await db
       .update(notificacoes)
       .set({
-        lida: 1,
+        lida: true,
         data_leitura: new Date().toISOString(),
       })
       .where(
         and(
           eq(notificacoes.id_usuario, userId),
-          eq(notificacoes.lida, 0),
+          eq(notificacoes.lida, false),
           isNull(notificacoes.deleted_at)
         )
       ).returning();
@@ -130,7 +130,7 @@ export class NotificationService {
       .where(
         and(
           eq(notificacoes.id_usuario, userId),
-          eq(notificacoes.lida, 0),
+          eq(notificacoes.lida, false),
           isNull(notificacoes.deleted_at)
         )
       );

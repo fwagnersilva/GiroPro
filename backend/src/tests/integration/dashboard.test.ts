@@ -88,7 +88,7 @@ describe('Dashboard Integration Tests', () => {
         litros: 40,
         valor_total: 24000, // em centavos
         preco_litro: 600, // em centavos
-        posto: 'Posto Teste',
+        nome_posto: 'Posto Teste',
         km_atual: 1050,
         tipo_combustivel: 'Gasolina'
       }

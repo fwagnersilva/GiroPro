@@ -15,8 +15,8 @@ export class FuelingService {
       litros: fuelingData.litros,
       valor_total: Math.round(fuelingData.litros * fuelingData.precoPorLitro * 100), // em centavos
       preco_litro: Math.round(fuelingData.precoPorLitro * 100), // em centavos
-      posto: fuelingData.posto || null,
-      tipo_combustivel: fuelingData.tipoCombustivel,
+      nome_posto: fuelingData.posto || null,
+      tipo_combustivel: fuelingData.tipoCombustivel as "Gasolina" | "Etanol" | "Diesel" | "GNV" | "Flex",
     };
     
     const [newFueling] = await db.insert(abastecimentos).values(newFuelingData).returning();
