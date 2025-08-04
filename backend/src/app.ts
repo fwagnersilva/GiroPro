@@ -58,11 +58,15 @@ app.use(errorHandler);
 app.use('*', (req, res) => {
   res.status(404).json({ error: 'Endpoint não encontrado' });
 });
-
-app.listen(PORT, '0.0.0.0', () => {
-  console.log(`🚀 Servidor rodando na porta ${PORT}`);
-  console.log(`📊 Health check: http://localhost:${PORT}/health`);
-});
-
 export default app;
 
+let serverInstance: any;
+
+if (process.env.NODE_ENV !== 'test') {
+  serverInstance = app.listen(PORT, '0.0.0.0', () => {
+    console.log(`🚀 Servidor rodando na porta ${PORT}`);
+    console.log(`📊 Health check: http://localhost:${PORT}/health`);
+  });
+}
+
+export const server = serverInstance;

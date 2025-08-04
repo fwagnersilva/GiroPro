@@ -49,27 +49,24 @@ export const performanceMonitor = (req: Request, res: Response, next: NextFuncti
 
   next();
 };
-
-// Middleware para timeout de requests
 export const requestTimeout = (timeoutMs: number = 30000) => {
   return (req: Request, res: Response, next: NextFunction) => {
     const timeout = setTimeout(() => {
       if (!res.headersSent) {
         logger.warn(`Request timeout for ${req.method} ${req.path}`, {
           ip: req.ip,
-          userAgent: req.get('User-Agent'),
+          userAgent: req.get("User-Agent"),
           timeout: timeoutMs
         });
 
         res.status(408).json({
-          error: 'Request timeout',
-          code: 'REQUEST_TIMEOUT'
+          error: "Request timeout",
+          code: "REQUEST_TIMEOUT"
         });
       }
     }, timeoutMs);
 
-    // Limpar timeout quando a resposta for enviada
-    res.on('finish', () => {
+    res.on("finish", () => {
       clearTimeout(timeout);
     });
 
@@ -80,7 +77,7 @@ export const requestTimeout = (timeoutMs: number = 30000) => {
 // Middleware para limitar tamanho do payload
 export const payloadSizeLimit = (maxSizeBytes: number = 10 * 1024 * 1024) => {
   return (req: Request, res: Response, next: NextFunction) => {
-    const contentLength = parseInt(req.get('Content-Length') || '0');
+    const contentLength = parseInt(req.get("Content-Length") || "0");
     
     if (contentLength > maxSizeBytes) {
       logger.warn(`Payload too large: ${contentLength} bytes`, {
@@ -90,24 +87,24 @@ export const payloadSizeLimit = (maxSizeBytes: number = 10 * 1024 * 1024) => {
       });
 
       return res.status(413).json({
-        error: 'Payload muito grande',
-        code: 'PAYLOAD_TOO_LARGE',
+        error: "Payload muito grande",
+        code: "PAYLOAD_TOO_LARGE",
         maxSize: maxSizeBytes
       });
     }
 
-    next();
+    return next();
   };
 };
 
 // Middleware para adicionar headers de cache
 export const cacheHeaders = (maxAge: number = 300) => {
   return (req: Request, res: Response, next: NextFunction) => {
-    if (req.method === 'GET') {
-      res.setHeader('Cache-Control', `public, max-age=${maxAge}`);
-      res.setHeader('ETag', `"${Date.now()}"`);
+    if (req.method === "GET") {
+      res.setHeader("Cache-Control", `public, max-age=${maxAge}`);
+      res.setHeader("ETag", `"${Date.now()}"`);
     } else {
-      res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+      res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
     }
     
     next();
@@ -117,16 +114,16 @@ export const cacheHeaders = (maxAge: number = 300) => {
 // Middleware para otimizar headers de resposta
 export const optimizeHeaders = (req: Request, res: Response, next: NextFunction) => {
   // Remover headers desnecessários
-  res.removeHeader('X-Powered-By');
+  res.removeHeader("X-Powered-By");
   
   // Adicionar headers de performance
-  res.setHeader('X-Content-Type-Options', 'nosniff');
-  res.setHeader('X-Frame-Options', 'DENY');
-  res.setHeader('X-XSS-Protection', '1; mode=block');
+  res.setHeader("X-Content-Type-Options", "nosniff");
+  res.setHeader("X-Frame-Options", "DENY");
+  res.setHeader("X-XSS-Protection", "1; mode=block");
   
   // Headers para melhor performance
-  res.setHeader('Connection', 'keep-alive');
-  res.setHeader('Keep-Alive', 'timeout=5, max=1000');
+  res.setHeader("Connection", "keep-alive");
+  res.setHeader("Keep-Alive", "timeout=5, max=1000");
   
   next();
 };
@@ -135,13 +132,13 @@ export const optimizeHeaders = (req: Request, res: Response, next: NextFunction)
 export const memoryLeakDetector = (req: Request, res: Response, next: NextFunction) => {
   const memoryBefore = process.memoryUsage();
   
-  res.on('finish', () => {
+  res.on("finish", () => {
     const memoryAfter = process.memoryUsage();
     const heapDiff = memoryAfter.heapUsed - memoryBefore.heapUsed;
     
     // Se o heap cresceu mais que 50MB em uma request, pode ser um leak
     if (heapDiff > 50 * 1024 * 1024) {
-      logger.warn('Potential memory leak detected', {
+      logger.warn("Potential memory leak detected", {
         endpoint: req.path,
         method: req.method,
         heapDiff: `${(heapDiff / 1024 / 1024).toFixed(2)}MB`,
@@ -153,15 +150,13 @@ export const memoryLeakDetector = (req: Request, res: Response, next: NextFuncti
   
   next();
 };
-
-// Middleware para health check
 export const healthCheck = async (req: Request, res: Response, next: NextFunction) => {
-  if (req.path === '/health' || req.path === '/api/health') {
+  if (req.path === "/health" || req.path === "/api/health") {
     try {
       const health = await performanceService.getSystemHealth();
       const alerts = performanceService.getPerformanceAlerts();
       
-      res.status(health.status === 'critical' ? 503 : 200).json({
+      res.status(health.status === "critical" ? 503 : 200).json({
         status: health.status,
         timestamp: new Date().toISOString(),
         uptime: health.uptime,
@@ -172,20 +167,18 @@ export const healthCheck = async (req: Request, res: Response, next: NextFunctio
         alerts
       });
     } catch (error) {
-      logger.error('Health check error:', error);
+      logger.error("Health check error:", error);
       res.status(503).json({
-        status: 'error',
-        message: 'Health check failed'
+        status: "error",
+        message: "Health check failed"
       });
     }
   } else {
     next();
   }
 };
-
-// Middleware para métricas detalhadas (apenas em desenvolvimento)
 export const detailedMetrics = (req: Request, res: Response, next: NextFunction) => {
-  if (process.env.NODE_ENV === 'development' && req.path === '/metrics') {
+  if (process.env.NODE_ENV === "development" && req.path === "/metrics") {
     const stats = performanceService.getAggregatedStats(60);
     const slowestEndpoints = performanceService.getSlowestEndpoints(10);
     const alerts = performanceService.getPerformanceAlerts();
@@ -201,4 +194,3 @@ export const detailedMetrics = (req: Request, res: Response, next: NextFunction)
     next();
   }
 };
-

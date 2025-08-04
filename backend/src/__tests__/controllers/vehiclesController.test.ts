@@ -1,9 +1,10 @@
 import request from 'supertest';
 import app from '../../app';
-import { db } from '../../db/connection';
+import { db, closeConnection } from '../../db/connection';
 import { usuarios, veiculos } from '../../db/schema';
 import { eq, and } from 'drizzle-orm';
 import jwt from 'jsonwebtoken';
+
 
 describe('VehiclesController', () => {
   let authToken: string;
@@ -535,4 +536,10 @@ describe('VehiclesController', () => {
     });
   });
 });
+
+
+
+  afterAll(async () => {
+    await closeConnection();
+  });
 

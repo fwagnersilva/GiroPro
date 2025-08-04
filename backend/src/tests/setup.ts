@@ -1,4 +1,5 @@
 import { config } from 'dotenv';
+import { server } from '../app';
 
 // Carregar variáveis de ambiente de teste
 config({ path: '.env.test' });
@@ -17,18 +18,19 @@ beforeAll(() => {
   console.error = originalConsole.error; // Manter erros visíveis
 });
 
-afterAll(() => {
+afterAll(async () => {
   // Restaurar console original
   console.log = originalConsole.log;
   console.info = originalConsole.info;
   console.warn = originalConsole.warn;
   console.error = originalConsole.error;
+  await server.close();
 });
 
 // Configurar variáveis de ambiente para testes
 process.env.NODE_ENV = 'test';
 process.env.JWT_SECRET = 'test-jwt-secret-key-for-testing-only';
-process.env.DATABASE_URL = process.env.TEST_DATABASE_URL || 'postgresql://test:test@localhost:5432/giropro_test';
+process.env.SQLITE_DB_PATH = ':memory:';
 process.env.REDIS_URL = process.env.TEST_REDIS_URL || 'redis://localhost:6379/1';
 
 // Desabilitar cache e backup durante testes

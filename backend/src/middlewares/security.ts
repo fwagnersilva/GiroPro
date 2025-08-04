@@ -123,18 +123,18 @@ export const clearBruteForceAttempts = async (req: Request, res: Response, next:
 
 // Middleware para validar Content-Type em requests POST/PUT
 export const validateContentType = (req: Request, res: Response, next: NextFunction) => {
-  if (['POST', 'PUT', 'PATCH'].includes(req.method)) {
-    const contentType = req.get('Content-Type');
+  if (["POST", "PUT", "PATCH"].includes(req.method)) {
+    const contentType = req.get("Content-Type");
     
-    if (!contentType || !contentType.includes('application/json')) {
+    if (!contentType || !contentType.includes("application/json")) {
       return res.status(400).json({
-        error: 'Content-Type deve ser application/json',
-        code: 'INVALID_CONTENT_TYPE'
+        error: "Content-Type deve ser application/json",
+        code: "INVALID_CONTENT_TYPE"
       });
     }
   }
   
-  next();
+  return next();
 };
 
 // Middleware para sanitizar headers perigosos
@@ -159,15 +159,15 @@ export const sanitizeHeaders = (req: Request, res: Response, next: NextFunction)
 export const sqlInjectionProtection = (req: Request, res: Response, next: NextFunction) => {
   const sqlPatterns = [
     /(\b(SELECT|INSERT|UPDATE|DELETE|DROP|CREATE|ALTER|EXEC|UNION|SCRIPT)\b)/i,
-    /(--|\/\*|\*\/|;|'|"|`)/,
+    /(--|\/\*|\*\/|;|"|"|`)/,
     /(\bOR\b|\bAND\b).*(\b=\b|\bLIKE\b)/i
   ];
 
   const checkValue = (value: any): boolean => {
-    if (typeof value === 'string') {
+    if (typeof value === "string") {
       return sqlPatterns.some(pattern => pattern.test(value));
     }
-    if (typeof value === 'object' && value !== null) {
+    if (typeof value === "object" && value !== null) {
       return Object.values(value).some(checkValue);
     }
     return false;
@@ -178,7 +178,7 @@ export const sqlInjectionProtection = (req: Request, res: Response, next: NextFu
   if (suspicious) {
     logger.warn(`SQL injection attempt detected from IP: ${req.ip}`, {
       ip: req.ip,
-      userAgent: req.get('User-Agent'),
+      userAgent: req.get("User-Agent"),
       path: req.path,
       body: req.body,
       query: req.query
@@ -190,7 +190,7 @@ export const sqlInjectionProtection = (req: Request, res: Response, next: NextFu
     });
   }
 
-  next();
+  return next();
 };
 
 // Middleware para detectar tentativas de XSS
@@ -229,7 +229,7 @@ export const xssProtection = (req: Request, res: Response, next: NextFunction) =
     });
   }
 
-  next();
+  return next();
 };
 
 // Middleware para log de segurança

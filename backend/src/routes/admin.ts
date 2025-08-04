@@ -85,17 +85,15 @@ router.post('/backup', async (req, res) => {
     }
 
     // Executar backup em background
-    backupService.performBackup().catch(error => {
-      logger.error('Erro no backup em background:', error);
-    });
+    await backupService.performBackup();
 
-    res.json({
+    return res.json({
       message: 'Backup iniciado com sucesso',
       status: 'started'
     });
   } catch (error) {
     logger.error('Erro ao iniciar backup:', error);
-    res.status(500).json({
+    return res.status(500).json({
       error: 'Erro interno do servidor',
       code: 'INTERNAL_ERROR'
     });
