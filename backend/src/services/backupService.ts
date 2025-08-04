@@ -328,7 +328,7 @@ class BackupService {
   // Salvar informações do backup no cache
   private async saveBackupInfo(info: any): Promise<void> {
     try {
-      const backupHistory = await cacheService.get('backup:history') || [];
+      const backupHistory: any[] = await cacheService.get("backup:history") || [];
       backupHistory.unshift(info);
       
       // Manter apenas os últimos 50 registros

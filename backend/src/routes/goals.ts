@@ -37,12 +37,7 @@ router.get("/", GoalsController.getAll);
  */
 router.post("/", GoalsController.create);
 
-/**
- * @route GET /api/v1/goals/stats
- * @desc Obter estatísticas das metas do usuário
- * @access Private
- */
-router.get("/stats", GoalsController.getStats);
+
 
 /**
  * @route GET /api/v1/goals/:id

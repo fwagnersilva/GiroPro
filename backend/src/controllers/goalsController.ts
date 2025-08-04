@@ -14,7 +14,7 @@ const createGoalSchema = z.object({
   tipo_meta: z.enum(["Faturamento", "Economia", "Quilometragem"], {
     errorMap: () => ({ message: 'Tipo de meta inválido' })
   }),
-  periodo: z.enum(['Semanal', 'Mensal', 'Trimestral', 'Anual'], {
+  periodo: z.enum(["Diaria", "Semanal", "Mensal", "Trimestral", "Anual"], {
     errorMap: () => ({ message: 'Período inválido' })
   }),
   valor_objetivo: z.number().positive('Valor objetivo deve ser maior que zero'),
@@ -65,8 +65,6 @@ export class GoalsController {
         id_veiculo,
         tipo_meta,
         status,
-        periodo,
-        sort_by,
         sort_order
       } = queryValidation.data;
 
@@ -88,17 +86,13 @@ export class GoalsController {
         whereConditions = and(whereConditions, eq(metas.status, status));
       }
 
-      if (periodo) {
-        whereConditions = and(whereConditions, eq(metas.periodo, periodo));
-      }
-
       // Calcular offset para paginação
       const offset = (page - 1) * limit;
 
       // Definir ordenação
       const orderBy = sort_order === 'asc' 
-        ? asc(metas[sort_by])
-        : desc(metas[sort_by]);
+        ? asc(metas.created_at)
+        : desc(metas.created_at);
 
       // Buscar metas com informações do veículo (se associado)
       const goals = await db
@@ -280,8 +274,8 @@ export class GoalsController {
           valor_objetivo: valorObjetivo,
           valor_atual: 0,
           percentual_concluido: 0,
-          data_inicio: dataInicio,
-          data_fim: dataFim,
+          data_inicio: dataInicio.toISOString(),
+          data_fim: dataFim.toISOString(),
           data_conclusao: null,
           status: 'Ativa',
           data_criacao: new Date().toISOString(),
@@ -513,37 +507,79 @@ export class GoalsController {
         }
       }
 
+      // Validar datas (se fornecidas)
+      if (updateData.data_inicio && updateData.data_fim) {
+        if (updateData.data_fim <= updateData.data_inicio) {
+          return res.status(400).json({
+            success: false,
+            error: { message: 'Data de fim deve ser posterior à data de início' }
+          });
+        }
+      }
+
       // Preparar dados para atualização
-      const updateFields: any = {
+      const updateValues: any = {
         updated_at: new Date().toISOString()
       };
 
-      if (updateData.titulo) updateFields.titulo = updateData.titulo;
-      if (updateData.descricao !== undefined) updateFields.descricao = updateData.descricao;
-      if (updateData.tipo_meta) updateFields.tipo_meta = updateData.tipo_meta;
-      if (updateData.periodo) updateFields.periodo = updateData.periodo;
-      if (updateData.status) updateFields.status = updateData.status;
-      if (updateData.id_veiculo !== undefined) updateFields.id_veiculo = updateData.id_veiculo;
+      if (updateData.id_veiculo !== undefined) {
+        updateValues.id_veiculo = updateData.id_veiculo;
+      }
 
-      if (updateData.valor_objetivo) {
-        updateFields.valor_objetivo = GoalsController.convertGoalValue(
-          updateData.tipo_meta || existingGoal.tipo_meta, 
-          updateData.valor_objetivo
-        );
+      if (updateData.titulo) {
+        updateValues.titulo = updateData.titulo;
+      }
+
+      if (updateData.descricao !== undefined) {
+        updateValues.descricao = updateData.descricao;
+      }
+
+      if (updateData.tipo_meta) {
+        updateValues.tipo_meta = updateData.tipo_meta;
+        // Recalcular valor objetivo se o tipo mudou
+        if (updateData.valor_objetivo) {
+          updateValues.valor_objetivo = GoalsController.convertGoalValue(updateData.tipo_meta, updateData.valor_objetivo);
+        }
+      }
+
+      if (updateData.periodo) {
+        updateValues.periodo = updateData.periodo;
+      }
+
+      if (updateData.valor_objetivo && !updateData.tipo_meta) {
+        updateValues.valor_objetivo = GoalsController.convertGoalValue(existingGoal.tipo_meta, updateData.valor_objetivo);
+      }
+
+      if (updateData.data_inicio) {
+        updateValues.data_inicio = updateData.data_inicio.toISOString();
+      }
+
+      if (updateData.data_fim) {
+        updateValues.data_fim = updateData.data_fim.toISOString();
+      }
+
+      if (updateData.status) {
+        updateValues.status = updateData.status;
+        
+        if (updateData.status === 'Concluida' && !existingGoal.data_conclusao) {
+          updateValues.data_conclusao = new Date().toISOString();
+        } else if (updateData.status !== 'Concluida') {
+          updateValues.data_conclusao = null;
+        }
       }
 
       // Atualizar meta
       await db
         .update(metas)
-        .set(updateFields)
+        .set(updateValues)
         .where(eq(metas.id, goalId));
 
       // Recalcular progresso se necessário
-      if (updateData.tipo_meta || updateData.valor_objetivo || updateData.id_veiculo !== undefined) {
+      if (updateData.tipo_meta || updateData.valor_objetivo || updateData.data_inicio || updateData.data_fim) {
         await GoalsController.updateGoalProgress(goalId, req.user?.id);
       }
 
-      // Buscar meta atualizada
+      // Buscar meta atualizada com informações do veículo
       const [updatedGoal] = await db
         .select({
           id: metas.id,
@@ -594,7 +630,7 @@ export class GoalsController {
   }
 
   /**
-   * Excluir meta (soft delete)
+   * Deletar meta (soft delete)
    */
   static async delete(req: AuthenticatedRequest, res: Response) {
     try {
@@ -644,11 +680,11 @@ export class GoalsController {
 
       return res.json({
         success: true,
-        message: 'Meta excluída com sucesso'
+        message: 'Meta deletada com sucesso'
       });
 
     } catch (error: any) {
-      console.error('Erro ao excluir meta:', error);
+      console.error('Erro ao deletar meta:', error);
       return res.status(500).json({ 
         success: false, 
         error: { message: 'Erro interno do servidor' } 
@@ -657,129 +693,9 @@ export class GoalsController {
   }
 
   /**
-   * Obter estatísticas das metas
+   * Atualizar progresso de uma meta
    */
-  static async getStats(req: AuthenticatedRequest, res: Response) {
-    try {
-      if (!req.user?.id) {
-        return res.status(401).json({ 
-          success: false, 
-          error: { message: 'Usuário não autenticado' } 
-        });
-      }
-
-      // Estatísticas gerais
-      const statsQuery = await db
-        .select({
-          status: metas.status,
-          tipo_meta: metas.tipo_meta,
-          count: count(),
-          avg_percentual: sql<number>`AVG(${metas.percentual_concluido})`,
-          total_valor_objetivo: sum(metas.valor_objetivo),
-          total_valor_atual: sum(metas.valor_atual)
-        })
-        .from(metas)
-        .where(and(
-          eq(metas.id_usuario, req.user?.id),
-          isNull(metas.deleted_at)
-        ))
-        .groupBy(metas.status, metas.tipo_meta);
-
-      // Metas próximas do vencimento (próximos 7 dias)
-      const dataLimite = new Date();
-      dataLimite.setDate(dataLimite.getDate() + 7);
-      const dataLimiteStr = dataLimite.toISOString();
-      const dataAtualStr = new Date().toISOString();
-
-      const metasVencendo = await db
-        .select({
-          id: metas.id,
-          titulo: metas.titulo,
-          data_fim: metas.data_fim,
-          percentual_concluido: metas.percentual_concluido,
-          dias_restantes: sql<number>`EXTRACT(DAY FROM ${metas.data_fim} - NOW())`
-        })
-        .from(metas)
-        .where(and(
-          eq(metas.id_usuario, req.user?.id),
-          eq(metas.status, 'Ativa'),
-          lte(metas.data_fim, dataLimiteStr),
-          gte(metas.data_fim, dataAtualStr),
-          isNull(metas.deleted_at)
-        ))
-        .orderBy(asc(metas.data_fim));
-
-      // Metas concluídas recentemente (últimos 30 dias)
-      const dataInicio = new Date();
-      dataInicio.setDate(dataInicio.getDate() - 30);
-
-      const metasConcluidas = await db
-        .select({
-          id: metas.id,
-          titulo: metas.titulo,
-          data_conclusao: metas.data_conclusao,
-          valor_objetivo: metas.valor_objetivo,
-          valor_atual: metas.valor_atual,
-          tipo_meta: metas.tipo_meta
-        })
-        .from(metas)
-        .where(and(
-          eq(metas.id_usuario, req.user?.id),
-          eq(metas.status, 'Concluida'),
-          gte(metas.data_conclusao, dataInicio.toISOString()),
-          isNull(metas.deleted_at)
-        ))
-        .orderBy(desc(metas.data_conclusao));
-
-      return res.json({
-        success: true,
-        data: {
-          estatisticas_por_status: statsQuery.reduce((acc, stat) => {
-            if (!acc[stat.status]) {
-              acc[stat.status] = {
-                total: 0,
-                percentual_medio: 0,
-                tipos: {}
-              };
-            }
-            acc[stat.status].total += Number(stat.count);
-            acc[stat.status].percentual_medio = Number(stat.avg_percentual || 0);
-            acc[stat.status].tipos[stat.tipo_meta] = Number(stat.count);
-            return acc;
-          }, {} as any),
-          metas_vencendo: metasVencendo.map(meta => ({
-            ...meta,
-            dias_restantes: Number(meta.dias_restantes || 0)
-          })),
-          metas_concluidas_recentes: metasConcluidas.map(meta => ({
-            ...meta,
-            valor_objetivo_formatado: GoalsController.formatGoalValue(meta.tipo_meta, meta.valor_objetivo),
-            valor_atual_formatado: GoalsController.formatGoalValue(meta.tipo_meta, meta.valor_atual)
-          })),
-          resumo: {
-            total_metas: statsQuery.reduce((sum, stat) => sum + Number(stat.count), 0),
-            metas_ativas: statsQuery.filter(s => s.status === 'Ativa').reduce((sum, stat) => sum + Number(stat.count), 0),
-            metas_concluidas: statsQuery.filter(s => s.status === 'Concluida').reduce((sum, stat) => sum + Number(stat.count), 0),
-            taxa_conclusao: statsQuery.length > 0 ? 
-              (statsQuery.filter(s => s.status === 'Concluida').reduce((sum, stat) => sum + Number(stat.count), 0) / 
-               statsQuery.reduce((sum, stat) => sum + Number(stat.count), 0)) * 100 : 0
-          }
-        }
-      });
-
-    } catch (error: any) {
-      console.error('Erro ao buscar estatísticas das metas:', error);
-      return res.status(500).json({ 
-        success: false, 
-        error: { message: 'Erro interno do servidor' } 
-      });
-    }
-  }
-
-  /**
-   * Atualizar progresso de uma meta específica
-   */
-  static async updateGoalProgress(goalId: string, userId: string): Promise<void> {
+  static async updateGoalProgress(goalId: string, userId: string) {
     try {
       // Buscar meta
       const [goal] = await db
@@ -792,7 +708,7 @@ export class GoalsController {
         ))
         .limit(1);
 
-      if (!goal || goal.status !== 'Ativa') {
+      if (!goal) {
         return;
       }
 
@@ -801,132 +717,71 @@ export class GoalsController {
 
       switch (goal.tipo_meta) {
         case 'Faturamento':
-          const faturamentoQuery = await db
-            .select({
-              total: sql<number>`COALESCE(SUM(${jornadas.ganho_bruto}), 0)`
-            })
+          const [faturamentoResult] = await db
+            .select({ total: sum(jornadas.ganho_bruto) })
             .from(jornadas)
             .where(and(
               eq(jornadas.id_usuario, userId),
-              goal.id_veiculo ? eq(jornadas.id_veiculo, goal.id_veiculo) : sql`true`,
+              goal.id_veiculo ? eq(jornadas.id_veiculo, goal.id_veiculo) : sql`1=1`,
               gte(jornadas.data_inicio, goal.data_inicio),
               lte(jornadas.data_inicio, goal.data_fim),
               isNull(jornadas.deleted_at)
             ));
-          valorAtual = Number(faturamentoQuery[0]?.total || 0);
-          break;
-
-        case 'Quilometragem':
-          const kmQuery = await db
-            .select({
-              total: sql<number>`COALESCE(SUM(${jornadas.km_total}), 0)`
-            })
-            .from(jornadas)
-            .where(and(
-              eq(jornadas.id_usuario, userId),
-              goal.id_veiculo ? eq(jornadas.id_veiculo, goal.id_veiculo) : sql`true`,
-              gte(jornadas.data_inicio, goal.data_inicio),
-              lte(jornadas.data_inicio, goal.data_fim),
-              isNull(jornadas.deleted_at)
-            ));
-          valorAtual = Number(kmQuery[0]?.total || 0);
-          break;
-
-        case 'Jornadas':
-          const jornadasQuery = await db
-            .select({
-              total: count()
-            })
-            .from(jornadas)
-            .where(and(
-              eq(jornadas.id_usuario, userId),
-              goal.id_veiculo ? eq(jornadas.id_veiculo, goal.id_veiculo) : sql`true`,
-              gte(jornadas.data_inicio, goal.data_inicio),
-              lte(jornadas.data_inicio, goal.data_fim),
-              isNull(jornadas.deleted_at)
-            ));
-          valorAtual = Number(jornadasQuery[0]?.total || 0);
+          valorAtual = Number(faturamentoResult.total) || 0;
           break;
 
         case 'Economia':
-          // Economia = Faturamento - Despesas
-          const [faturamentoEcon, despesasEcon] = await Promise.all([
-            db
-              .select({
-                total: sql<number>`COALESCE(SUM(${jornadas.ganho_bruto}), 0)`
-              })
-              .from(jornadas)
-              .where(and(
-                eq(jornadas.id_usuario, userId),
-                goal.id_veiculo ? eq(jornadas.id_veiculo, goal.id_veiculo) : sql`true`,
-                gte(jornadas.data_inicio, goal.data_inicio),
-                lte(jornadas.data_inicio, goal.data_fim),
-                isNull(jornadas.deleted_at)
-              )),
-            db
-              .select({
-                total: sql<number>`COALESCE(SUM(${despesas.valor_despesa}), 0)`
-              })
-              .from(despesas)
-              .where(and(
-                eq(despesas.id_usuario, userId),
-                goal.id_veiculo ? eq(despesas.id_veiculo, goal.id_veiculo) : sql`true`,
-                gte(despesas.data_despesa, goal.data_inicio),
-                lte(despesas.data_despesa, goal.data_fim),
-                isNull(despesas.deleted_at)
-              ))
-          ]);
-          
-          const totalFaturamento = Number(faturamentoEcon[0]?.total || 0);
-          const totalDespesas = Number(despesasEcon[0]?.total || 0);
-          valorAtual = totalFaturamento - totalDespesas;
+          // Calcular economia (diferença entre ganho e gastos)
+          const [ganhoResult] = await db
+            .select({ total: sum(jornadas.ganho_bruto) })
+            .from(jornadas)
+            .where(and(
+              eq(jornadas.id_usuario, userId),
+              goal.id_veiculo ? eq(jornadas.id_veiculo, goal.id_veiculo) : sql`1=1`,
+              gte(jornadas.data_inicio, goal.data_inicio),
+              lte(jornadas.data_inicio, goal.data_fim),
+              isNull(jornadas.deleted_at)
+            ));
+
+          const [gastosAbastecimento] = await db
+            .select({ total: sum(abastecimentos.valor_total) })
+            .from(abastecimentos)
+            .where(and(
+              eq(abastecimentos.id_usuario, userId),
+              goal.id_veiculo ? eq(abastecimentos.id_veiculo, goal.id_veiculo) : sql`1=1`,
+              gte(abastecimentos.data_abastecimento, goal.data_inicio),
+              lte(abastecimentos.data_abastecimento, goal.data_fim),
+              isNull(abastecimentos.deleted_at)
+            ));
+
+          const [gastosDespesas] = await db
+            .select({ total: sum(despesas.valor_despesa) })
+            .from(despesas)
+            .where(and(
+              eq(despesas.id_usuario, userId),
+              goal.id_veiculo ? eq(despesas.id_veiculo, goal.id_veiculo) : sql`1=1`,
+              gte(despesas.data_despesa, goal.data_inicio),
+              lte(despesas.data_despesa, goal.data_fim),
+              isNull(despesas.deleted_at)
+            ));
+
+          const totalGanho = Number(ganhoResult.total) || 0;
+          const totalGastos = (Number(gastosAbastecimento.total) || 0) + (Number(gastosDespesas.total) || 0);
+          valorAtual = totalGanho - totalGastos;
           break;
 
-        case 'Lucro':
-          // Lucro = Faturamento - (Despesas + Abastecimentos)
-          const [faturamentoLucro, despesasLucro, abastecimentosLucro] = await Promise.all([
-            db
-              .select({
-                total: sql<number>`COALESCE(SUM(${jornadas.ganho_bruto}), 0)`
-              })
-              .from(jornadas)
-              .where(and(
-                eq(jornadas.id_usuario, userId),
-                goal.id_veiculo ? eq(jornadas.id_veiculo, goal.id_veiculo) : sql`true`,
-                gte(jornadas.data_inicio, goal.data_inicio),
-                lte(jornadas.data_inicio, goal.data_fim),
-                isNull(jornadas.deleted_at)
-              )),
-            db
-              .select({
-                total: sql<number>`COALESCE(SUM(${despesas.valor_despesa}), 0)`
-              })
-              .from(despesas)
-              .where(and(
-                eq(despesas.id_usuario, userId),
-                goal.id_veiculo ? eq(despesas.id_veiculo, goal.id_veiculo) : sql`true`,
-                gte(despesas.data_despesa, goal.data_inicio),
-                lte(despesas.data_despesa, goal.data_fim),
-                isNull(despesas.deleted_at)
-              )),
-            db
-              .select({
-                total: sql<number>`COALESCE(SUM(${abastecimentos.valor_total}), 0)`
-              })
-              .from(abastecimentos)
-              .where(and(
-                eq(abastecimentos.id_usuario, userId),
-                goal.id_veiculo ? eq(abastecimentos.id_veiculo, goal.id_veiculo) : sql`true`,
-                gte(abastecimentos.data_abastecimento, goal.data_inicio),
-                lte(abastecimentos.data_abastecimento, goal.data_fim),
-                isNull(abastecimentos.deleted_at)
-              ))
-          ]);
-          
-          const totalFaturamentoLucro = Number(faturamentoLucro[0]?.total || 0);
-          const totalDespesasLucro = Number(despesasLucro[0]?.total || 0);
-          const totalAbastecimentos = Number(abastecimentosLucro[0]?.total || 0);
-          valorAtual = totalFaturamentoLucro - (totalDespesasLucro + totalAbastecimentos);
+        case 'Quilometragem':
+          const [kmResult] = await db
+            .select({ total: sum(jornadas.km_total) })
+            .from(jornadas)
+            .where(and(
+              eq(jornadas.id_usuario, userId),
+              goal.id_veiculo ? eq(jornadas.id_veiculo, goal.id_veiculo) : sql`1=1`,
+              gte(jornadas.data_inicio, goal.data_inicio),
+              lte(jornadas.data_inicio, goal.data_fim),
+              isNull(jornadas.deleted_at)
+            ));
+          valorAtual = Number(kmResult.total) || 0;
           break;
       }
 
@@ -943,23 +798,24 @@ export class GoalsController {
         await db
           .insert(progressoMetas)
           .values({
+            id: uuidv4(),
             id_meta: goalId,
+            data_registro: new Date().toISOString(),
             valor_anterior: goal.valor_atual,
             valor_atual: valorAtual,
             incremento: valorAtual - goal.valor_atual,
-            percentual_anterior: goal.percentual_concluido,
-            percentual_atual: percentualConcluido
+            percentual_atingido: percentualConcluido
           });
       }
 
       // Determinar status
-      let novoStatus: 'Ativa' | 'Pausada' | 'Concluida' | 'Expirada' = goal.status;
+      let novoStatus: 'Ativa' | 'Pausada' | 'Concluida' | 'Expirada' = goal.status as 'Ativa' | 'Pausada' | 'Concluida' | 'Expirada';
       let dataConclusao = goal.data_conclusao;
 
       if (percentualConcluido >= 100 && goal.status === 'Ativa') {
         novoStatus = 'Concluida';
-        dataConclusao = new Date();
-      } else if (new Date() > goal.data_fim && goal.status === 'Ativa') {
+        dataConclusao = new Date().toISOString();
+      } else if (new Date() > new Date(goal.data_fim) && goal.status === 'Ativa') {
         novoStatus = 'Expirada';
       }
 
@@ -983,32 +839,31 @@ export class GoalsController {
   /**
    * Converter valor da meta baseado no tipo
    */
-  private static convertGoalValue(tipoMeta: string, valor: number): number {
+  static convertGoalValue(tipoMeta: string, valor: number): number {
     switch (tipoMeta) {
       case 'Faturamento':
       case 'Economia':
-      case 'Lucro':
-        return Math.round(valor * 100); // Converter para centavos
+        // Valores monetários são armazenados em centavos
+        return Math.round(valor * 100);
       case 'Quilometragem':
-      case 'Jornadas':
+        // Quilometragem é armazenada como está
+        return valor;
       default:
-        return Math.round(valor);
+        return valor;
     }
   }
 
   /**
    * Formatar valor da meta para exibição
    */
-  private static formatGoalValue(tipoMeta: string, valor: number): string {
+  static formatGoalValue(tipoMeta: string, valor: number): string {
     switch (tipoMeta) {
       case 'Faturamento':
       case 'Economia':
-      case 'Lucro':
-        return `R$ ${(valor / 100).toFixed(2)}`;
+        // Converter de centavos para reais
+        return `R$ ${(valor / 100).toFixed(2).replace('.', ',')}`;
       case 'Quilometragem':
         return `${valor} km`;
-      case 'Jornadas':
-        return `${valor} jornadas`;
       default:
         return valor.toString();
     }
@@ -1017,27 +872,26 @@ export class GoalsController {
   /**
    * Calcular dias restantes
    */
-  private static calculateDaysRemaining(dataFim: string): number {
+  static calculateDaysRemaining(dataFim: string): number {
     const hoje = new Date();
     const fim = new Date(dataFim);
     const diffTime = fim.getTime() - hoje.getTime();
-    return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    return Math.max(0, diffDays);
   }
 
   /**
-   * Calcular tempo decorrido (percentual)
+   * Calcular tempo decorrido
    */
-  private static calculateElapsedTime(dataInicio: string, dataFim: string): number {
-    const hoje = new Date();
+  static calculateElapsedTime(dataInicio: string, dataFim: string): number {
     const inicio = new Date(dataInicio);
     const fim = new Date(dataFim);
+    const hoje = new Date();
     
-    const tempoTotal = fim.getTime() - inicio.getTime();
-    const tempoDecorrido = hoje.getTime() - inicio.getTime();
+    const totalTime = fim.getTime() - inicio.getTime();
+    const elapsedTime = Math.min(hoje.getTime() - inicio.getTime(), totalTime);
     
-    if (tempoTotal <= 0) return 0;
-    
-    return Math.min(Math.max(Math.round((tempoDecorrido / tempoTotal) * 100), 0), 100);
+    return Math.max(0, Math.round((elapsedTime / totalTime) * 100));
   }
 }
 

@@ -7,6 +7,7 @@ export const registerSchema = z.object({
   senha: z.string().min(8, 'Senha deve ter pelo menos 8 caracteres')
     .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/, 
            'Senha deve conter pelo menos: 1 letra minúscula, 1 maiúscula, 1 número e 1 caractere especial'),
+  telefone: z.string().min(10, 'Telefone deve ter pelo menos 10 dígitos').max(15).optional(),
 });
 
 export const loginSchema = z.object({

@@ -6,7 +6,7 @@ export const tipoCombustivelEnum = ['Gasolina', 'Etanol', 'Diesel', 'GNV', 'Flex
 export const tipoUsoEnum = ['Proprio', 'Alugado', 'Financiado'] as const;
 export const tipoDespesaEnum = ["Manutencao", "Pneus", "Seguro", "Outros"] as const;
 export const tipoMetaEnum = ["Faturamento", "Economia", "Quilometragem"] as const;
-export const periodoMetaEnum = ["Diaria", "Semanal", "Mensal"] as const;
+export const periodoMetaEnum = ["Diaria", "Semanal", "Mensal", "Trimestral", "Anual"] as const;
 
 // Tables
 export const usuarios = sqliteTable("usuarios", {
@@ -202,3 +202,59 @@ export const progressoMetasRelations = relations(progressoMetas, ({ one }) => ({
   }),
 }));
 
+export const conquistas = sqliteTable("conquistas", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  nome: text("nome", { length: 255 }).notNull(),
+  descricao: text("descricao").notNull(),
+  tipo_conquista: text("tipo_conquista").notNull(),
+  raridade: text("raridade").default("Comum").notNull(),
+  icone: text("icone"),
+  cor: text("cor").default("#4CAF50"),
+  criterio_valor: integer("criterio_valor"),
+  criterio_descricao: text("criterio_descricao"),
+  pontos_recompensa: integer("pontos_recompensa").default(10).notNull(),
+  ativa: integer("ativa", { mode: "boolean" }).default(true).notNull(),
+  ordem_exibicao: integer("ordem_exibicao").default(0).notNull(),
+  created_at: text("created_at").notNull(),
+  updated_at: text("updated_at").notNull(),
+});
+
+export const usuarioConquistas = sqliteTable("usuario_conquistas", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  id_usuario: text("id_usuario").notNull().references(() => usuarios.id),
+  id_conquista: text("id_conquista").notNull().references(() => conquistas.id),
+  data_desbloqueio: text("data_desbloqueio").notNull(),
+  valor_atingido: integer("valor_atingido"),
+  notificacao_enviada: integer("notificacao_enviada", { mode: "boolean" }).default(false).notNull(),
+  created_at: text("created_at").notNull(),
+});
+
+export const nivelUsuario = sqliteTable("nivel_usuario", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  nivel: text("nivel").notNull().unique(),
+  nome_exibicao: text("nome_exibicao").notNull(),
+  pontos_necessarios: integer("pontos_necessarios").notNull(),
+  cor: text("cor").default("#2196F3").notNull(),
+  icone: text("icone"),
+  beneficios: text("beneficios"),
+  ordem: integer("ordem").notNull(),
+  created_at: text("created_at").notNull(),
+});
+
+// Relations para gamificação
+export const conquistasRelations = relations(conquistas, ({ many }) => ({
+  usuarioConquistas: many(usuarioConquistas),
+}));
+
+export const usuarioConquistasRelations = relations(usuarioConquistas, ({ one }) => ({
+  usuario: one(usuarios, {
+    fields: [usuarioConquistas.id_usuario],
+    references: [usuarios.id],
+  }),
+  conquista: one(conquistas, {
+    fields: [usuarioConquistas.id_conquista],
+    references: [conquistas.id],
+  }),
+}));
+
+export const nivelUsuarioRelations = relations(nivelUsuario, ({}) => ({}));

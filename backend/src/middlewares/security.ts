@@ -1,6 +1,6 @@
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
-import slowDown from 'express-slow-down';
+import slowDown, { Options } from 'express-slow-down';
 import { Request, Response, NextFunction } from 'express';
 import { logger } from '../utils/logger';
 import { cacheService } from '../services/cacheService';
@@ -54,7 +54,7 @@ export const authRateLimit = rateLimit({
 });
 
 // Slow down para requests frequentes
-export const speedLimiter = slowDown({
+export const speedLimiter: ReturnType<typeof slowDown> = slowDown({
   windowMs: 15 * 60 * 1000, // 15 minutos
   delayAfter: 50, // permitir 50 requests por janela sem delay
   delayMs: 500, // adicionar 500ms de delay para cada request adicional
@@ -62,13 +62,7 @@ export const speedLimiter = slowDown({
   keyGenerator: (req: Request) => {
     return req.ip || 'unknown';
   },
-  onLimitReached: (req: Request) => {
-    logger.warn(`Speed limit reached for IP: ${req.ip}`, {
-      ip: req.ip,
-      userAgent: req.get('User-Agent'),
-      path: req.path
-    });
-  }
+
 });
 
 // Middleware para detectar ataques de força bruta por usuário

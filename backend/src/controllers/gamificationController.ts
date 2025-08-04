@@ -1,16 +1,16 @@
 import { Request, Response } from 'express';
 import { z } from 'zod';
 import { db } from '../db';
-import { 
-  conquistas, 
-  usuarioConquistas, 
-  nivelUsuario, 
-  usuarios, 
-  jornadas, 
-  abastecimentos, 
-  despesas, 
-  metas 
-} from '../db/schema_original';
+import {
+  conquistas,
+  usuarioConquistas,
+  nivelUsuario,
+  usuarios,
+  jornadas,
+  abastecimentos,
+  despesas,
+  metas
+} from "../db/schema";
 import { eq, and, isNull, desc, asc, gte, lte, sql, sum, count } from 'drizzle-orm';
 import { AuthenticatedRequest } from '../types';
 
@@ -365,7 +365,8 @@ export class GamificationController {
             id_usuario: userId,
             id_conquista: conquista.id,
             valor_atingido: desbloqueou.value,
-            data_desbloqueio: new Date()
+            data_desbloqueio: new Date().toISOString(),
+            created_at: new Date().toISOString()
           });
 
           // Atualizar pontos do usuário
@@ -512,7 +513,7 @@ export class GamificationController {
     // Exemplo: Eficiência baseada em ganho por km
     const [resultado] = await db
       .select({
-        total_faturamento: sql<number>`COALESCE(SUM(${jornadas.ganho_bruto}), 0)`,
+        total_ganho: sql<number>`COALESCE(SUM(${jornadas.ganho_bruto}), 0)`,
         total_km: sql<number>`COALESCE(SUM(${jornadas.km_total}), 0)`
       })
       .from(jornadas)
@@ -523,68 +524,44 @@ export class GamificationController {
         )
       );
 
-    const faturamento = resultado?.total_faturamento || 0;
-    const km = resultado?.total_km || 0;
-    const eficiencia = km > 0 ? Math.round((faturamento / km) * 100) : 0; // Centavos por km
+    const ganhoPorKm = (resultado?.total_km || 0) > 0 
+      ? (resultado?.total_ganho || 0) / (resultado?.total_km || 0)
+      : 0;
     const criterio = conquista.criterio_valor || 0;
 
     return {
-      unlocked: eficiencia >= criterio,
-      value: eficiencia
+      unlocked: ganhoPorKm >= criterio,
+      value: ganhoPorKm
     };
   }
 
   /**
-   * Verificar conquistas de consistência
+   * Verificar conquistas de consistência (ex: completar X jornadas em Y dias)
    */
   private static async checkConsistenciaAchievement(userId: string, conquista: any): Promise<{ unlocked: boolean; value?: number }> {
-    // Exemplo: Dias consecutivos com jornadas
-    const jornadasPorDia = await db
+    // Exemplo: Concluir 5 jornadas em 7 dias
+    const dataLimite = new Date();
+    dataLimite.setDate(dataLimite.getDate() - (conquista.criterio_valor_dias || 0));
+
+    const [resultado] = await db
       .select({
-        data: sql<string>`DATE(${jornadas.data_inicio})`,
-        total: count()
+        total_jornadas: count()
       })
       .from(jornadas)
       .where(
         and(
           eq(jornadas.id_usuario, userId),
-          isNull(jornadas.deleted_at),
-          gte(jornadas.data_inicio, sql`NOW() - INTERVAL '30 days'`)
+          gte(jornadas.data_inicio, dataLimite.toISOString()),
+          isNull(jornadas.deleted_at)
         )
-      )
-      .groupBy(sql`DATE(${jornadas.data_inicio})`)
-      .orderBy(sql`DATE(${jornadas.data_inicio})`);
+      );
 
-    // Calcular sequência máxima de dias consecutivos
-    let maxSequencia = 0;
-    let sequenciaAtual = 0;
-    let dataAnterior: Date | null = null;
-
-    for (const dia of jornadasPorDia) {
-      const dataAtual = new Date(dia.data);
-      
-      if (dataAnterior) {
-        const diffDias = Math.floor((dataAtual.getTime() - dataAnterior.getTime()) / (1000 * 60 * 60 * 24));
-        
-        if (diffDias === 1) {
-          sequenciaAtual++;
-        } else {
-          maxSequencia = Math.max(maxSequencia, sequenciaAtual);
-          sequenciaAtual = 1;
-        }
-      } else {
-        sequenciaAtual = 1;
-      }
-      
-      dataAnterior = dataAtual;
-    }
-    
-    maxSequencia = Math.max(maxSequencia, sequenciaAtual);
+    const totalJornadas = resultado?.total_jornadas || 0;
     const criterio = conquista.criterio_valor || 0;
 
     return {
-      unlocked: maxSequencia >= criterio,
-      value: maxSequencia
+      unlocked: totalJornadas >= criterio,
+      value: totalJornadas
     };
   }
 
@@ -594,7 +571,7 @@ export class GamificationController {
   private static async checkMetasAchievement(userId: string, conquista: any): Promise<{ unlocked: boolean; value?: number }> {
     const [resultado] = await db
       .select({
-        metas_concluidas: count()
+        total_metas_concluidas: count()
       })
       .from(metas)
       .where(
@@ -605,56 +582,17 @@ export class GamificationController {
         )
       );
 
-    const metasConcluidas = resultado?.metas_concluidas || 0;
+    const totalMetasConcluidas = resultado?.total_metas_concluidas || 0;
     const criterio = conquista.criterio_valor || 0;
 
     return {
-      unlocked: metasConcluidas >= criterio,
-      value: metasConcluidas
+      unlocked: totalMetasConcluidas >= criterio,
+      value: totalMetasConcluidas
     };
   }
 
   /**
-   * Verificar se o usuário subiu de nível
-   */
-  private static async checkLevelUp(userId: string) {
-    try {
-      // Buscar pontos atuais do usuário
-      const [usuario] = await db
-        .select({
-          pontos_total: usuarios.pontos_total,
-          nivel_usuario: usuarios.nivel_usuario
-        })
-        .from(usuarios)
-        .where(eq(usuarios.id, userId));
-
-      if (!usuario) return;
-
-      // Buscar o nível adequado para os pontos atuais
-      const [novoNivel] = await db
-        .select()
-        .from(nivelUsuario)
-        .where(lte(nivelUsuario.pontos_necessarios, usuario.pontos_total || 0))
-        .orderBy(desc(nivelUsuario.pontos_necessarios))
-        .limit(1);
-
-      // Se encontrou um nível diferente do atual, atualizar
-      if (novoNivel && novoNivel.nivel !== usuario.nivel_usuario) {
-        await db
-          .update(usuarios)
-          .set({
-            nivel_usuario: novoNivel.nivel,
-          })
-          .where(eq(usuarios.id, userId));
-      }
-
-    } catch (error) {
-      console.error('Erro ao verificar level up:', error);
-    }
-  }
-
-  /**
-   * Desbloquear conquista manualmente (para testes ou casos especiais)
+   * Desbloquear uma conquista manualmente (ex: por um administrador)
    */
   static async unlockAchievement(req: AuthenticatedRequest, res: Response) {
     try {
@@ -670,7 +608,7 @@ export class GamificationController {
         return res.status(400).json({
           success: false,
           error: { 
-            message: 'Dados inválidos',
+            message: 'Dados inválidos para desbloquear conquista',
             details: validation.error.errors
           }
         });
@@ -678,7 +616,7 @@ export class GamificationController {
 
       const { id_conquista, valor_atingido } = validation.data;
 
-      // Verificar se a conquista existe
+      // Verificar se a conquista existe e está ativa
       const [conquista] = await db
         .select()
         .from(conquistas)
@@ -691,8 +629,8 @@ export class GamificationController {
         });
       }
 
-      // Verificar se já foi desbloqueada
-      const [conquistaExistente] = await db
+      // Verificar se o usuário já possui a conquista
+      const [existingUnlock] = await db
         .select()
         .from(usuarioConquistas)
         .where(
@@ -702,10 +640,10 @@ export class GamificationController {
           )
         );
 
-      if (conquistaExistente) {
-        return res.status(400).json({
+      if (existingUnlock) {
+        return res.status(409).json({
           success: false,
-          error: { message: 'Conquista já foi desbloqueada' }
+          error: { message: 'Conquista já desbloqueada por este usuário' }
         });
       }
 
@@ -713,11 +651,12 @@ export class GamificationController {
       await db.insert(usuarioConquistas).values({
         id_usuario: req.user?.id,
         id_conquista,
-        valor_atingido,
-        data_desbloqueio: new Date()
+        valor_atingido: valor_atingido || conquista.criterio_valor || 0,
+        data_desbloqueio: new Date().toISOString(),
+        created_at: new Date().toISOString()
       });
 
-      // Atualizar pontos do usuário
+      // Atualizar pontos e conquistas desbloqueadas do usuário
       await db
         .update(usuarios)
         .set({
@@ -726,26 +665,61 @@ export class GamificationController {
         })
         .where(eq(usuarios.id, req.user?.id));
 
-      // Verificar level up
+      // Verificar se o usuário subiu de nível
       await GamificationController.checkLevelUp(req.user?.id);
 
-      return res.status(201).json({
+      return res.status(200).json({
         success: true,
-        data: {
-          message: 'Conquista desbloqueada com sucesso!',
-          conquista: {
-            nome: conquista.nome,
-            pontos_recompensa: conquista.pontos_recompensa
-          }
-        }
+        message: 'Conquista desbloqueada com sucesso',
+        data: { conquista, valor_atingido }
       });
 
     } catch (error) {
-      console.error('Erro ao desbloquear conquista:', error);
+      console.error('Erro ao desbloquear conquista manualmente:', error);
       return res.status(500).json({
         success: false,
         error: { message: 'Erro interno do servidor' }
       });
+    }
+  }
+
+  /**
+   * Verificar e atualizar o nível do usuário
+   */
+  static async checkLevelUp(userId: string) {
+    try {
+      const [usuario] = await db
+        .select({
+          pontos_total: usuarios.pontos_total,
+          nivel_usuario: usuarios.nivel_usuario
+        })
+        .from(usuarios)
+        .where(eq(usuarios.id, userId));
+
+      if (!usuario) {
+        console.warn(`Usuário ${userId} não encontrado para verificação de nível.`);
+        return;
+      }
+
+      const [proximoNivel] = await db
+        .select()
+        .from(nivelUsuario)
+        .where(gte(nivelUsuario.pontos_necessarios, usuario.pontos_total || 0))
+        .orderBy(asc(nivelUsuario.pontos_necessarios))
+        .limit(1);
+
+      if (proximoNivel && proximoNivel.nivel !== usuario.nivel_usuario) {
+        await db
+          .update(usuarios)
+          .set({
+            nivel_usuario: proximoNivel.nivel
+          })
+          .where(eq(usuarios.id, userId));
+        console.log(`Usuário ${userId} subiu para o nível ${proximoNivel.nivel}`);
+      }
+
+    } catch (error) {
+      console.error(`Erro ao verificar nível do usuário ${userId}:`, error);
     }
   }
 }

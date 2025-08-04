@@ -13,8 +13,7 @@ describe('Dashboard Integration Tests', () => {
   const testUser = {
     nome: 'Teste Dashboard',
     email: 'dashboard@exemplo.com',
-    senha: 'senha123',
-    telefone: '11999999999'
+    senha: 'senha123'
   };
 
   const testVehicle = {
