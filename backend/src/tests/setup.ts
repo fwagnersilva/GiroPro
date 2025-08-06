@@ -1,5 +1,6 @@
 import { config } from 'dotenv';
-import { server } from '../app';
+import { migrate } from "drizzle-orm/better-sqlite3/migrator";
+import { db, closeConnection } from "../db/connection.sqlite";
 
 // Carregar variáveis de ambiente de teste
 config({ path: '.env.test' });
@@ -10,12 +11,16 @@ jest.setTimeout(30000);
 // Mock do console para reduzir ruído nos testes
 const originalConsole = console;
 
-beforeAll(() => {
+beforeAll(async () => {
   // Silenciar logs durante os testes, exceto erros
   console.log = jest.fn();
   console.info = jest.fn();
   console.warn = jest.fn();
   console.error = originalConsole.error; // Manter erros visíveis
+  console.log("Applying migrations...");
+  console.log("DB object before migration:", db);
+  migrate(db, { migrationsFolder: "./drizzle" });
+  console.log("Migrations applied.");
 });
 
 afterAll(async () => {
@@ -24,7 +29,7 @@ afterAll(async () => {
   console.info = originalConsole.info;
   console.warn = originalConsole.warn;
   console.error = originalConsole.error;
-  await server.close();
+  closeConnection();
 });
 
 // Configurar variáveis de ambiente para testes

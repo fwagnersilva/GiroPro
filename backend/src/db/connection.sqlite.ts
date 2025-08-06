@@ -8,7 +8,8 @@ dotenv.config();
 // Configuração para SQLite
 // Use ':memory:' para banco em memória (ideal para testes)
 // Use um caminho de arquivo para persistência local
-const dbPath = process.env.SQLITE_DB_PATH || ':memory:';
+const dbPath = process.env.SQLITE_DB_PATH || ":memory:";
+console.log("DB Path:", dbPath);
 
 const sqlite = new Database(dbPath);
 
@@ -21,4 +22,5 @@ export const db = drizzle(sqlite as any, { schema });
 export const closeConnection = () => {
   sqlite.close();
 };
+
 

@@ -1,0 +1,1043 @@
+
+> giropro-backend@1.0.0 test
+> jest
+
+FAIL src/__tests__/controllers/vehiclesController.test.ts (7.343 s)
+  ● VehiclesController › POST /api/v1/veiculos › should create a new vehicle with valid data
+
+    SqliteError: no such table: veiculos
+
+      at Database.prepare (node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
+      at BetterSQLiteSession.prepareQuery (node_modules/src/better-sqlite3/session.ts:60:28)
+      at BetterSQLiteSession.prepareOneTimeQuery (node_modules/src/sqlite-core/session.ts:250:15)
+      at QueryPromise._prepare (node_modules/src/sqlite-core/query-builders/delete.ts:267:78)
+      at QueryPromise.execute (node_modules/src/sqlite-core/query-builders/delete.ts:301:15)
+      at QueryPromise.then (node_modules/src/query-promise.ts:31:15)
+
+  ● VehiclesController › POST /api/v1/veiculos › should create a new vehicle with valid data
+
+    SqliteError: no such table: veiculos
+
+      at Database.prepare (node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
+      at BetterSQLiteSession.prepareQuery (node_modules/src/better-sqlite3/session.ts:60:28)
+      at BetterSQLiteSession.prepareOneTimeQuery (node_modules/src/sqlite-core/session.ts:250:15)
+      at QueryPromise._prepare (node_modules/src/sqlite-core/query-builders/delete.ts:267:78)
+      at QueryPromise.execute (node_modules/src/sqlite-core/query-builders/delete.ts:301:15)
+      at QueryPromise.then (node_modules/src/query-promise.ts:31:15)
+
+  ● VehiclesController › POST /api/v1/veiculos › should return 400 for invalid vehicle data
+
+    SqliteError: no such table: veiculos
+
+      at Database.prepare (node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
+      at BetterSQLiteSession.prepareQuery (node_modules/src/better-sqlite3/session.ts:60:28)
+      at BetterSQLiteSession.prepareOneTimeQuery (node_modules/src/sqlite-core/session.ts:250:15)
+      at QueryPromise._prepare (node_modules/src/sqlite-core/query-builders/delete.ts:267:78)
+      at QueryPromise.execute (node_modules/src/sqlite-core/query-builders/delete.ts:301:15)
+      at QueryPromise.then (node_modules/src/query-promise.ts:31:15)
+
+  ● VehiclesController › POST /api/v1/veiculos › should return 400 for invalid vehicle data
+
+    SqliteError: no such table: veiculos
+
+      at Database.prepare (node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
+      at BetterSQLiteSession.prepareQuery (node_modules/src/better-sqlite3/session.ts:60:28)
+      at BetterSQLiteSession.prepareOneTimeQuery (node_modules/src/sqlite-core/session.ts:250:15)
+      at QueryPromise._prepare (node_modules/src/sqlite-core/query-builders/delete.ts:267:78)
+      at QueryPromise.execute (node_modules/src/sqlite-core/query-builders/delete.ts:301:15)
+      at QueryPromise.then (node_modules/src/query-promise.ts:31:15)
+
+  ● VehiclesController › POST /api/v1/veiculos › should return 401 for unauthorized user
+
+    SqliteError: no such table: veiculos
+
+      at Database.prepare (node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
+      at BetterSQLiteSession.prepareQuery (node_modules/src/better-sqlite3/session.ts:60:28)
+      at BetterSQLiteSession.prepareOneTimeQuery (node_modules/src/sqlite-core/session.ts:250:15)
+      at QueryPromise._prepare (node_modules/src/sqlite-core/query-builders/delete.ts:267:78)
+      at QueryPromise.execute (node_modules/src/sqlite-core/query-builders/delete.ts:301:15)
+      at QueryPromise.then (node_modules/src/query-promise.ts:31:15)
+
+  ● VehiclesController › POST /api/v1/veiculos › should return 401 for unauthorized user
+
+    SqliteError: no such table: veiculos
+
+      at Database.prepare (node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
+      at BetterSQLiteSession.prepareQuery (node_modules/src/better-sqlite3/session.ts:60:28)
+      at BetterSQLiteSession.prepareOneTimeQuery (node_modules/src/sqlite-core/session.ts:250:15)
+      at QueryPromise._prepare (node_modules/src/sqlite-core/query-builders/delete.ts:267:78)
+      at QueryPromise.execute (node_modules/src/sqlite-core/query-builders/delete.ts:301:15)
+      at QueryPromise.then (node_modules/src/query-promise.ts:31:15)
+
+  ● VehiclesController › POST /api/v1/veiculos › should return 409 for duplicate vehicle plate
+
+    SqliteError: no such table: veiculos
+
+      at Database.prepare (node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
+      at BetterSQLiteSession.prepareQuery (node_modules/src/better-sqlite3/session.ts:60:28)
+      at BetterSQLiteSession.prepareOneTimeQuery (node_modules/src/sqlite-core/session.ts:250:15)
+      at QueryPromise._prepare (node_modules/src/sqlite-core/query-builders/delete.ts:267:78)
+      at QueryPromise.execute (node_modules/src/sqlite-core/query-builders/delete.ts:301:15)
+      at QueryPromise.then (node_modules/src/query-promise.ts:31:15)
+
+  ● VehiclesController › POST /api/v1/veiculos › should return 409 for duplicate vehicle plate
+
+    SqliteError: no such table: veiculos
+
+      at Database.prepare (node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
+      at BetterSQLiteSession.prepareQuery (node_modules/src/better-sqlite3/session.ts:60:28)
+      at BetterSQLiteSession.prepareOneTimeQuery (node_modules/src/sqlite-core/session.ts:250:15)
+      at QueryPromise._prepare (node_modules/src/sqlite-core/query-builders/delete.ts:267:78)
+      at QueryPromise.execute (node_modules/src/sqlite-core/query-builders/delete.ts:301:15)
+      at QueryPromise.then (node_modules/src/query-promise.ts:31:15)
+
+  ● VehiclesController › POST /api/v1/veiculos › should validate required fields
+
+    SqliteError: no such table: veiculos
+
+      at Database.prepare (node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
+      at BetterSQLiteSession.prepareQuery (node_modules/src/better-sqlite3/session.ts:60:28)
+      at BetterSQLiteSession.prepareOneTimeQuery (node_modules/src/sqlite-core/session.ts:250:15)
+      at QueryPromise._prepare (node_modules/src/sqlite-core/query-builders/delete.ts:267:78)
+      at QueryPromise.execute (node_modules/src/sqlite-core/query-builders/delete.ts:301:15)
+      at QueryPromise.then (node_modules/src/query-promise.ts:31:15)
+
+  ● VehiclesController › POST /api/v1/veiculos › should validate required fields
+
+    SqliteError: no such table: veiculos
+
+      at Database.prepare (node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
+      at BetterSQLiteSession.prepareQuery (node_modules/src/better-sqlite3/session.ts:60:28)
+      at BetterSQLiteSession.prepareOneTimeQuery (node_modules/src/sqlite-core/session.ts:250:15)
+      at QueryPromise._prepare (node_modules/src/sqlite-core/query-builders/delete.ts:267:78)
+      at QueryPromise.execute (node_modules/src/sqlite-core/query-builders/delete.ts:301:15)
+      at QueryPromise.then (node_modules/src/query-promise.ts:31:15)
+
+  ● VehiclesController › POST /api/v1/veiculos › should validate plate format
+
+    SqliteError: no such table: veiculos
+
+      at Database.prepare (node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
+      at BetterSQLiteSession.prepareQuery (node_modules/src/better-sqlite3/session.ts:60:28)
+      at BetterSQLiteSession.prepareOneTimeQuery (node_modules/src/sqlite-core/session.ts:250:15)
+      at QueryPromise._prepare (node_modules/src/sqlite-core/query-builders/delete.ts:267:78)
+      at QueryPromise.execute (node_modules/src/sqlite-core/query-builders/delete.ts:301:15)
+      at QueryPromise.then (node_modules/src/query-promise.ts:31:15)
+
+  ● VehiclesController › POST /api/v1/veiculos › should validate plate format
+
+    SqliteError: no such table: veiculos
+
+      at Database.prepare (node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
+      at BetterSQLiteSession.prepareQuery (node_modules/src/better-sqlite3/session.ts:60:28)
+      at BetterSQLiteSession.prepareOneTimeQuery (node_modules/src/sqlite-core/session.ts:250:15)
+      at QueryPromise._prepare (node_modules/src/sqlite-core/query-builders/delete.ts:267:78)
+      at QueryPromise.execute (node_modules/src/sqlite-core/query-builders/delete.ts:301:15)
+      at QueryPromise.then (node_modules/src/query-promise.ts:31:15)
+
+  ● VehiclesController › POST /api/v1/veiculos › should validate year range
+
+    SqliteError: no such table: veiculos
+
+      at Database.prepare (node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
+      at BetterSQLiteSession.prepareQuery (node_modules/src/better-sqlite3/session.ts:60:28)
+      at BetterSQLiteSession.prepareOneTimeQuery (node_modules/src/sqlite-core/session.ts:250:15)
+      at QueryPromise._prepare (node_modules/src/sqlite-core/query-builders/delete.ts:267:78)
+      at QueryPromise.execute (node_modules/src/sqlite-core/query-builders/delete.ts:301:15)
+      at QueryPromise.then (node_modules/src/query-promise.ts:31:15)
+
+  ● VehiclesController › POST /api/v1/veiculos › should validate year range
+
+    SqliteError: no such table: veiculos
+
+      at Database.prepare (node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
+      at BetterSQLiteSession.prepareQuery (node_modules/src/better-sqlite3/session.ts:60:28)
+      at BetterSQLiteSession.prepareOneTimeQuery (node_modules/src/sqlite-core/session.ts:250:15)
+      at QueryPromise._prepare (node_modules/src/sqlite-core/query-builders/delete.ts:267:78)
+      at QueryPromise.execute (node_modules/src/sqlite-core/query-builders/delete.ts:301:15)
+      at QueryPromise.then (node_modules/src/query-promise.ts:31:15)
+
+  ● VehiclesController › GET /api/v1/veiculos › should return user veiculos
+
+    SqliteError: no such table: veiculos
+
+      at Database.prepare (node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
+      at BetterSQLiteSession.prepareQuery (node_modules/src/better-sqlite3/session.ts:60:28)
+      at BetterSQLiteSession.prepareOneTimeQuery (node_modules/src/sqlite-core/session.ts:250:15)
+      at QueryPromise._prepare (node_modules/src/sqlite-core/query-builders/delete.ts:267:78)
+      at QueryPromise.execute (node_modules/src/sqlite-core/query-builders/delete.ts:301:15)
+      at QueryPromise.then (node_modules/src/query-promise.ts:31:15)
+
+  ● VehiclesController › GET /api/v1/veiculos › should return user veiculos
+
+    SqliteError: no such table: veiculos
+
+      at Database.prepare (node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
+      at BetterSQLiteSession.prepareQuery (node_modules/src/better-sqlite3/session.ts:60:28)
+      at BetterSQLiteSession.prepareOneTimeQuery (node_modules/src/sqlite-core/session.ts:250:15)
+      at QueryPromise._prepare (node_modules/src/sqlite-core/query-builders/delete.ts:267:78)
+      at QueryPromise.execute (node_modules/src/sqlite-core/query-builders/delete.ts:301:15)
+      at QueryPromise.then (node_modules/src/query-promise.ts:31:15)
+
+  ● VehiclesController › GET /api/v1/veiculos › should return empty array for user without veiculos
+
+    SqliteError: no such table: veiculos
+
+      at Database.prepare (node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
+      at BetterSQLiteSession.prepareQuery (node_modules/src/better-sqlite3/session.ts:60:28)
+      at BetterSQLiteSession.prepareOneTimeQuery (node_modules/src/sqlite-core/session.ts:250:15)
+      at QueryPromise._prepare (node_modules/src/sqlite-core/query-builders/delete.ts:267:78)
+      at QueryPromise.execute (node_modules/src/sqlite-core/query-builders/delete.ts:301:15)
+      at QueryPromise.then (node_modules/src/query-promise.ts:31:15)
+
+  ● VehiclesController › GET /api/v1/veiculos › should return empty array for user without veiculos
+
+    SqliteError: no such table: veiculos
+
+      at Database.prepare (node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
+      at BetterSQLiteSession.prepareQuery (node_modules/src/better-sqlite3/session.ts:60:28)
+      at BetterSQLiteSession.prepareOneTimeQuery (node_modules/src/sqlite-core/session.ts:250:15)
+      at QueryPromise._prepare (node_modules/src/sqlite-core/query-builders/delete.ts:267:78)
+      at QueryPromise.execute (node_modules/src/sqlite-core/query-builders/delete.ts:301:15)
+      at QueryPromise.then (node_modules/src/query-promise.ts:31:15)
+
+  ● VehiclesController › GET /api/v1/veiculos › should return 401 for unauthorized user
+
+    SqliteError: no such table: veiculos
+
+      at Database.prepare (node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
+      at BetterSQLiteSession.prepareQuery (node_modules/src/better-sqlite3/session.ts:60:28)
+      at BetterSQLiteSession.prepareOneTimeQuery (node_modules/src/sqlite-core/session.ts:250:15)
+      at QueryPromise._prepare (node_modules/src/sqlite-core/query-builders/delete.ts:267:78)
+      at QueryPromise.execute (node_modules/src/sqlite-core/query-builders/delete.ts:301:15)
+      at QueryPromise.then (node_modules/src/query-promise.ts:31:15)
+
+  ● VehiclesController › GET /api/v1/veiculos › should return 401 for unauthorized user
+
+    SqliteError: no such table: veiculos
+
+      at Database.prepare (node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
+      at BetterSQLiteSession.prepareQuery (node_modules/src/better-sqlite3/session.ts:60:28)
+      at BetterSQLiteSession.prepareOneTimeQuery (node_modules/src/sqlite-core/session.ts:250:15)
+      at QueryPromise._prepare (node_modules/src/sqlite-core/query-builders/delete.ts:267:78)
+      at QueryPromise.execute (node_modules/src/sqlite-core/query-builders/delete.ts:301:15)
+      at QueryPromise.then (node_modules/src/query-promise.ts:31:15)
+
+  ● VehiclesController › GET /api/v1/veiculos › should apply pagination correctly
+
+    SqliteError: no such table: veiculos
+
+      at Database.prepare (node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
+      at BetterSQLiteSession.prepareQuery (node_modules/src/better-sqlite3/session.ts:60:28)
+      at BetterSQLiteSession.prepareOneTimeQuery (node_modules/src/sqlite-core/session.ts:250:15)
+      at QueryPromise._prepare (node_modules/src/sqlite-core/query-builders/delete.ts:267:78)
+      at QueryPromise.execute (node_modules/src/sqlite-core/query-builders/delete.ts:301:15)
+      at QueryPromise.then (node_modules/src/query-promise.ts:31:15)
+
+  ● VehiclesController › GET /api/v1/veiculos › should apply pagination correctly
+
+    SqliteError: no such table: veiculos
+
+      at Database.prepare (node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
+      at BetterSQLiteSession.prepareQuery (node_modules/src/better-sqlite3/session.ts:60:28)
+      at BetterSQLiteSession.prepareOneTimeQuery (node_modules/src/sqlite-core/session.ts:250:15)
+      at QueryPromise._prepare (node_modules/src/sqlite-core/query-builders/delete.ts:267:78)
+      at QueryPromise.execute (node_modules/src/sqlite-core/query-builders/delete.ts:301:15)
+      at QueryPromise.then (node_modules/src/query-promise.ts:31:15)
+
+  ● VehiclesController › GET /api/v1/veiculos › should filter by active veiculos only
+
+    SqliteError: no such table: veiculos
+
+      at Database.prepare (node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
+      at BetterSQLiteSession.prepareQuery (node_modules/src/better-sqlite3/session.ts:60:28)
+      at BetterSQLiteSession.prepareOneTimeQuery (node_modules/src/sqlite-core/session.ts:250:15)
+      at QueryPromise._prepare (node_modules/src/sqlite-core/query-builders/delete.ts:267:78)
+      at QueryPromise.execute (node_modules/src/sqlite-core/query-builders/delete.ts:301:15)
+      at QueryPromise.then (node_modules/src/query-promise.ts:31:15)
+
+  ● VehiclesController › GET /api/v1/veiculos › should filter by active veiculos only
+
+    SqliteError: no such table: veiculos
+
+      at Database.prepare (node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
+      at BetterSQLiteSession.prepareQuery (node_modules/src/better-sqlite3/session.ts:60:28)
+      at BetterSQLiteSession.prepareOneTimeQuery (node_modules/src/sqlite-core/session.ts:250:15)
+      at QueryPromise._prepare (node_modules/src/sqlite-core/query-builders/delete.ts:267:78)
+      at QueryPromise.execute (node_modules/src/sqlite-core/query-builders/delete.ts:301:15)
+      at QueryPromise.then (node_modules/src/query-promise.ts:31:15)
+
+  ● VehiclesController › GET /api/v1/veiculos/:id › should return specific vehicle
+
+    SqliteError: no such table: veiculos
+
+      at Database.prepare (node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
+      at BetterSQLiteSession.prepareQuery (node_modules/src/better-sqlite3/session.ts:60:28)
+      at BetterSQLiteSession.prepareOneTimeQuery (node_modules/src/sqlite-core/session.ts:250:15)
+      at QueryPromise._prepare (node_modules/src/sqlite-core/query-builders/delete.ts:267:78)
+      at QueryPromise.execute (node_modules/src/sqlite-core/query-builders/delete.ts:301:15)
+      at QueryPromise.then (node_modules/src/query-promise.ts:31:15)
+
+  ● VehiclesController › GET /api/v1/veiculos/:id › should return specific vehicle
+
+    SqliteError: no such table: veiculos
+
+      at Database.prepare (node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
+      at BetterSQLiteSession.prepareQuery (node_modules/src/better-sqlite3/session.ts:60:28)
+      at BetterSQLiteSession.prepareOneTimeQuery (node_modules/src/sqlite-core/session.ts:250:15)
+      at QueryPromise._prepare (node_modules/src/sqlite-core/query-builders/delete.ts:267:78)
+      at QueryPromise.execute (node_modules/src/sqlite-core/query-builders/delete.ts:301:15)
+      at QueryPromise.then (node_modules/src/query-promise.ts:31:15)
+
+  ● VehiclesController › GET /api/v1/veiculos/:id › should return 404 for non-existent vehicle
+
+    SqliteError: no such table: veiculos
+
+      at Database.prepare (node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
+      at BetterSQLiteSession.prepareQuery (node_modules/src/better-sqlite3/session.ts:60:28)
+      at BetterSQLiteSession.prepareOneTimeQuery (node_modules/src/sqlite-core/session.ts:250:15)
+      at QueryPromise._prepare (node_modules/src/sqlite-core/query-builders/delete.ts:267:78)
+      at QueryPromise.execute (node_modules/src/sqlite-core/query-builders/delete.ts:301:15)
+      at QueryPromise.then (node_modules/src/query-promise.ts:31:15)
+
+  ● VehiclesController › GET /api/v1/veiculos/:id › should return 404 for non-existent vehicle
+
+    SqliteError: no such table: veiculos
+
+      at Database.prepare (node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
+      at BetterSQLiteSession.prepareQuery (node_modules/src/better-sqlite3/session.ts:60:28)
+      at BetterSQLiteSession.prepareOneTimeQuery (node_modules/src/sqlite-core/session.ts:250:15)
+      at QueryPromise._prepare (node_modules/src/sqlite-core/query-builders/delete.ts:267:78)
+      at QueryPromise.execute (node_modules/src/sqlite-core/query-builders/delete.ts:301:15)
+      at QueryPromise.then (node_modules/src/query-promise.ts:31:15)
+
+  ● VehiclesController › GET /api/v1/veiculos/:id › should return 401 for unauthorized user
+
+    SqliteError: no such table: veiculos
+
+      at Database.prepare (node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
+      at BetterSQLiteSession.prepareQuery (node_modules/src/better-sqlite3/session.ts:60:28)
+      at BetterSQLiteSession.prepareOneTimeQuery (node_modules/src/sqlite-core/session.ts:250:15)
+      at QueryPromise._prepare (node_modules/src/sqlite-core/query-builders/delete.ts:267:78)
+      at QueryPromise.execute (node_modules/src/sqlite-core/query-builders/delete.ts:301:15)
+      at QueryPromise.then (node_modules/src/query-promise.ts:31:15)
+
+  ● VehiclesController › GET /api/v1/veiculos/:id › should return 401 for unauthorized user
+
+    SqliteError: no such table: veiculos
+
+      at Database.prepare (node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
+      at BetterSQLiteSession.prepareQuery (node_modules/src/better-sqlite3/session.ts:60:28)
+      at BetterSQLiteSession.prepareOneTimeQuery (node_modules/src/sqlite-core/session.ts:250:15)
+      at QueryPromise._prepare (node_modules/src/sqlite-core/query-builders/delete.ts:267:78)
+      at QueryPromise.execute (node_modules/src/sqlite-core/query-builders/delete.ts:301:15)
+      at QueryPromise.then (node_modules/src/query-promise.ts:31:15)
+
+  ● VehiclesController › GET /api/v1/veiculos/:id › should return 403 for vehicle of another user
+
+    SqliteError: no such table: veiculos
+
+      at Database.prepare (node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
+      at BetterSQLiteSession.prepareQuery (node_modules/src/better-sqlite3/session.ts:60:28)
+      at BetterSQLiteSession.prepareOneTimeQuery (node_modules/src/sqlite-core/session.ts:250:15)
+      at QueryPromise._prepare (node_modules/src/sqlite-core/query-builders/delete.ts:267:78)
+      at QueryPromise.execute (node_modules/src/sqlite-core/query-builders/delete.ts:301:15)
+      at QueryPromise.then (node_modules/src/query-promise.ts:31:15)
+
+  ● VehiclesController › GET /api/v1/veiculos/:id › should return 403 for vehicle of another user
+
+    SqliteError: no such table: veiculos
+
+      at Database.prepare (node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
+      at BetterSQLiteSession.prepareQuery (node_modules/src/better-sqlite3/session.ts:60:28)
+      at BetterSQLiteSession.prepareOneTimeQuery (node_modules/src/sqlite-core/session.ts:250:15)
+      at QueryPromise._prepare (node_modules/src/sqlite-core/query-builders/delete.ts:267:78)
+      at QueryPromise.execute (node_modules/src/sqlite-core/query-builders/delete.ts:301:15)
+      at QueryPromise.then (node_modules/src/query-promise.ts:31:15)
+
+  ● VehiclesController › PUT /api/v1/veiculos/:id › should update vehicle with valid data
+
+    SqliteError: no such table: veiculos
+
+      at Database.prepare (node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
+      at BetterSQLiteSession.prepareQuery (node_modules/src/better-sqlite3/session.ts:60:28)
+      at BetterSQLiteSession.prepareOneTimeQuery (node_modules/src/sqlite-core/session.ts:250:15)
+      at QueryPromise._prepare (node_modules/src/sqlite-core/query-builders/delete.ts:267:78)
+      at QueryPromise.execute (node_modules/src/sqlite-core/query-builders/delete.ts:301:15)
+      at QueryPromise.then (node_modules/src/query-promise.ts:31:15)
+
+  ● VehiclesController › PUT /api/v1/veiculos/:id › should update vehicle with valid data
+
+    SqliteError: no such table: veiculos
+
+      at Database.prepare (node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
+      at BetterSQLiteSession.prepareQuery (node_modules/src/better-sqlite3/session.ts:60:28)
+      at BetterSQLiteSession.prepareOneTimeQuery (node_modules/src/sqlite-core/session.ts:250:15)
+      at QueryPromise._prepare (node_modules/src/sqlite-core/query-builders/delete.ts:267:78)
+      at QueryPromise.execute (node_modules/src/sqlite-core/query-builders/delete.ts:301:15)
+      at QueryPromise.then (node_modules/src/query-promise.ts:31:15)
+
+  ● VehiclesController › PUT /api/v1/veiculos/:id › should return 400 for invalid update data
+
+    SqliteError: no such table: veiculos
+
+      at Database.prepare (node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
+      at BetterSQLiteSession.prepareQuery (node_modules/src/better-sqlite3/session.ts:60:28)
+      at BetterSQLiteSession.prepareOneTimeQuery (node_modules/src/sqlite-core/session.ts:250:15)
+      at QueryPromise._prepare (node_modules/src/sqlite-core/query-builders/delete.ts:267:78)
+      at QueryPromise.execute (node_modules/src/sqlite-core/query-builders/delete.ts:301:15)
+      at QueryPromise.then (node_modules/src/query-promise.ts:31:15)
+
+  ● VehiclesController › PUT /api/v1/veiculos/:id › should return 400 for invalid update data
+
+    SqliteError: no such table: veiculos
+
+      at Database.prepare (node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
+      at BetterSQLiteSession.prepareQuery (node_modules/src/better-sqlite3/session.ts:60:28)
+      at BetterSQLiteSession.prepareOneTimeQuery (node_modules/src/sqlite-core/session.ts:250:15)
+      at QueryPromise._prepare (node_modules/src/sqlite-core/query-builders/delete.ts:267:78)
+      at QueryPromise.execute (node_modules/src/sqlite-core/query-builders/delete.ts:301:15)
+      at QueryPromise.then (node_modules/src/query-promise.ts:31:15)
+
+  ● VehiclesController › PUT /api/v1/veiculos/:id › should return 404 for non-existent vehicle
+
+    SqliteError: no such table: veiculos
+
+      at Database.prepare (node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
+      at BetterSQLiteSession.prepareQuery (node_modules/src/better-sqlite3/session.ts:60:28)
+      at BetterSQLiteSession.prepareOneTimeQuery (node_modules/src/sqlite-core/session.ts:250:15)
+      at QueryPromise._prepare (node_modules/src/sqlite-core/query-builders/delete.ts:267:78)
+      at QueryPromise.execute (node_modules/src/sqlite-core/query-builders/delete.ts:301:15)
+      at QueryPromise.then (node_modules/src/query-promise.ts:31:15)
+
+  ● VehiclesController › PUT /api/v1/veiculos/:id › should return 404 for non-existent vehicle
+
+    SqliteError: no such table: veiculos
+
+      at Database.prepare (node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
+      at BetterSQLiteSession.prepareQuery (node_modules/src/better-sqlite3/session.ts:60:28)
+      at BetterSQLiteSession.prepareOneTimeQuery (node_modules/src/sqlite-core/session.ts:250:15)
+      at QueryPromise._prepare (node_modules/src/sqlite-core/query-builders/delete.ts:267:78)
+      at QueryPromise.execute (node_modules/src/sqlite-core/query-builders/delete.ts:301:15)
+      at QueryPromise.then (node_modules/src/query-promise.ts:31:15)
+
+  ● VehiclesController › PUT /api/v1/veiculos/:id › should return 401 for unauthorized user
+
+    SqliteError: no such table: veiculos
+
+      at Database.prepare (node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
+      at BetterSQLiteSession.prepareQuery (node_modules/src/better-sqlite3/session.ts:60:28)
+      at BetterSQLiteSession.prepareOneTimeQuery (node_modules/src/sqlite-core/session.ts:250:15)
+      at QueryPromise._prepare (node_modules/src/sqlite-core/query-builders/delete.ts:267:78)
+      at QueryPromise.execute (node_modules/src/sqlite-core/query-builders/delete.ts:301:15)
+      at QueryPromise.then (node_modules/src/query-promise.ts:31:15)
+
+  ● VehiclesController › PUT /api/v1/veiculos/:id › should return 401 for unauthorized user
+
+    SqliteError: no such table: veiculos
+
+      at Database.prepare (node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
+      at BetterSQLiteSession.prepareQuery (node_modules/src/better-sqlite3/session.ts:60:28)
+      at BetterSQLiteSession.prepareOneTimeQuery (node_modules/src/sqlite-core/session.ts:250:15)
+      at QueryPromise._prepare (node_modules/src/sqlite-core/query-builders/delete.ts:267:78)
+      at QueryPromise.execute (node_modules/src/sqlite-core/query-builders/delete.ts:301:15)
+      at QueryPromise.then (node_modules/src/query-promise.ts:31:15)
+
+  ● VehiclesController › DELETE /api/v1/veiculos/:id › should soft delete vehicle
+
+    SqliteError: no such table: veiculos
+
+      at Database.prepare (node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
+      at BetterSQLiteSession.prepareQuery (node_modules/src/better-sqlite3/session.ts:60:28)
+      at BetterSQLiteSession.prepareOneTimeQuery (node_modules/src/sqlite-core/session.ts:250:15)
+      at QueryPromise._prepare (node_modules/src/sqlite-core/query-builders/delete.ts:267:78)
+      at QueryPromise.execute (node_modules/src/sqlite-core/query-builders/delete.ts:301:15)
+      at QueryPromise.then (node_modules/src/query-promise.ts:31:15)
+
+  ● VehiclesController › DELETE /api/v1/veiculos/:id › should soft delete vehicle
+
+    SqliteError: no such table: veiculos
+
+      at Database.prepare (node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
+      at BetterSQLiteSession.prepareQuery (node_modules/src/better-sqlite3/session.ts:60:28)
+      at BetterSQLiteSession.prepareOneTimeQuery (node_modules/src/sqlite-core/session.ts:250:15)
+      at QueryPromise._prepare (node_modules/src/sqlite-core/query-builders/delete.ts:267:78)
+      at QueryPromise.execute (node_modules/src/sqlite-core/query-builders/delete.ts:301:15)
+      at QueryPromise.then (node_modules/src/query-promise.ts:31:15)
+
+  ● VehiclesController › DELETE /api/v1/veiculos/:id › should return 404 for non-existent vehicle
+
+    SqliteError: no such table: veiculos
+
+      at Database.prepare (node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
+      at BetterSQLiteSession.prepareQuery (node_modules/src/better-sqlite3/session.ts:60:28)
+      at BetterSQLiteSession.prepareOneTimeQuery (node_modules/src/sqlite-core/session.ts:250:15)
+      at QueryPromise._prepare (node_modules/src/sqlite-core/query-builders/delete.ts:267:78)
+      at QueryPromise.execute (node_modules/src/sqlite-core/query-builders/delete.ts:301:15)
+      at QueryPromise.then (node_modules/src/query-promise.ts:31:15)
+
+  ● VehiclesController › DELETE /api/v1/veiculos/:id › should return 404 for non-existent vehicle
+
+    SqliteError: no such table: veiculos
+
+      at Database.prepare (node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
+      at BetterSQLiteSession.prepareQuery (node_modules/src/better-sqlite3/session.ts:60:28)
+      at BetterSQLiteSession.prepareOneTimeQuery (node_modules/src/sqlite-core/session.ts:250:15)
+      at QueryPromise._prepare (node_modules/src/sqlite-core/query-builders/delete.ts:267:78)
+      at QueryPromise.execute (node_modules/src/sqlite-core/query-builders/delete.ts:301:15)
+      at QueryPromise.then (node_modules/src/query-promise.ts:31:15)
+
+  ● VehiclesController › DELETE /api/v1/veiculos/:id › should return 401 for unauthorized user
+
+    SqliteError: no such table: veiculos
+
+      at Database.prepare (node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
+      at BetterSQLiteSession.prepareQuery (node_modules/src/better-sqlite3/session.ts:60:28)
+      at BetterSQLiteSession.prepareOneTimeQuery (node_modules/src/sqlite-core/session.ts:250:15)
+      at QueryPromise._prepare (node_modules/src/sqlite-core/query-builders/delete.ts:267:78)
+      at QueryPromise.execute (node_modules/src/sqlite-core/query-builders/delete.ts:301:15)
+      at QueryPromise.then (node_modules/src/query-promise.ts:31:15)
+
+  ● VehiclesController › DELETE /api/v1/veiculos/:id › should return 401 for unauthorized user
+
+    SqliteError: no such table: veiculos
+
+      at Database.prepare (node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
+      at BetterSQLiteSession.prepareQuery (node_modules/src/better-sqlite3/session.ts:60:28)
+      at BetterSQLiteSession.prepareOneTimeQuery (node_modules/src/sqlite-core/session.ts:250:15)
+      at QueryPromise._prepare (node_modules/src/sqlite-core/query-builders/delete.ts:267:78)
+      at QueryPromise.execute (node_modules/src/sqlite-core/query-builders/delete.ts:301:15)
+      at QueryPromise.then (node_modules/src/query-promise.ts:31:15)
+
+  ● VehiclesController › DELETE /api/v1/veiculos/:id › should prevent deletion if vehicle has active journeys
+
+    SqliteError: no such table: veiculos
+
+      at Database.prepare (node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
+      at BetterSQLiteSession.prepareQuery (node_modules/src/better-sqlite3/session.ts:60:28)
+      at BetterSQLiteSession.prepareOneTimeQuery (node_modules/src/sqlite-core/session.ts:250:15)
+      at QueryPromise._prepare (node_modules/src/sqlite-core/query-builders/delete.ts:267:78)
+      at QueryPromise.execute (node_modules/src/sqlite-core/query-builders/delete.ts:301:15)
+      at QueryPromise.then (node_modules/src/query-promise.ts:31:15)
+
+  ● VehiclesController › DELETE /api/v1/veiculos/:id › should prevent deletion if vehicle has active journeys
+
+    SqliteError: no such table: veiculos
+
+      at Database.prepare (node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
+      at BetterSQLiteSession.prepareQuery (node_modules/src/better-sqlite3/session.ts:60:28)
+      at BetterSQLiteSession.prepareOneTimeQuery (node_modules/src/sqlite-core/session.ts:250:15)
+      at QueryPromise._prepare (node_modules/src/sqlite-core/query-builders/delete.ts:267:78)
+      at QueryPromise.execute (node_modules/src/sqlite-core/query-builders/delete.ts:301:15)
+      at QueryPromise.then (node_modules/src/query-promise.ts:31:15)
+
+  ● VehiclesController › Vehicle Statistics › should return vehicle statistics
+
+    SqliteError: no such table: veiculos
+
+      at Database.prepare (node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
+      at BetterSQLiteSession.prepareQuery (node_modules/src/better-sqlite3/session.ts:60:28)
+      at BetterSQLiteSession.prepareOneTimeQuery (node_modules/src/sqlite-core/session.ts:250:15)
+      at QueryPromise._prepare (node_modules/src/sqlite-core/query-builders/delete.ts:267:78)
+      at QueryPromise.execute (node_modules/src/sqlite-core/query-builders/delete.ts:301:15)
+      at QueryPromise.then (node_modules/src/query-promise.ts:31:15)
+
+  ● VehiclesController › Vehicle Statistics › should return vehicle statistics
+
+    SqliteError: no such table: veiculos
+
+      at Database.prepare (node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
+      at BetterSQLiteSession.prepareQuery (node_modules/src/better-sqlite3/session.ts:60:28)
+      at BetterSQLiteSession.prepareOneTimeQuery (node_modules/src/sqlite-core/session.ts:250:15)
+      at QueryPromise._prepare (node_modules/src/sqlite-core/query-builders/delete.ts:267:78)
+      at QueryPromise.execute (node_modules/src/sqlite-core/query-builders/delete.ts:301:15)
+      at QueryPromise.then (node_modules/src/query-promise.ts:31:15)
+
+  ● VehiclesController › Vehicle Statistics › should return zero stats for new vehicle
+
+    SqliteError: no such table: veiculos
+
+      at Database.prepare (node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
+      at BetterSQLiteSession.prepareQuery (node_modules/src/better-sqlite3/session.ts:60:28)
+      at BetterSQLiteSession.prepareOneTimeQuery (node_modules/src/sqlite-core/session.ts:250:15)
+      at QueryPromise._prepare (node_modules/src/sqlite-core/query-builders/delete.ts:267:78)
+      at QueryPromise.execute (node_modules/src/sqlite-core/query-builders/delete.ts:301:15)
+      at QueryPromise.then (node_modules/src/query-promise.ts:31:15)
+
+  ● VehiclesController › Vehicle Statistics › should return zero stats for new vehicle
+
+    SqliteError: no such table: veiculos
+
+      at Database.prepare (node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
+      at BetterSQLiteSession.prepareQuery (node_modules/src/better-sqlite3/session.ts:60:28)
+      at BetterSQLiteSession.prepareOneTimeQuery (node_modules/src/sqlite-core/session.ts:250:15)
+      at QueryPromise._prepare (node_modules/src/sqlite-core/query-builders/delete.ts:267:78)
+      at QueryPromise.execute (node_modules/src/sqlite-core/query-builders/delete.ts:301:15)
+      at QueryPromise.then (node_modules/src/query-promise.ts:31:15)
+
+  ● VehiclesController › Input Validation and Security › should sanitize input data
+
+    SqliteError: no such table: veiculos
+
+      at Database.prepare (node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
+      at BetterSQLiteSession.prepareQuery (node_modules/src/better-sqlite3/session.ts:60:28)
+      at BetterSQLiteSession.prepareOneTimeQuery (node_modules/src/sqlite-core/session.ts:250:15)
+      at QueryPromise._prepare (node_modules/src/sqlite-core/query-builders/delete.ts:267:78)
+      at QueryPromise.execute (node_modules/src/sqlite-core/query-builders/delete.ts:301:15)
+      at QueryPromise.then (node_modules/src/query-promise.ts:31:15)
+
+  ● VehiclesController › Input Validation and Security › should sanitize input data
+
+    SqliteError: no such table: veiculos
+
+      at Database.prepare (node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
+      at BetterSQLiteSession.prepareQuery (node_modules/src/better-sqlite3/session.ts:60:28)
+      at BetterSQLiteSession.prepareOneTimeQuery (node_modules/src/sqlite-core/session.ts:250:15)
+      at QueryPromise._prepare (node_modules/src/sqlite-core/query-builders/delete.ts:267:78)
+      at QueryPromise.execute (node_modules/src/sqlite-core/query-builders/delete.ts:301:15)
+      at QueryPromise.then (node_modules/src/query-promise.ts:31:15)
+
+  ● VehiclesController › Input Validation and Security › should validate JWT token properly
+
+    SqliteError: no such table: veiculos
+
+      at Database.prepare (node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
+      at BetterSQLiteSession.prepareQuery (node_modules/src/better-sqlite3/session.ts:60:28)
+      at BetterSQLiteSession.prepareOneTimeQuery (node_modules/src/sqlite-core/session.ts:250:15)
+      at QueryPromise._prepare (node_modules/src/sqlite-core/query-builders/delete.ts:267:78)
+      at QueryPromise.execute (node_modules/src/sqlite-core/query-builders/delete.ts:301:15)
+      at QueryPromise.then (node_modules/src/query-promise.ts:31:15)
+
+  ● VehiclesController › Input Validation and Security › should validate JWT token properly
+
+    SqliteError: no such table: veiculos
+
+      at Database.prepare (node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
+      at BetterSQLiteSession.prepareQuery (node_modules/src/better-sqlite3/session.ts:60:28)
+      at BetterSQLiteSession.prepareOneTimeQuery (node_modules/src/sqlite-core/session.ts:250:15)
+      at QueryPromise._prepare (node_modules/src/sqlite-core/query-builders/delete.ts:267:78)
+      at QueryPromise.execute (node_modules/src/sqlite-core/query-builders/delete.ts:301:15)
+      at QueryPromise.then (node_modules/src/query-promise.ts:31:15)
+
+  ● VehiclesController › Input Validation and Security › should handle expired JWT token
+
+    SqliteError: no such table: veiculos
+
+      at Database.prepare (node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
+      at BetterSQLiteSession.prepareQuery (node_modules/src/better-sqlite3/session.ts:60:28)
+      at BetterSQLiteSession.prepareOneTimeQuery (node_modules/src/sqlite-core/session.ts:250:15)
+      at QueryPromise._prepare (node_modules/src/sqlite-core/query-builders/delete.ts:267:78)
+      at QueryPromise.execute (node_modules/src/sqlite-core/query-builders/delete.ts:301:15)
+      at QueryPromise.then (node_modules/src/query-promise.ts:31:15)
+
+  ● VehiclesController › Input Validation and Security › should handle expired JWT token
+
+    SqliteError: no such table: veiculos
+
+      at Database.prepare (node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
+      at BetterSQLiteSession.prepareQuery (node_modules/src/better-sqlite3/session.ts:60:28)
+      at BetterSQLiteSession.prepareOneTimeQuery (node_modules/src/sqlite-core/session.ts:250:15)
+      at QueryPromise._prepare (node_modules/src/sqlite-core/query-builders/delete.ts:267:78)
+      at QueryPromise.execute (node_modules/src/sqlite-core/query-builders/delete.ts:301:15)
+      at QueryPromise.then (node_modules/src/query-promise.ts:31:15)
+
+
+  ● Test suite failed to run
+
+    TypeError: Cannot read properties of undefined (reading 'close')
+
+      25 |   console.warn = originalConsole.warn;
+      26 |   console.error = originalConsole.error;
+    > 27 |   await server.close();
+         |                ^
+      28 | });
+      29 |
+      30 | // Configurar variáveis de ambiente para testes
+
+      at Object.<anonymous> (src/tests/setup.ts:27:16)
+
+FAIL src/tests/integration/auth.test.ts
+  ● Authentication Integration Tests › POST /api/v1/auth/register › deve registrar um novo usuário com sucesso
+
+    SqliteError: no such table: usuarios
+
+      at Database.prepare (node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
+      at BetterSQLiteSession.prepareQuery (node_modules/src/better-sqlite3/session.ts:60:28)
+      at BetterSQLiteSession.prepareOneTimeQuery (node_modules/src/sqlite-core/session.ts:250:15)
+      at QueryPromise._prepare (node_modules/src/sqlite-core/query-builders/delete.ts:267:78)
+      at QueryPromise.execute (node_modules/src/sqlite-core/query-builders/delete.ts:301:15)
+      at QueryPromise.then (node_modules/src/query-promise.ts:31:15)
+
+  ● Authentication Integration Tests › POST /api/v1/auth/register › deve registrar um novo usuário com sucesso
+
+    SqliteError: no such table: usuarios
+
+      at Database.prepare (node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
+      at BetterSQLiteSession.prepareQuery (node_modules/src/better-sqlite3/session.ts:60:28)
+      at BetterSQLiteSession.prepareOneTimeQuery (node_modules/src/sqlite-core/session.ts:250:15)
+      at QueryPromise._prepare (node_modules/src/sqlite-core/query-builders/delete.ts:267:78)
+      at QueryPromise.execute (node_modules/src/sqlite-core/query-builders/delete.ts:301:15)
+      at QueryPromise.then (node_modules/src/query-promise.ts:31:15)
+
+  ● Authentication Integration Tests › POST /api/v1/auth/register › deve retornar erro para email já cadastrado
+
+    SqliteError: no such table: usuarios
+
+      at Database.prepare (node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
+      at BetterSQLiteSession.prepareQuery (node_modules/src/better-sqlite3/session.ts:60:28)
+      at BetterSQLiteSession.prepareOneTimeQuery (node_modules/src/sqlite-core/session.ts:250:15)
+      at QueryPromise._prepare (node_modules/src/sqlite-core/query-builders/delete.ts:267:78)
+      at QueryPromise.execute (node_modules/src/sqlite-core/query-builders/delete.ts:301:15)
+      at QueryPromise.then (node_modules/src/query-promise.ts:31:15)
+
+  ● Authentication Integration Tests › POST /api/v1/auth/register › deve retornar erro para email já cadastrado
+
+    SqliteError: no such table: usuarios
+
+      at Database.prepare (node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
+      at BetterSQLiteSession.prepareQuery (node_modules/src/better-sqlite3/session.ts:60:28)
+      at BetterSQLiteSession.prepareOneTimeQuery (node_modules/src/sqlite-core/session.ts:250:15)
+      at QueryPromise._prepare (node_modules/src/sqlite-core/query-builders/delete.ts:267:78)
+      at QueryPromise.execute (node_modules/src/sqlite-core/query-builders/delete.ts:301:15)
+      at QueryPromise.then (node_modules/src/query-promise.ts:31:15)
+
+  ● Authentication Integration Tests › POST /api/v1/auth/register › deve retornar erro para dados inválidos
+
+    SqliteError: no such table: usuarios
+
+      at Database.prepare (node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
+      at BetterSQLiteSession.prepareQuery (node_modules/src/better-sqlite3/session.ts:60:28)
+      at BetterSQLiteSession.prepareOneTimeQuery (node_modules/src/sqlite-core/session.ts:250:15)
+      at QueryPromise._prepare (node_modules/src/sqlite-core/query-builders/delete.ts:267:78)
+      at QueryPromise.execute (node_modules/src/sqlite-core/query-builders/delete.ts:301:15)
+      at QueryPromise.then (node_modules/src/query-promise.ts:31:15)
+
+  ● Authentication Integration Tests › POST /api/v1/auth/register › deve retornar erro para dados inválidos
+
+    SqliteError: no such table: usuarios
+
+      at Database.prepare (node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
+      at BetterSQLiteSession.prepareQuery (node_modules/src/better-sqlite3/session.ts:60:28)
+      at BetterSQLiteSession.prepareOneTimeQuery (node_modules/src/sqlite-core/session.ts:250:15)
+      at QueryPromise._prepare (node_modules/src/sqlite-core/query-builders/delete.ts:267:78)
+      at QueryPromise.execute (node_modules/src/sqlite-core/query-builders/delete.ts:301:15)
+      at QueryPromise.then (node_modules/src/query-promise.ts:31:15)
+
+  ● Authentication Integration Tests › POST /api/v1/auth/register › deve aplicar rate limiting para muitas tentativas
+
+    SqliteError: no such table: usuarios
+
+      at Database.prepare (node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
+      at BetterSQLiteSession.prepareQuery (node_modules/src/better-sqlite3/session.ts:60:28)
+      at BetterSQLiteSession.prepareOneTimeQuery (node_modules/src/sqlite-core/session.ts:250:15)
+      at QueryPromise._prepare (node_modules/src/sqlite-core/query-builders/delete.ts:267:78)
+      at QueryPromise.execute (node_modules/src/sqlite-core/query-builders/delete.ts:301:15)
+      at QueryPromise.then (node_modules/src/query-promise.ts:31:15)
+
+  ● Authentication Integration Tests › POST /api/v1/auth/register › deve aplicar rate limiting para muitas tentativas
+
+    SqliteError: no such table: usuarios
+
+      at Database.prepare (node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
+      at BetterSQLiteSession.prepareQuery (node_modules/src/better-sqlite3/session.ts:60:28)
+      at BetterSQLiteSession.prepareOneTimeQuery (node_modules/src/sqlite-core/session.ts:250:15)
+      at QueryPromise._prepare (node_modules/src/sqlite-core/query-builders/delete.ts:267:78)
+      at QueryPromise.execute (node_modules/src/sqlite-core/query-builders/delete.ts:301:15)
+      at QueryPromise.then (node_modules/src/query-promise.ts:31:15)
+
+  ● Authentication Integration Tests › POST /api/v1/auth/login › deve fazer login com credenciais válidas
+
+    SqliteError: no such table: usuarios
+
+      at Database.prepare (node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
+      at BetterSQLiteSession.prepareQuery (node_modules/src/better-sqlite3/session.ts:60:28)
+      at BetterSQLiteSession.prepareOneTimeQuery (node_modules/src/sqlite-core/session.ts:250:15)
+      at QueryPromise._prepare (node_modules/src/sqlite-core/query-builders/delete.ts:267:78)
+      at QueryPromise.execute (node_modules/src/sqlite-core/query-builders/delete.ts:301:15)
+      at QueryPromise.then (node_modules/src/query-promise.ts:31:15)
+
+  ● Authentication Integration Tests › POST /api/v1/auth/login › deve fazer login com credenciais válidas
+
+    SqliteError: no such table: usuarios
+
+      at Database.prepare (node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
+      at BetterSQLiteSession.prepareQuery (node_modules/src/better-sqlite3/session.ts:60:28)
+      at BetterSQLiteSession.prepareOneTimeQuery (node_modules/src/sqlite-core/session.ts:250:15)
+      at QueryPromise._prepare (node_modules/src/sqlite-core/query-builders/delete.ts:267:78)
+      at QueryPromise.execute (node_modules/src/sqlite-core/query-builders/delete.ts:301:15)
+      at QueryPromise.then (node_modules/src/query-promise.ts:31:15)
+
+  ● Authentication Integration Tests › POST /api/v1/auth/login › deve retornar erro para credenciais inválidas
+
+    SqliteError: no such table: usuarios
+
+      at Database.prepare (node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
+      at BetterSQLiteSession.prepareQuery (node_modules/src/better-sqlite3/session.ts:60:28)
+      at BetterSQLiteSession.prepareOneTimeQuery (node_modules/src/sqlite-core/session.ts:250:15)
+      at QueryPromise._prepare (node_modules/src/sqlite-core/query-builders/delete.ts:267:78)
+      at QueryPromise.execute (node_modules/src/sqlite-core/query-builders/delete.ts:301:15)
+      at QueryPromise.then (node_modules/src/query-promise.ts:31:15)
+
+  ● Authentication Integration Tests › POST /api/v1/auth/login › deve retornar erro para credenciais inválidas
+
+    SqliteError: no such table: usuarios
+
+      at Database.prepare (node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
+      at BetterSQLiteSession.prepareQuery (node_modules/src/better-sqlite3/session.ts:60:28)
+      at BetterSQLiteSession.prepareOneTimeQuery (node_modules/src/sqlite-core/session.ts:250:15)
+      at QueryPromise._prepare (node_modules/src/sqlite-core/query-builders/delete.ts:267:78)
+      at QueryPromise.execute (node_modules/src/sqlite-core/query-builders/delete.ts:301:15)
+      at QueryPromise.then (node_modules/src/query-promise.ts:31:15)
+
+  ● Authentication Integration Tests › POST /api/v1/auth/login › deve retornar erro para usuário não encontrado
+
+    SqliteError: no such table: usuarios
+
+      at Database.prepare (node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
+      at BetterSQLiteSession.prepareQuery (node_modules/src/better-sqlite3/session.ts:60:28)
+      at BetterSQLiteSession.prepareOneTimeQuery (node_modules/src/sqlite-core/session.ts:250:15)
+      at QueryPromise._prepare (node_modules/src/sqlite-core/query-builders/delete.ts:267:78)
+      at QueryPromise.execute (node_modules/src/sqlite-core/query-builders/delete.ts:301:15)
+      at QueryPromise.then (node_modules/src/query-promise.ts:31:15)
+
+  ● Authentication Integration Tests › POST /api/v1/auth/login › deve retornar erro para usuário não encontrado
+
+    SqliteError: no such table: usuarios
+
+      at Database.prepare (node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
+      at BetterSQLiteSession.prepareQuery (node_modules/src/better-sqlite3/session.ts:60:28)
+      at BetterSQLiteSession.prepareOneTimeQuery (node_modules/src/sqlite-core/session.ts:250:15)
+      at QueryPromise._prepare (node_modules/src/sqlite-core/query-builders/delete.ts:267:78)
+      at QueryPromise.execute (node_modules/src/sqlite-core/query-builders/delete.ts:301:15)
+      at QueryPromise.then (node_modules/src/query-promise.ts:31:15)
+
+  ● Authentication Integration Tests › POST /api/v1/auth/login › deve aplicar proteção contra força bruta
+
+    SqliteError: no such table: usuarios
+
+      at Database.prepare (node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
+      at BetterSQLiteSession.prepareQuery (node_modules/src/better-sqlite3/session.ts:60:28)
+      at BetterSQLiteSession.prepareOneTimeQuery (node_modules/src/sqlite-core/session.ts:250:15)
+      at QueryPromise._prepare (node_modules/src/sqlite-core/query-builders/delete.ts:267:78)
+      at QueryPromise.execute (node_modules/src/sqlite-core/query-builders/delete.ts:301:15)
+      at QueryPromise.then (node_modules/src/query-promise.ts:31:15)
+
+  ● Authentication Integration Tests › POST /api/v1/auth/login › deve aplicar proteção contra força bruta
+
+    SqliteError: no such table: usuarios
+
+      at Database.prepare (node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
+      at BetterSQLiteSession.prepareQuery (node_modules/src/better-sqlite3/session.ts:60:28)
+      at BetterSQLiteSession.prepareOneTimeQuery (node_modules/src/sqlite-core/session.ts:250:15)
+      at QueryPromise._prepare (node_modules/src/sqlite-core/query-builders/delete.ts:267:78)
+      at QueryPromise.execute (node_modules/src/sqlite-core/query-builders/delete.ts:301:15)
+      at QueryPromise.then (node_modules/src/query-promise.ts:31:15)
+
+  ● Authentication Integration Tests › GET /api/v1/auth/me › deve retornar dados do usuário autenticado
+
+    SqliteError: no such table: usuarios
+
+      at Database.prepare (node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
+      at BetterSQLiteSession.prepareQuery (node_modules/src/better-sqlite3/session.ts:60:28)
+      at BetterSQLiteSession.prepareOneTimeQuery (node_modules/src/sqlite-core/session.ts:250:15)
+      at QueryPromise._prepare (node_modules/src/sqlite-core/query-builders/delete.ts:267:78)
+      at QueryPromise.execute (node_modules/src/sqlite-core/query-builders/delete.ts:301:15)
+      at QueryPromise.then (node_modules/src/query-promise.ts:31:15)
+
+  ● Authentication Integration Tests › GET /api/v1/auth/me › deve retornar dados do usuário autenticado
+
+    SqliteError: no such table: usuarios
+
+      at Database.prepare (node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
+      at BetterSQLiteSession.prepareQuery (node_modules/src/better-sqlite3/session.ts:60:28)
+      at BetterSQLiteSession.prepareOneTimeQuery (node_modules/src/sqlite-core/session.ts:250:15)
+      at QueryPromise._prepare (node_modules/src/sqlite-core/query-builders/delete.ts:267:78)
+      at QueryPromise.execute (node_modules/src/sqlite-core/query-builders/delete.ts:301:15)
+      at QueryPromise.then (node_modules/src/query-promise.ts:31:15)
+
+  ● Authentication Integration Tests › GET /api/v1/auth/me › deve retornar erro sem token de autenticação
+
+    SqliteError: no such table: usuarios
+
+      at Database.prepare (node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
+      at BetterSQLiteSession.prepareQuery (node_modules/src/better-sqlite3/session.ts:60:28)
+      at BetterSQLiteSession.prepareOneTimeQuery (node_modules/src/sqlite-core/session.ts:250:15)
+      at QueryPromise._prepare (node_modules/src/sqlite-core/query-builders/delete.ts:267:78)
+      at QueryPromise.execute (node_modules/src/sqlite-core/query-builders/delete.ts:301:15)
+      at QueryPromise.then (node_modules/src/query-promise.ts:31:15)
+
+  ● Authentication Integration Tests › GET /api/v1/auth/me › deve retornar erro sem token de autenticação
+
+    SqliteError: no such table: usuarios
+
+      at Database.prepare (node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
+      at BetterSQLiteSession.prepareQuery (node_modules/src/better-sqlite3/session.ts:60:28)
+      at BetterSQLiteSession.prepareOneTimeQuery (node_modules/src/sqlite-core/session.ts:250:15)
+      at QueryPromise._prepare (node_modules/src/sqlite-core/query-builders/delete.ts:267:78)
+      at QueryPromise.execute (node_modules/src/sqlite-core/query-builders/delete.ts:301:15)
+      at QueryPromise.then (node_modules/src/query-promise.ts:31:15)
+
+  ● Authentication Integration Tests › GET /api/v1/auth/me › deve retornar erro com token inválido
+
+    SqliteError: no such table: usuarios
+
+      at Database.prepare (node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
+      at BetterSQLiteSession.prepareQuery (node_modules/src/better-sqlite3/session.ts:60:28)
+      at BetterSQLiteSession.prepareOneTimeQuery (node_modules/src/sqlite-core/session.ts:250:15)
+      at QueryPromise._prepare (node_modules/src/sqlite-core/query-builders/delete.ts:267:78)
+      at QueryPromise.execute (node_modules/src/sqlite-core/query-builders/delete.ts:301:15)
+      at QueryPromise.then (node_modules/src/query-promise.ts:31:15)
+
+  ● Authentication Integration Tests › GET /api/v1/auth/me › deve retornar erro com token inválido
+
+    SqliteError: no such table: usuarios
+
+      at Database.prepare (node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
+      at BetterSQLiteSession.prepareQuery (node_modules/src/better-sqlite3/session.ts:60:28)
+      at BetterSQLiteSession.prepareOneTimeQuery (node_modules/src/sqlite-core/session.ts:250:15)
+      at QueryPromise._prepare (node_modules/src/sqlite-core/query-builders/delete.ts:267:78)
+      at QueryPromise.execute (node_modules/src/sqlite-core/query-builders/delete.ts:301:15)
+      at QueryPromise.then (node_modules/src/query-promise.ts:31:15)
+
+  ● Authentication Integration Tests › POST /api/v1/auth/logout › deve fazer logout com sucesso
+
+    SqliteError: no such table: usuarios
+
+      at Database.prepare (node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
+      at BetterSQLiteSession.prepareQuery (node_modules/src/better-sqlite3/session.ts:60:28)
+      at BetterSQLiteSession.prepareOneTimeQuery (node_modules/src/sqlite-core/session.ts:250:15)
+      at QueryPromise._prepare (node_modules/src/sqlite-core/query-builders/delete.ts:267:78)
+      at QueryPromise.execute (node_modules/src/sqlite-core/query-builders/delete.ts:301:15)
+      at QueryPromise.then (node_modules/src/query-promise.ts:31:15)
+
+  ● Authentication Integration Tests › POST /api/v1/auth/logout › deve fazer logout com sucesso
+
+    SqliteError: no such table: usuarios
+
+      at Database.prepare (node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
+      at BetterSQLiteSession.prepareQuery (node_modules/src/better-sqlite3/session.ts:60:28)
+      at BetterSQLiteSession.prepareOneTimeQuery (node_modules/src/sqlite-core/session.ts:250:15)
+      at QueryPromise._prepare (node_modules/src/sqlite-core/query-builders/delete.ts:267:78)
+      at QueryPromise.execute (node_modules/src/sqlite-core/query-builders/delete.ts:301:15)
+      at QueryPromise.then (node_modules/src/query-promise.ts:31:15)
+
+  ● Authentication Integration Tests › POST /api/v1/auth/logout › deve retornar erro sem token de autenticação
+
+    SqliteError: no such table: usuarios
+
+      at Database.prepare (node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
+      at BetterSQLiteSession.prepareQuery (node_modules/src/better-sqlite3/session.ts:60:28)
+      at BetterSQLiteSession.prepareOneTimeQuery (node_modules/src/sqlite-core/session.ts:250:15)
+      at QueryPromise._prepare (node_modules/src/sqlite-core/query-builders/delete.ts:267:78)
+      at QueryPromise.execute (node_modules/src/sqlite-core/query-builders/delete.ts:301:15)
+      at QueryPromise.then (node_modules/src/query-promise.ts:31:15)
+
+  ● Authentication Integration Tests › POST /api/v1/auth/logout › deve retornar erro sem token de autenticação
+
+    SqliteError: no such table: usuarios
+
+      at Database.prepare (node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
+      at BetterSQLiteSession.prepareQuery (node_modules/src/better-sqlite3/session.ts:60:28)
+      at BetterSQLiteSession.prepareOneTimeQuery (node_modules/src/sqlite-core/session.ts:250:15)
+      at QueryPromise._prepare (node_modules/src/sqlite-core/query-builders/delete.ts:267:78)
+      at QueryPromise.execute (node_modules/src/sqlite-core/query-builders/delete.ts:301:15)
+      at QueryPromise.then (node_modules/src/query-promise.ts:31:15)
+
+  ● Authentication Integration Tests › Security Headers › deve incluir headers de segurança nas respostas
+
+    SqliteError: no such table: usuarios
+
+      at Database.prepare (node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
+      at BetterSQLiteSession.prepareQuery (node_modules/src/better-sqlite3/session.ts:60:28)
+      at BetterSQLiteSession.prepareOneTimeQuery (node_modules/src/sqlite-core/session.ts:250:15)
+      at QueryPromise._prepare (node_modules/src/sqlite-core/query-builders/delete.ts:267:78)
+      at QueryPromise.execute (node_modules/src/sqlite-core/query-builders/delete.ts:301:15)
+      at QueryPromise.then (node_modules/src/query-promise.ts:31:15)
+
+  ● Authentication Integration Tests › Security Headers › deve incluir headers de segurança nas respostas
+
+    SqliteError: no such table: usuarios
+
+      at Database.prepare (node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
+      at BetterSQLiteSession.prepareQuery (node_modules/src/better-sqlite3/session.ts:60:28)
+      at BetterSQLiteSession.prepareOneTimeQuery (node_modules/src/sqlite-core/session.ts:250:15)
+      at QueryPromise._prepare (node_modules/src/sqlite-core/query-builders/delete.ts:267:78)
+      at QueryPromise.execute (node_modules/src/sqlite-core/query-builders/delete.ts:301:15)
+      at QueryPromise.then (node_modules/src/query-promise.ts:31:15)
+
+  ● Authentication Integration Tests › Security Headers › deve detectar tentativas de SQL injection
+
+    SqliteError: no such table: usuarios
+
+      at Database.prepare (node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
+      at BetterSQLiteSession.prepareQuery (node_modules/src/better-sqlite3/session.ts:60:28)
+      at BetterSQLiteSession.prepareOneTimeQuery (node_modules/src/sqlite-core/session.ts:250:15)
+      at QueryPromise._prepare (node_modules/src/sqlite-core/query-builders/delete.ts:267:78)
+      at QueryPromise.execute (node_modules/src/sqlite-core/query-builders/delete.ts:301:15)
+      at QueryPromise.then (node_modules/src/query-promise.ts:31:15)
+
+  ● Authentication Integration Tests › Security Headers › deve detectar tentativas de SQL injection
+
+    SqliteError: no such table: usuarios
+
+      at Database.prepare (node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
+      at BetterSQLiteSession.prepareQuery (node_modules/src/better-sqlite3/session.ts:60:28)
+      at BetterSQLiteSession.prepareOneTimeQuery (node_modules/src/sqlite-core/session.ts:250:15)
+      at QueryPromise._prepare (node_modules/src/sqlite-core/query-builders/delete.ts:267:78)
+      at QueryPromise.execute (node_modules/src/sqlite-core/query-builders/delete.ts:301:15)
+      at QueryPromise.then (node_modules/src/query-promise.ts:31:15)
+
+  ● Authentication Integration Tests › Security Headers › deve detectar tentativas de XSS
+
+    SqliteError: no such table: usuarios
+
+      at Database.prepare (node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
+      at BetterSQLiteSession.prepareQuery (node_modules/src/better-sqlite3/session.ts:60:28)
+      at BetterSQLiteSession.prepareOneTimeQuery (node_modules/src/sqlite-core/session.ts:250:15)
+      at QueryPromise._prepare (node_modules/src/sqlite-core/query-builders/delete.ts:267:78)
+      at QueryPromise.execute (node_modules/src/sqlite-core/query-builders/delete.ts:301:15)
+      at QueryPromise.then (node_modules/src/query-promise.ts:31:15)
+
+  ● Authentication Integration Tests › Security Headers › deve detectar tentativas de XSS
+
+    SqliteError: no such table: usuarios
+
+      at Database.prepare (node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
+      at BetterSQLiteSession.prepareQuery (node_modules/src/better-sqlite3/session.ts:60:28)
+      at BetterSQLiteSession.prepareOneTimeQuery (node_modules/src/sqlite-core/session.ts:250:15)
+      at QueryPromise._prepare (node_modules/src/sqlite-core/query-builders/delete.ts:267:78)
+      at QueryPromise.execute (node_modules/src/sqlite-core/query-builders/delete.ts:301:15)
+      at QueryPromise.then (node_modules/src/query-promise.ts:31:15)
+
+
+  ● Test suite failed to run
+
+    TypeError: Cannot read properties of undefined (reading 'close')
+
+      25 |   console.warn = originalConsole.warn;
+      26 |   console.error = originalConsole.error;
+    > 27 |   await server.close();
+         |                ^
+      28 | });
+      29 |
+      30 | // Configurar variáveis de ambiente para testes
+
+      at Object.<anonymous> (src/tests/setup.ts:27:16)
+
+FAIL src/__tests__/example.test.ts
+
+
+  ● Test suite failed to run
+
+    TypeError: Cannot read properties of undefined (reading 'close')
+
+      25 |   console.warn = originalConsole.warn;
+      26 |   console.error = originalConsole.error;
+    > 27 |   await server.close();
+         |                ^
+      28 | });
+      29 |
+      30 | // Configurar variáveis de ambiente para testes
+
+      at Object.<anonymous> (src/tests/setup.ts:27:16)
+
