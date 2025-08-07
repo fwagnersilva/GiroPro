@@ -453,8 +453,7 @@ export class MultiVehicleController {
       const fuelingHistory = await db
         .select({
           data: abastecimentos.data_abastecimento,
-          quantidade_litros: abastecimentos.quantidade_litros,
-            valor: abastecimentos.valor_total,lor_litro,
+          quantidade_litros: abastecimentos.quantidade_lit          valor_litro: abastecimentos.valor_litro,      valor_litro: abastecimentos.valor_litro,
         })
         .from(abastecimentos)
         .where(
@@ -506,7 +505,7 @@ fuelingHistory.forEach(fueling => {
         }
         dailyUsage[date].abastecimentos++;
         dailyUsage[date].quantidade_litros += Number(fueling.quantidade_litros) || 0;
-        dailyUsage[date].gasto_combustivel += Number(fueling.valor_total) || 0;
+        dailyUsage[date].gasto_combustivel += Number(fueling.valor) || 0;
       });
 
       // Converter para array e ordenar por data
