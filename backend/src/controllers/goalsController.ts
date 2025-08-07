@@ -68,9 +68,9 @@ export class GoalsController {
         sort_order
       } = queryValidation.data;
 
-      // Construir condições de filtro
+      // Construir condições de filtro - CORREÇÃO: usar ! em vez de ?
       let whereConditions = and(
-        eq(metas.id_usuario, req.user?.id),
+        eq(metas.id_usuario, req.user!.id),
         isNull(metas.deleted_at)
       );
 
@@ -138,7 +138,7 @@ export class GoalsController {
       // Atualizar progresso das metas ativas antes de retornar
       const metasAtivas = goals.filter(meta => meta.status === 'Ativa');
       for (const meta of metasAtivas) {
-        await GoalsController.updateGoalProgress(meta.id, req.user?.id);
+        await GoalsController.updateGoalProgress(meta.id, req.user!.id);
       }
 
       // Buscar metas atualizadas
@@ -234,7 +234,7 @@ export class GoalsController {
           .from(veiculos)
           .where(and(
             eq(veiculos.id, goalData.id_veiculo),
-            eq(veiculos.id_usuario, req.user?.id),
+            eq(veiculos.id_usuario, req.user!.id),
             isNull(veiculos.deleted_at)
           ))
           .limit(1);
@@ -265,7 +265,7 @@ export class GoalsController {
       const [newGoal] = await db
         .insert(metas)
         .values({
-          id_usuario: req.user?.id!,
+          id_usuario: req.user!.id,
           id_veiculo: goalData.id_veiculo || null,
           titulo: goalData.titulo,
           descricao: goalData.descricao,
@@ -285,7 +285,7 @@ export class GoalsController {
         .returning();
 
       // Calcular progresso inicial
-      await GoalsController.updateGoalProgress(newGoal.id, req.user?.id);
+      await GoalsController.updateGoalProgress(newGoal.id, req.user!.id);
 
       // Buscar meta criada com informações do veículo
       const [goalWithVehicle] = await db
@@ -358,7 +358,7 @@ export class GoalsController {
       }
 
       // Atualizar progresso antes de buscar
-      await GoalsController.updateGoalProgress(goalId, req.user?.id);
+      await GoalsController.updateGoalProgress(goalId, req.user!.id);
 
       // Buscar meta com informações do veículo e histórico de progresso
       const [goal] = await db
@@ -388,7 +388,7 @@ export class GoalsController {
         .leftJoin(veiculos, eq(metas.id_veiculo, veiculos.id))
         .where(and(
           eq(metas.id, goalId),
-          eq(metas.id_usuario, req.user?.id),
+          eq(metas.id_usuario, req.user!.id),
           isNull(metas.deleted_at)
         ))
         .limit(1);
@@ -475,7 +475,7 @@ export class GoalsController {
         .from(metas)
         .where(and(
           eq(metas.id, goalId),
-          eq(metas.id_usuario, req.user?.id),
+          eq(metas.id_usuario, req.user!.id),
           isNull(metas.deleted_at)
         ))
         .limit(1);
@@ -494,7 +494,7 @@ export class GoalsController {
           .from(veiculos)
           .where(and(
             eq(veiculos.id, updateData.id_veiculo),
-            eq(veiculos.id_usuario, req.user?.id),
+            eq(veiculos.id_usuario, req.user!.id),
             isNull(veiculos.deleted_at)
           ))
           .limit(1);
@@ -576,7 +576,7 @@ export class GoalsController {
 
       // Recalcular progresso se necessário
       if (updateData.tipo_meta || updateData.valor_objetivo || updateData.data_inicio || updateData.data_fim) {
-        await GoalsController.updateGoalProgress(goalId, req.user?.id);
+        await GoalsController.updateGoalProgress(goalId, req.user!.id);
       }
 
       // Buscar meta atualizada com informações do veículo
@@ -657,7 +657,7 @@ export class GoalsController {
         .from(metas)
         .where(and(
           eq(metas.id, goalId),
-          eq(metas.id_usuario, req.user?.id),
+          eq(metas.id_usuario, req.user!.id),
           isNull(metas.deleted_at)
         ))
         .limit(1);
@@ -894,4 +894,3 @@ export class GoalsController {
     return Math.max(0, Math.round((elapsedTime / totalTime) * 100));
   }
 }
-
