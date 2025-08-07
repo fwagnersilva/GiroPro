@@ -336,6 +336,28 @@ declare global {
         id: string;
         email: string;
       };
+
+// src/types/index.ts
+export interface CreateJourneyRequest {
+  idVeiculo: string;
+  dataInicio: string;
+  kmInicio: number;
+  observacoes?: string;
+}
+
+export interface UpdateJourneyRequest {
+  dataFim?: string;
+  kmFim?: number;
+  ganhoBruto?: number;
+  observacoes?: string;
+}
+
+export interface JourneyFilters {
+  status?: 'em_andamento' | 'concluida' | 'todas';
+  dataInicio?: string;
+  dataFim?: string;
+  veiculoId?: string;
+}
     }
   }
 }
