@@ -1,8 +1,8 @@
-import { Router } from "express";
-import { GoalsController } from "../controllers/goalsController";
+import { FastifyInstance } from "fastify";
+import { goalsRoutes } from "../controllers/goalsController";
 import { authMiddleware } from "../middlewares/auth";
 
-const router = Router();
+const router = goalsRoutes;
 
 // Aplicar middleware de autenticação em todas as rotas
 router.use(authMiddleware);
@@ -20,7 +20,7 @@ router.use(authMiddleware);
  * @query {string} [sort_by=data_inicio] - Campo para ordenação
  * @query {string} [sort_order=desc] - Ordem de classificação (asc, desc)
  */
-router.get("/", GoalsController.getAll);
+// router.get("/", GoalsController.getAll);
 
 /**
  * @route POST /api/v1/goals
@@ -35,7 +35,7 @@ router.get("/", GoalsController.getAll);
  * @body {string} data_inicio - Data de início (ISO 8601)
  * @body {string} data_fim - Data de fim (ISO 8601)
  */
-router.post("/", GoalsController.create);
+// router.post("/", GoalsController.create);
 
 
 
@@ -45,7 +45,7 @@ router.post("/", GoalsController.create);
  * @access Private
  * @param {string} id - UUID da meta
  */
-router.get("/:id", GoalsController.getById);
+// router.get("/:id", GoalsController.getById);
 
 /**
  * @route PUT /api/v1/goals/:id
@@ -62,7 +62,7 @@ router.get("/:id", GoalsController.getById);
  * @body {string} [data_fim] - Data de fim (ISO 8601)
  * @body {string} [status] - Status da meta (Ativa, Pausada, Concluida, Expirada)
  */
-router.put("/:id", GoalsController.update);
+// router.put("/:id", GoalsController.update);
 
 /**
  * @route DELETE /api/v1/goals/:id
@@ -70,8 +70,10 @@ router.put("/:id", GoalsController.update);
  * @access Private
  * @param {string} id - UUID da meta
  */
-router.delete("/:id", GoalsController.delete);
+// router.delete("/:id", GoalsController.delete);
 
 export default router;
+
+
 
 

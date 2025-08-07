@@ -22,7 +22,7 @@ export class NotificationService {
     const notification = {
       id: data.id || uuidv4(),
       id_usuario: data.id_usuario,
-      tipo: data.tipo || 'Sistema',
+      tipo: data.tipo as "Sistema" | "Alerta" | "Promocao" | "Suporte" || "Sistema",
       titulo: data.titulo,
       mensagem: data.mensagem,
       dados_extras: data.dados_extras ? JSON.stringify(data.dados_extras) : null,
@@ -61,7 +61,13 @@ export class NotificationService {
     }
 
     if (tipo) {
-      whereCondition = and(whereCondition, eq(notificacoes.tipo, tipo));
+      // Validar que o tipo é um dos valores permitidos do enum
+      const validTypes = ["Sistema", "Alerta", "Promocao", "Suporte"];
+      if (validTypes.includes(tipo as any)) {
+        whereCondition = and(whereCondition, eq(notificacoes.tipo, tipo as any));
+      } else {
+        console.warn(`Tipo de notificação inválido fornecido: ${tipo}`);
+      }
     }
 
     const notifications = await db

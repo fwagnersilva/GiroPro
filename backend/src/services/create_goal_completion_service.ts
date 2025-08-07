@@ -1,41 +1,69 @@
-import { db } from '../db'
-import { goalCompletions, goals } from '../db/schema'
-import type { CompleteGoalRequest } from '../db/schema'
-import { eq } from 'drizzle-orm'
+import { db } from "../db";
+import { metas, progressoMetas } from "../db/schema";
+import { CompleteGoalRequest } from "../controllers/goalsController";
+import { eq, sql } from "drizzle-orm";
 
 interface CreateGoalCompletionResponse {
-  id: string
-  goalId: string
-  createdAt: Date
+  id: string;
+  goalId: string;
+  createdAt: Date;
 }
 
-export async function createGoalCompletion({ 
-  goalId 
+export async function createGoalCompletion({
+  goalId,
 }: CompleteGoalRequest): Promise<CreateGoalCompletionResponse> {
   // Verificar se a meta existe
-  const goal = await db
-    .select()
-    .from(goals)
-    .where(eq(goals.id, goalId))
-    .limit(1)
+  const [goal] = await db.select().from(metas).where(eq(metas.id, goalId)).limit(1);
 
-  if (goal.length === 0) {
-    throw new Error('Meta não encontrada')
+  if (!goal) {
+    throw new Error("Meta não encontrada");
   }
 
-  // Criar a completação
-  const result = await db
-    .insert(goalCompletions)
-    .values({
-      goalId,
-    })
-    .returning()
+  // Atualizar o valor atual da meta e o percentual concluído
+  const novoValorAtual = goal.valor_atual + 1; // Exemplo: incrementa em 1 para cada conclusão
+  const novoPercentualConcluido = Math.min(
+    100,
+    (novoValorAtual / goal.valor_objetivo) * 100
+  );
 
-  const completion = result[0]
+  const [updatedGoal] = await db
+    .update(metas)
+    .set({
+      valor_atual: novoValorAtual,
+      percentual_concluido: novoPercentualConcluido,
+      data_conclusao: novoPercentualConcluido === 100 ? new Date().toISOString() : undefined,
+      updated_at: new Date().toISOString(),
+    })
+    .where(eq(metas.id, goalId))
+    .returning();
+
+  if (!updatedGoal) {
+    throw new Error("Erro ao atualizar a meta");
+  }
+
+  // Registrar o progresso
+  const [progresso] = await db
+    .insert(progressoMetas)
+    .values({
+      id_meta: goalId,
+      valor_anterior: goal.valor_atual,
+      valor_atual: novoValorAtual,
+      incremento: 1,
+      percentual_anterior: goal.percentual_concluido,
+      percentual_atual: novoPercentualConcluido,
+      observacoes: "Conclusão de meta registrada",
+    })
+    .returning();
+
+  if (!progresso) {
+    throw new Error("Erro ao registrar o progresso da meta");
+  }
 
   return {
-    id: completion.id,
-    goalId: completion.goalId,
-    createdAt: completion.createdAt,
-  }
+    id: progresso.id,
+    goalId: progresso.id_meta,
+    createdAt: new Date(progresso.data_registro),
+  };
 }
+
+

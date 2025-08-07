@@ -1,19 +1,32 @@
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
 import { z } from 'zod'
-import { 
-  createGoalSchema,
-  completeGoalSchema,
-  getWeekSummarySchema,
-  getWeekPendingGoalsSchema,
-  type CreateGoalRequest,
-  type CompleteGoalRequest,
-  type GetWeekSummaryRequest,
-  type GetWeekPendingGoalsRequest
-} from '../db/schema'
-import { createGoal } from '../services/create-goal'
-import { createGoalCompletion } from '../services/create-goal-completion'
-import { getWeekPendingGoals } from '../services/get-week-pending-goals'
-import { getWeekSummary } from '../services/get-week-summary'
+
+const createGoalSchema = z.object({
+  title: z.string().min(1, 'Título é obrigatório'),
+  desiredWeeklyFrequency: z.number().int().min(1).max(7),
+})
+
+const completeGoalSchema = z.object({
+  goalId: z.string().cuid2(),
+})
+
+const getWeekSummarySchema = z.object({
+  weekStartsAt: z.string().optional(),
+})
+
+const getWeekPendingGoalsSchema = z.object({
+  weekStartsAt: z.string().optional(),
+})
+
+export type CreateGoalRequest = z.infer<typeof createGoalSchema>
+export type CompleteGoalRequest = z.infer<typeof completeGoalSchema>
+export type GetWeekSummaryRequest = z.infer<typeof getWeekSummarySchema>
+export type GetWeekPendingGoalsRequest = z.infer<typeof getWeekPendingGoalsSchema>
+
+import { createGoal } from '../services/create_goal_service'
+import { createGoalCompletion } from '../services/create_goal_completion_service'
+import { getWeekPendingGoals } from '../services/get_week_pending_goals_service'
+import { getWeekSummary } from '../services/get_week_summary_service'
 
 export const goalsRoutes: FastifyPluginAsyncZod = async app => {
   // POST /goals - Criar nova meta
@@ -22,7 +35,7 @@ export const goalsRoutes: FastifyPluginAsyncZod = async app => {
       body: createGoalSchema,
     },
   }, async (request) => {
-    const { title, desiredWeeklyFrequency } = request.body
+    const { title, desiredWeeklyFrequency } = request.body as CreateGoalRequest
 
     const result = await createGoal({
       title,
@@ -38,7 +51,7 @@ export const goalsRoutes: FastifyPluginAsyncZod = async app => {
       body: completeGoalSchema,
     },
   }, async (request) => {
-    const { goalId } = request.body
+    const { goalId } = request.body as CompleteGoalRequest
 
     const result = await createGoalCompletion({
       goalId,
@@ -53,7 +66,7 @@ export const goalsRoutes: FastifyPluginAsyncZod = async app => {
       querystring: getWeekPendingGoalsSchema,
     },
   }, async (request) => {
-    const { weekStartsAt } = request.query
+    const { weekStartsAt } = request.query as GetWeekPendingGoalsRequest
 
     const result = await getWeekPendingGoals({
       weekStartsAt: weekStartsAt ? new Date(weekStartsAt) : undefined,
@@ -68,7 +81,7 @@ export const goalsRoutes: FastifyPluginAsyncZod = async app => {
       querystring: getWeekSummarySchema,
     },
   }, async (request) => {
-    const { weekStartsAt } = request.query
+    const { weekStartsAt } = request.query as GetWeekSummaryRequest
 
     const result = await getWeekSummary({
       weekStartsAt: weekStartsAt ? new Date(weekStartsAt) : undefined,
@@ -77,3 +90,5 @@ export const goalsRoutes: FastifyPluginAsyncZod = async app => {
     return result
   })
 }
+
+

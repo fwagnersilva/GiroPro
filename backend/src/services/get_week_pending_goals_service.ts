@@ -1,63 +1,67 @@
-import { db } from '../db'
-import { goals, goalCompletions } from '../db/schema'
-import { eq, gte, lte, sql, count } from 'drizzle-orm'
-import type { GetWeekPendingGoalsRequest } from '../db/schema'
+import { db } from "../db";
+import { metas, progressoMetas } from "../db/schema";
+import { GetWeekPendingGoalsRequest } from "../controllers/goalsController";
+import { eq, gte, lte, and, sql } from "drizzle-orm";
 
 interface PendingGoal {
-  id: string
-  title: string
-  desiredWeeklyFrequency: number
-  completionCount: number
+  id: string;
+  title: string;
+  desiredWeeklyFrequency: number; // Representa o valor_objetivo para metas semanais
+  currentProgress: number; // Representa o valor_atual
 }
 
 interface GetWeekPendingGoalsResponse {
-  pendingGoals: PendingGoal[]
+  pendingGoals: PendingGoal[];
 }
 
 export async function getWeekPendingGoals({
-  weekStartsAt
+  weekStartsAt,
 }: GetWeekPendingGoalsRequest = {}): Promise<GetWeekPendingGoalsResponse> {
-  // Se não informado, usar o início da semana atual (domingo)
-  const startOfWeek = weekStartsAt || getStartOfWeek(new Date())
-  const endOfWeek = getEndOfWeek(startOfWeek)
+  const startOfWeek = weekStartsAt ? new Date(weekStartsAt) : getStartOfWeek(new Date());
+  const endOfWeek = getEndOfWeek(startOfWeek);
 
   const pendingGoals = await db
     .select({
-      id: goals.id,
-      title: goals.title,
-      desiredWeeklyFrequency: goals.desiredWeeklyFrequency,
-      completionCount: count(goalCompletions.id),
+      id: metas.id,
+      title: metas.titulo,
+      desiredWeeklyFrequency: metas.valor_objetivo,
+      currentProgress: metas.valor_atual,
     })
-    .from(goals)
-    .leftJoin(
-      goalCompletions,
-      sql`${goalCompletions.goalId} = ${goals.id} AND ${goalCompletions.createdAt} >= ${startOfWeek} AND ${goalCompletions.createdAt} <= ${endOfWeek}`
-    )
-    .groupBy(goals.id, goals.title, goals.desiredWeeklyFrequency)
-    .having(sql`count(${goalCompletions.id}) < ${goals.desiredWeeklyFrequency}`)
+    .from(metas)
+    .where(
+      and(
+        eq(metas.periodo, "Semanal"), // Filtrar por metas semanais
+        lte(metas.data_inicio, endOfWeek.toISOString()),
+        gte(metas.data_fim, startOfWeek.toISOString()),
+        eq(metas.status, "Ativa"), // Apenas metas ativas
+        sql`${metas.valor_atual} < ${metas.valor_objetivo}` // Onde o valor atual é menor que o objetivo
+      )
+    );
 
   return {
-    pendingGoals: pendingGoals.map(goal => ({
+    pendingGoals: pendingGoals.map((goal) => ({
       id: goal.id,
       title: goal.title,
       desiredWeeklyFrequency: goal.desiredWeeklyFrequency,
-      completionCount: Number(goal.completionCount),
+      currentProgress: goal.currentProgress,
     })),
-  }
+  };
 }
 
 function getStartOfWeek(date: Date): Date {
-  const startOfWeek = new Date(date)
-  const day = startOfWeek.getDay()
-  const diff = startOfWeek.getDate() - day
-  startOfWeek.setDate(diff)
-  startOfWeek.setHours(0, 0, 0, 0)
-  return startOfWeek
+  const startOfWeek = new Date(date);
+  const day = startOfWeek.getDay();
+  const diff = startOfWeek.getDate() - day;
+  startOfWeek.setDate(diff);
+  startOfWeek.setHours(0, 0, 0, 0);
+  return startOfWeek;
 }
 
 function getEndOfWeek(startOfWeek: Date): Date {
-  const endOfWeek = new Date(startOfWeek)
-  endOfWeek.setDate(startOfWeek.getDate() + 6)
-  endOfWeek.setHours(23, 59, 59, 999)
-  return endOfWeek
+  const endOfWeek = new Date(startOfWeek);
+  endOfWeek.setDate(startOfWeek.getDate() + 6);
+  endOfWeek.setHours(23, 59, 59, 999);
+  return endOfWeek;
 }
+
+
