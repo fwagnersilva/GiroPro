@@ -123,7 +123,7 @@ export interface Fueling {
   vehicleId: string;
   data: Date;
   quilometragem: number;
-  litros: number;
+  quantidade_litros: number;
   precoPorLitro: number;
   posto: string;
   tipoCombustivel: string;
@@ -135,7 +135,7 @@ export interface CreateFuelingRequest {
   vehicleId: string;
   data: string;
   quilometragem: number;
-  litros: number;
+  quantidade_litros: number;
   precoPorLitro: number;
   posto: string;
   tipoCombustivel: string;

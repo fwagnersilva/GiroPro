@@ -24,7 +24,7 @@ interface DailyUsageData {
   km: number;
   tempo: number;
   abastecimentos: number;
-  litros: number;
+  quantidade_litros: number;
   gasto_combustivel: number;
 }
 
@@ -111,7 +111,7 @@ export class MultiVehicleController {
         // Métricas de abastecimentos
         const fuelingStats = await db
           .select({
-            total_litros: sum(abastecimentos.litros),
+            total_litros: sum(abastecimentos.quantidade_litros),
             total_gasto: sum(abastecimentos.valor_total),
             numero_abastecimentos: count(abastecimentos.id),
             ultimo_abastecimento: sql<Date>`MAX(${abastecimentos.data_abastecimento})`,
@@ -150,10 +150,10 @@ export class MultiVehicleController {
         const km = Number(journey.total_km) || 0;
         const gastoCombustivel = Number(fueling.total_gasto) || 0;
         const despesasTotal = Number(expense.total_despesas) || 0;
-        const litros = Number(fueling.total_litros) || 0;
+        const quantidade_litros = Number(fueling.total_litros) || 0;
 
         // Calcular métricas derivadas
-        const consumoMedio = km > 0 && litros > 0 ? km / litros : 0;
+        const consumoMedio = km > 0 && quantidade_litros > 0 ? km / quantidade_litros : 0;
         const lucroLiquido = faturamento - gastoCombustivel - despesasTotal;
         const margemLucro = faturamento > 0 ? (lucroLiquido / faturamento) * 100 : 0;
         const ganhoPorKm = km > 0 ? faturamento / km : 0;
@@ -453,9 +453,8 @@ export class MultiVehicleController {
       const fuelingHistory = await db
         .select({
           data: abastecimentos.data_abastecimento,
-          litros: abastecimentos.litros,
-          valor: abastecimentos.valor_total,
-          valor_litro: abastecimentos.preco_litro,
+          quantidade_litros: abastecimentos.quantidade_litros,
+            valor: abastecimentos.valor_total,lor_litro,
         })
         .from(abastecimentos)
         .where(
@@ -481,7 +480,7 @@ journeyHistory.forEach(journey => {
             km: 0,
             tempo: 0,
             abastecimentos: 0,
-            litros: 0,
+            quantidade_litros: 0,
             gasto_combustivel: 0,
           };
         }
@@ -501,13 +500,13 @@ fuelingHistory.forEach(fueling => {
             km: 0,
             tempo: 0,
             abastecimentos: 0,
-            litros: 0,
+            quantidade_litros: 0,
             gasto_combustivel: 0,
           };
         }
         dailyUsage[date].abastecimentos++;
-        dailyUsage[date].litros += Number(fueling.litros) || 0;
-        dailyUsage[date].gasto_combustivel += Number(fueling.valor) || 0;
+        dailyUsage[date].quantidade_litros += Number(fueling.quantidade_litros) || 0;
+        dailyUsage[date].gasto_combustivel += Number(fueling.valor_total) || 0;
       });
 
       // Converter para array e ordenar por data

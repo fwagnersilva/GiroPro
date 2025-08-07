@@ -149,7 +149,7 @@ export class AdvancedAnalyticsController {
         const fuelings = await db
           .select({
             data_abastecimento: abastecimentos.data_abastecimento,
-            quantidade_litros: abastecimentos.litros,
+            quantidade_litros: abastecimentos.quantidade_litros,
             valor_total: abastecimentos.valor_total,
             km_atual: abastecimentos.km_atual,
           })

@@ -69,7 +69,7 @@ export const goalsRoutes: FastifyPluginAsyncZod = async app => {
     const { weekStartsAt } = request.query as GetWeekPendingGoalsRequest
 
     const result = await getWeekPendingGoals({
-      weekStartsAt: weekStartsAt ? new Date(weekStartsAt) : undefined,
+      weekStartsAt: weekStartsAt ? new Date(weekStartsAt).toISOString() : undefined,
     })
 
     return result
@@ -84,7 +84,7 @@ export const goalsRoutes: FastifyPluginAsyncZod = async app => {
     const { weekStartsAt } = request.query as GetWeekSummaryRequest
 
     const result = await getWeekSummary({
-      weekStartsAt: weekStartsAt ? new Date(weekStartsAt) : undefined,
+      weekStartsAt: weekStartsAt ? new Date(weekStartsAt).toISOString() : undefined,
     })
 
     return result

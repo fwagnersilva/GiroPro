@@ -12,7 +12,7 @@ export class FuelingService {
       id_veiculo: fuelingData.vehicleId,
       data_abastecimento: fuelingData.data,
       km_atual: fuelingData.quilometragem,
-      litros: fuelingData.litros,
+      quantidade_litros: fuelingData.litros,
       valor_total: Math.round(fuelingData.litros * fuelingData.precoPorLitro * 100), // em centavos
       preco_litro: Math.round(fuelingData.precoPorLitro * 100), // em centavos
       nome_posto: fuelingData.posto || null,
