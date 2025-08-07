@@ -459,3 +459,44 @@ export type NovaMeta = typeof metas.$inferInsert;
 
 export type Conquista = typeof conquistas.$inferSelect;
 export type NovaConquista = typeof conquistas.$inferInsert;
+
+-- Tabela de preços de combustível
+CREATE TABLE fuel_prices (
+  id UUID PRIMARY KEY,
+  estado VARCHAR(2) NOT NULL,
+  cidade VARCHAR(100) NOT NULL,
+  tipo_combustivel VARCHAR(20) NOT NULL,
+  preco_medio DECIMAL(8,3) NOT NULL,
+  preco_minimo DECIMAL(8,3),
+  preco_maximo DECIMAL(8,3),
+  numero_postos INTEGER,
+  data_coleta TIMESTAMP NOT NULL,
+  fonte VARCHAR(50),
+  latitude DECIMAL(10,8),
+  longitude DECIMAL(11,8),
+  created_at TIMESTAMP DEFAULT NOW()
+);
+
+-- Tabela de postos de gasolina
+CREATE TABLE gas_stations (
+  id UUID PRIMARY KEY,
+  nome VARCHAR(200) NOT NULL,
+  endereco TEXT,
+  latitude DECIMAL(10,8) NOT NULL,
+  longitude DECIMAL(11,8) NOT NULL,
+  estado VARCHAR(2) NOT NULL,
+  cidade VARCHAR(100) NOT NULL,
+  rating DECIMAL(3,2),
+  created_at TIMESTAMP DEFAULT NOW()
+);
+
+-- Tabela de relatórios de usuários
+CREATE TABLE user_reports (
+  id UUID PRIMARY KEY,
+  user_id UUID NOT NULL,
+  tipo VARCHAR(50) NOT NULL,
+  dados JSONB NOT NULL,
+  status VARCHAR(20) DEFAULT 'pendente',
+  created_at TIMESTAMP DEFAULT NOW(),
+  updated_at TIMESTAMP DEFAULT NOW()
+);
