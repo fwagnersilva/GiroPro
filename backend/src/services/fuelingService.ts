@@ -12,9 +12,9 @@ export class FuelingService {
       id_veiculo: fuelingData.vehicleId,
       data_abastecimento: fuelingData.data,
       km_atual: fuelingData.quilometragem,
-      quantidade_litros: fuelingData.litros,
-      valor_total: Math.round(fuelingData.litros * fuelingData.precoPorLitro * 100), // em centavos
-      preco_litro: Math.round(fuelingData.precoPorLitro * 100), // em centavos
+      quantidade_litros: fuelingData.quantidade_litros,
+      valor_total: Math.round(fuelingData.quantidade_litros * fuelingData.precoPorLitro * 100), // em centavos
+      valor_litro: Math.round(fuelingData.precoPorLitro * 100), // em centavos
       nome_posto: fuelingData.posto || null,
       tipo_combustivel: fuelingData.tipoCombustivel as "Gasolina" | "Etanol" | "Diesel" | "GNV" | "Flex",
     };
@@ -35,7 +35,7 @@ export class FuelingService {
   static async updateFueling(id: string, userId: string, fuelingData: UpdateFuelingRequest) {
     const dataToUpdate: any = { ...fuelingData };
     if (dataToUpdate.data) dataToUpdate.data_abastecimento = new Date(dataToUpdate.data);
-    if (dataToUpdate.litros) dataToUpdate.quantidade_litros = dataToUpdate.litros;
+    if (dataToUpdate.quantidade_litros) dataToUpdate.quantidade_litros = dataToUpdate.quantidade_litros;
     if (dataToUpdate.precoPorLitro) dataToUpdate.valor_litro = dataToUpdate.precoPorLitro;
     if (dataToUpdate.quilometragem) dataToUpdate.km_atual = dataToUpdate.quilometragem;
     if (dataToUpdate.posto) dataToUpdate.nome_posto = dataToUpdate.posto;
@@ -44,7 +44,7 @@ export class FuelingService {
     
     // Remove old field names
     delete dataToUpdate.data;
-    delete dataToUpdate.litros;
+    delete dataToUpdate.quantidade_litros;
     delete dataToUpdate.precoPorLitro;
     delete dataToUpdate.quilometragem;
     delete dataToUpdate.posto;
