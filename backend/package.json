@@ -67,5 +67,13 @@
     "prettier": "^3.0.3",
     "supertest": "^7.1.4",
     "ts-jest": "^29.1.1"
+  },
+  "dependencies": {
+    "helmet": "^7.1.0",
+    "compression": "^1.7.4",
+    "express-rate-limit": "^7.1.5"
+  },
+  "devDependencies": {
+    "@types/compression": "^1.7.5"
   }
 }
