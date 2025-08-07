@@ -22,7 +22,7 @@ export async function getWeekSummary({
   weekStartsAt,
 }: GetWeekSummaryRequest = {}): Promise<GetWeekSummaryResponse> {
   // Se não informado, usar o início da semana atual (domingo)
-  const startOfWeek = weekStartsAt || getStartOfWeek(new Date());
+  const startOfWeek = weekStartsAt ? new Date(weekStartsAt) : getStartOfWeek(new Date());
   const endOfWeek = getEndOfWeek(startOfWeek);
 
   // Buscar todas as metas com suas completações na semana

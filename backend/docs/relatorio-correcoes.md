@@ -1,80 +1,89 @@
-# Relatório de Correções do Projeto GiroPro
+# Relatório Final de Correções - GiroPro Backend
 
-Este documento detalha as correções e ajustes realizados no projeto GiroPro, com foco em erros de build, tipagem e inconsistências de schema.
+## Resumo das Correções Realizadas
 
-## Correções Realizadas
+### 1. Correções de Tipagem e Schema
 
-### 1. Ajuste do Schema do Banco de Dados (`src/db/schema.ts`)
+#### 1.1 Arquivo `get_week_summary_service.ts`
+- **Problema**: Erro de tipagem na conversão de `Date` para `string`
+- **Solução**: Corrigido o uso de `toISOString()` para garantir compatibilidade de tipos
 
-**Problema:** O schema original do banco de dados continha definições de tabelas e colunas que não estavam alinhadas com o uso real no código, especialmente em relação aos campos `litros` e `preco_litro` na tabela `abastecimentos`, que foram renomeados para `quantidade_litros` e `valor_litro` respectivamente.
+#### 1.2 Arquivo `dashboard.test.ts`
+- **Problema**: Múltiplos erros de tipagem e duplicação de linhas
+- **Solução**: Removidas linhas duplicadas e corrigidas as tipagens
 
-**Solução:** O arquivo `src/db/schema.ts` foi atualizado para refletir as definições corretas das colunas `quantidade_litros` e `valor_litro` na tabela `abastecimentos`. Isso resolveu os erros de tipagem e acesso a propriedades inexistentes que surgiam devido à incompatibilidade entre o schema e o código que o utilizava.
+#### 1.3 Arquivo `multiVehicleController.ts`
+- **Problema**: Erro de sintaxe com texto duplicado "gasto_combustivel"
+- **Solução**: Corrigido o erro de sintaxe removendo a duplicação
 
-### 2. Refatoração e Correção de Tipagem no `goalsController.ts`
+### 2. Correções de Nomenclatura de Campos
 
-**Problema:** O `goalsController.ts` apresentava erros de tipagem relacionados à importação e uso de schemas Zod e tipos de requisição. Além disso, havia uma inconsistência no tratamento do campo `weekStartsAt`, que era esperado como `Date` em alguns contextos e `string` em outros.
+#### 2.1 Arquivo `user-journey.test.ts`
+Corrigidos os seguintes campos para compatibilidade com o schema:
 
-**Solução:**
-- Removidos imports redundantes de schemas Zod e tipos relacionados.
-- Definidos `createGoalSchema`, `completeGoalSchema`, `getWeekSummarySchema` e `getWeekPendingGoalsSchema` diretamente no `goalsController.ts` para centralizar as definições de validação.
-- Corrigida a tipagem do campo `weekStartsAt` para garantir que a conversão para `toISOString()` seja aplicada consistentemente ao passar o valor para os serviços, resolvendo o erro `TS2322: Type 'Date' is not assignable to type 'string'`.
+**Abastecimentos:**
+- `litros` → `quantidade_litros`
+- `valorTotal` → `valor_total`
+- `valorPorLitro` → `valor_litro`
 
-### 3. Ajustes em `routes/goals.ts` para Fastify
+**Jornadas:**
+- `valorGanho` → `ganho_bruto`
+- `kmInicial` → `km_inicio`
+- `kmFinal` → `km_fim`
 
-**Problema:** O arquivo de rotas `routes/goals.ts` não estava totalmente adaptado para o uso com Fastify, resultando em erros de compilação.
+**Despesas:**
+- `valor` → `valor_despesa`
 
-**Solução:** O arquivo `routes/goals.ts` foi corrigido para utilizar corretamente os recursos do Fastify, garantindo que as rotas sejam registradas e os controladores sejam chamados de forma adequada.
+### 3. Status do Build
 
-### 4. Correções de Propriedades em `notificationService.ts`
+✅ **Build**: Compilação bem-sucedida após as correções
+- Comando `npm run build` executado com sucesso
+- Todos os erros de TypeScript foram resolvidos
 
-**Problema:** O `notificationService.ts` apresentava erros de tipagem relacionados à propriedade `tipo` nas funções `getUserNotifications` e `createNotification`.
+### 4. Status dos Testes
 
-**Solução:** As definições de tipo para a propriedade `tipo` foram ajustadas para corresponder ao `tipoNotificacaoEnum` definido no schema, resolvendo os erros de tipagem.
+⚠️ **Testes**: Parcialmente funcionais
+- Alguns testes ainda apresentam falhas relacionadas ao banco de dados
+- Problemas identificados:
+  - Tabelas não encontradas durante execução dos testes
+  - Necessidade de aplicar migrações do banco de dados
+  - Configuração do ambiente de teste precisa ser ajustada
 
-### 5. Atualização de Imports e Tipos em Serviços (`create_goal_completion_service.ts`, `create_goal_service.ts`, `get_week_pending_goals_service.ts`)
+### 5. Problemas Pendentes
 
-**Problema:** Vários serviços relacionados a metas (`create_goal_completion_service.ts`, `create_goal_service.ts`, `get_week_pending_goals_service.ts`) apresentavam erros de importação e tipagem devido às alterações no schema e nos controladores.
+#### 5.1 Migrações do Banco de Dados
+- **Problema**: Drizzle Kit requer interação manual para renomear colunas
+- **Status**: Tentativas de geração de migração interrompidas
+- **Próximos Passos**: Necessário completar a migração das colunas:
+  - `litros` → `quantidade_litros`
+  - `preco_litro` → `valor_litro`
 
-**Solução:** Os imports e as referências a tipos e tabelas foram atualizados nesses arquivos para refletir as mudanças no schema (`metas` e `progressoMetas` em vez de `goals` e `goalCompletions`) e nos tipos de requisição, garantindo a compatibilidade e a correção dos builds.
+#### 5.2 Configuração de Testes
+- **Problema**: Testes falhando por falta de tabelas no banco
+- **Status**: Ambiente de teste precisa ser configurado adequadamente
+- **Próximos Passos**: Aplicar migrações no ambiente de teste
 
-### 6. Correções de Propriedades em `multiVehicleController.ts`
+### 6. Arquivos Modificados
 
-**Problema:** O `multiVehicleController.ts` apresentava erros de propriedade (`litros` e `preco_litro`) que não existiam mais no schema `abastecimentos`, além de inconsistências no uso de `valor` vs `valor_total` e `valor_litro`.
+1. `src/services/get_week_summary_service.ts` - Correção de tipagem
+2. `src/tests/integration/dashboard.test.ts` - Remoção de duplicações
+3. `src/controllers/multiVehicleController.ts` - Correção de sintaxe
+4. `src/tests/e2e/user-journey.test.ts` - Atualização de nomenclatura de campos
 
-**Solução:**
-- Todas as referências a `litros` foram substituídas por `quantidade_litros`.
-- Todas as referências a `preco_litro` foram substituídas por `valor_litro`.
-- O uso de `valor` foi ajustado para `valor_total` onde apropriado, garantindo que os cálculos e a recuperação de dados estejam corretos.
+### 7. Recomendações para Próximas Etapas
 
-### 7. Correções de Propriedades em `advancedAnalyticsService.ts`
+1. **Completar Migrações**: Finalizar a geração e aplicação das migrações do banco
+2. **Configurar Ambiente de Teste**: Garantir que as tabelas sejam criadas corretamente nos testes
+3. **Validar Funcionalidades**: Executar testes completos após resolver problemas de banco
+4. **Documentar Mudanças**: Atualizar documentação da API com as novas nomenclaturas
 
-**Problema:** O `advancedAnalyticsService.ts` apresentava erros de propriedade (`litros` e `preco_litro`) que não existiam mais no schema `abastecimentos`.
+### 8. Conclusão
 
-**Solução:** Todas as referências a `litros` foram substituídas por `quantidade_litros` e `preco_litro` por `valor_litro`.
+As principais correções de tipagem e nomenclatura foram implementadas com sucesso. O projeto agora compila corretamente, mas ainda requer ajustes na configuração do banco de dados e ambiente de testes para funcionar completamente.
 
-### 8. Correções de Propriedades em `fuelingService.ts`
-
-**Problema:** O `fuelingService.ts` apresentava erros de propriedade (`litros` e `preco_litro`) que não existiam mais no schema `abastecimentos`, além de inconsistências na criação e atualização de abastecimentos.
-
-**Solução:**
-- Todas as referências a `litros` foram substituídas por `quantidade_litros`.
-- Todas as referências a `preco_litro` foram substituídas por `valor_litro`.
-- Ajustes na lógica de criação e atualização para garantir que os dados sejam mapeados corretamente para as novas propriedades do schema.
-
-### 9. Correções de Tipagem em `src/types/index.ts`
-
-**Problema:** O arquivo de definições de tipo `src/types/index.ts` ainda utilizava a propriedade `litros` em `CreateFuelingRequest` e `UpdateFuelingRequest`.
-
-**Solução:** A propriedade `litros` foi renomeada para `quantidade_litros` nas interfaces `CreateFuelingRequest` e `UpdateFuelingRequest` para alinhar com o schema atualizado.
-
-## Próximos Passos / Pendências
-
-1. **Execução de Testes:** Após as correções de build e tipagem, é crucial executar os testes unitários e de integração (`npm test`) para garantir que as funcionalidades existentes não foram quebradas e que as novas implementações funcionam conforme o esperado.
-2. **Revisão de Código:** Uma revisão de código por outro desenvolvedor pode ajudar a identificar quaisquer problemas remanescentes ou oportunidades de melhoria.
-3. **Testes Manuais:** Realizar testes manuais das funcionalidades corrigidas para verificar o comportamento da aplicação em um ambiente de execução real.
-4. **Atualização de Documentação Adicional:** Se houver outras documentações (ex: README, wikis) que referenciem as estruturas de dados ou APIs alteradas, elas também devem ser atualizadas.
-
-## Conclusão
-
-As correções realizadas abordaram os principais erros de build e tipagem, resultantes de inconsistências entre o schema do banco de dados e o código da aplicação. Com essas mudanças, o projeto deve compilar sem erros, permitindo a continuidade do desenvolvimento e a execução dos testes. A próxima etapa crítica é a validação através da execução dos testes e a garantia da estabilidade do sistema.
+**Status Geral**: 🟡 Parcialmente Concluído
+- ✅ Correções de código implementadas
+- ✅ Build funcionando
+- ⚠️ Testes precisam de ajustes no banco
+- ⚠️ Migrações pendentes
 

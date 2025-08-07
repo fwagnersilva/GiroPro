@@ -108,9 +108,9 @@ describe('User Journey E2E Tests', () => {
       const fuelingData = {
         veiculoId: vehicleId,
         data: new Date().toISOString(),
-        litros: 35,
-        valorTotal: 210.00,
-        valorPorLitro: 6.00,
+        quantidade_litros: 35,
+        valor_total: 210.00,
+        valor_litro: 6.00,
         posto: 'Shell Centro',
         kmAtual: 15000,
         tanqueCheio: true
@@ -123,8 +123,8 @@ describe('User Journey E2E Tests', () => {
         .expect(201);
 
       expect(response.body).toHaveProperty('id');
-      expect(response.body.litros).toBe(fuelingData.litros);
-      expect(response.body.valorTotal).toBe(fuelingData.valorTotal);
+      expect(response.body.quantidade_litros).toBe(fuelingData.quantidade_litros);
+      expect(response.body.valor_total).toBe(fuelingData.valor_total);
       expect(response.body.posto).toBe(fuelingData.posto);
     });
 
@@ -135,7 +135,7 @@ describe('User Journey E2E Tests', () => {
         dataFim: new Date(Date.now() + 8 * 60 * 60 * 1000).toISOString(), // 8 horas depois
         kmInicial: 15000,
         kmFinal: 15200,
-        valorGanho: 280.50,
+        ganho_bruto: 280.50,
         plataforma: 'uber',
         observacoes: 'Dia de trabalho normal'
       };
@@ -147,10 +147,10 @@ describe('User Journey E2E Tests', () => {
         .expect(201);
 
       expect(response.body).toHaveProperty('id');
-      expect(response.body.valorGanho).toBe(journeyData.valorGanho);
+      expect(response.body.ganho_bruto).toBe(journeyData.ganho_bruto);
       expect(response.body.plataforma).toBe(journeyData.plataforma);
-      expect(response.body.kmInicial).toBe(journeyData.kmInicial);
-      expect(response.body.kmFinal).toBe(journeyData.kmFinal);
+      expect(response.body.km_inicio).toBe(journeyData.kmInicial);
+      expect(response.body.km_fim).toBe(journeyData.kmFinal);
     });
 
     it('8. Deve registrar uma despesa', async () => {
@@ -159,7 +159,7 @@ describe('User Journey E2E Tests', () => {
         data: new Date().toISOString(),
         categoria: 'manutencao',
         descricao: 'Troca de óleo e filtros',
-        valor: 120.00,
+        valor_despesa: 120.00,
         observacoes: 'Manutenção preventiva aos 15.000 km'
       };
 
@@ -172,7 +172,7 @@ describe('User Journey E2E Tests', () => {
       expect(response.body).toHaveProperty('id');
       expect(response.body.categoria).toBe(expenseData.categoria);
       expect(response.body.descricao).toBe(expenseData.descricao);
-      expect(response.body.valor).toBe(expenseData.valor);
+      expect(response.body.valor_despesa).toBe(expenseData.valor_despesa);
     });
 
     it('9. Deve acessar o dashboard com dados calculados', async () => {
@@ -312,9 +312,9 @@ describe('User Journey E2E Tests', () => {
     it('deve validar dados obrigatórios ao criar abastecimento', async () => {
       const invalidFueling = {
         veiculoId: 'invalid-id',
-        litros: -10,
-        valorTotal: -100,
-        valorPorLitro: 0
+        quantidade_litros: -10,
+        valor_total: -100,
+        valor_litro: 0
       };
 
       const response = await request(app)

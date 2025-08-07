@@ -84,9 +84,9 @@ describe('Dashboard Integration Tests', () => {
         id_usuario: userId,
         id_veiculo: vehicleId,
         data_abastecimento: yesterday.toISOString(),
-        litros: 40,
+        quantidade_litros: 40,
         valor_total: 24000, // em centavos
-        preco_litro: 600, // em centavos
+        valor_litro: 600, // em centavos
         nome_posto: 'Posto Teste',
         km_atual: 1050,
         tipo_combustivel: 'Gasolina'
