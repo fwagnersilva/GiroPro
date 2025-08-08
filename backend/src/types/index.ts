@@ -11,14 +11,14 @@ export interface AuthenticatedRequest extends Request {
 
 // Tipos para autenticação
 export interface RegisterRequest {
-  nome?: string; // Tornar opcional
-  email?: string; // Tornar opcional
-  senha?: string; // Tornar opcional
+  nome?: string;
+  email?: string;
+  senha?: string;
 }
 
 export interface LoginRequest {
-  email?: string; // Tornar opcional
-  senha?: string; // Tornar opcional
+  email?: string;
+  senha?: string;
 }
 
 export interface AuthResponse {
@@ -94,7 +94,7 @@ export interface Journey {
 
 export interface CreateJourneyRequest {
   id_veiculo: string;
-  data_inicio: string; // Pode ser string para facilitar a entrada
+  data_inicio: string;
   km_inicio: number;
   data_fim?: string;
   km_fim?: number;
@@ -114,6 +114,13 @@ export interface UpdateJourneyRequest {
   km_total?: number;
   tempo_total?: number;
   observacoes?: string;
+}
+
+export interface JourneyFilters {
+  status?: 'em_andamento' | 'concluida' | 'todas';
+  dataInicio?: string;
+  dataFim?: string;
+  veiculoId?: string;
 }
 
 // Tipos para abastecimentos
@@ -328,7 +335,6 @@ export interface QueryParams {
   [key: string]: any; // Para filtros adicionais
 }
 
-// Tipos para middleware de autenticação
 declare global {
   namespace Express {
     interface Request {
@@ -336,28 +342,8 @@ declare global {
         id: string;
         email: string;
       };
-
-// src/types/index.ts
-export interface CreateJourneyRequest {
-  idVeiculo: string;
-  dataInicio: string;
-  kmInicio: number;
-  observacoes?: string;
-}
-
-export interface UpdateJourneyRequest {
-  dataFim?: string;
-  kmFim?: number;
-  ganhoBruto?: number;
-  observacoes?: string;
-}
-
-export interface JourneyFilters {
-  status?: 'em_andamento' | 'concluida' | 'todas';
-  dataInicio?: string;
-  dataFim?: string;
-  veiculoId?: string;
-}
     }
   }
 }
+
+

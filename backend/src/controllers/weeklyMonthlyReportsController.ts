@@ -4,8 +4,7 @@ import { AuthenticatedRequest } from '../types/auth';
 import { AppError } from '../utils/AppError';
 import { asyncHandler } from '../utils/asyncHandler';
 import { ReportsService } from '../services/reportsService';
-import { CacheService } from '../services/cacheService';
-import { Logger } from '../utils/logger';
+import { DateHelper } from '../utils/dateHelper';
 
 // Schemas de validação aprimorados
 const baseReportSchema = z.object({
@@ -34,7 +33,7 @@ const monthlyReportSchema = baseReportSchema.extend({
 
 export class WeeklyMonthlyReportsController {
   private static readonly CACHE_TTL = 300; // 5 minutos
-  private static readonly logger = Logger.getInstance('ReportsController');
+  private static readonly logger = logger;
 
   /**
    * Relatório Semanal com cache e otimizações
@@ -47,7 +46,7 @@ export class WeeklyMonthlyReportsController {
     const cacheKey = `weekly_report:${userId}:${JSON.stringify(params)}`;
     
     // Tentar buscar do cache primeiro
-    let relatorio = await CacheService.get(cacheKey);
+    let relatorio = await cacheService.get(cacheKey);
     
     if (!relatorio) {
       WeeklyMonthlyReportsController.logger.info('Gerando relatório semanal', { userId, params });
@@ -62,7 +61,7 @@ export class WeeklyMonthlyReportsController {
       });
 
       // Cache por 5 minutos
-      await CacheService.set(cacheKey, relatorio, WeeklyMonthlyReportsController.CACHE_TTL);
+      await cacheService.set(cacheKey, relatorio, WeeklyMonthlyReportsController.CACHE_TTL);
     }
 
     if (params.formato !== 'json') {
@@ -77,7 +76,7 @@ export class WeeklyMonthlyReportsController {
     res.json({
       success: true,
       data: relatorio,
-      cached: !!await CacheService.get(cacheKey),
+      cached: !!await cacheService.get(cacheKey),
       generated_at: new Date().toISOString(),
       message: 'Relatório semanal gerado com sucesso'
     });
@@ -91,7 +90,7 @@ export class WeeklyMonthlyReportsController {
     const params = WeeklyMonthlyReportsController.validateQuery(req.query, monthlyReportSchema);
     
     const cacheKey = `monthly_report:${userId}:${JSON.stringify(params)}`;
-    let relatorio = await CacheService.get(cacheKey);
+    let relatorio = await cacheService.get(cacheKey);
     
     if (!relatorio) {
       WeeklyMonthlyReportsController.logger.info('Gerando relatório mensal', { userId, params });
@@ -105,7 +104,7 @@ export class WeeklyMonthlyReportsController {
         includeCharts: params.incluir_graficos
       });
 
-      await CacheService.set(cacheKey, relatorio, WeeklyMonthlyReportsController.CACHE_TTL);
+      await cacheService.set(cacheKey, relatorio, WeeklyMonthlyReportsController.CACHE_TTL);
     }
 
     if (params.formato !== 'json') {
@@ -120,7 +119,7 @@ export class WeeklyMonthlyReportsController {
     res.json({
       success: true,
       data: relatorio,
-      cached: !!await CacheService.get(cacheKey),
+      cached: !!await cacheService.get(cacheKey),
       generated_at: new Date().toISOString(),
       message: 'Relatório mensal gerado com sucesso'
     });
@@ -134,7 +133,7 @@ export class WeeklyMonthlyReportsController {
     const params = WeeklyMonthlyReportsController.validateQuery(req.query, comparisonSchema);
     
     const cacheKey = `weekly_comparison:${userId}:${JSON.stringify(params)}`;
-    let comparativo = await CacheService.get(cacheKey);
+    let comparativo = await cacheService.get(cacheKey);
 
     if (!comparativo) {
       WeeklyMonthlyReportsController.logger.info('Gerando comparativo semanal', { userId, params });
@@ -147,7 +146,7 @@ export class WeeklyMonthlyReportsController {
         includePredictions: params.incluir_previsoes
       });
 
-      await CacheService.set(cacheKey, comparativo, WeeklyMonthlyReportsController.CACHE_TTL);
+      await cacheService.set(cacheKey, comparativo, WeeklyMonthlyReportsController.CACHE_TTL);
     }
 
     res.json({
@@ -174,7 +173,7 @@ export class WeeklyMonthlyReportsController {
     const params = WeeklyMonthlyReportsController.validateQuery(req.query, comparisonSchema);
     
     const cacheKey = `monthly_comparison:${userId}:${JSON.stringify(params)}`;
-    let comparativo = await CacheService.get(cacheKey);
+    let comparativo = await cacheService.get(cacheKey);
 
     if (!comparativo) {
       WeeklyMonthlyReportsController.logger.info('Gerando comparativo mensal', { userId, params });
@@ -187,7 +186,7 @@ export class WeeklyMonthlyReportsController {
         includePredictions: params.incluir_previsoes
       });
 
-      await CacheService.set(cacheKey, comparativo, WeeklyMonthlyReportsController.CACHE_TTL);
+      await cacheService.set(cacheKey, comparativo, WeeklyMonthlyReportsController.CACHE_TTL);
     }
 
     res.json({
@@ -220,17 +219,17 @@ export class WeeklyMonthlyReportsController {
     }));
 
     const cacheKey = `dashboard:${userId}:${JSON.stringify(params)}`;
-    let dashboard = await CacheService.get(cacheKey);
+    let dashboard = await cacheService.get(cacheKey);
 
     if (!dashboard) {
       WeeklyMonthlyReportsController.logger.info('Gerando dashboard', { userId, params });
 
       // Executa consultas em paralelo para melhor performance
       const [currentWeek, currentMonth, comparison, alerts, goals] = await Promise.all([
-        ReportsService.getCurrentWeekSummary(userId, params.id_veiculo),
-        ReportsService.getCurrentMonthSummary(userId, params.id_veiculo),
-        ReportsService.getShortTermComparison(userId, params.id_veiculo),
-        params.incluir_alertas ? ReportsService.generateAlerts(userId, params.id_veiculo) : null,
+        ReportsService.generateWeeklyReport({ userId, vehicleId: params.id_veiculo }),
+        ReportsService.generateMonthlyReport({ userId, vehicleId: params.id_veiculo }),
+        ReportsService.generateWeeklyComparison({ userId, vehicleId: params.id_veiculo }),
+        params.incluir_alertas ? ReportsService.generateAlerts({ userId, vehicleId: params.id_veiculo }) : null,
         params.incluir_metas ? ReportsService.getGoalsProgress(userId, params.id_veiculo) : null
       ]);
 
@@ -250,7 +249,7 @@ export class WeeklyMonthlyReportsController {
       };
 
       // Cache por 2 minutos (dashboard precisa de dados mais frescos)
-      await CacheService.set(cacheKey, dashboard, 120);
+      await cacheService.set(cacheKey, dashboard, 120);
     }
 
     res.json({
@@ -273,17 +272,12 @@ export class WeeklyMonthlyReportsController {
     }));
 
     const cacheKey = `performance:${userId}:${JSON.stringify(params)}`;
-    let analise = await CacheService.get(cacheKey);
+    const { dataInicio, dataFim } = DateHelper.calcularPeriodo(params.periodo_analise);
 
     if (!analise) {
       WeeklyMonthlyReportsController.logger.info('Gerando análise de performance', { userId, params });
 
-      analise = await ReportsService.generatePerformanceAnalysis({
-        userId,
-        vehicleId: params.id_veiculo,
-        analysisPeriod: params.periodo_analise,
-        includeBenchmarks: params.incluir_benchmarks
-      });
+      analise = await ReportsService.getPerformanceMetrics(userId, dataInicio, dataFim, params.id_veiculo);
 
       // Cache por 1 hora (análise de performance muda menos frequentemente)
       await CacheService.set(cacheKey, analise, 3600);

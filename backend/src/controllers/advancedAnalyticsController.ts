@@ -446,18 +446,18 @@ export class AdvancedAnalyticsController {
         maior: Math.max(...custosPorKm),
         media: Math.round(custosPorKm.reduce((sum, val) => sum + val, 0) / custosPorKm.length)
       },
-      roi_combustivel: {
-        melhor: Math.max(...rois),
-        pior: Math.min(...rois),
+      roi: {
+        maior: Math.max(...rois),
+        menor: Math.min(...rois),
         media: Math.round(rois.reduce((sum, val) => sum + val, 0) / rois.length)
       }
     };
   }
 
   /**
-   * Análise de produtividade por veículo - MELHORADA
+   * Análise de desempenho de jornadas
    */
-  static async getProductivityAnalysis(req: AuthenticatedRequest, res: Response) {
+  static async getJourneyPerformance(req: AuthenticatedRequest, res: Response) {
     try {
       if (!req.user?.id) {
         throw new UnauthorizedError('Usuário não autenticado');
@@ -469,199 +469,130 @@ export class AdvancedAnalyticsController {
       }
 
       const { data_inicio, data_fim, id_veiculo, periodo, timezone } = validation.data;
-      
-      // Validar acesso ao veículo se especificado
+
       if (id_veiculo && !(await this.validateVehicleAccess(req.user.id, id_veiculo))) {
         throw new NotFoundError('Veículo não encontrado ou sem acesso');
       }
 
       const { startDate, endDate } = this.calculatePeriod(periodo, data_inicio, data_fim, timezone);
 
-      // Query otimizada para análise de produtividade
-      const productivityQuery = db
-        .select({
-          veiculo_id: veiculos.id,
-          veiculo_marca: veiculos.marca,
-          veiculo_modelo: veiculos.modelo,
-          veiculo_placa: veiculos.placa,
-          veiculo_ano: veiculos.ano,
-          total_faturamento: sql<number>`COALESCE(SUM(${jornadas.ganho_bruto}), 0)`,
-          total_km: sql<number>`COALESCE(SUM(${jornadas.km_total}), 0)`,
-          total_tempo: sql<number>`COALESCE(SUM(${jornadas.tempo_total}), 0)`,
-          numero_jornadas: sql<number>`COUNT(${jornadas.id})`,
-          ganho_medio_jornada: sql<number>`COALESCE(AVG(${jornadas.ganho_bruto}), 0)`,
-          km_medio_jornada: sql<number>`COALESCE(AVG(${jornadas.km_total}), 0)`,
-          tempo_medio_jornada: sql<number>`COALESCE(AVG(${jornadas.tempo_total}), 0)`,
-          maior_ganho_jornada: sql<number>`COALESCE(MAX(${jornadas.ganho_bruto}), 0)`,
-          menor_ganho_jornada: sql<number>`COALESCE(MIN(${jornadas.ganho_bruto}), 0)`,
-        })
-        .from(veiculos)
-        .leftJoin(jornadas, and(
-          eq(veiculos.id, jornadas.id_veiculo),
-          eq(jornadas.id_usuario, req.user.id),
-          gte(jornadas.data_inicio, startDate.toISOString()),
-          lte(jornadas.data_inicio, endDate.toISOString()),
-          isNull(jornadas.deleted_at)
-        ))
-        .where(and(
-          eq(veiculos.id_usuario, req.user.id),
-          isNull(veiculos.deleted_at),
-          id_veiculo ? eq(veiculos.id, id_veiculo) : sql`true`
-        ))
-        .groupBy(veiculos.id, veiculos.marca, veiculos.modelo, veiculos.placa, veiculos.ano)
-        .having(sql`COUNT(${jornadas.id}) > 0`); // Apenas veículos com jornadas
+      const conditions = [
+        eq(jornadas.id_usuario, req.user.id),
+        gte(jornadas.data_inicio, startDate.toISOString()),
+        lte(jornadas.data_inicio, endDate.toISOString()),
+        isNull(jornadas.deleted_at)
+      ];
 
-      const productivityData = await productivityQuery;
-
-      if (productivityData.length === 0) {
-        throw new NotFoundError('Nenhuma jornada encontrada no período especificado');
+      if (id_veiculo) {
+        conditions.push(eq(jornadas.id_veiculo, id_veiculo));
       }
 
-      // Calcular despesas por veículo no mesmo período
-      const expensesQuery = await db
+      const allJourneys = await db
         .select({
-          veiculo_id: despesas.id_veiculo,
-          total_despesas: sql<number>`COALESCE(SUM(${despesas.valor_despesa}), 0)`,
-          numero_despesas: sql<number>`COUNT(${despesas.id})`,
+          id: jornadas.id,
+          data_inicio: jornadas.data_inicio,
+          data_fim: jornadas.data_fim,
+          ganho_bruto: jornadas.ganho_bruto,
+          km_total: jornadas.km_total,
+          tempo_total: jornadas.tempo_total,
+          id_veiculo: jornadas.id_veiculo,
         })
-        .from(despesas)
-        .where(and(
-          eq(despesas.id_usuario, req.user.id),
-          gte(despesas.data_despesa, startDate.toISOString()),
-          lte(despesas.data_despesa, endDate.toISOString()),
-          isNull(despesas.deleted_at)
-        ))
-        .groupBy(despesas.id_veiculo);
+        .from(jornadas)
+        .where(and(...conditions));
 
-      const expensesMap = new Map(
-        expensesQuery.map(exp => [exp.veiculo_id, exp])
-      );
-
-      // Calcular métricas derivadas melhoradas
-      const productivityAnalysis = productivityData.map(vehicle => {
-        const totalFaturamento = Number(vehicle.total_faturamento) || 0;
-        const totalKm = Number(vehicle.total_km) || 0;
-        const totalTempo = Number(vehicle.total_tempo) || 0; // em minutos
-        const numeroJornadas = Number(vehicle.numero_jornadas) || 0;
-
-        const expenses = expensesMap.get(vehicle.veiculo_id);
-        const totalDespesas = Number(expenses?.total_despesas) || 0;
-        const numeroDespesas = Number(expenses?.numero_despesas) || 0;
-
-        const lucroLiquido = totalFaturamento - totalDespesas;
-        const margemLucro = totalFaturamento > 0 ? (lucroLiquido / totalFaturamento) * 100 : 0;
-
-        // Calcular produtividade
-        const ganhoPorKm = totalKm > 0 ? totalFaturamento / totalKm : 0;
-        const ganhoPorHora = totalTempo > 0 ? (totalFaturamento / totalTempo) * 60 : 0;
-        const kmPorHora = totalTempo > 0 ? (totalKm / totalTempo) * 60 : 0;
-        const despesaPorKm = totalKm > 0 ? totalDespesas / totalKm : 0;
-
-        // Classificações melhoradas
-        let classificacaoEficiencia = 'Baixa';
-        if (ganhoPorKm >= 200) classificacaoEficiencia = 'Excelente';
-        else if (ganhoPorKm >= 150) classificacaoEficiencia = 'Boa';
-        else if (ganhoPorKm >= 100) classificacaoEficiencia = 'Regular';
-
-        let classificacaoLucro = 'Baixa';
-        if (margemLucro >= 30) classificacaoLucro = 'Excelente';
-        else if (margemLucro >= 20) classificacaoLucro = 'Boa';
-        else if (margemLucro >= 10) classificacaoLucro = 'Regular';
-
-        return {
-          veiculo: {
-            id: vehicle.veiculo_id,
-            marca: vehicle.veiculo_marca,
-            modelo: vehicle.veiculo_modelo,
-            placa: vehicle.veiculo_placa,
-            ano: vehicle.veiculo_ano,
-          },
-          metricas_totais: {
-            faturamento_total: Math.round(totalFaturamento),
-            despesas_total: Math.round(totalDespesas),
-            lucro_liquido: Math.round(lucroLiquido),
-            margem_lucro: Math.round(margemLucro * 100) / 100,
-            km_total: Math.round(totalKm * 100) / 100,
-            tempo_total_minutos: totalTempo,
-            tempo_total_horas: Math.round((totalTempo / 60) * 100) / 100,
-            numero_jornadas: numeroJornadas,
-            numero_despesas: numeroDespesas,
-          },
-          metricas_medias: {
-            ganho_medio_jornada: Math.round(Number(vehicle.ganho_medio_jornada)),
-            km_medio_jornada: Math.round(Number(vehicle.km_medio_jornada) * 100) / 100,
-            tempo_medio_jornada_minutos: Math.round(Number(vehicle.tempo_medio_jornada)),
-            tempo_medio_jornada_horas: Math.round((Number(vehicle.tempo_medio_jornada) / 60) * 100) / 100,
-            despesa_media: numeroDespesas > 0 ? Math.round(totalDespesas / numeroDespesas) : 0,
-          },
-          metricas_extremas: {
-            maior_ganho_jornada: Math.round(Number(vehicle.maior_ganho_jornada)),
-            menor_ganho_jornada: Math.round(Number(vehicle.menor_ganho_jornada)),
-          },
-          produtividade: {
-            ganho_por_km: Math.round(ganhoPorKm),
-            ganho_por_hora: Math.round(ganhoPorHora),
-            km_por_hora: Math.round(kmPorHora * 100) / 100,
-            despesa_por_km: Math.round(despesaPorKm),
-            lucro_por_km: Math.round((ganhoPorKm - despesaPorKm)),
-            classificacao_eficiencia: classificacaoEficiencia,
-            classificacao_lucro: classificacaoLucro,
-            roi: totalDespesas > 0 ? Math.round(((lucroLiquido / totalDespesas) * 100) * 100) / 100 : 0,
+      if (allJourneys.length === 0) {
+        return res.json({
+          success: true,
+          data: {
+            message: 'Nenhuma jornada encontrada para o período e filtros selecionados.',
+            analise_jornadas: [],
+            resumo_jornadas: {},
+            tendencia_jornadas: {},
+            periodo: {
+              data_inicio: startDate.toISOString(),
+              data_fim: endDate.toISOString(),
+              descricao: this.getPeriodDescription(startDate, endDate),
+              timezone: timezone
+            }
           }
-        };
-      });
+        });
+      }
 
-      // Rankings melhorados
-      const rankings = {
-        ganho_por_km: [...productivityAnalysis]
-          .sort((a, b) => b.produtividade.ganho_por_km - a.produtividade.ganho_por_km)
-          .map((item, index) => ({
-            posicao: index + 1,
-            veiculo: item.veiculo,
-            ganho_por_km: item.produtividade.ganho_por_km,
-            classificacao: item.produtividade.classificacao_eficiencia
-          })),
-        ganho_por_hora: [...productivityAnalysis]
-          .sort((a, b) => b.produtividade.ganho_por_hora - a.produtividade.ganho_por_hora)
-          .map((item, index) => ({
-            posicao: index + 1,
-            veiculo: item.veiculo,
-            ganho_por_hora: item.produtividade.ganho_por_hora
-          })),
-        lucro_liquido: [...productivityAnalysis]
-          .sort((a, b) => b.metricas_totais.lucro_liquido - a.metricas_totais.lucro_liquido)
-          .map((item, index) => ({
-            posicao: index + 1,
-            veiculo: item.veiculo,
-            lucro_liquido: item.metricas_totais.lucro_liquido,
-            margem_lucro: item.metricas_totais.margem_lucro
-          })),
-        roi: [...productivityAnalysis]
-          .sort((a, b) => b.produtividade.roi - a.produtividade.roi)
-          .map((item, index) => ({
-            posicao: index + 1,
-            veiculo: item.veiculo,
-            roi: item.produtividade.roi
-          }))
-      };
+      // Agrupar jornadas por veículo para análise individual
+      const journeysByVehicle = allJourneys.reduce((acc, journey) => {
+        const vehicleId = journey.id_veiculo;
+        if (!acc[vehicleId]) {
+          acc[vehicleId] = [];
+        }
+        acc[vehicleId].push(journey);
+        return acc;
+      }, {} as Record<string, typeof allJourneys>);
 
-      // Estatísticas gerais
-      const estatisticasGerais = {
-        total_faturamento: productivityAnalysis.reduce((sum, item) => sum + item.metricas_totais.faturamento_total, 0),
-        total_despesas: productivityAnalysis.reduce((sum, item) => sum + item.metricas_totais.despesas_total, 0),
-        total_lucro: productivityAnalysis.reduce((sum, item) => sum + item.metricas_totais.lucro_liquido, 0),
-        total_km: productivityAnalysis.reduce((sum, item) => sum + item.metricas_totais.km_total, 0),
-        total_jornadas: productivityAnalysis.reduce((sum, item) => sum + item.metricas_totais.numero_jornadas, 0),
-        veiculo_mais_produtivo: rankings.ganho_por_km[0]?.veiculo || null,
-        veiculo_mais_lucrativo: rankings.lucro_liquido[0]?.veiculo || null,
+      const analysisResults = [];
+      for (const vehicleId in journeysByVehicle) {
+        const vehicleJourneys = journeysByVehicle[vehicleId];
+        const vehicleInfo = await db.select().from(veiculos).where(eq(veiculos.id, vehicleId)).limit(1);
+
+        const totalGanhoBruto = vehicleJourneys.reduce((sum, j) => sum + (Number(j.ganho_bruto) || 0), 0);
+        const totalKm = vehicleJourneys.reduce((sum, j) => sum + (Number(j.km_total) || 0), 0);
+        const totalTempo = vehicleJourneys.reduce((sum, j) => sum + (Number(j.tempo_total) || 0), 0);
+
+        const ganhoMedioPorKm = totalKm > 0 ? totalGanhoBruto / totalKm : 0;
+        const ganhoMedioPorHora = totalTempo > 0 ? (totalGanhoBruto / totalTempo) * 60 : 0; // Converter minutos para horas
+
+        // Análise por dia da semana
+        const dailyPerformance = vehicleJourneys.reduce((acc, journey) => {
+          const date = new Date(journey.data_inicio);
+          const dayOfWeek = date.getDay(); // 0 = Domingo, 6 = Sábado
+          const dayName = this.getDayOfWeekName(dayOfWeek);
+
+          if (!acc[dayName]) {
+            acc[dayName] = { totalGanhoBruto: 0, totalKm: 0, totalTempo: 0, count: 0 };
+          }
+          acc[dayName].totalGanhoBruto += Number(journey.ganho_bruto) || 0;
+          acc[dayName].totalKm += Number(journey.km_total) || 0;
+          acc[dayName].totalTempo += Number(journey.tempo_total) || 0;
+          acc[dayName].count++;
+          return acc;
+        }, {} as Record<string, { totalGanhoBruto: number; totalKm: number; totalTempo: number; count: number }>);
+
+        const dailyPerformanceFormatted = Object.entries(dailyPerformance).map(([day, data]) => ({
+          dia_semana: day,
+          ganho_bruto: Math.round(data.totalGanhoBruto),
+          km_total: Math.round(data.totalKm),
+          tempo_total: Math.round(data.totalTempo),
+          jornadas_count: data.count,
+          ganho_medio_por_jornada: data.count > 0 ? Math.round(data.totalGanhoBruto / data.count) : 0,
+          ganho_medio_por_km: data.totalKm > 0 ? Math.round(data.totalGanhoBruto / data.totalKm) : 0,
+        }));
+
+        analysisResults.push({
+          veiculo: vehicleInfo[0] || { id: vehicleId, marca: 'Desconhecida', modelo: 'Desconhecido' },
+          metricas_periodo: {
+            total_ganho_bruto: Math.round(totalGanhoBruto),
+            total_km: Math.round(totalKm),
+            total_tempo: Math.round(totalTempo),
+            numero_jornadas: vehicleJourneys.length,
+            ganho_medio_por_km: Math.round(ganhoMedioPorKm),
+            ganho_medio_por_hora: Math.round(ganhoMedioPorHora),
+          },
+          desempenho_diario: dailyPerformanceFormatted,
+        });
+      }
+
+      // Resumo consolidado de todas as jornadas
+      const resumoGeralJornadas = {
+        total_ganho_bruto_geral: Math.round(analysisResults.reduce((sum, ar) => sum + ar.metricas_periodo.total_ganho_bruto, 0)),
+        total_km_geral: Math.round(analysisResults.reduce((sum, ar) => sum + ar.metricas_periodo.total_km, 0)),
+        total_tempo_geral: Math.round(analysisResults.reduce((sum, ar) => sum + ar.metricas_periodo.total_tempo, 0)),
+        numero_jornadas_geral: analysisResults.reduce((sum, ar) => sum + ar.metricas_periodo.numero_jornadas, 0),
       };
 
       return res.json({
         success: true,
         data: {
-          analise_produtividade: productivityAnalysis,
-          rankings,
-          estatisticas_gerais: estatisticasGerais,
+          analise_jornadas: analysisResults,
+          resumo_jornadas: resumoGeralJornadas,
           periodo: {
             data_inicio: startDate.toISOString(),
             data_fim: endDate.toISOString(),
@@ -669,40 +600,25 @@ export class AdvancedAnalyticsController {
             timezone: timezone
           },
           metadata: {
-            total_veiculos_analisados: productivityAnalysis.length,
-            criterios_classificacao: {
-              eficiencia: {
-                excelente: '>= R$ 2,00/km',
-                boa: '>= R$ 1,50/km',
-                regular: '>= R$ 1,00/km',
-                baixa: '< R$ 1,00/km'
-              },
-              lucro: {
-                excelente: '>= 30%',
-                boa: '>= 20%',
-                regular: '>= 10%',
-                baixa: '< 10%'
-              }
-            }
+            total_jornadas_analisadas: allJourneys.length,
+            data_processamento: new Date().toISOString()
           }
         }
       });
 
     } catch (error: any) {
-      console.error('Erro ao gerar análise de produtividade:', error);
-      
+      console.error('Erro ao gerar análise de desempenho de jornadas:', error);
       if (error instanceof ValidationError || error instanceof UnauthorizedError || error instanceof NotFoundError) {
         throw error;
       }
-      
-      throw new Error('Erro interno do servidor ao processar análise de produtividade');
+      throw new Error('Erro interno do servidor ao processar análise de desempenho de jornadas');
     }
   }
 
   /**
-   * Identificação de padrões temporais - MELHORADA
+   * Análise de despesas por categoria e veículo
    */
-  static async getTemporalPatterns(req: AuthenticatedRequest, res: Response) {
+  static async getExpenseAnalysis(req: AuthenticatedRequest, res: Response) {
     try {
       if (!req.user?.id) {
         throw new UnauthorizedError('Usuário não autenticado');
@@ -714,263 +630,141 @@ export class AdvancedAnalyticsController {
       }
 
       const { data_inicio, data_fim, id_veiculo, periodo, timezone } = validation.data;
-      
+
       if (id_veiculo && !(await this.validateVehicleAccess(req.user.id, id_veiculo))) {
         throw new NotFoundError('Veículo não encontrado ou sem acesso');
       }
 
       const { startDate, endDate } = this.calculatePeriod(periodo, data_inicio, data_fim, timezone);
 
-      // Query otimizada para análise temporal
-      const temporalQuery = await db
+      const conditions = [
+        eq(despesas.id_usuario, req.user.id),
+        gte(despesas.data_despesa, startDate.toISOString()),
+        lte(despesas.data_despesa, endDate.toISOString()),
+        isNull(despesas.deleted_at)
+      ];
+
+      if (id_veiculo) {
+        conditions.push(eq(despesas.id_veiculo, id_veiculo));
+      }
+
+      const allExpenses = await db
         .select({
-          veiculo_id: veiculos.id,
-          veiculo_marca: veiculos.marca,
-          veiculo_modelo: veiculos.modelo,
-          data_inicio: jornadas.data_inicio,
-          ganho_bruto: jornadas.ganho_bruto,
-          km_total: jornadas.km_total,
-          tempo_total: jornadas.tempo_total,
+          id: despesas.id,
+          data_despesa: despesas.data_despesa,
+          valor_despesa: despesas.valor_despesa,
+          tipo_despesa: despesas.tipo_despesa,
+          id_veiculo: despesas.id_veiculo,
         })
-        .from(jornadas)
-        .innerJoin(veiculos, eq(jornadas.id_veiculo, veiculos.id))
-        .where(
-          and(
-            eq(veiculos.id_usuario, req.user.id),
-            isNull(veiculos.deleted_at),
-            id_veiculo ? eq(veiculos.id, id_veiculo) : sql`true`,
-            gte(jornadas.data_inicio, startDate.toISOString()),
-            lte(jornadas.data_inicio, endDate.toISOString()),
-            isNull(jornadas.deleted_at)
-          )
-        )
-        .orderBy(asc(jornadas.data_inicio));
+        .from(despesas)
+        .where(and(...conditions));
 
-      if (temporalQuery.length === 0) {
-        throw new NotFoundError('Nenhuma jornada encontrada no período especificado');
+      if (allExpenses.length === 0) {
+        return res.json({
+          success: true,
+          data: {
+            message: 'Nenhuma despesa encontrada para o período e filtros selecionados.',
+            analise_despesas: [],
+            resumo_despesas: {},
+            periodo: {
+              data_inicio: startDate.toISOString(),
+              data_fim: endDate.toISOString(),
+              descricao: this.getPeriodDescription(startDate, endDate),
+              timezone: timezone
+            }
+          }
+        });
       }
 
-      // Agrupar por dia da semana com métricas avançadas
-      const dailyPatterns = temporalQuery.reduce((acc: any, curr) => {
-        const date = new Date(curr.data_inicio);
-        const dayOfWeek = date.getDay();
-        
-        if (!acc[dayOfWeek]) {
-          acc[dayOfWeek] = {
-            faturamento_total: 0,
-            km_total: 0,
-            numero_jornadas: 0,
-            tempo_total: 0,
-            jornadas: []
-          };
+      // Agrupar despesas por categoria e veículo
+      const expensesByCategoryAndVehicle = allExpenses.reduce((acc, expense) => {
+        const vehicleId = expense.id_veiculo || 'sem_veiculo';
+        const category = expense.tipo_despesa;
+
+        if (!acc[vehicleId]) {
+          acc[vehicleId] = {};
         }
-        
-        const ganho = Number(curr.ganho_bruto) || 0;
-        const km = Number(curr.km_total) || 0;
-        const tempo = Number(curr.tempo_total) || 0;
-        
-        acc[dayOfWeek].faturamento_total += ganho;
-        acc[dayOfWeek].km_total += km;
-        acc[dayOfWeek].numero_jornadas++;
-        acc[dayOfWeek].tempo_total += tempo;
-        acc[dayOfWeek].jornadas.push({ ganho, km, tempo });
-        
-        return acc;
-      }, {});
-
-      // Converter para array e calcular métricas adicionais
-      const dailyPatternsArray = Object.keys(dailyPatterns).map(dayIndex => {
-        const dayData = dailyPatterns[dayIndex];
-        const jornadas = dayData.jornadas;
-        
-        // Calcular métricas estatísticas
-        const ganhos = jornadas.map((j: any) => j.ganho);
-        const kms = jornadas.map((j: any) => j.km);
-        
-        ganhos.sort((a, b) => a - b);
-        kms.sort((a, b) => a - b);
-        
-        const medianGanho = ganhos.length % 2 === 0 
-          ? (ganhos[ganhos.length/2 - 1] + ganhos[ganhos.length/2]) / 2
-          : ganhos[Math.floor(ganhos.length/2)];
-          
-        const medianKm = kms.length % 2 === 0 
-          ? (kms[kms.length/2 - 1] + kms[kms.length/2]) / 2
-          : kms[Math.floor(kms.length/2)];
-
-        return {
-          dia_semana: this.getDayOfWeekName(Number(dayIndex)),
-          dia_index: Number(dayIndex),
-          faturamento_total: Math.round(dayData.faturamento_total),
-          faturamento_medio: Math.round(dayData.faturamento_total / dayData.numero_jornadas),
-          faturamento_mediano: Math.round(medianGanho),
-          km_total: Math.round(dayData.km_total * 100) / 100,
-          km_medio: Math.round((dayData.km_total / dayData.numero_jornadas) * 100) / 100,
-          km_mediano: Math.round(medianKm * 100) / 100,
-          numero_jornadas: dayData.numero_jornadas,
-          tempo_total_horas: Math.round((dayData.tempo_total / 60) * 100) / 100,
-          tempo_medio_horas: Math.round(((dayData.tempo_total / dayData.numero_jornadas) / 60) * 100) / 100,
-          produtividade_por_hora: dayData.tempo_total > 0 
-            ? Math.round((dayData.faturamento_total / dayData.tempo_total) * 60) 
-            : 0,
-          produtividade_por_km: dayData.km_total > 0 
-            ? Math.round(dayData.faturamento_total / dayData.km_total) 
-            : 0
-        };
-      }).sort((a, b) => a.dia_index - b.dia_index);
-
-      // Agrupar por hora do dia com análise mais detalhada
-      const hourlyPatterns = temporalQuery.reduce((acc: any, curr) => {
-        const hourOfDay = new Date(curr.data_inicio).getHours();
-        
-        if (!acc[hourOfDay]) {
-          acc[hourOfDay] = {
-            faturamento_total: 0,
-            km_total: 0,
-            numero_jornadas: 0,
-            tempo_total: 0,
-          };
+        if (!acc[vehicleId][category]) {
+          acc[vehicleId][category] = { total: 0, count: 0 };
         }
-        
-        acc[hourOfDay].faturamento_total += Number(curr.ganho_bruto) || 0;
-        acc[hourOfDay].km_total += Number(curr.km_total) || 0;
-        acc[hourOfDay].numero_jornadas++;
-        acc[hourOfDay].tempo_total += Number(curr.tempo_total) || 0;
-        
+        acc[vehicleId][category].total += Number(expense.valor_despesa) || 0;
+        acc[vehicleId][category].count++;
         return acc;
-      }, {});
+      }, {} as Record<string, Record<string, { total: number; count: number }>>);
 
-      const hourlyPatternsArray = Object.keys(hourlyPatterns).map(hour => {
-        const hourData = hourlyPatterns[hour];
-        
-        // Classificar período do dia
-        let periodo_dia = 'Madrugada';
-        const h = Number(hour);
-        if (h >= 6 && h < 12) periodo_dia = 'Manhã';
-        else if (h >= 12 && h < 18) periodo_dia = 'Tarde';
-        else if (h >= 18 && h < 24) periodo_dia = 'Noite';
+      const analysisResults = [];
+      for (const vehicleId in expensesByCategoryAndVehicle) {
+        const vehicleExpenses = expensesByCategoryAndVehicle[vehicleId];
+        const vehicleInfo = vehicleId === 'sem_veiculo' ? 
+          { id: 'sem_veiculo', marca: 'N/A', modelo: 'N/A' } : 
+          (await db.select().from(veiculos).where(eq(veiculos.id, vehicleId)).limit(1))[0];
 
-        return {
-          hora: h,
-          periodo_dia,
-          faturamento_total: Math.round(hourData.faturamento_total),
-          faturamento_medio: Math.round(hourData.faturamento_total / hourData.numero_jornadas),
-          km_total: Math.round(hourData.km_total * 100) / 100,
-          numero_jornadas: hourData.numero_jornadas,
-          tempo_total_horas: Math.round((hourData.tempo_total / 60) * 100) / 100,
-          produtividade_por_hora: hourData.tempo_total > 0 
-            ? Math.round((hourData.faturamento_total / hourData.tempo_total) * 60) 
-            : 0
-        };
-      }).sort((a, b) => a.hora - b.hora);
+        const totalDespesasVeiculo = Object.values(vehicleExpenses).reduce((sum, cat) => sum + cat.total, 0);
 
-      // Análise de padrões por período do dia
-      const periodosPadrao = hourlyPatternsArray.reduce((acc: any, curr) => {
-        if (!acc[curr.periodo_dia]) {
-          acc[curr.periodo_dia] = {
-            faturamento_total: 0,
-            numero_jornadas: 0,
-            km_total: 0,
-            tempo_total: 0
-          };
-        }
-        
-        acc[curr.periodo_dia].faturamento_total += curr.faturamento_total;
-        acc[curr.periodo_dia].numero_jornadas += curr.numero_jornadas;
-        acc[curr.periodo_dia].km_total += curr.km_total;
-        acc[curr.periodo_dia].tempo_total += curr.tempo_total_horas;
-        
-        return acc;
-      }, {});
+        const categoriesFormatted = Object.entries(vehicleExpenses).map(([category, data]) => ({
+          categoria: category,
+          total_gasto: Math.round(data.total),
+          numero_despesas: data.count,
+          percentual_total: totalDespesasVeiculo > 0 ? 
+            Math.round((data.total / totalDespesasVeiculo) * 10000) / 100 : 0,
+        }));
 
-      // Converter para array e calcular métricas
-      const periodosArray = Object.keys(periodosPadrao).map(periodo => {
-        const data = periodosPadrao[periodo];
-        return {
-          periodo,
-          faturamento_total: Math.round(data.faturamento_total),
-          faturamento_medio: data.numero_jornadas > 0 ? Math.round(data.faturamento_total / data.numero_jornadas) : 0,
-          numero_jornadas: data.numero_jornadas,
-          participacao_faturamento: Math.round((data.faturamento_total / temporalQuery.reduce((sum, j) => sum + (Number(j.ganho_bruto) || 0), 0)) * 100 * 100) / 100,
-          produtividade_media: data.tempo_total > 0 ? Math.round(data.faturamento_total / data.tempo_total) : 0
-        };
-      });
+        analysisResults.push({
+          veiculo: vehicleInfo,
+          total_despesas_veiculo: Math.round(totalDespesasVeiculo),
+          despesas_por_categoria: categoriesFormatted,
+        });
+      }
 
-      // Identificar melhor dia e melhor horário
-      const melhorDia = dailyPatternsArray.reduce((max, curr) => 
-        curr.faturamento_total > max.faturamento_total ? curr : max
-      );
-      
-      const melhorHora = hourlyPatternsArray.reduce((max, curr) => 
-        curr.faturamento_total > max.faturamento_total ? curr : max
-      );
-
-      // Análise de sazonalidade (se período > 30 dias)
-      const diasPeriodo = Math.ceil((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24));
-      let analise_sazonalidade = null;
-      
-      if (diasPeriodo >= 30) {
-        const jornadasPorData = temporalQuery.reduce((acc: any, curr) => {
-          const data = new Date(curr.data_inicio).toDateString();
-          if (!acc[data]) acc[data] = { faturamento: 0, jornadas: 0 };
-          acc[data].faturamento += Number(curr.ganho_bruto) || 0;
-          acc[data].jornadas++;
+      // Resumo consolidado de todas as despesas
+      const resumoGeralDespesas = {
+        total_despesas_geral: Math.round(analysisResults.reduce((sum, ar) => sum + ar.total_despesas_veiculo, 0)),
+        despesas_por_categoria_geral: Object.values(allExpenses.reduce((acc, expense) => {
+          const category = expense.tipo_despesa;
+          if (!acc[category]) {
+            acc[category] = { total: 0, count: 0 };
+          }
+          acc[category].total += Number(expense.valor_despesa) || 0;
+          acc[category].count++;
           return acc;
-        }, {});
-
-        const faturamentosDiarios = Object.values(jornadasPorData).map((d: any) => d.faturamento);
-        const media = faturamentosDiarios.reduce((sum: number, val: number) => sum + val, 0) / faturamentosDiarios.length;
-        const variancia = faturamentosDiarios.reduce((sum: number, val: number) => sum + Math.pow(val - media, 2), 0) / faturamentosDiarios.length;
-        const desvioPadrao = Math.sqrt(variancia);
-        const coeficienteVariacao = media > 0 ? (desvioPadrao / media) * 100 : 0;
-
-        analise_sazonalidade = {
-          faturamento_medio_diario: Math.round(media),
-          desvio_padrao: Math.round(desvioPadrao),
-          coeficiente_variacao: Math.round(coeficienteVariacao * 100) / 100,
-          interpretacao: coeficienteVariacao < 20 ? 'Baixa variabilidade' :
-                        coeficienteVariacao < 40 ? 'Variabilidade moderada' : 'Alta variabilidade'
-        };
-      }
+        }, {} as Record<string, { total: number; count: number }>)).map(([category, data]) => ({
+          categoria: category,
+          total_gasto: Math.round(data.total),
+          numero_despesas: data.count,
+        })),
+      };
 
       return res.json({
         success: true,
         data: {
-          padroes_diarios: dailyPatternsArray,
-          padroes_por_hora: hourlyPatternsArray,
-          padroes_por_periodo: periodosArray,
-          insights: {
-            melhor_dia_semana: melhorDia,
-            melhor_horario: melhorHora,
-            total_jornadas_analisadas: temporalQuery.length,
-            dias_com_atividade: [...new Set(temporalQuery.map(j => new Date(j.data_inicio).toDateString()))].length
-          },
-          analise_sazonalidade,
+          analise_despesas: analysisResults,
+          resumo_despesas: resumoGeralDespesas,
           periodo: {
             data_inicio: startDate.toISOString(),
             data_fim: endDate.toISOString(),
             descricao: this.getPeriodDescription(startDate, endDate),
-            timezone: timezone,
-            dias_analisados: diasPeriodo
+            timezone: timezone
+          },
+          metadata: {
+            total_despesas_analisadas: allExpenses.length,
+            data_processamento: new Date().toISOString()
           }
         }
       });
 
     } catch (error: any) {
-      console.error('Erro ao gerar análise de padrões temporais:', error);
-      
+      console.error('Erro ao gerar análise de despesas:', error);
       if (error instanceof ValidationError || error instanceof UnauthorizedError || error instanceof NotFoundError) {
         throw error;
       }
-      
-      throw new Error('Erro interno do servidor ao processar análise temporal');
+      throw new Error('Erro interno do servidor ao processar análise de despesas');
     }
   }
 
   /**
-   * Comparação entre veículos - MELHORADA
+   * Análise de Lucratividade (Receita vs Despesa)
    */
-  static async getVehicleComparison(req: AuthenticatedRequest, res: Response) {
+  static async getProfitabilityAnalysis(req: AuthenticatedRequest, res: Response) {
     try {
       if (!req.user?.id) {
         throw new UnauthorizedError('Usuário não autenticado');
@@ -981,168 +775,258 @@ export class AdvancedAnalyticsController {
         throw new ValidationError('Parâmetros inválidos', validation.error.errors);
       }
 
-      const { data_inicio, data_fim, periodo, timezone } = validation.data;
-      
-      const { startDate, endDate } = this.calculatePeriod(periodo, data_inicio, data_fim, timezone);
+      const { data_inicio, data_fim, id_veiculo, periodo, timezone } = validation.data;
 
-      // Query otimizada para comparação de veículos
-      const vehicleComparisonData = await db
-        .select({
-          veiculo_id: veiculos.id,
-          marca: veiculos.marca,
-          modelo: veiculos.modelo,
-          placa: veiculos.placa,
-          ano: veiculos.ano,
-          tipo_combustivel: veiculos.tipo_combustivel,
-          total_faturamento: sql<number>`COALESCE(SUM(${jornadas.ganho_bruto}), 0)`,
-          total_km: sql<number>`COALESCE(SUM(${jornadas.km_total}), 0)`,
-          numero_jornadas: sql<number>`COUNT(${jornadas.id})`,
-          tempo_total: sql<number>`COALESCE(SUM(${jornadas.tempo_total}), 0)`,
-        })
-        .from(veiculos)
-        .leftJoin(jornadas, and(
-          eq(veiculos.id, jornadas.id_veiculo),
-          eq(jornadas.id_usuario, req.user.id),
-          gte(jornadas.data_inicio, startDate.toISOString()),
-          lte(jornadas.data_inicio, endDate.toISOString()),
-          isNull(jornadas.deleted_at)
-        ))
-        .where(and(
-          eq(veiculos.id_usuario, req.user.id),
-          isNull(veiculos.deleted_at)
-        ))
-        .groupBy(veiculos.id, veiculos.marca, veiculos.modelo, veiculos.placa, veiculos.ano, veiculos.tipo_combustivel)
-        .having(sql`COUNT(${jornadas.id}) > 0`);
-
-      if (vehicleComparisonData.length === 0) {
-        throw new NotFoundError('Nenhum veículo com jornadas encontrado no período especificado');
+      if (id_veiculo && !(await this.validateVehicleAccess(req.user.id, id_veiculo))) {
+        throw new NotFoundError('Veículo não encontrado ou sem acesso');
       }
 
-      // Buscar despesas de cada veículo
-      const expensesData = await db
-        .select({
-          veiculo_id: despesas.id_veiculo,
-          total_despesas: sql<number>`COALESCE(SUM(${despesas.valor_despesa}), 0)`,
-          numero_despesas: sql<number>`COUNT(${despesas.id})`,
-        })
-        .from(despesas)
-        .where(and(
-          eq(despesas.id_usuario, req.user.id),
-          gte(despesas.data_despesa, startDate.toISOString()),
-          lte(despesas.data_despesa, endDate.toISOString()),
-          isNull(despesas.deleted_at)
-        ))
-        .groupBy(despesas.id_veiculo);
+      const { startDate, endDate } = this.calculatePeriod(periodo, data_inicio, data_fim, timezone);
 
-      const expensesMap = new Map(expensesData.map(exp => [exp.veiculo_id, exp]));
+      const journeyConditions = [
+        eq(jornadas.id_usuario, req.user.id),
+        gte(jornadas.data_inicio, startDate.toISOString()),
+        lte(jornadas.data_inicio, endDate.toISOString()),
+        isNull(jornadas.deleted_at)
+      ];
 
-      // Buscar dados de combustível
-      const fuelData = await db
-        .select({
-          veiculo_id: abastecimentos.id_veiculo,
-          total_litros: sql<number>`COALESCE(SUM(${abastecimentos.quantidade_litros}), 0)`,
-          total_gasto_combustivel: sql<number>`COALESCE(SUM(${abastecimentos.valor_total}), 0)`,
-          numero_abastecimentos: sql<number>`COUNT(${abastecimentos.id})`,
-        })
-        .from(abastecimentos)
-        .where(and(
-          eq(abastecimentos.id_usuario, req.user.id),
-          gte(abastecimentos.data_abastecimento, startDate.toISOString()),
-          lte(abastecimentos.data_abastecimento, endDate.toISOString()),
-          isNull(abastecimentos.deleted_at)
-        ))
-        .groupBy(abastecimentos.id_veiculo);
+      const expenseConditions = [
+        eq(despesas.id_usuario, req.user.id),
+        gte(despesas.data_despesa, startDate.toISOString()),
+        lte(despesas.data_despesa, endDate.toISOString()),
+        isNull(despesas.deleted_at)
+      ];
 
-      const fuelMap = new Map(fuelData.map(fuel => [fuel.veiculo_id, fuel]));
+      if (id_veiculo) {
+        journeyConditions.push(eq(jornadas.id_veiculo, id_veiculo));
+        expenseConditions.push(eq(despesas.id_veiculo, id_veiculo));
+      }
 
-      // Processar dados e calcular métricas comparativas
-      const comparacaoCompleta = vehicleComparisonData.map(vehicle => {
-        const expenses = expensesMap.get(vehicle.veiculo_id) || { total_despesas: 0, numero_despesas: 0 };
-        const fuel = fuelMap.get(vehicle.veiculo_id) || { total_litros: 0, total_gasto_combustivel: 0, numero_abastecimentos: 0 };
+      const [allJourneys, allExpenses] = await Promise.all([
+        db.select({ ganho_bruto: jornadas.ganho_bruto, id_veiculo: jornadas.id_veiculo }).from(jornadas).where(and(...journeyConditions)),
+        db.select({ valor_despesa: despesas.valor_despesa, id_veiculo: despesas.id_veiculo }).from(despesas).where(and(...expenseConditions)),
+      ]);
 
-        const faturamentoTotal = Number(vehicle.total_faturamento);
-        const despesasTotal = Number(expenses.total_despesas);
-        const combustivelTotal = Number(fuel.total_gasto_combustivel);
-        const kmTotal = Number(vehicle.total_km);
-        const tempoTotal = Number(vehicle.tempo_total);
-        const litrosTotal = Number(fuel.total_litros);
+      // Agrupar por veículo
+      const profitabilityByVehicle = new Map<string, { totalReceita: number; totalDespesa: number }>();
 
-        const lucroLiquido = faturamentoTotal - despesasTotal - combustivelTotal;
-        const lucroOperacional = faturamentoTotal - combustivelTotal; // Sem contar outras despesas
-        
-        return {
-          veiculo: {
-            id: vehicle.veiculo_id,
-            marca: vehicle.marca,
-            modelo: vehicle.modelo,
-            placa: vehicle.placa,
-            ano: vehicle.ano,
-            tipo_combustivel: vehicle.tipo_combustivel
-          },
-          metricas_financeiras: {
-            faturamento_total: Math.round(faturamentoTotal),
-            despesas_total: Math.round(despesasTotal),
-            combustivel_total: Math.round(combustivelTotal),
-            lucro_liquido: Math.round(lucroLiquido),
-            lucro_operacional: Math.round(lucroOperacional),
-            margem_liquida: faturamentoTotal > 0 ? Math.round((lucroLiquido / faturamentoTotal) * 100 * 100) / 100 : 0,
-            margem_operacional: faturamentoTotal > 0 ? Math.round((lucroOperacional / faturamentoTotal) * 100 * 100) / 100 : 0,
-            roi: (despesasTotal + combustivelTotal) > 0 ? Math.round(((lucroLiquido / (despesasTotal + combustivelTotal)) * 100) * 100) / 100 : 0,
-          },
-          metricas_operacionais: {
-            km_total: Math.round(kmTotal * 100) / 100,
-            numero_jornadas: Number(vehicle.numero_jornadas),
-            tempo_total_horas: Math.round((tempoTotal / 60) * 100) / 100,
-            km_medio_jornada: vehicle.numero_jornadas > 0 ? Math.round((kmTotal / Number(vehicle.numero_jornadas)) * 100) / 100 : 0,
-            tempo_medio_jornada: vehicle.numero_jornadas > 0 ? Math.round((tempoTotal / Number(vehicle.numero_jornadas)) * 100) / 100 : 0,
-            jornadas_por_dia: Math.round((Number(vehicle.numero_jornadas) / Math.max(1, Math.ceil((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)))) * 100) / 100,
-          },
-          metricas_eficiencia: {
-            faturamento_por_km: kmTotal > 0 ? Math.round(faturamentoTotal / kmTotal) : 0,
-            faturamento_por_hora: tempoTotal > 0 ? Math.round((faturamentoTotal / tempoTotal) * 60) : 0,
-            lucro_por_km: kmTotal > 0 ? Math.round(lucroLiquido / kmTotal) : 0,
-            lucro_por_hora: tempoTotal > 0 ? Math.round((lucroLiquido / tempoTotal) * 60) : 0,
-            km_por_hora: tempoTotal > 0 ? Math.round((kmTotal / tempoTotal) * 60 * 100) / 100 : 0,
-          },
-          metricas_combustivel: {
-            litros_total: Math.round(litrosTotal * 100) / 100,
-            consumo_medio: litrosTotal > 0 && kmTotal > 0 ? Math.round((kmTotal / litrosTotal) * 100) / 100 : 0,
-            custo_por_km: kmTotal > 0 ? Math.round(combustivelTotal / kmTotal) : 0,
-            custo_por_litro: litrosTotal > 0 ? Math.round(combustivelTotal / litrosTotal) : 0,
-            numero_abastecimentos: Number(fuel.numero_abastecimentos),
-          }
-        };
+      allJourneys.forEach(j => {
+        const vehicleId = j.id_veiculo;
+        const current = profitabilityByVehicle.get(vehicleId) || { totalReceita: 0, totalDespesa: 0 };
+        current.totalReceita += Number(j.ganho_bruto) || 0;
+        profitabilityByVehicle.set(vehicleId, current);
       });
 
-      // Ordenar por lucro líquido
-      comparacaoCompleta.sort((a, b) => b.metricas_financeiras.lucro_liquido - a.metricas_financeiras.lucro_liquido);
+      allExpenses.forEach(e => {
+        const vehicleId = e.id_veiculo || 'sem_veiculo'; // Despesas podem não ter veículo associado
+        const current = profitabilityByVehicle.get(vehicleId) || { totalReceita: 0, totalDespesa: 0 };
+        current.totalDespesa += Number(e.valor_despesa) || 0;
+        profitabilityByVehicle.set(vehicleId, current);
+      });
 
-      // Calcular rankings
-      const rankings = {
-        mais_lucrativo: comparacaoCompleta[0]?.veiculo || null,
-        maior_faturamento: [...comparacaoCompleta].sort((a, b) => b.metricas_financeiras.faturamento_total - a.metricas_financeiras.faturamento_total)[0]?.veiculo || null,
-        mais_eficiente_combustivel: [...comparacaoCompleta].sort((a, b) => b.metricas_combustivel.consumo_medio - a.metricas_combustivel.consumo_medio)[0]?.veiculo || null,
-        melhor_produtividade: [...comparacaoCompleta].sort((a, b) => b.metricas_eficiencia.faturamento_por_hora - a.metricas_eficiencia.faturamento_por_hora)[0]?.veiculo || null,
-        maior_roi: [...comparacaoCompleta].sort((a, b) => b.metricas_financeiras.roi - a.metricas_financeiras.roi)[0]?.veiculo || null,
-      };
+      const analysisResults = [];
+      let totalReceitaGeral = 0;
+      let totalDespesaGeral = 0;
 
-      // Estatísticas consolidadas
-      const estatisticas_consolidadas = {
-        faturamento_total_frota: comparacaoCompleta.reduce((sum, v) => sum + v.metricas_financeiras.faturamento_total, 0),
-        lucro_total_frota: comparacaoCompleta.reduce((sum, v) => sum + v.metricas_financeiras.lucro_liquido, 0),
-        km_total_frota: comparacaoCompleta.reduce((sum, v) => sum + v.metricas_operacionais.km_total, 0),
-        jornadas_total_frota: comparacaoCompleta.reduce((sum, v) => sum + v.metricas_operacionais.numero_jornadas, 0),
-        combustivel_total_frota: comparacaoCompleta.reduce((sum, v) => sum + v.metricas_combustivel.litros_total, 0),
-        veiculo_mais_ativo: [...comparacaoCompleta].sort((a, b) => b.metricas_operacionais.numero_jornadas - a.metricas_operacionais.numero_jornadas)[0]?.veiculo || null,
-        melhor_margem_lucro: Math.max(...comparacaoCompleta.map(v => v.metricas_financeiras.margem_liquida)),
-        pior_margem_lucro: Math.min(...comparacaoCompleta.map(v => v.metricas_financeiras.margem_liquida)),
+      for (const [vehicleId, data] of profitabilityByVehicle.entries()) {
+        const vehicleInfo = vehicleId === 'sem_veiculo' ? 
+          { id: 'sem_veiculo', marca: 'N/A', modelo: 'N/A' } : 
+          (await db.select().from(veiculos).where(eq(veiculos.id, vehicleId)).limit(1))[0];
+
+        const lucroBruto = data.totalReceita - data.totalDespesa;
+        const margemLucro = data.totalReceita > 0 ? (lucroBruto / data.totalReceita) * 100 : 0;
+
+        analysisResults.push({
+          veiculo: vehicleInfo,
+          total_receita: Math.round(data.totalReceita),
+          total_despesa: Math.round(data.totalDespesa),
+          lucro_bruto: Math.round(lucroBruto),
+          margem_lucro: Math.round(margemLucro * 100) / 100,
+        });
+
+        totalReceitaGeral += data.totalReceita;
+        totalDespesaGeral += data.totalDespesa;
+      }
+
+      const lucroBrutoGeral = totalReceitaGeral - totalDespesaGeral;
+      const margemLucroGeral = totalReceitaGeral > 0 ? (lucroBrutoGeral / totalReceitaGeral) * 100 : 0;
+
+      const resumoGeralLucratividade = {
+        total_receita_geral: Math.round(totalReceitaGeral),
+        total_despesa_geral: Math.round(totalDespesaGeral),
+        lucro_bruto_geral: Math.round(lucroBrutoGeral),
+        margem_lucro_geral: Math.round(margemLucroGeral * 100) / 100,
       };
 
       return res.json({
         success: true,
         data: {
-          comparacao_veiculos: comparacaoCompleta,
-          rankings,
-          estatisticas_consolidadas,
+          analise_lucratividade: analysisResults,
+          resumo_lucratividade: resumoGeralLucratividade,
           periodo: {
-            data_inicio: startDate.to
+            data_inicio: startDate.toISOString(),
+            data_fim: endDate.toISOString(),
+            descricao: this.getPeriodDescription(startDate, endDate),
+            timezone: timezone
+          },
+          metadata: {
+            data_processamento: new Date().toISOString()
+          }
+        }
+      });
+
+    } catch (error: any) {
+      console.error('Erro ao gerar análise de lucratividade:', error);
+      if (error instanceof ValidationError || error instanceof UnauthorizedError || error instanceof NotFoundError) {
+        throw error;
+      }
+      throw new Error('Erro interno do servidor ao processar análise de lucratividade');
+    }
+  }
+
+  /**
+   * Análise de Comparação de Veículos
+   */
+  static async compareVehicles(req: AuthenticatedRequest, res: Response) {
+    try {
+      if (!req.user?.id) {
+        throw new UnauthorizedError('Usuário não autenticado');
+      }
+
+      const validation = vehicleIdsSchema.safeParse(req.query);
+      if (!validation.success) {
+        throw new ValidationError('Parâmetros inválidos', validation.error.errors);
+      }
+
+      const { vehicle_ids } = validation.data;
+      const { data_inicio, data_fim, periodo, timezone } = analyticsQuerySchema.safeParse(req.query).data; // Reutiliza o schema para período
+
+      const { startDate, endDate } = this.calculatePeriod(periodo, data_inicio, data_fim, timezone);
+
+      const comparisonResults = [];
+      for (const vehicleId of vehicle_ids) {
+        // Validar acesso a cada veículo
+        if (!(await this.validateVehicleAccess(req.user.id, vehicleId))) {
+          throw new NotFoundError(`Veículo ${vehicleId} não encontrado ou sem acesso`);
+        }
+
+        const vehicleInfo = (await db.select().from(veiculos).where(eq(veiculos.id, vehicleId)).limit(1))[0];
+
+        // Buscar dados para o veículo
+        const [fuelings, journeys, expenses] = await Promise.all([
+          db.select({
+            quantidade_litros: abastecimentos.quantidade_litros,
+            valor_total: abastecimentos.valor_total,
+            km_atual: abastecimentos.km_atual,
+            data_abastecimento: abastecimentos.data_abastecimento
+          }).from(abastecimentos).where(and(
+            eq(abastecimentos.id_veiculo, vehicleId),
+            eq(abastecimentos.id_usuario, req.user.id),
+            gte(abastecimentos.data_abastecimento, startDate.toISOString()),
+            lte(abastecimentos.data_abastecimento, endDate.toISOString()),
+            isNull(abastecimentos.deleted_at)
+          )),
+          db.select({
+            ganho_bruto: jornadas.ganho_bruto,
+            km_total: jornadas.km_total,
+            tempo_total: jornadas.tempo_total,
+            data_inicio: jornadas.data_inicio
+          }).from(jornadas).where(and(
+            eq(jornadas.id_veiculo, vehicleId),
+            eq(jornadas.id_usuario, req.user.id),
+            gte(jornadas.data_inicio, startDate.toISOString()),
+            lte(jornadas.data_inicio, endDate.toISOString()),
+            isNull(jornadas.deleted_at)
+          )),
+          db.select({
+            valor_despesa: despesas.valor_despesa,
+            tipo_despesa: despesas.tipo_despesa,
+            data_despesa: despesas.data_despesa
+          }).from(despesas).where(and(
+            eq(despesas.id_veiculo, vehicleId),
+            eq(despesas.id_usuario, req.user.id),
+            gte(despesas.data_despesa, startDate.toISOString()),
+            lte(despesas.data_despesa, endDate.toISOString()),
+            isNull(despesas.deleted_at)
+          )),
+        ]);
+
+        // Calcular métricas para o veículo
+        const totalLitros = fuelings.reduce((sum, f) => sum + (Number(f.quantidade_litros) || 0), 0);
+        const totalGastoCombustivel = fuelings.reduce((sum, f) => sum + (Number(f.valor_total) || 0), 0);
+        const totalKmJornadas = journeys.reduce((sum, j) => sum + (Number(j.km_total) || 0), 0);
+        const totalGanhoBrutoJornadas = journeys.reduce((sum, j) => sum + (Number(j.ganho_bruto) || 0), 0);
+        const totalDespesas = expenses.reduce((sum, e) => sum + (Number(e.valor_despesa) || 0), 0);
+
+        const consumoMedio = totalKmJornadas > 0 && totalLitros > 0 ? totalKmJornadas / totalLitros : 0;
+        const custoPorKm = totalKmJornadas > 0 ? (totalGastoCombustivel + totalDespesas) / totalKmJornadas : 0;
+        const lucroPorKm = totalKmJornadas > 0 ? (totalGanhoBrutoJornadas - totalGastoCombustivel - totalDespesas) / totalKmJornadas : 0;
+        const roi = totalGastoCombustivel + totalDespesas > 0 ? 
+          ((totalGanhoBrutoJornadas - totalGastoCombustivel - totalDespesas) / (totalGastoCombustivel + totalDespesas)) * 100 : 0;
+
+        comparisonResults.push({
+          veiculo: vehicleInfo,
+          metricas: {
+            total_litros: Math.round(totalLitros * 100) / 100,
+            total_gasto_combustivel: Math.round(totalGastoCombustivel),
+            total_km_jornadas: Math.round(totalKmJornadas),
+            total_ganho_bruto_jornadas: Math.round(totalGanhoBrutoJornadas),
+            total_despesas: Math.round(totalDespesas),
+            lucro_liquido: Math.round(totalGanhoBrutoJornadas - totalGastoCombustivel - totalDespesas),
+            consumo_medio: Math.round(consumoMedio * 100) / 100,
+            custo_por_km: Math.round(custoPorKm * 100) / 100,
+            lucro_por_km: Math.round(lucroPorKm * 100) / 100,
+            roi: Math.round(roi * 100) / 100,
+            numero_jornadas: journeys.length,
+            numero_abastecimentos: fuelings.length,
+            numero_despesas: expenses.length,
+          },
+        });
+      }
+
+      // Calcular rankings e estatísticas consolidadas
+      const rankings = {
+        consumo_medio: [...comparisonResults].sort((a, b) => a.metricas.consumo_medio - b.metricas.consumo_medio)
+          .map(v => ({ veiculo: v.veiculo.modelo, valor: v.metricas.consumo_medio })),
+        lucro_liquido: [...comparisonResults].sort((a, b) => b.metricas.lucro_liquido - a.metricas.lucro_liquido)
+          .map(v => ({ veiculo: v.veiculo.modelo, valor: v.metricas.lucro_liquido })),
+        roi: [...comparisonResults].sort((a, b) => b.metricas.roi - a.metricas.roi)
+          .map(v => ({ veiculo: v.veiculo.modelo, valor: v.metricas.roi })),
+      };
+
+      const estatisticasConsolidadas = {
+        total_receita_comparada: Math.round(comparisonResults.reduce((sum, v) => sum + v.metricas.total_ganho_bruto_jornadas, 0)),
+        total_despesa_comparada: Math.round(comparisonResults.reduce((sum, v) => sum + v.metricas.total_despesas + v.metricas.total_gasto_combustivel, 0)),
+        lucro_liquido_comparado: Math.round(comparisonResults.reduce((sum, v) => sum + v.metricas.lucro_liquido, 0)),
+      };
+
+      return res.json({
+        success: true,
+        data: {
+          comparacao_veiculos: comparisonResults,
+          rankings: rankings,
+          estatisticas_consolidadas: estatisticasConsolidadas,
+          periodo: {
+            data_inicio: startDate.toISOString(),
+            data_fim: endDate.toISOString(),
+            descricao: this.getPeriodDescription(startDate, endDate),
+            timezone: timezone
+          },
+          metadata: {
+            total_veiculos_comparados: comparisonResults.length,
+            data_processamento: new Date().toISOString()
+          }
+        }
+      });
+
+    } catch (error: any) {
+      console.error('Erro ao comparar veículos:', error);
+      if (error instanceof ValidationError || error instanceof UnauthorizedError || error instanceof NotFoundError) {
+        throw error;
+      }
+      throw new Error('Erro interno do servidor ao processar comparação de veículos');
+    }
+  }
+}
+
+

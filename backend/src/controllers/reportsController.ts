@@ -120,6 +120,7 @@ const reportsQuerySchema = z.object({
   formato: z.enum(['json', 'csv']).default('json')
 });
 
+
 // ====================== MAIN CONTROLLER ======================
 
 export class ReportsController {
@@ -199,11 +200,11 @@ export class ReportsController {
       console.log(`[ReportsController] Gerando relatório de jornadas - Usuário: ${userId}, Período: ${periodo}`);
 
       // Construir condições de filtro
-      const whereConditions = QueryBuilder.buildJourneyWhereConditions(
-        userId!,
-        dataInicio,
-        dataFim,
-        id_veiculo
+      const whereConditions = and(
+        eq(jornadas.id_usuario, userId!),
+        gte(jornadas.data_inicio, DateHelper.formatDateForSQL(dataInicio)),
+        lte(jornadas.data_fim, DateHelper.formatDateForSQL(dataFim)),
+        id_veiculo ? eq(jornadas.id_veiculo, id_veiculo) : undefined
       );
 
       // Buscar jornadas com informações do veículo

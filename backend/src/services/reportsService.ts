@@ -283,3 +283,380 @@ export class ReportsService {
             dayEnd.setHours(23, 59, 59, 999);
             
             const summary = await ReportsService.getFinancialSummary(userId, day, dayEnd, vehicleId);
+            return {
+              data: day.toISOString().split('T')[0],
+              ...summary
+            };
+          })
+        )
+      );
+    }
+
+    const results = await Promise.all(batches);
+    return results.flat();
+  }
+
+  /**
+   * Detalhamento semanal otimizado
+   */
+  private static async getWeeklyBreakdown(
+    userId: string,
+    startDate: Date,
+    endDate: Date,
+    vehicleId?: string
+  ) {
+    const weeks = DateUtils.getWeeksBetween(startDate, endDate);
+    const weeklyData = await Promise.all(
+      weeks.map(async (week) => {
+        const summary = await ReportsService.getFinancialSummary(userId, week.startDate, week.endDate, vehicleId);
+        return {
+          semana: week.weekNumber,
+          data_inicio: week.startDate.toISOString(),
+          data_fim: week.endDate.toISOString(),
+          ...summary,
+        };
+      })
+    );
+    return weeklyData;
+  }
+
+  /**
+   * Despesas por categoria otimizadas
+   */
+  private static async getExpensesByCategory(
+    userId: string,
+    startDate: Date,
+    endDate: Date,
+    vehicleId?: string
+  ) {
+    const conditions = [
+      eq(despesas.id_usuario, userId),
+      gte(despesas.data_despesa, startDate.toISOString()),
+      lte(despesas.data_despesa, endDate.toISOString()),
+      isNull(despesas.deleted_at),
+    ];
+
+    if (vehicleId) {
+      conditions.push(eq(despesas.id_veiculo, vehicleId));
+    }
+
+    const expenses = await db
+      .select({
+        tipo_despesa: despesas.tipo_despesa,
+        valor_despesa: despesas.valor_despesa,
+      })
+      .from(despesas)
+      .where(and(...conditions));
+
+    const groupedExpenses = expenses.reduce((acc, expense) => {
+      const category = expense.tipo_despesa;
+      acc[category] = (acc[category] || 0) + (Number(expense.valor_despesa) || 0);
+      return acc;
+    }, {} as Record<string, number>);
+
+    const totalExpenses = Object.values(groupedExpenses).reduce((sum, val) => sum + val, 0);
+
+    return Object.entries(groupedExpenses).map(([category, total]) => ({
+      categoria: category,
+      total_gasto: Math.round(total),
+      percentual: totalExpenses > 0 ? Math.round((total / totalExpenses) * 10000) / 100 : 0,
+    }));
+  }
+
+  /**
+   * Top jornadas por ganho
+   */
+  private static async getTopJourneys(
+    userId: string,
+    vehicleId?: string,
+    limit: number = 5,
+    startDate?: Date,
+    endDate?: Date
+  ) {
+    const conditions = [
+      eq(jornadas.id_usuario, userId),
+      isNull(jornadas.deleted_at),
+    ];
+
+    if (vehicleId) {
+      conditions.push(eq(jornadas.id_veiculo, vehicleId));
+    }
+
+    if (startDate) {
+      conditions.push(gte(jornadas.data_inicio, startDate.toISOString()));
+    }
+    if (endDate) {
+      conditions.push(lte(jornadas.data_inicio, endDate.toISOString()));
+    }
+
+    const topJourneys = await db
+      .select({
+        id: jornadas.id,
+        data_inicio: jornadas.data_inicio,
+        ganho_bruto: jornadas.ganho_bruto,
+        km_total: jornadas.km_total,
+        observacoes: jornadas.observacoes,
+      })
+      .from(jornadas)
+      .where(and(...conditions))
+      .orderBy(desc(jornadas.ganho_bruto))
+      .limit(limit);
+
+    return topJourneys.map(j => ({
+      ...j,
+      ganho_bruto: Math.round(Number(j.ganho_bruto) || 0),
+      km_total: Math.round(Number(j.km_total) || 0),
+    }));
+  }
+
+  /**
+   * Métricas de performance de jornadas
+   */
+  private static async getPerformanceMetrics(
+    userId: string,
+    startDate: Date,
+    endDate: Date,
+    vehicleId?: string
+  ) {
+    const conditions = [
+      eq(jornadas.id_usuario, userId),
+      gte(jornadas.data_inicio, startDate.toISOString()),
+      lte(jornadas.data_inicio, endDate.toISOString()),
+      isNull(jornadas.deleted_at),
+    ];
+
+    if (vehicleId) {
+      conditions.push(eq(jornadas.id_veiculo, vehicleId));
+    }
+
+    const result = await db
+      .select({
+        totalGanhoBruto: sum(jornadas.ganho_bruto),
+        totalKm: sum(jornadas.km_total),
+        totalTempo: sum(jornadas.tempo_total),
+        countJornadas: count(jornadas.id),
+      })
+      .from(jornadas)
+      .where(and(...conditions));
+
+    const metrics = result[0];
+
+    const totalGanhoBruto = Number(metrics.totalGanhoBruto) || 0;
+    const totalKm = Number(metrics.totalKm) || 0;
+    const totalTempo = Number(metrics.totalTempo) || 0;
+    const countJornadas = Number(metrics.countJornadas) || 0;
+
+    return {
+      total_ganho_bruto: Math.round(totalGanhoBruto),
+      total_km: Math.round(totalKm),
+      total_tempo_minutos: Math.round(totalTempo),
+      numero_jornadas: countJornadas,
+      ganho_medio_por_jornada: countJornadas > 0 ? Math.round(totalGanhoBruto / countJornadas) : 0,
+      ganho_medio_por_km: totalKm > 0 ? Math.round(totalGanhoBruto / totalKm) : 0,
+      velocidade_media_kmh: totalTempo > 0 ? Math.round((totalKm / totalTempo) * 60) : 0,
+    };
+  }
+
+  /**
+   * Calcula benchmarks de performance
+   */
+  private static async calculateBenchmarks(userId: string, vehicleId?: string) {
+    // Exemplo: buscar média de todos os usuários ou de um grupo similar
+    // Por simplicidade, vamos usar dados fictícios ou uma média global do usuário
+    const conditions = [
+      eq(jornadas.id_usuario, userId),
+      isNull(jornadas.deleted_at),
+    ];
+
+    if (vehicleId) {
+      conditions.push(eq(jornadas.id_veiculo, vehicleId));
+    }
+
+    const result = await db
+      .select({
+        avgGanhoBruto: avg(jornadas.ganho_bruto),
+        avgKm: avg(jornadas.km_total),
+        avgTempo: avg(jornadas.tempo_total),
+      })
+      .from(jornadas)
+      .where(and(...conditions));
+
+    const avgMetrics = result[0];
+
+    return {
+      media_ganho_bruto_jornada: Math.round(Number(avgMetrics.avgGanhoBruto) || 0),
+      media_km_jornada: Math.round(Number(avgMetrics.avgKm) || 0),
+      media_tempo_jornada_minutos: Math.round(Number(avgMetrics.avgTempo) || 0),
+      // Adicionar benchmarks de consumo de combustível, despesas, etc.
+    };
+  }
+
+  /**
+   * Gera dados para gráficos
+   */
+  private static async generateChartData(financialSummary: any, dailyEvolution: any) {
+    // Exemplo de dados para gráfico de linha (faturamento diário)
+    const dailyRevenueChart = dailyEvolution ? dailyEvolution.map((day: any) => ({
+      x: day.data,
+      y: day.faturamentoBruto,
+    })) : [];
+
+    // Exemplo de dados para gráfico de pizza (despesas por categoria)
+    const expenseCategoryChart = financialSummary.detalhamento_despesas ? financialSummary.detalhamento_despesas.map((exp: any) => ({
+      label: exp.categoria,
+      value: exp.total_gasto,
+    })) : [];
+
+    return {
+      dailyRevenue: {
+        type: 'line',
+        title: 'Faturamento Diário',
+        data: dailyRevenueChart,
+        labels: dailyRevenueChart.map((d: any) => d.x),
+      },
+      expenseCategories: {
+        type: 'pie',
+        title: 'Despesas por Categoria',
+        data: expenseCategoryChart,
+        labels: expenseCategoryChart.map((d: any) => d.label),
+      },
+    };
+  }
+
+  /**
+   * Gera relatório de auditoria de dados
+   */
+  static async generateDataAuditReport(userId: string) {
+    const issues = [];
+
+    // 1. Jornadas sem KM final ou com KM final menor que inicial
+    const incompleteJourneys = await db
+      .select()
+      .from(jornadas)
+      .where(and(
+        eq(jornadas.id_usuario, userId),
+        isNull(jornadas.deleted_at),
+        ne(jornadas.data_fim, null), // Considerar apenas jornadas finalizadas
+        sql`${jornadas.km_fim} < ${jornadas.km_inicio}`
+      ));
+
+    if (incompleteJourneys.length > 0) {
+      issues.push({
+        type: 'Jornada Incompleta/Inválida',
+        description: 'Jornadas com KM final ausente ou menor que o KM inicial.',
+        count: incompleteJourneys.length,
+        details: incompleteJourneys.map(j => ({
+          id: j.id,
+          data_inicio: j.data_inicio,
+          km_inicio: j.km_inicio,
+          km_fim: j.km_fim,
+        })),
+      });
+    }
+
+    // 2. Abastecimentos com valor total inconsistente (valorLitro * quantidadeLitros)
+    const inconsistentFuelings = await db
+      .select()
+      .from(abastecimentos)
+      .where(and(
+        eq(abastecimentos.id_usuario, userId),
+        isNull(abastecimentos.deleted_at),
+        sql`${abastecimentos.valor_total} <> ${abastecimentos.valor_litro} * ${abastecimentos.quantidade_litros}`
+      ));
+
+    if (inconsistentFuelings.length > 0) {
+      issues.push({
+        type: 'Abastecimento Inconsistente',
+        description: 'Abastecimentos com valor total que não corresponde ao cálculo de preço por litro x quantidade.',
+        count: inconsistentFuelings.length,
+        details: inconsistentFuelings.map(f => ({
+          id: f.id,
+          data_abastecimento: f.data_abastecimento,
+          valor_total: f.valor_total,
+          valor_litro: f.valor_litro,
+          quantidade_litros: f.quantidade_litros,
+        })),
+      });
+    }
+
+    // 3. Despesas sem categoria definida (se aplicável)
+    // Exemplo: se tipo_despesa for opcional ou puder ser nulo
+    const uncategorizedExpenses = await db
+      .select()
+      .from(despesas)
+      .where(and(
+        eq(despesas.id_usuario, userId),
+        isNull(despesas.deleted_at),
+        isNull(despesas.tipo_despesa) // Ou eq(despesas.tipo_despesa, 'outros') se for um default
+      ));
+
+    if (uncategorizedExpenses.length > 0) {
+      issues.push({
+        type: 'Despesa Não Categorizada',
+        description: 'Despesas sem uma categoria definida.',
+        count: uncategorizedExpenses.length,
+        details: uncategorizedExpenses.map(e => ({
+          id: e.id,
+          data_despesa: e.data_despesa,
+          valor_despesa: e.valor_despesa,
+          descricao: e.descricao,
+        })),
+      });
+    }
+
+    // 4. Veículos sem jornadas ou abastecimentos registrados em um longo período
+    // Esta é mais complexa e pode exigir uma análise de datas de último registro
+    // Por exemplo, buscar veículos que não têm jornadas ou abastecimentos nos últimos 90 dias
+    const ninetyDaysAgo = new Date();
+    ninetyDaysAgo.setDate(ninetyDaysAgo.getDate() - 90);
+
+    const inactiveVehicles = await db.execute(sql`
+      SELECT v.id, v.marca, v.modelo
+      FROM veiculos v
+      WHERE v.id_usuario = ${userId}
+        AND v.deleted_at IS NULL
+        AND NOT EXISTS (
+          SELECT 1 FROM jornadas j
+          WHERE j.id_veiculo = v.id
+            AND j.id_usuario = ${userId}
+            AND j.deleted_at IS NULL
+            AND j.data_inicio >= ${ninetyDaysAgo.toISOString()}
+        )
+        AND NOT EXISTS (
+          SELECT 1 FROM abastecimentos a
+          WHERE a.id_veiculo = v.id
+            AND a.id_usuario = ${userId}
+            AND a.deleted_at IS NULL
+            AND a.data_abastecimento >= ${ninetyDaysAgo.toISOString()}
+        );
+    `);
+
+    if (inactiveVehicles.rows.length > 0) {
+      issues.push({
+        type: 'Veículo Inativo',
+        description: 'Veículos sem registros de jornadas ou abastecimentos nos últimos 90 dias.',
+        count: inactiveVehicles.rows.length,
+        details: inactiveVehicles.rows.map((v: any) => ({
+          id: v.id,
+          marca: v.marca,
+          modelo: v.modelo,
+        })),
+      });
+    }
+
+    return {
+      userId,
+      data_geracao: new Date().toISOString(),
+      total_issues: issues.length,
+      issues,
+      recomendacoes: [
+        'Revisar jornadas com KM inconsistente e corrigir os dados.',
+        'Verificar cálculos de abastecimento e garantir a precisão dos valores.',
+        'Categorizar todas as despesas para uma análise financeira mais precisa.',
+        'Avaliar a necessidade de manter veículos inativos ou arquivá-los.',
+      ],
+    };
+  }
+}
+
+
