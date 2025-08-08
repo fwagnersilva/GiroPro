@@ -1,587 +1,472 @@
-import { Request, Response } from 'express';
+import { Response } from 'express';
 import { z } from 'zod';
-import { db } from '../db';
-import { jornadas, abastecimentos, despesas, veiculos } from '../db/schema';
-import { eq, and, isNull, gte, lte, sum, count, sql } from 'drizzle-orm';
-import { AuthenticatedRequest } from '../types';
+import { AuthenticatedRequest } from '../types/auth';
+import { AppError } from '../utils/AppError';
+import { asyncHandler } from '../utils/asyncHandler';
+import { ReportsService } from '../services/reportsService';
+import { CacheService } from '../services/cacheService';
+import { Logger } from '../utils/logger';
 
-// Schema para validação dos parâmetros de consulta
-const weeklyMonthlyReportSchema = z.object({
-  tipo_periodo: z.enum(['semanal', 'mensal']).default('mensal'),
+// Schemas de validação aprimorados
+const baseReportSchema = z.object({
   data_inicio: z.string().datetime().optional(),
   data_fim: z.string().datetime().optional(),
   id_veiculo: z.string().uuid().optional(),
-  formato: z.enum(['json', 'csv']).default('json')
+  formato: z.enum(['json', 'csv', 'xlsx', 'pdf']).default('json'),
+  incluir_detalhes: z.boolean().default(true),
+  incluir_graficos: z.boolean().default(false)
+});
+
+const comparisonSchema = z.object({
+  id_veiculo: z.string().uuid().optional(),
+  numero_periodos: z.coerce.number().int().min(1).max(24).default(4),
+  incluir_tendencias: z.boolean().default(true),
+  incluir_previsoes: z.boolean().default(false)
+});
+
+const weeklyReportSchema = baseReportSchema.extend({
+  tipo_periodo: z.literal('semanal').default('semanal')
+});
+
+const monthlyReportSchema = baseReportSchema.extend({
+  tipo_periodo: z.literal('mensal').default('mensal')
 });
 
 export class WeeklyMonthlyReportsController {
+  private static readonly CACHE_TTL = 300; // 5 minutos
+  private static readonly logger = Logger.getInstance('ReportsController');
+
   /**
-   * Relatório Semanal de Faturamento, Despesas e Lucro
+   * Relatório Semanal com cache e otimizações
    */
-  static async getWeeklyReport(req: AuthenticatedRequest, res: Response) {
-    try {
-      if (!req.user?.id) {
-        return res.status(401).json({
-          success: false,
-          error: { message: "Usuário não autenticado" }
-        });
-      }
+  static getWeeklyReport = asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
+    const userId = WeeklyMonthlyReportsController.extractUserId(req);
+    const params = WeeklyMonthlyReportsController.validateQuery(req.query, weeklyReportSchema);
+    
+    // Gerar chave de cache única
+    const cacheKey = `weekly_report:${userId}:${JSON.stringify(params)}`;
+    
+    // Tentar buscar do cache primeiro
+    let relatorio = await CacheService.get(cacheKey);
+    
+    if (!relatorio) {
+      WeeklyMonthlyReportsController.logger.info('Gerando relatório semanal', { userId, params });
+      
+      relatorio = await ReportsService.generateWeeklyReport({
+        userId,
+        startDate: params.data_inicio,
+        endDate: params.data_fim,
+        vehicleId: params.id_veiculo,
+        includeDetails: params.incluir_detalhes,
+        includeCharts: params.incluir_graficos
+      });
 
-      const queryValidation = weeklyMonthlyReportSchema.safeParse(req.query);
-      if (!queryValidation.success) {
-        return res.status(400).json({
-          success: false,
-          error: {
-            message: "Parâmetros de consulta inválidos",
-            details: queryValidation.error.errors
-          }
-        });
-      }
+      // Cache por 5 minutos
+      await CacheService.set(cacheKey, relatorio, WeeklyMonthlyReportsController.CACHE_TTL);
+    }
 
-      const { data_inicio, data_fim, id_veiculo, formato } = queryValidation.data;
-      const { dataInicio, dataFim } = calcularPeriodoSemanal(data_inicio, data_fim);
-
-      const relatorio = await gerarRelatorioFinanceiro(
-        req.user?.id,
-        dataInicio,
-        dataFim,
-        'semanal',
-        id_veiculo
+    if (params.formato !== 'json') {
+      return WeeklyMonthlyReportsController.handleFileExport(
+        res, 
+        relatorio, 
+        params.formato, 
+        'relatorio_semanal'
       );
-
-      if (formato === 'csv') {
-        const csv = gerarCSVFinanceiro(relatorio, 'semanal');
-        res.setHeader('Content-Type', 'text/csv');
-        res.setHeader('Content-Disposition', 'attachment; filename="relatorio_semanal.csv"');
-        return res.send(csv);
-      }
-
-      return res.json({
-        success: true,
-        data: relatorio
-      });
-
-    } catch (error: any) {
-      console.error("Erro ao gerar relatório semanal:", error);
-      return res.status(500).json({
-        success: false,
-        error: { message: "Erro interno do servidor" }
-      });
     }
-  }
+
+    res.json({
+      success: true,
+      data: relatorio,
+      cached: !!await CacheService.get(cacheKey),
+      generated_at: new Date().toISOString(),
+      message: 'Relatório semanal gerado com sucesso'
+    });
+  });
 
   /**
-   * Relatório Mensal de Faturamento, Despesas e Lucro
+   * Relatório Mensal com cache e otimizações
    */
-  static async getMonthlyReport(req: AuthenticatedRequest, res: Response) {
-    try {
-      if (!req.user?.id) {
-        return res.status(401).json({
-          success: false,
-          error: { message: "Usuário não autenticado" }
-        });
-      }
+  static getMonthlyReport = asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
+    const userId = WeeklyMonthlyReportsController.extractUserId(req);
+    const params = WeeklyMonthlyReportsController.validateQuery(req.query, monthlyReportSchema);
+    
+    const cacheKey = `monthly_report:${userId}:${JSON.stringify(params)}`;
+    let relatorio = await CacheService.get(cacheKey);
+    
+    if (!relatorio) {
+      WeeklyMonthlyReportsController.logger.info('Gerando relatório mensal', { userId, params });
+      
+      relatorio = await ReportsService.generateMonthlyReport({
+        userId,
+        startDate: params.data_inicio,
+        endDate: params.data_fim,
+        vehicleId: params.id_veiculo,
+        includeDetails: params.incluir_detalhes,
+        includeCharts: params.incluir_graficos
+      });
 
-      const queryValidation = weeklyMonthlyReportSchema.safeParse(req.query);
-      if (!queryValidation.success) {
-        return res.status(400).json({
-          success: false,
-          error: {
-            message: "Parâmetros de consulta inválidos",
-            details: queryValidation.error.errors
-          }
-        });
-      }
+      await CacheService.set(cacheKey, relatorio, WeeklyMonthlyReportsController.CACHE_TTL);
+    }
 
-      const { data_inicio, data_fim, id_veiculo, formato } = queryValidation.data;
-      const { dataInicio, dataFim } = calcularPeriodoMensal(data_inicio, data_fim);
-
-      const relatorio = await gerarRelatorioFinanceiro(
-        req.user?.id,
-        dataInicio,
-        dataFim,
-        'mensal',
-        id_veiculo
+    if (params.formato !== 'json') {
+      return WeeklyMonthlyReportsController.handleFileExport(
+        res, 
+        relatorio, 
+        params.formato, 
+        'relatorio_mensal'
       );
-
-      if (formato === 'csv') {
-        const csv = gerarCSVFinanceiro(relatorio, 'mensal');
-        res.setHeader('Content-Type', 'text/csv');
-        res.setHeader('Content-Disposition', 'attachment; filename="relatorio_mensal.csv"');
-        return res.send(csv);
-      }
-
-      return res.json({
-        success: true,
-        data: relatorio
-      });
-
-    } catch (error: any) {
-      console.error("Erro ao gerar relatório mensal:", error);
-      return res.status(500).json({
-        success: false,
-        error: { message: "Erro interno do servidor" }
-      });
     }
-  }
+
+    res.json({
+      success: true,
+      data: relatorio,
+      cached: !!await CacheService.get(cacheKey),
+      generated_at: new Date().toISOString(),
+      message: 'Relatório mensal gerado com sucesso'
+    });
+  });
 
   /**
-   * Comparativo de Múltiplas Semanas
+   * Comparativo Semanal com análise avançada
    */
-  static async getWeeklyComparison(req: AuthenticatedRequest, res: Response) {
-    try {
-      if (!req.user?.id) {
-        return res.status(401).json({
-          success: false,
-          error: { message: "Usuário não autenticado" }
-        });
-      }
+  static getWeeklyComparison = asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
+    const userId = WeeklyMonthlyReportsController.extractUserId(req);
+    const params = WeeklyMonthlyReportsController.validateQuery(req.query, comparisonSchema);
+    
+    const cacheKey = `weekly_comparison:${userId}:${JSON.stringify(params)}`;
+    let comparativo = await CacheService.get(cacheKey);
 
-      const { id_veiculo, numero_semanas = 4 } = req.query;
-      const semanas = [];
-      const agora = new Date();
+    if (!comparativo) {
+      WeeklyMonthlyReportsController.logger.info('Gerando comparativo semanal', { userId, params });
 
-      // Gerar relatórios para as últimas N semanas
-      for (let i = 0; i < Number(numero_semanas); i++) {
-        const fimSemana = new Date(agora);
-        fimSemana.setDate(agora.getDate() - (i * 7));
-        
-        const inicioSemana = new Date(fimSemana);
-        inicioSemana.setDate(fimSemana.getDate() - 6);
-
-        const relatorioSemana = await gerarRelatorioFinanceiro(
-          req.user?.id,
-          inicioSemana,
-          fimSemana,
-          'semanal',
-          id_veiculo as string
-        );
-
-        semanas.push({
-          numero_semana: i + 1,
-          periodo: `${inicioSemana.toLocaleDateString('pt-BR')} - ${fimSemana.toLocaleDateString('pt-BR')}`,
-          ...relatorioSemana.resumo_financeiro
-        });
-      }
-
-      return res.json({
-        success: true,
-        data: {
-          comparativo_semanas: semanas.reverse(),
-          filtros: {
-            id_veiculo: id_veiculo || null,
-            numero_semanas: Number(numero_semanas)
-          }
-        }
+      comparativo = await ReportsService.generateWeeklyComparison({
+        userId,
+        numberOfWeeks: params.numero_periodos,
+        vehicleId: params.id_veiculo,
+        includeTrends: params.incluir_tendencias,
+        includePredictions: params.incluir_previsoes
       });
 
-    } catch (error: any) {
-      console.error("Erro ao gerar comparativo semanal:", error);
-      return res.status(500).json({
-        success: false,
-        error: { message: "Erro interno do servidor" }
-      });
+      await CacheService.set(cacheKey, comparativo, WeeklyMonthlyReportsController.CACHE_TTL);
     }
-  }
+
+    res.json({
+      success: true,
+      data: {
+        comparativo_semanas: comparativo.periods,
+        estatisticas: comparativo.statistics,
+        tendencias: comparativo.trends,
+        insights: comparativo.insights,
+        filtros: {
+          id_veiculo: params.id_veiculo || null,
+          numero_semanas: params.numero_periodos
+        }
+      },
+      message: 'Comparativo semanal gerado com sucesso'
+    });
+  });
 
   /**
-   * Comparativo de Múltiplos Meses
+   * Comparativo Mensal com análise avançada
    */
-  static async getMonthlyComparison(req: AuthenticatedRequest, res: Response) {
-    try {
-      if (!req.user?.id) {
-        return res.status(401).json({
-          success: false,
-          error: { message: "Usuário não autenticado" }
-        });
-      }
+  static getMonthlyComparison = asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
+    const userId = WeeklyMonthlyReportsController.extractUserId(req);
+    const params = WeeklyMonthlyReportsController.validateQuery(req.query, comparisonSchema);
+    
+    const cacheKey = `monthly_comparison:${userId}:${JSON.stringify(params)}`;
+    let comparativo = await CacheService.get(cacheKey);
 
-      const { id_veiculo, numero_meses = 6 } = req.query;
-      const meses = [];
-      const agora = new Date();
+    if (!comparativo) {
+      WeeklyMonthlyReportsController.logger.info('Gerando comparativo mensal', { userId, params });
 
-      // Gerar relatórios para os últimos N meses
-      for (let i = 0; i < Number(numero_meses); i++) {
-        const anoMes = new Date(agora.getFullYear(), agora.getMonth() - i, 1);
-        const inicioMes = new Date(anoMes.getFullYear(), anoMes.getMonth(), 1);
-        const fimMes = new Date(anoMes.getFullYear(), anoMes.getMonth() + 1, 0);
+      comparativo = await ReportsService.generateMonthlyComparison({
+        userId,
+        numberOfMonths: params.numero_periodos,
+        vehicleId: params.id_veiculo,
+        includeTrends: params.incluir_tendencias,
+        includePredictions: params.incluir_previsoes
+      });
 
-        const relatorioMes = await gerarRelatorioFinanceiro(
-          req.user?.id,
-          inicioMes,
-          fimMes,
-          'mensal',
-          id_veiculo as string
-        );
+      await CacheService.set(cacheKey, comparativo, WeeklyMonthlyReportsController.CACHE_TTL);
+    }
 
-        meses.push({
-          mes_ano: `${anoMes.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' })}`,
-          periodo: `${inicioMes.toLocaleDateString('pt-BR')} - ${fimMes.toLocaleDateString('pt-BR')}`,
-          ...relatorioMes.resumo_financeiro
-        });
-      }
-
-      return res.json({
-        success: true,
-        data: {
-          comparativo_meses: meses.reverse(),
-          filtros: {
-            id_veiculo: id_veiculo || null,
-            numero_meses: Number(numero_meses)
-          }
+    res.json({
+      success: true,
+      data: {
+        comparativo_meses: comparativo.periods,
+        estatisticas: comparativo.statistics,
+        tendencias: comparativo.trends,
+        sazonalidade: comparativo.seasonality,
+        previsoes: comparativo.predictions,
+        insights: comparativo.insights,
+        filtros: {
+          id_veiculo: params.id_veiculo || null,
+          numero_meses: params.numero_periodos
         }
+      },
+      message: 'Comparativo mensal gerado com sucesso'
+    });
+  });
+
+  /**
+   * Dashboard consolidado com KPIs e alertas
+   */
+  static getDashboard = asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
+    const userId = WeeklyMonthlyReportsController.extractUserId(req);
+    const params = WeeklyMonthlyReportsController.validateQuery(req.query, z.object({
+      id_veiculo: z.string().uuid().optional(),
+      incluir_alertas: z.boolean().default(true),
+      incluir_metas: z.boolean().default(true)
+    }));
+
+    const cacheKey = `dashboard:${userId}:${JSON.stringify(params)}`;
+    let dashboard = await CacheService.get(cacheKey);
+
+    if (!dashboard) {
+      WeeklyMonthlyReportsController.logger.info('Gerando dashboard', { userId, params });
+
+      // Executa consultas em paralelo para melhor performance
+      const [currentWeek, currentMonth, comparison, alerts, goals] = await Promise.all([
+        ReportsService.getCurrentWeekSummary(userId, params.id_veiculo),
+        ReportsService.getCurrentMonthSummary(userId, params.id_veiculo),
+        ReportsService.getShortTermComparison(userId, params.id_veiculo),
+        params.incluir_alertas ? ReportsService.generateAlerts(userId, params.id_veiculo) : null,
+        params.incluir_metas ? ReportsService.getGoalsProgress(userId, params.id_veiculo) : null
+      ]);
+
+      dashboard = {
+        kpis_principais: {
+          semana_atual: currentWeek,
+          mes_atual: currentMonth,
+          comparacoes: comparison
+        },
+        alertas: alerts,
+        metas: goals,
+        resumo_visual: {
+          grafico_evolucao: currentMonth.evolucao_diaria,
+          distribuicao_despesas: currentMonth.detalhamento_despesas,
+          top_jornadas: await ReportsService.getTopJourneys(userId, params.id_veiculo, 5)
+        }
+      };
+
+      // Cache por 2 minutos (dashboard precisa de dados mais frescos)
+      await CacheService.set(cacheKey, dashboard, 120);
+    }
+
+    res.json({
+      success: true,
+      data: dashboard,
+      last_updated: new Date().toISOString(),
+      message: 'Dashboard gerado com sucesso'
+    });
+  });
+
+  /**
+   * Análise de performance e eficiência
+   */
+  static getPerformanceAnalysis = asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
+    const userId = WeeklyMonthlyReportsController.extractUserId(req);
+    const params = WeeklyMonthlyReportsController.validateQuery(req.query, z.object({
+      id_veiculo: z.string().uuid().optional(),
+      periodo_analise: z.enum(['trimestre', 'semestre', 'ano']).default('trimestre'),
+      incluir_benchmarks: z.boolean().default(true)
+    }));
+
+    const cacheKey = `performance:${userId}:${JSON.stringify(params)}`;
+    let analise = await CacheService.get(cacheKey);
+
+    if (!analise) {
+      WeeklyMonthlyReportsController.logger.info('Gerando análise de performance', { userId, params });
+
+      analise = await ReportsService.generatePerformanceAnalysis({
+        userId,
+        vehicleId: params.id_veiculo,
+        analysisPeriod: params.periodo_analise,
+        includeBenchmarks: params.incluir_benchmarks
       });
 
-    } catch (error: any) {
-      console.error("Erro ao gerar comparativo mensal:", error);
-      return res.status(500).json({
-        success: false,
-        error: { message: "Erro interno do servidor" }
-      });
+      // Cache por 1 hora (análise de performance muda menos frequentemente)
+      await CacheService.set(cacheKey, analise, 3600);
     }
-  }
-}
 
-// Funções auxiliares
+    res.json({
+      success: true,
+      data: analise,
+      message: 'Análise de performance gerada com sucesso'
+    });
+  });
 
-function calcularPeriodoSemanal(data_inicio?: string, data_fim?: string) {
-  if (data_inicio && data_fim) {
-    return {
-      dataInicio: new Date(data_inicio),
-      dataFim: new Date(data_fim)
-    };
-  }
+  /**
+   * Exportação em lote otimizada
+   */
+  static exportBatchReports = asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
+    const userId = WeeklyMonthlyReportsController.extractUserId(req);
+    const params = WeeklyMonthlyReportsController.validateQuery(req.body, z.object({
+      tipos_relatorio: z.array(z.enum(['semanal', 'mensal', 'comparativo_semanal', 'comparativo_mensal', 'dashboard'])).min(1),
+      data_inicio: z.string().datetime().optional(),
+      data_fim: z.string().datetime().optional(),
+      id_veiculo: z.string().uuid().optional(),
+      formato: z.enum(['xlsx', 'pdf', 'zip']).default('xlsx'),
+      incluir_graficos: z.boolean().default(true)
+    }));
 
-  // Última semana completa (segunda a domingo)
-  const agora = new Date();
-  const diaSemana = agora.getDay(); // 0 = domingo, 1 = segunda, etc.
-  
-  const dataFim = new Date(agora);
-  dataFim.setDate(agora.getDate() - diaSemana); // Último domingo
-  
-  const dataInicio = new Date(dataFim);
-  dataInicio.setDate(dataFim.getDate() - 6); // Segunda da semana anterior
+    WeeklyMonthlyReportsController.logger.info('Iniciando exportação em lote', { userId, params });
 
-  return { dataInicio, dataFim };
-}
-
-function calcularPeriodoMensal(data_inicio?: string, data_fim?: string) {
-  if (data_inicio && data_fim) {
-    return {
-      dataInicio: new Date(data_inicio),
-      dataFim: new Date(data_fim)
-    };
-  }
-
-  // Mês anterior completo
-  const agora = new Date();
-  const mesAnterior = new Date(agora.getFullYear(), agora.getMonth() - 1, 1);
-  
-  const dataInicio = new Date(mesAnterior.getFullYear(), mesAnterior.getMonth(), 1);
-  const dataFim = new Date(mesAnterior.getFullYear(), mesAnterior.getMonth() + 1, 0);
-
-  return { dataInicio, dataFim };
-}
-
-async function gerarRelatorioFinanceiro(
-  userId: string,
-  dataInicio: Date,
-  dataFim: Date,
-  tipoPeriodo: 'semanal' | 'mensal',
-  idVeiculo?: string
-) {
-  // 1. Calcular Faturamento Bruto (soma de ganho_bruto das jornadas finalizadas)
-  const faturamentoBruto = await calcularFaturamentoBruto(userId, dataInicio, dataFim, idVeiculo);
-
-  // 2. Calcular Total de Despesas (abastecimentos + outras despesas)
-  const gastoCombustivel = await calcularGastoCombustivel(userId, dataInicio, dataFim, idVeiculo);
-  const outrasDespesas = await calcularOutrasDespesas(userId, dataInicio, dataFim, idVeiculo);
-  const totalDespesas = gastoCombustivel + outrasDespesas;
-
-  // 3. Calcular Lucro Líquido
-  const lucroLiquido = faturamentoBruto - totalDespesas;
-
-  // 4. Calcular métricas adicionais
-  const kmTotal = await calcularKmTotal(userId, dataInicio, dataFim, idVeiculo);
-  const numeroJornadas = await contarJornadas(userId, dataInicio, dataFim, idVeiculo);
-  const custoPorKm = kmTotal > 0 ? totalDespesas / kmTotal : 0;
-  const ganhoMedioPorJornada = numeroJornadas > 0 ? faturamentoBruto / numeroJornadas : 0;
-  const margemLucro = faturamentoBruto > 0 ? (lucroLiquido / faturamentoBruto) * 100 : 0;
-
-  // 5. Detalhamento por categoria de despesa
-  const detalhamentoDespesas = await detalharDespesasPorCategoria(userId, dataInicio, dataFim, idVeiculo);
-
-  // 6. Evolução diária (para análise de tendências)
-  const evolucaoDiaria = await calcularEvolucaoDiaria(userId, dataInicio, dataFim, idVeiculo);
-
-  return {
-    periodo: {
-      tipo: tipoPeriodo,
-      data_inicio: dataInicio.toISOString(),
-      data_fim: dataFim.toISOString(),
-      descricao: `${dataInicio.toLocaleDateString('pt-BR')} - ${dataFim.toLocaleDateString('pt-BR')}`
-    },
-    filtros: {
-      id_veiculo: idVeiculo || null
-    },
-    resumo_financeiro: {
-      faturamento_bruto: faturamentoBruto,
-      total_despesas: totalDespesas,
-      gasto_combustivel: gastoCombustivel,
-      outras_despesas: outrasDespesas,
-      lucro_liquido: lucroLiquido,
-      margem_lucro: Math.round(margemLucro * 100) / 100, // 2 casas decimais
-      km_total: kmTotal,
-      numero_jornadas: numeroJornadas,
-      custo_por_km: Math.round(custoPorKm * 100) / 100,
-      ganho_medio_por_jornada: Math.round(ganhoMedioPorJornada)
-    },
-    detalhamento_despesas: detalhamentoDespesas,
-    evolucao_diaria: evolucaoDiaria,
-    indicadores: {
-      eficiencia_financeira: margemLucro > 20 ? 'Excelente' : margemLucro > 10 ? 'Boa' : margemLucro > 0 ? 'Regular' : 'Ruim',
-      produtividade: numeroJornadas > 0 ? `${Math.round(kmTotal / numeroJornadas)} km/jornada` : '0 km/jornada',
-      custo_operacional: custoPorKm > 0 ? `R$ ${(custoPorKm / 100).toFixed(2)}/km` : 'R$ 0,00/km'
-    }
-  };
-}
-
-async function calcularFaturamentoBruto(
-  userId: string,
-  dataInicio: Date,
-  dataFim: Date,
-  idVeiculo?: string
-): Promise<number> {
-  let whereConditions = and(
-    eq(jornadas.id_usuario, userId),
-    gte(jornadas.data_fim, dataInicio.toISOString()),
-    lte(jornadas.data_fim, dataFim.toISOString()),
-    isNull(jornadas.deleted_at)
-  );
-
-  if (idVeiculo) {
-    whereConditions = and(whereConditions, eq(jornadas.id_veiculo, idVeiculo));
-  }
-
-  const result = await db
-    .select({ total: sum(jornadas.ganho_bruto) })
-    .from(jornadas)
-    .where(whereConditions);
-
-  return Number(result[0]?.total || 0);
-}
-
-async function calcularGastoCombustivel(
-  userId: string,
-  dataInicio: Date,
-  dataFim: Date,
-  idVeiculo?: string
-): Promise<number> {
-  let whereConditions = and(
-    eq(abastecimentos.id_usuario, userId),
-    gte(abastecimentos.data_abastecimento, dataInicio.toISOString()),
-    lte(abastecimentos.data_abastecimento, dataFim.toISOString()),
-    isNull(abastecimentos.deleted_at)
-  );
-
-  if (idVeiculo) {
-    whereConditions = and(whereConditions, eq(abastecimentos.id_veiculo, idVeiculo));
-  }
-
-  const result = await db
-    .select({ total: sum(abastecimentos.valor_total) })
-    .from(abastecimentos)
-    .where(whereConditions);
-
-  return Number(result[0]?.total || 0);
-}
-
-async function calcularOutrasDespesas(
-  userId: string,
-  dataInicio: Date,
-  dataFim: Date,
-  idVeiculo?: string
-): Promise<number> {
-  let whereConditions = and(
-    eq(despesas.id_usuario, userId),
-    gte(despesas.data_despesa, dataInicio.toISOString()),
-    lte(despesas.data_despesa, dataFim.toISOString()),
-    isNull(despesas.deleted_at)
-  );
-
-  if (idVeiculo) {
-    whereConditions = and(whereConditions, eq(despesas.id_veiculo, idVeiculo));
-  }
-
-  const result = await db
-    .select({ total: sum(despesas.valor_despesa) })
-    .from(despesas)
-    .where(whereConditions);
-
-  return Number(result[0]?.total || 0);
-}
-
-async function calcularKmTotal(
-  userId: string,
-  dataInicio: Date,
-  dataFim: Date,
-  idVeiculo?: string
-): Promise<number> {
-  let whereConditions = and(
-    eq(jornadas.id_usuario, userId),
-    gte(jornadas.data_fim, dataInicio.toISOString()),
-    lte(jornadas.data_fim, dataFim.toISOString()),
-    isNull(jornadas.deleted_at)
-  );
-
-  if (idVeiculo) {
-    whereConditions = and(whereConditions, eq(jornadas.id_veiculo, idVeiculo));
-  }
-
-  const result = await db
-    .select({ total: sum(jornadas.km_total) })
-    .from(jornadas)
-    .where(whereConditions);
-
-  return Number(result[0]?.total || 0);
-}
-
-async function contarJornadas(
-  userId: string,
-  dataInicio: Date,
-  dataFim: Date,
-  idVeiculo?: string
-): Promise<number> {
-  let whereConditions = and(
-    eq(jornadas.id_usuario, userId),
-    gte(jornadas.data_fim, dataInicio.toISOString()),
-    lte(jornadas.data_fim, dataFim.toISOString()),
-    isNull(jornadas.deleted_at)
-  );
-
-  if (idVeiculo) {
-    whereConditions = and(whereConditions, eq(jornadas.id_veiculo, idVeiculo));
-  }
-
-  const result = await db
-    .select({ total: count() })
-    .from(jornadas)
-    .where(whereConditions);
-
-  return Number(result[0]?.total || 0);
-}
-
-async function detalharDespesasPorCategoria(
-  userId: string,
-  dataInicio: Date,
-  dataFim: Date,
-  idVeiculo?: string
-): Promise<any> {
-  // Despesas por categoria
-  let whereConditions = and(
-    eq(despesas.id_usuario, userId),
-    gte(despesas.data_despesa, dataInicio.toISOString()),
-    lte(despesas.data_despesa, dataFim.toISOString()),
-    isNull(despesas.deleted_at)
-  );
-
-  if (idVeiculo) {
-    whereConditions = and(whereConditions, eq(despesas.id_veiculo, idVeiculo));
-  }
-
-  const despesasPorCategoria = await db
-    .select({
-      categoria: despesas.tipo_despesa,
-      total: sum(despesas.valor_despesa),
-      quantidade: count()
-    })
-    .from(despesas)
-    .where(whereConditions)
-    .groupBy(despesas.tipo_despesa);
-
-  // Gasto com combustível
-  const gastoCombustivel = await calcularGastoCombustivel(userId, dataInicio, dataFim, idVeiculo);
-
-  return {
-    combustivel: {
-      categoria: 'Combustível',
-      total: gastoCombustivel,
-      percentual: 0 // Será calculado no frontend
-    },
-    outras_categorias: despesasPorCategoria.map(item => ({
-      categoria: item.categoria,
-      total: Number(item.total || 0),
-      quantidade: Number(item.quantidade || 0),
-      percentual: 0 // Será calculado no frontend
-    }))
-  };
-}
-
-async function calcularEvolucaoDiaria(
-  userId: string,
-  dataInicio: Date,
-  dataFim: Date,
-  idVeiculo?: string
-): Promise<any[]> {
-  const evolucao = [];
-  const dataAtual = new Date(dataInicio);
-
-  while (dataAtual <= dataFim) {
-    const inicioDia = new Date(dataAtual.getFullYear(), dataAtual.getMonth(), dataAtual.getDate());
-    const fimDia = new Date(dataAtual.getFullYear(), dataAtual.getMonth(), dataAtual.getDate(), 23, 59, 59);
-
-    const faturamentoDia = await calcularFaturamentoBruto(userId, inicioDia, fimDia, idVeiculo);
-    const despesasDia = await calcularGastoCombustivel(userId, inicioDia, fimDia, idVeiculo) +
-                       await calcularOutrasDespesas(userId, inicioDia, fimDia, idVeiculo);
-    const lucroDia = faturamentoDia - despesasDia;
-    const jornadasDia = await contarJornadas(userId, inicioDia, fimDia, idVeiculo);
-
-    evolucao.push({
-      data: dataAtual.toISOString().split('T')[0],
-      data_formatada: dataAtual.toLocaleDateString('pt-BR'),
-      faturamento: faturamentoDia,
-      despesas: despesasDia,
-      lucro: lucroDia,
-      jornadas: jornadasDia
+    // Processa em background para relatórios grandes
+    const jobId = await ReportsService.createBatchExportJob({
+      userId,
+      reportTypes: params.tipos_relatorio,
+      startDate: params.data_inicio,
+      endDate: params.data_fim,
+      vehicleId: params.id_veiculo,
+      format: params.formato,
+      includeCharts: params.incluir_graficos
     });
 
-    dataAtual.setDate(dataAtual.getDate() + 1);
+    res.json({
+      success: true,
+      data: {
+        job_id: jobId,
+        status: 'processing',
+        estimated_completion: new Date(Date.now() + 30000).toISOString() // 30 segundos
+      },
+      message: 'Exportação iniciada. Use o job_id para verificar o status.'
+    });
+  });
+
+  /**
+   * Verificar status de exportação em lote
+   */
+  static getBatchExportStatus = asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
+    const userId = WeeklyMonthlyReportsController.extractUserId(req);
+    const { jobId } = req.params;
+
+    if (!jobId) {
+      throw new AppError('Job ID é obrigatório', 400);
+    }
+
+    const status = await ReportsService.getBatchExportStatus(jobId, userId);
+
+    if (!status) {
+      throw new AppError('Job não encontrado', 404);
+    }
+
+    if (status.status === 'completed' && status.downloadUrl) {
+      res.json({
+        success: true,
+        data: {
+          status: status.status,
+          download_url: status.downloadUrl,
+          expires_at: status.expiresAt
+        },
+        message: 'Exportação concluída'
+      });
+    } else {
+      res.json({
+        success: true,
+        data: {
+          status: status.status,
+          progress: status.progress,
+          estimated_completion: status.estimatedCompletion
+        },
+        message: `Status: ${status.status}`
+      });
+    }
+  });
+
+  /**
+   * Limpar cache de relatórios
+   */
+  static clearReportsCache = asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
+    const userId = WeeklyMonthlyReportsController.extractUserId(req);
+    
+    // Apenas admins ou o próprio usuário podem limpar cache
+    const patterns = [
+      `weekly_report:${userId}:*`,
+      `monthly_report:${userId}:*`,
+      `weekly_comparison:${userId}:*`,
+      `monthly_comparison:${userId}:*`,
+      `dashboard:${userId}:*`,
+      `performance:${userId}:*`
+    ];
+
+    let clearedCount = 0;
+    for (const pattern of patterns) {
+      const count = await CacheService.clearByPattern(pattern);
+      clearedCount += count;
+    }
+
+    WeeklyMonthlyReportsController.logger.info('Cache limpo', { userId, clearedCount });
+
+    res.json({
+      success: true,
+      data: { cleared_entries: clearedCount },
+      message: 'Cache de relatórios limpo com sucesso'
+    });
+  });
+
+  // Métodos auxiliares privados
+  private static extractUserId(req: AuthenticatedRequest): string {
+    if (!req.user?.id) {
+      throw new AppError('Usuário não autenticado', 401);
+    }
+    return req.user.id;
   }
 
-  return evolucao;
+  private static validateQuery<T extends z.ZodType>(query: any, schema: T): z.infer<T> {
+    const result = schema.safeParse(query);
+    
+    if (!result.success) {
+      WeeklyMonthlyReportsController.logger.warn('Validação falhou', { 
+        errors: result.error.errors,
+        query 
+      });
+      
+      throw new AppError(
+        'Parâmetros inválidos',
+        400,
+        result.error.errors.map(err => ({
+          field: err.path.join('.'),
+          message: err.message,
+          received: err.received
+        }))
+      );
+    }
+    
+    return result.data;
+  }
+
+  private static async handleFileExport(
+    res: Response, 
+    data: any, 
+    format: string, 
+    filename: string
+  ): Promise<void> {
+    try {
+      const exportData = await ReportsService.exportToFormat(data, format);
+      
+      const contentTypes = {
+        csv: 'text/csv; charset=utf-8',
+        xlsx: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        pdf: 'application/pdf'
+      };
+
+      const extensions = { csv: 'csv', xlsx: 'xlsx', pdf: 'pdf' };
+      
+      res.setHeader('Content-Type', contentTypes[format as keyof typeof contentTypes]);
+      res.setHeader('Content-Disposition', `attachment; filename="${filename}.${extensions[format as keyof typeof extensions]}"`);
+      res.setHeader('Cache-Control', 'no-cache');
+      res.setHeader('Content-Length', exportData.length);
+      
+      if (format === 'csv') {
+        // BOM para UTF-8 no Excel
+        res.send('\uFEFF' + exportData);
+      } else {
+        res.send(exportData);
+      }
+    } catch (error) {
+      WeeklyMonthlyReportsController.logger.error('Erro na exportação', { format, filename, error });
+      throw new AppError('Erro ao gerar arquivo de exportação', 500);
+    }
+  }
 }
-
-function gerarCSVFinanceiro(relatorio: any, tipoPeriodo: string): string {
-  const headers = [
-    'Período',
-    'Faturamento Bruto (R$)',
-    'Gasto Combustível (R$)',
-    'Outras Despesas (R$)',
-    'Total Despesas (R$)',
-    'Lucro Líquido (R$)',
-    'Margem Lucro (%)',
-    'KM Total',
-    'Número Jornadas',
-    'Custo por KM (R$)',
-    'Ganho Médio por Jornada (R$)'
-  ];
-
-  const row = [
-    relatorio.periodo.descricao,
-    (relatorio.resumo_financeiro.faturamento_bruto / 100).toFixed(2),
-    (relatorio.resumo_financeiro.gasto_combustivel / 100).toFixed(2),
-    (relatorio.resumo_financeiro.outras_despesas / 100).toFixed(2),
-    (relatorio.resumo_financeiro.total_despesas / 100).toFixed(2),
-    (relatorio.resumo_financeiro.lucro_liquido / 100).toFixed(2),
-    relatorio.resumo_financeiro.margem_lucro.toFixed(2),
-    relatorio.resumo_financeiro.km_total,
-    relatorio.resumo_financeiro.numero_jornadas,
-    (relatorio.resumo_financeiro.custo_por_km / 100).toFixed(2),
-    (relatorio.resumo_financeiro.ganho_medio_por_jornada / 100).toFixed(2)
-  ];
-
-  return [headers, row]
-    .map(line => line.map(cell => `"${cell}"`).join(','))
-    .join('\n');
-}
-
