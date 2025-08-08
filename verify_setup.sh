@@ -11,9 +11,12 @@ REQUIRED_FILES=(
   "frontend/babel.config.js"
   "frontend/src/setupTests.ts"
   "docs/progresso.md"
-  "relatorio_correcoes_schema.md"
+  "docs/EspecificacoesTecnicasGiroPro.md"
+  "docs/mapeamento_funcionalidades.md"
+  "docs/analise_problemas.md"
+  "docs/relatorio_testes_scripts.md"
+  "docs/backend_correcoes_especificas.md"
 )
-
 ALL_FILES_EXIST=true
 for file in "${REQUIRED_FILES[@]}"; do
   if [ ! -f "$file" ]; then
