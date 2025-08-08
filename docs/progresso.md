@@ -2,9 +2,10 @@
 
 **Última sessão:**
 - Data: 08/08/2025
-- Sessão: #3
+- Sessão: #4
 
 ## O que foi feito nesta sessão
+- ✅ **Atualização do Roadmap**: O arquivo `docs/roadmap.md` foi completamente revisado e atualizado para refletir o estado atual de não funcionalidade do sistema. O novo roadmap foca na estabilização e funcionalidade básica antes de avançar para funcionalidades mais complexas.
 - ✅ **Revisão e Otimização da Estrutura de Pastas e Arquivos**:
   - **Deletado**: `docs/GiroPro - Gestão Financeira para Motoristas de Aplicativo.md` (redundante).
   - **Renomeado e Movido**: `backend/relatorio-correcoes.md` para `docs/backend_correcoes_especificas.md`.
@@ -18,6 +19,7 @@
 ## Problemas encontrados / observações
 - ✅ **Organização de Arquivos**: A estrutura de documentação e scripts foi aprimorada para maior clareza e centralização das informações.
 - ✅ **Consistência da Documentação**: Todas as especificações técnicas foram consolidadas em um único documento, eliminando redundâncias.
+- ❌ **Sistema Não Funcional**: O sistema ainda não está funcional, o que exigiu a revisão do roadmap para priorizar a estabilização e funcionalidade básica.
 
 ## Próximas tarefas
 1. **Finalizar correção de build do backend**:
@@ -46,6 +48,7 @@
 - ✅ **CONCLUÍDO**: Correção de nomenclatura para camelCase aplicada.
 - ✅ **CONCLUÍDO**: Especificações técnicas completas criadas.
 - ✅ **CONCLUÍDO**: Unificação e organização dos documentos.
+- ✅ **CONCLUÍDO**: Roadmap atualizado para refletir o estado atual.
 - 🔄 **PRÓXIMO**: Finalizar build e testar aplicação localmente.
 
 ## Documentos Criados
