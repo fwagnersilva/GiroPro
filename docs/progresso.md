@@ -1,21 +1,31 @@
 # Progresso do GiroPro
 
 **Última sessão:**
-- Data: 08/08/2025 19:00
-- Sessão: #4
+- Data: 08/08/2025 20:00
+- Sessão: #5
 
 ## O que foi feito nesta sessão
-- Clonagem do repositório GiroPro.
-- Análise da estrutura do projeto.
-- Leitura e análise do arquivo `docs/progresso.md`.
-- Tentativa de compilação do backend e identificação de erros.
+- Continuação da correção de inconsistências de nomenclatura (snake_case para camelCase) e valores de enum em `gamificationController.ts`.
+- Continuação da correção de imports e remoção de definição local da interface `AuthenticatedRequest` em `expensesController.ts`.
+- Continuação da correção de chamadas de métodos e tipagem em `authController.ts` (`AuthService.register`, `AuthService.login`, `AuthService.refreshToken`).
+- Tentativa de correção de caminho de importação para o arquivo principal da aplicação (`app.ts` para `app_simple.ts`) em `vehiclesController.test.ts`.
+- Identificação de que `app.ts` não existe no caminho esperado e que `app_simple.ts` é o arquivo principal.
+- Reversão da alteração em `vehiclesController.test.ts` para apontar para `app_simple.ts`.
 
 ## Problemas encontrados / observações
-- **Backend não compila**: Múltiplos erros de TypeScript, principalmente relacionados a inconsistências de nomenclatura (snake_case vs camelCase) e imports faltando.
-- **Erros de tipo**: Muitos erros de tipo em vários arquivos do backend, conforme observado na tentativa de compilação.
+- **Backend ainda não compila**: Múltiplos erros de TypeScript persistem, principalmente relacionados a:
+    - Problemas de importação do `app` principal da aplicação nos testes (`vehiclesController.test.ts` ainda aponta para `app` em vez de `app_simple`).
+    - A interface `AuthenticatedRequest` ainda não está sendo exportada corretamente do `common.d.ts` ou não está sendo reconhecida em todos os arquivos.
+    - Erros de tipagem em `authController.ts` relacionados a propriedades de `request.body` e `AuthService`.
+    - Erros de tipagem em `dashboardController.ts` relacionados a `SQL` e `Date`.
+    - Erros de tipagem em `expensesController.ts` relacionados a `CreateExpenseRequest`, `UpdateExpenseRequest`, `getExpenseStats` e `getExpensesByCategory`.
+    - Erros de tipagem em `fuelingsController.ts` relacionados a `CacheService`, `FuelPricesService` e `NearbyPricesQuery`.
+    - Erros de nomenclatura em `gamificationController.ts` (`tipo_conquista`, `id_conquista`, `ordem_exibicao`, `data_desbloqueio`, `valor_atingido`).
 
 ## Próximas tarefas
 1. **Corrigir erros críticos de build do backend**:
+   - Resolver problemas de importação do `app` principal da aplicação nos testes e outros arquivos.
+   - Garantir que a interface `AuthenticatedRequest` seja corretamente importada e reconhecida em todos os arquivos.
    - Adicionar imports faltando (sql, avg, ne) nos arquivos de services.
    - Resolver inconsistências de tipos de dados restantes.
    - Criar ou remover referências a tabelas inexistentes no schema.
