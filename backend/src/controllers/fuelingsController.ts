@@ -15,7 +15,7 @@ const fuelPricesQuerySchema = z.object({
     .min(2, "Cidade deve ter pelo menos 2 caracteres")
     .max(100, "Nome da cidade muito longo")
     .optional(),
-  tipo_combustivel: z.enum(['Gasolina', 'Etanol', 'Diesel', 'GNV'])
+  tipoCombustivel: z.enum(['Gasolina', 'Etanol', 'Diesel', 'GNV'])
     .optional(),
   limite: z.coerce.number()
     .int()
@@ -32,7 +32,7 @@ const priceHistoryQuerySchema = z.object({
   cidade: z.string()
     .min(2, "Cidade deve ter pelo menos 2 caracteres")
     .max(100, "Nome da cidade muito longo"),
-  tipo_combustivel: z.enum(['Gasolina', 'Etanol', 'Diesel', 'GNV']),
+  tipoCombustivel: z.enum(['Gasolina', 'Etanol', 'Diesel', 'GNV']),
   periodo_dias: z.coerce.number()
     .int()
     .min(1, "Período mínimo é 1 dia")
@@ -41,7 +41,7 @@ const priceHistoryQuerySchema = z.object({
 });
 
 const regionalComparisonSchema = z.object({
-  tipo_combustivel: z.enum(['Gasolina', 'Etanol', 'Diesel', 'GNV'])
+  tipoCombustivel: z.enum(['Gasolina', 'Etanol', 'Diesel', 'GNV'])
     .default('Gasolina'),
   estados: z.string()
     .optional()
@@ -63,12 +63,12 @@ const reportPriceSchema = z.object({
   cidade: z.string()
     .min(2, "Cidade deve ter pelo menos 2 caracteres")
     .max(100, "Nome da cidade muito longo"),
-  tipo_combustivel: z.enum(['Gasolina', 'Etanol', 'Diesel', 'GNV']),
+  tipoCombustivel: z.enum(['Gasolina', 'Etanol', 'Diesel', 'GNV']),
   preco_medio: z.number()
     .positive("Preço médio deve ser positivo")
     .max(50, "Preço parece muito alto, verifique")
     .refine(val => Number(val.toFixed(3)) === val, "Máximo 3 casas decimais"),
-  nome_posto: z.string()
+  nomePosto: z.string()
     .min(2, "Nome do posto é obrigatório")
     .max(200, "Nome do posto muito longo")
     .optional(),
@@ -88,19 +88,19 @@ const reportPriceSchema = z.object({
 interface FuelPriceFilters {
   estado?: string;
   cidade?: string;
-  tipo_combustivel?: string;
+  tipoCombustivel?: string;
   limite?: number;
 }
 
 interface PriceHistoryParams {
   estado: string;
   cidade: string;
-  tipo_combustivel: string;
+  tipoCombustivel: string;
   periodo_dias: number;
 }
 
 interface RegionalComparisonParams {
-  tipo_combustivel: string;
+  tipoCombustivel: string;
   estados: string[];
   incluir_tendencia: boolean;
 }
@@ -187,7 +187,7 @@ const validateRequestData = (schema: z.ZodSchema, data: any) => {
  * @route GET /api/v1/fuel-prices
  * @query {string} [estado] - Código do estado (2 letras)
  * @query {string} [cidade] - Nome da cidade
- * @query {string} [tipo_combustivel] - Tipo de combustível
+ * @query {string} [tipoCombustivel] - Tipo de combustível
  * @query {number} [limite=20] - Número máximo de resultados
  */
 export const getPrices = asyncHandler(async (req: Request, res: Response) => {
@@ -238,7 +238,7 @@ export const getPrices = asyncHandler(async (req: Request, res: Response) => {
  * @route GET /api/v1/fuel-prices/history
  * @query {string} estado - Código do estado (obrigatório)
  * @query {string} cidade - Nome da cidade (obrigatório)
- * @query {string} tipo_combustivel - Tipo de combustível (obrigatório)
+ * @query {string} tipoCombustivel - Tipo de combustível (obrigatório)
  * @query {number} [periodo_dias=30] - Período em dias
  */
 export const getPriceHistory = asyncHandler(async (req: Request, res: Response) => {
@@ -283,7 +283,7 @@ export const getPriceHistory = asyncHandler(async (req: Request, res: Response) 
 /**
  * Obtém comparativo de preços entre regiões
  * @route GET /api/v1/fuel-prices/regional-comparison
- * @query {string} [tipo_combustivel=Gasolina] - Tipo de combustível
+ * @query {string} [tipoCombustivel=Gasolina] - Tipo de combustível
  * @query {string} [estados] - Estados separados por vírgula
  * @query {boolean} [incluir_tendencia=false] - Incluir análise de tendência
  */
@@ -309,7 +309,7 @@ export const getRegionalComparison = asyncHandler(async (req: Request, res: Resp
       res,
       200,
       {
-        tipo_combustivel: params.tipo_combustivel,
+        tipoCombustivel: params.tipoCombustivel,
         comparativo: comparisonData.comparativo,
         estatisticas: comparisonData.estatisticas,
         rankings,
@@ -393,14 +393,14 @@ export const reportPrice = asyncHandler(async (req: Request, res: Response) => {
  * Obtém estatísticas de preços agregadas
  * @route GET /api/v1/fuel-prices/stats
  * @query {string} [periodo=week] - Período para estatísticas
- * @query {string} [tipo_combustivel] - Filtrar por tipo
+ * @query {string} [tipoCombustivel] - Filtrar por tipo
  */
 export const getPriceStats = asyncHandler(async (req: Request, res: Response) => {
   const userId = extractUserId(req);
   
   const statsQuery = z.object({
     periodo: z.enum(['day', 'week', 'month', 'quarter', 'year']).default('week'),
-    tipo_combustivel: z.enum(['Gasolina', 'Etanol', 'Diesel', 'GNV']).optional(),
+    tipoCombustivel: z.enum(['Gasolina', 'Etanol', 'Diesel', 'GNV']).optional(),
     incluir_projecoes: z.coerce.boolean().default(false)
   }).parse(req.query);
 
@@ -444,7 +444,7 @@ export const getNearbyPrices = asyncHandler(async (req: Request, res: Response) 
     latitude: z.coerce.number().min(-90).max(90),
     longitude: z.coerce.number().min(-180).max(180),
     raio: z.coerce.number().min(1).max(50).default(10),
-    tipo_combustivel: z.enum(['Gasolina', 'Etanol', 'Diesel', 'GNV']).optional()
+    tipoCombustivel: z.enum(['Gasolina', 'Etanol', 'Diesel', 'GNV']).optional()
   }).parse(req.query);
 
   try {

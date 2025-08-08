@@ -8,7 +8,7 @@ export interface FuelPriceData {
   id: string;
   estado: string;
   cidade: string;
-  tipo_combustivel: 'Gasolina' | 'Etanol' | 'Diesel' | 'GNV';
+  tipoCombustivel: 'Gasolina' | 'Etanol' | 'Diesel' | 'GNV';
   preco_medio: number;
   preco_minimo: number;
   preco_maximo: number;
@@ -51,19 +51,19 @@ export interface RegionalComparison {
 export interface FuelPriceFilters {
   estado?: string;
   cidade?: string;
-  tipo_combustivel?: string;
+  tipoCombustivel?: string;
   limite?: number;
 }
 
 export interface PriceHistoryParams {
   estado: string;
   cidade: string;
-  tipo_combustivel: string;
+  tipoCombustivel: string;
   periodo_dias: number;
 }
 
 export interface RegionalComparisonParams {
-  tipo_combustivel: string;
+  tipoCombustivel: string;
   estados: string[];
   incluir_tendencia: boolean;
 }
@@ -72,7 +72,7 @@ export interface NearbyPricesQuery {
   latitude: number;
   longitude: number;
   raio: number;
-  tipo_combustivel?: string;
+  tipoCombustivel?: string;
 }
 
 export interface PriceReport {
@@ -80,9 +80,9 @@ export interface PriceReport {
   user_id: string;
   estado: string;
   cidade: string;
-  tipo_combustivel: string;
+  tipoCombustivel: string;
   preco_medio: number;
-  nome_posto?: string;
+  nomePosto?: string;
   endereco?: string;
   observacoes?: string;
   fonte: string;
@@ -148,8 +148,8 @@ export class FuelPricesService {
         conditions.push(sql`LOWER(${fuelPrices.cidade}) LIKE LOWER('%' || ${filters.cidade} || '%')`);
       }
       
-      if (filters.tipo_combustivel) {
-        conditions.push(eq(fuelPrices.tipo_combustivel, filters.tipo_combustivel));
+      if (filters.tipoCombustivel) {
+        conditions.push(eq(fuelPrices.tipoCombustivel, filters.tipoCombustivel));
       }
       
       if (conditions.length > 0) {
@@ -194,7 +194,7 @@ export class FuelPricesService {
           and(
             eq(fuelPrices.estado, params.estado),
             sql`LOWER(${fuelPrices.cidade}) = LOWER(${params.cidade})`,
-            eq(fuelPrices.tipo_combustivel, params.tipo_combustivel),
+            eq(fuelPrices.tipoCombustivel, params.tipoCombustivel),
             gte(fuelPrices.data_coleta, startDate.toISOString())
           )
         )
@@ -207,7 +207,7 @@ export class FuelPricesService {
         historico = this.generateMockPriceHistory(
           params.estado, 
           params.cidade, 
-          params.tipo_combustivel, 
+          params.tipoCombustivel, 
           params.periodo_dias
         );
       } else {
@@ -231,7 +231,7 @@ export class FuelPricesService {
       const historico = this.generateMockPriceHistory(
         params.estado, 
         params.cidade, 
-        params.tipo_combustivel, 
+        params.tipoCombustivel, 
         params.periodo_dias
       );
       
@@ -256,7 +256,7 @@ export class FuelPricesService {
         .where(
           and(
             inArray(fuelPrices.estado, params.estados),
-            eq(fuelPrices.tipo_combustivel, params.tipo_combustivel),
+            eq(fuelPrices.tipoCombustivel, params.tipoCombustivel),
             gte(fuelPrices.data_coleta, sql`DATE('now', '-7 days')`)
           )
         )
@@ -267,7 +267,7 @@ export class FuelPricesService {
       
       const comparativo: RegionalComparison[] = params.estados.map((estado, index) => {
         const dadosEstado = estadoData[estado];
-        const precoBase = this.getBasePriceForState(estado, params.tipo_combustivel);
+        const precoBase = this.getBasePriceForState(estado, params.tipoCombustivel);
         
         return {
           estado,
@@ -307,7 +307,7 @@ export class FuelPricesService {
 
       let tendencias;
       if (params.incluir_tendencia) {
-        tendencias = await this.calculateRegionalTrends(params.estados, params.tipo_combustivel);
+        tendencias = await this.calculateRegionalTrends(params.estados, params.tipoCombustivel);
       }
 
       return { comparativo, estatisticas, tendencias };
@@ -335,7 +335,7 @@ export class FuelPricesService {
           and(
             eq(fuelPrices.estado, priceData.estado),
             sql`LOWER(${fuelPrices.cidade}) = LOWER(${priceData.cidade})`,
-            eq(fuelPrices.tipo_combustivel, priceData.tipo_combustivel),
+            eq(fuelPrices.tipoCombustivel, priceData.tipoCombustivel),
             gte(fuelPrices.data_coleta, sql`DATE('now', '-30 days')`)
           )
         )
@@ -362,7 +362,7 @@ export class FuelPricesService {
       }
 
       // Verificar limites absolutos por tipo de combustível
-      const precoBase = PRECOS_BASE_COMBUSTIVEL[priceData.tipo_combustivel];
+      const precoBase = PRECOS_BASE_COMBUSTIVEL[priceData.tipoCombustivel];
       if (priceData.preco_medio > precoBase * 2) {
         warnings.push('Preço muito acima do valor típico nacional');
         valid = false;
@@ -394,9 +394,9 @@ export class FuelPricesService {
         user_id: userId,
         estado: priceData.estado,
         cidade: priceData.cidade,
-        tipo_combustivel: priceData.tipo_combustivel,
+        tipoCombustivel: priceData.tipoCombustivel,
         preco_medio: priceData.preco_medio,
-        nome_posto: priceData.nome_posto,
+        nomePosto: priceData.nomePosto,
         endereco: priceData.endereco,
         observacoes: priceData.observacoes,
         fonte: priceData.fonte || 'Usuário',
@@ -453,7 +453,7 @@ export class FuelPricesService {
    */
   static async getPriceStatistics(params: any): Promise<any> {
     try {
-      const { periodo, tipo_combustivel, incluir_projecoes } = params;
+      const { periodo, tipoCombustivel, incluir_projecoes } = params;
       
       // Calcular período de busca
       const startDate = new Date();
@@ -480,8 +480,8 @@ export class FuelPricesService {
         .from(fuelPrices)
         .where(gte(fuelPrices.data_coleta, startDate.toISOString()));
 
-      if (tipo_combustivel) {
-        query = query.where(eq(fuelPrices.tipo_combustivel, tipo_combustivel));
+      if (tipoCombustivel) {
+        query = query.where(eq(fuelPrices.tipoCombustivel, tipoCombustivel));
       }
 
       const results = await query.orderBy(desc(fuelPrices.data_coleta));
@@ -504,7 +504,7 @@ export class FuelPricesService {
       return {
         periodo,
         estatisticas_gerais: estatisticas,
-        por_tipo_combustivel: porTipoCombustivel,
+        por_tipoCombustivel: porTipoCombustivel,
         tendencias_regionais: tendenciasRegionais,
         total_registros: results.length,
         ...(projecoes && { projecoes })
@@ -632,7 +632,7 @@ export class FuelPricesService {
       id: dbResult.id,
       estado: dbResult.estado,
       cidade: dbResult.cidade,
-      tipo_combustivel: dbResult.tipo_combustivel,
+      tipoCombustivel: dbResult.tipoCombustivel,
       preco_medio: dbResult.preco_medio,
       preco_minimo: dbResult.preco_minimo || dbResult.preco_medio * 0.95,
       preco_maximo: dbResult.preco_maximo || dbResult.preco_medio * 1.05,
@@ -645,7 +645,7 @@ export class FuelPricesService {
   }
 
   private static generateMockPrices(filters: FuelPriceFilters): FuelPriceData[] {
-    const tipos = filters.tipo_combustivel ? [filters.tipo_combustivel] : ['Gasolina', 'Etanol', 'Diesel', 'GNV'];
+    const tipos = filters.tipoCombustivel ? [filters.tipoCombustivel] : ['Gasolina', 'Etanol', 'Diesel', 'GNV'];
     const precos: FuelPriceData[] = [];
 
     for (const tipo of tipos) {
@@ -657,7 +657,7 @@ export class FuelPricesService {
       
       precos.push({
         id: `mock_${tipo}_${Date.now()}`,
-        tipo_combustivel: tipo as any,
+        tipoCombustivel: tipo as any,
         preco_medio: precoMedio,
         preco_minimo: Math.round((precoMedio * 0.95) * 100) / 100,
         preco_maximo: Math.round((precoMedio * 1.05) * 100) / 100,
@@ -778,7 +778,7 @@ export class FuelPricesService {
           .where(
             and(
               eq(fuelPrices.estado, estado),
-              eq(fuelPrices.tipo_combustivel, tipoCombustivel),
+              eq(fuelPrices.tipoCombustivel, tipoCombustivel),
               gte(fuelPrices.data_coleta, sql`DATE('now', '-90 days')`)
             )
           )
@@ -862,7 +862,7 @@ export class FuelPricesService {
     const grupos: Record<string, any> = {};
 
     for (const result of results) {
-      const tipo = result.tipo_combustivel;
+      const tipo = result.tipoCombustivel;
       
       if (!grupos[tipo]) {
         grupos[tipo] = {
@@ -940,11 +940,11 @@ export class FuelPricesService {
 
   private static generatePriceProjections(results: any[], periodo: string): any {
     // Análise simplificada de projeção baseada em tendências históricas
-    const tiposCombustivel = [...new Set(results.map(r => r.tipo_combustivel))];
+    const tiposCombustivel = [...new Set(results.map(r => r.tipoCombustivel))];
     const projecoes: Record<string, any> = {};
 
     tiposCombustivel.forEach(tipo => {
-      const dadosTipo = results.filter(r => r.tipo_combustivel === tipo);
+      const dadosTipo = results.filter(r => r.tipoCombustivel === tipo);
       const precos = dadosTipo.map(d => d.preco_medio).sort((a, b) => a - b);
       
       if (precos.length > 0) {
@@ -981,8 +981,8 @@ export class FuelPricesService {
       const stationLat = query.latitude + deltaLat;
       const stationLon = query.longitude + deltaLon;
 
-      const precoBase = query.tipo_combustivel 
-        ? PRECOS_BASE_COMBUSTIVEL[query.tipo_combustivel] 
+      const precoBase = query.tipoCombustivel 
+        ? PRECOS_BASE_COMBUSTIVEL[query.tipoCombustivel] 
         : PRECOS_BASE_COMBUSTIVEL['Gasolina'];
       
       const variacao = (Math.random() - 0.5) * 0.2; // ±10%
@@ -996,7 +996,7 @@ export class FuelPricesService {
         longitude: stationLon,
         distancia_km: distance,
         precos: {
-          [query.tipo_combustivel || 'Gasolina']: preco,
+          [query.tipoCombustivel || 'Gasolina']: preco,
           ...(Math.random() > 0.5 && { 'Etanol': preco * 0.73 }),
           ...(Math.random() > 0.7 && { 'Diesel': preco * 0.93 })
         },

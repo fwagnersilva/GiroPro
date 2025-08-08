@@ -48,10 +48,10 @@ describe('Dashboard Integration Tests', () => {
 
   afterAll(async () => {
     // Limpar dados de teste
-    await db.delete(despesas).where(eq(despesas.id_usuario, userId));
-    await db.delete(abastecimentos).where(eq(abastecimentos.id_usuario, userId));
-    await db.delete(jornadas).where(eq(jornadas.id_usuario, userId));
-    await db.delete(veiculos).where(eq(veiculos.id_usuario, userId));
+    await db.delete(despesas).where(eq(despesas.idUsuario, userId));
+    await db.delete(abastecimentos).where(eq(abastecimentos.idUsuario, userId));
+    await db.delete(jornadas).where(eq(jornadas.idUsuario, userId));
+    await db.delete(veiculos).where(eq(veiculos.idUsuario, userId));
     await db.delete(usuarios).where(eq(usuarios.id, userId));
   });
 
@@ -64,10 +64,10 @@ describe('Dashboard Integration Tests', () => {
     await db.insert(jornadas).values([
       {
         id: uuidv4(),
-        id_usuario: userId,
-        id_veiculo: vehicleId,
-        data_inicio: yesterday.toISOString(),
-        data_fim: today.toISOString(),
+        idUsuario: userId,
+        idVeiculo: vehicleId,
+        dataInicio: yesterday.toISOString(),
+        dataFim: today.toISOString(),
         km_inicio: 1000,
         km_fim: 1100,
         ganho_bruto: 15000, // em centavos
@@ -81,15 +81,15 @@ describe('Dashboard Integration Tests', () => {
     await db.insert(abastecimentos).values([
       {
         id: uuidv4(),
-        id_usuario: userId,
-        id_veiculo: vehicleId,
-        data_abastecimento: yesterday.toISOString(),
-        quantidade_litros: 40,
-        valor_total: 24000, // em centavos
-        valor_litro: 600, // em centavos
-        nome_posto: 'Posto Teste',
-        km_atual: 1050,
-        tipo_combustivel: 'Gasolina'
+        idUsuario: userId,
+        idVeiculo: vehicleId,
+        dataAbastecimento: yesterday.toISOString(),
+        quantidadeLitros: 40,
+        valorTotal: 24000, // em centavos
+        valorLitro: 600, // em centavos
+        nomePosto: 'Posto Teste',
+        kmAtual: 1050,
+        tipoCombustivel: 'Gasolina'
       }
     ]);
 
@@ -97,12 +97,12 @@ describe('Dashboard Integration Tests', () => {
     await db.insert(despesas).values([
       {
         id: uuidv4(),
-        id_usuario: userId,
-        id_veiculo: vehicleId,
-        data_despesa: yesterday.toISOString(),
-        tipo_despesa: 'Manutencao',
+        idUsuario: userId,
+        idVeiculo: vehicleId,
+        dataDespesa: yesterday.toISOString(),
+        tipoDespesa: 'Manutencao',
         descricao: 'Troca de óleo',
-        valor_despesa: 8000 // em centavos
+        valorDespesa: 8000 // em centavos
       }
     ]);
   }

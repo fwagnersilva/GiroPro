@@ -42,18 +42,18 @@ export interface User {
 // Tipos para veículos
 export interface Vehicle {
   id: string;
-  id_usuario: string;
+  idUsuario: string;
   marca: string;
   modelo: string;
   ano: number;
   placa: string;
-  tipo_combustivel: string;
+  tipoCombustivel: string;
   tipo_uso: string;
   valor_aluguel?: number;
   valor_prestacao?: number;
   media_consumo?: number;
   data_cadastro: string;
-  deleted_at?: string;
+  deletedAt?: string;
 }
 
 export interface CreateVehicleRequest {
@@ -61,7 +61,7 @@ export interface CreateVehicleRequest {
   modelo: string;
   ano: number;
   placa: string;
-  tipo_combustivel?: string;
+  tipoCombustivel?: string;
   tipo_uso?: string;
   valor_aluguel?: number;
   valor_prestacao?: number;
@@ -93,10 +93,10 @@ export interface Journey {
 }
 
 export interface CreateJourneyRequest {
-  id_veiculo: string;
-  data_inicio: string;
+  idVeiculo: string;
+  dataInicio: string;
   km_inicio: number;
-  data_fim?: string;
+  dataFim?: string;
   km_fim?: number;
   ganho_bruto?: number;
   km_total?: number;
@@ -105,10 +105,10 @@ export interface CreateJourneyRequest {
 }
 
 export interface UpdateJourneyRequest {
-  id_veiculo?: string;
-  data_inicio?: string;
+  idVeiculo?: string;
+  dataInicio?: string;
   km_inicio?: number;
-  data_fim?: string;
+  dataFim?: string;
   km_fim?: number;
   ganho_bruto?: number;
   km_total?: number;
@@ -130,7 +130,7 @@ export interface Fueling {
   vehicleId: string;
   data: Date;
   quilometragem: number;
-  quantidade_litros: number;
+  quantidadeLitros: number;
   precoPorLitro: number;
   posto: string;
   tipoCombustivel: string;
@@ -142,7 +142,7 @@ export interface CreateFuelingRequest {
   vehicleId: string;
   data: string;
   quilometragem: number;
-  quantidade_litros: number;
+  quantidadeLitros: number;
   precoPorLitro: number;
   posto: string;
   tipoCombustivel: string;

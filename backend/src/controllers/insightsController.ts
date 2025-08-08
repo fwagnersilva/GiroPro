@@ -4,7 +4,7 @@ import { z } from 'zod';
 
 // Schema de validação para parâmetros de insights
 const insightsQuerySchema = z.object({
-  id_veiculo: z.string().uuid().optional(),
+  idVeiculo: z.string().uuid().optional(),
   periodo_dias: z.coerce.number().min(7).max(365).default(30),
   incluir_tendencias: z.boolean().default(true),
   incluir_sazonalidade: z.boolean().default(true),
@@ -30,7 +30,7 @@ export class InsightsController {
       }
 
       const { 
-        id_veiculo, 
+        idVeiculo, 
         periodo_dias, 
         incluir_tendencias, 
         incluir_sazonalidade, 
@@ -49,22 +49,22 @@ export class InsightsController {
       ] = await Promise.all([
         AdvancedAnalyticsService.calculateOperationalEfficiency(
           req.user?.id,
-          id_veiculo,
+          idVeiculo,
           startDate,
           endDate
         ),
         incluir_tendencias ? AdvancedAnalyticsService.analyzeTrends(
           req.user?.id,
-          id_veiculo,
+          idVeiculo,
           periodo_dias
         ) : null,
         incluir_sazonalidade ? AdvancedAnalyticsService.analyzeSeasonality(
           req.user?.id,
-          id_veiculo
+          idVeiculo
         ) : null,
         incluir_custos ? AdvancedAnalyticsService.analyzeCosts(
           req.user?.id,
-          id_veiculo,
+          idVeiculo,
           startDate,
           endDate
         ) : null,
@@ -88,9 +88,9 @@ export class InsightsController {
           analise_custos: costs,
           configuracao: {
             periodo_dias,
-            data_inicio: startDate.toISOString(),
-            data_fim: endDate.toISOString(),
-            veiculo_especifico: id_veiculo || null,
+            dataInicio: startDate.toISOString(),
+            dataFim: endDate.toISOString(),
+            veiculo_especifico: idVeiculo || null,
             analises_incluidas: {
               tendencias: incluir_tendencias,
               sazonalidade: incluir_sazonalidade,
@@ -126,7 +126,7 @@ export class InsightsController {
         });
       }
 
-      const { id_veiculo, periodo_dias } = validation.data;
+      const { idVeiculo, periodo_dias } = validation.data;
 
       const endDate = new Date();
       const startDate = new Date(endDate.getTime() - periodo_dias * 24 * 60 * 60 * 1000);
@@ -135,13 +135,13 @@ export class InsightsController {
       const [efficiencyMetrics, trends, seasonality, costs] = await Promise.all([
         AdvancedAnalyticsService.calculateOperationalEfficiency(
           req.user?.id,
-          id_veiculo,
+          idVeiculo,
           startDate,
           endDate
         ),
-        AdvancedAnalyticsService.analyzeTrends(req.user?.id, id_veiculo, periodo_dias),
-        AdvancedAnalyticsService.analyzeSeasonality(req.user?.id, id_veiculo),
-        AdvancedAnalyticsService.analyzeCosts(req.user?.id, id_veiculo, startDate, endDate),
+        AdvancedAnalyticsService.analyzeTrends(req.user?.id, idVeiculo, periodo_dias),
+        AdvancedAnalyticsService.analyzeSeasonality(req.user?.id, idVeiculo),
+        AdvancedAnalyticsService.analyzeCosts(req.user?.id, idVeiculo, startDate, endDate),
       ]);
 
       // Gerar apenas insights e recomendações
@@ -159,8 +159,8 @@ export class InsightsController {
           recommendations: insightsData.recommendations,
           resumo_geral: insightsData.resumo_geral,
           periodo: {
-            data_inicio: startDate.toISOString(),
-            data_fim: endDate.toISOString(),
+            dataInicio: startDate.toISOString(),
+            dataFim: endDate.toISOString(),
             total_dias: periodo_dias,
           }
         }
@@ -184,14 +184,14 @@ export class InsightsController {
         return res.status(401).json({ success: false, error: { message: 'Usuário não autenticado' } });
       }
 
-      const { id_veiculo, periodo_dias = 30 } = req.query;
+      const { idVeiculo, periodo_dias = 30 } = req.query;
 
       const endDate = new Date();
       const startDate = new Date(endDate.getTime() - Number(periodo_dias) * 24 * 60 * 60 * 1000);
 
       const efficiencyMetrics = await AdvancedAnalyticsService.calculateOperationalEfficiency(
         req.user?.id,
-        id_veiculo as string,
+        idVeiculo as string,
         startDate,
         endDate
       );
@@ -201,8 +201,8 @@ export class InsightsController {
         data: {
           metricas_eficiencia: efficiencyMetrics,
           periodo: {
-            data_inicio: startDate.toISOString(),
-            data_fim: endDate.toISOString(),
+            dataInicio: startDate.toISOString(),
+            dataFim: endDate.toISOString(),
             total_dias: Number(periodo_dias),
           }
         }
@@ -226,11 +226,11 @@ export class InsightsController {
         return res.status(401).json({ success: false, error: { message: 'Usuário não autenticado' } });
       }
 
-      const { id_veiculo, periodo_dias = 90 } = req.query;
+      const { idVeiculo, periodo_dias = 90 } = req.query;
 
       const trends = await AdvancedAnalyticsService.analyzeTrends(
         req.user?.id,
-        id_veiculo as string,
+        idVeiculo as string,
         Number(periodo_dias)
       );
 
@@ -257,11 +257,11 @@ export class InsightsController {
         return res.status(401).json({ success: false, error: { message: 'Usuário não autenticado' } });
       }
 
-      const { id_veiculo } = req.query;
+      const { idVeiculo } = req.query;
 
       const seasonality = await AdvancedAnalyticsService.analyzeSeasonality(
         req.user?.id,
-        id_veiculo as string
+        idVeiculo as string
       );
 
       return res.json({
@@ -287,14 +287,14 @@ export class InsightsController {
         return res.status(401).json({ success: false, error: { message: 'Usuário não autenticado' } });
       }
 
-      const { id_veiculo, periodo_dias = 30 } = req.query;
+      const { idVeiculo, periodo_dias = 30 } = req.query;
 
       const endDate = new Date();
       const startDate = new Date(endDate.getTime() - Number(periodo_dias) * 24 * 60 * 60 * 1000);
 
       const costs = await AdvancedAnalyticsService.analyzeCosts(
         req.user?.id,
-        id_veiculo as string,
+        idVeiculo as string,
         startDate,
         endDate
       );
@@ -304,8 +304,8 @@ export class InsightsController {
         data: {
           analise_custos: costs,
           periodo: {
-            data_inicio: startDate.toISOString(),
-            data_fim: endDate.toISOString(),
+            dataInicio: startDate.toISOString(),
+            dataFim: endDate.toISOString(),
             total_dias: Number(periodo_dias),
           }
         }

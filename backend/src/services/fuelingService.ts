@@ -8,30 +8,30 @@ import type { FuelingFilters, PaginationParams, ServiceResult } from '../types/c
 // 🛡️ Interfaces para melhor tipagem
 interface FuelingData {
   id: string;
-  id_usuario: string;
-  id_veiculo: string;
-  data_abastecimento: Date;
-  km_atual: number;
-  quantidade_litros: number;
-  valor_total: number;
-  valor_litro: number;
-  nome_posto: string | null;
-  tipo_combustivel: "gasolina" | "etanol" | "diesel" | "gnv" | "flex";
-  created_at: Date;
-  updated_at: Date;
+  idUsuario: string;
+  idVeiculo: string;
+  dataAbastecimento: Date;
+  kmAtual: number;
+  quantidadeLitros: number;
+  valorTotal: number;
+  valorLitro: number;
+  nomePosto: string | null;
+  tipoCombustivel: "gasolina" | "etanol" | "diesel" | "gnv" | "flex";
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 interface CreateFuelingData {
   id: string;
-  id_usuario: string;
-  id_veiculo: string;
-  data_abastecimento: Date;
-  km_atual: number;
-  quantidade_litros: number;
-  valor_total: number;
-  valor_litro: number;
-  nome_posto: string | null;
-  tipo_combustivel: "gasolina" | "etanol" | "diesel" | "gnv" | "flex";
+  idUsuario: string;
+  idVeiculo: string;
+  dataAbastecimento: Date;
+  kmAtual: number;
+  quantidadeLitros: number;
+  valorTotal: number;
+  valorLitro: number;
+  nomePosto: string | null;
+  tipoCombustivel: "gasolina" | "etanol" | "diesel" | "gnv" | "flex";
 }
 
 // 🔧 Utilitários de conversão e validação
@@ -83,7 +83,7 @@ class FuelingUtils {
       throw new Error('Quilometragem deve ser um número válido e positivo');
     }
     
-    if (!Number.isFinite(data.quantidade_litros) || data.quantidade_litros <= 0) {
+    if (!Number.isFinite(data.quantidadeLitros) || data.quantidadeLitros <= 0) {
       throw new Error('Quantidade de litros deve ser um número válido e positivo');
     }
     
@@ -98,15 +98,15 @@ class FuelingUtils {
   static mapToDatabase(userId: string, data: CreateFuelingRequest): CreateFuelingData {
     return {
       id: crypto.randomUUID(),
-      id_usuario: userId,
-      id_veiculo: data.vehicleId,
-      data_abastecimento: new Date(data.data),
-      km_atual: data.quilometragem,
-      quantidade_litros: data.quantidade_litros,
-      valor_total: this.priceToCents(data.quantidade_litros * data.precoPorLitro),
-      valor_litro: this.priceToCents(data.precoPorLitro),
-      nome_posto: data.posto?.trim() || null,
-      tipo_combustivel: this.validateFuelType(data.tipoCombustivel),
+      idUsuario: userId,
+      idVeiculo: data.vehicleId,
+      dataAbastecimento: new Date(data.data),
+      kmAtual: data.quilometragem,
+      quantidadeLitros: data.quantidadeLitros,
+      valorTotal: this.priceToCents(data.quantidadeLitros * data.precoPorLitro),
+      valorLitro: this.priceToCents(data.precoPorLitro),
+      nomePosto: data.posto?.trim() || null,
+      tipoCombustivel: this.validateFuelType(data.tipoCombustivel),
     };
   }
 }
@@ -164,7 +164,7 @@ export class FuelingService {
         .from(veiculos)
         .where(and(
           eq(veiculos.id, fuelingData.vehicleId),
-          eq(veiculos.id_usuario, userId)
+          eq(veiculos.idUsuario, userId)
         ))
         .limit(1);
 
@@ -183,8 +183,8 @@ export class FuelingService {
         return await tx.insert(abastecimentos)
           .values({
             ...newFuelingData,
-            created_at: new Date(),
-            updated_at: new Date(),
+            createdAt: new Date(),
+            updatedAt: new Date(),
           })
           .returning();
       });
@@ -226,19 +226,19 @@ export class FuelingService {
       if (cached) return { success: true, data: cached };
 
       // Base query
-      let query = db.select().from(abastecimentos).where(eq(abastecimentos.id_usuario, userId));
+      let query = db.select().from(abastecimentos).where(eq(abastecimentos.idUsuario, userId));
       
       // Filtros
-      const conditions = [eq(abastecimentos.id_usuario, userId)];
+      const conditions = [eq(abastecimentos.idUsuario, userId)];
       
       if (filters.vehicleId) {
-        conditions.push(eq(abastecimentos.id_veiculo, filters.vehicleId));
+        conditions.push(eq(abastecimentos.idVeiculo, filters.vehicleId));
       }
       
       if (filters.startDate && filters.endDate) {
         conditions.push(
           between(
-            abastecimentos.data_abastecimento,
+            abastecimentos.dataAbastecimento,
             new Date(filters.startDate),
             new Date(filters.endDate)
           )
@@ -246,7 +246,7 @@ export class FuelingService {
       }
       
       if (filters.fuelType) {
-        conditions.push(eq(abastecimentos.tipo_combustivel, filters.fuelType));
+        conditions.push(eq(abastecimentos.tipoCombustivel, filters.fuelType));
       }
 
       // Aplicar filtros
@@ -255,16 +255,16 @@ export class FuelingService {
       // Ordenação
       switch (orderBy) {
         case 'date_asc':
-          query = query.orderBy(asc(abastecimentos.data_abastecimento));
+          query = query.orderBy(asc(abastecimentos.dataAbastecimento));
           break;
         case 'date_desc':
-          query = query.orderBy(desc(abastecimentos.data_abastecimento));
+          query = query.orderBy(desc(abastecimentos.dataAbastecimento));
           break;
         case 'km_asc':
-          query = query.orderBy(asc(abastecimentos.km_atual));
+          query = query.orderBy(asc(abastecimentos.kmAtual));
           break;
         case 'km_desc':
-          query = query.orderBy(desc(abastecimentos.km_atual));
+          query = query.orderBy(desc(abastecimentos.kmAtual));
           break;
       }
 
@@ -323,7 +323,7 @@ export class FuelingService {
         .from(abastecimentos)
         .where(and(
           eq(abastecimentos.id, id),
-          eq(abastecimentos.id_usuario, userId)
+          eq(abastecimentos.idUsuario, userId)
         ))
         .limit(1);
 
@@ -369,7 +369,7 @@ export class FuelingService {
 
       // Preparar dados para atualização
       const updateData: Partial<FuelingData> = {
-        updated_at: new Date()
+        updatedAt: new Date()
       };
 
       // Mapear campos com validação
@@ -378,26 +378,26 @@ export class FuelingService {
         if (isNaN(date.getTime())) {
           throw new Error('Data de abastecimento inválida');
         }
-        updateData.data_abastecimento = date;
+        updateData.dataAbastecimento = date;
       }
 
       if (fuelingData.quilometragem !== undefined) {
         if (!Number.isFinite(fuelingData.quilometragem) || fuelingData.quilometragem < 0) {
           throw new Error('Quilometragem deve ser um número válido e positivo');
         }
-        updateData.km_atual = fuelingData.quilometragem;
+        updateData.kmAtual = fuelingData.quilometragem;
       }
 
-      if (fuelingData.quantidade_litros !== undefined) {
-        if (!Number.isFinite(fuelingData.quantidade_litros) || fuelingData.quantidade_litros <= 0) {
+      if (fuelingData.quantidadeLitros !== undefined) {
+        if (!Number.isFinite(fuelingData.quantidadeLitros) || fuelingData.quantidadeLitros <= 0) {
           throw new Error('Quantidade de litros deve ser um número válido e positivo');
         }
-        updateData.quantidade_litros = fuelingData.quantidade_litros;
+        updateData.quantidadeLitros = fuelingData.quantidadeLitros;
         
         // Recalcular valor total se temos preço
         if (fuelingData.precoPorLitro !== undefined) {
-          updateData.valor_total = FuelingUtils.priceToCents(
-            fuelingData.quantidade_litros * fuelingData.precoPorLitro
+          updateData.valorTotal = FuelingUtils.priceToCents(
+            fuelingData.quantidadeLitros * fuelingData.precoPorLitro
           );
         }
       }
@@ -406,19 +406,19 @@ export class FuelingService {
         if (!Number.isFinite(fuelingData.precoPorLitro) || fuelingData.precoPorLitro <= 0) {
           throw new Error('Preço por litro deve ser um número válido e positivo');
         }
-        updateData.valor_litro = FuelingUtils.priceToCents(fuelingData.precoPorLitro);
+        updateData.valorLitro = FuelingUtils.priceToCents(fuelingData.precoPorLitro);
         
         // Recalcular valor total
-        const litros = fuelingData.quantidade_litros ?? existingFueling.data.quantidade_litros;
-        updateData.valor_total = FuelingUtils.priceToCents(litros * fuelingData.precoPorLitro);
+        const litros = fuelingData.quantidadeLitros ?? existingFueling.data.quantidadeLitros;
+        updateData.valorTotal = FuelingUtils.priceToCents(litros * fuelingData.precoPorLitro);
       }
 
       if (fuelingData.posto !== undefined) {
-        updateData.nome_posto = fuelingData.posto?.trim() || null;
+        updateData.nomePosto = fuelingData.posto?.trim() || null;
       }
 
       if (fuelingData.tipoCombustivel !== undefined) {
-        updateData.tipo_combustivel = FuelingUtils.validateFuelType(fuelingData.tipoCombustivel);
+        updateData.tipoCombustivel = FuelingUtils.validateFuelType(fuelingData.tipoCombustivel);
       }
 
       if (fuelingData.vehicleId !== undefined) {
@@ -428,7 +428,7 @@ export class FuelingService {
           .from(veiculos)
           .where(and(
             eq(veiculos.id, fuelingData.vehicleId),
-            eq(veiculos.id_usuario, userId)
+            eq(veiculos.idUsuario, userId)
           ))
           .limit(1);
 
@@ -439,7 +439,7 @@ export class FuelingService {
           };
         }
         
-        updateData.id_veiculo = fuelingData.vehicleId;
+        updateData.idVeiculo = fuelingData.vehicleId;
       }
 
       // Atualizar no banco
@@ -448,7 +448,7 @@ export class FuelingService {
         .set(updateData)
         .where(and(
           eq(abastecimentos.id, id),
-          eq(abastecimentos.id_usuario, userId)
+          eq(abastecimentos.idUsuario, userId)
         ))
         .returning();
 
@@ -481,7 +481,7 @@ export class FuelingService {
         .delete(abastecimentos)
         .where(and(
           eq(abastecimentos.id, id),
-          eq(abastecimentos.id_usuario, userId)
+          eq(abastecimentos.idUsuario, userId)
         ))
         .returning({ id: abastecimentos.id });
 
@@ -524,18 +524,18 @@ export class FuelingService {
       const cached = FuelingCache.get(cacheKey);
       if (cached) return { success: true, data: cached };
 
-      const conditions = [eq(abastecimentos.id_usuario, userId)];
+      const conditions = [eq(abastecimentos.idUsuario, userId)];
       if (vehicleId) {
-        conditions.push(eq(abastecimentos.id_veiculo, vehicleId));
+        conditions.push(eq(abastecimentos.idVeiculo, vehicleId));
       }
 
       const [stats] = await db
         .select({
           totalFuelings: count(),
-          totalSpent: sql<number>`COALESCE(SUM(${abastecimentos.valor_total}), 0)`,
-          totalLiters: sql<number>`COALESCE(SUM(${abastecimentos.quantidade_litros}), 0)`,
-          averagePrice: sql<number>`COALESCE(AVG(${abastecimentos.valor_litro}), 0)`,
-          lastFueling: sql<Date>`MAX(${abastecimentos.data_abastecimento})`,
+          totalSpent: sql<number>`COALESCE(SUM(${abastecimentos.valorTotal}), 0)`,
+          totalLiters: sql<number>`COALESCE(SUM(${abastecimentos.quantidadeLitros}), 0)`,
+          averagePrice: sql<number>`COALESCE(AVG(${abastecimentos.valorLitro}), 0)`,
+          lastFueling: sql<Date>`MAX(${abastecimentos.dataAbastecimento})`,
         })
         .from(abastecimentos)
         .where(and(...conditions));

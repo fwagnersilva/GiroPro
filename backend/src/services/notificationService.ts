@@ -5,7 +5,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 export interface NotificationData {
   id?: string;
-  id_usuario: string;
+  idUsuario: string;
   tipo?: string; // Opcional com valor padrão
   titulo: string;
   mensagem: string;
@@ -21,7 +21,7 @@ export class NotificationService {
   static async createNotification(data: NotificationData): Promise<NotificationData> {
     const notification = {
       id: data.id || uuidv4(),
-      id_usuario: data.id_usuario,
+      idUsuario: data.idUsuario,
       tipo: data.tipo as "Sistema" | "Alerta" | "Promocao" | "Suporte" || "Sistema",
       titulo: data.titulo,
       mensagem: data.mensagem,
@@ -52,8 +52,8 @@ export class NotificationService {
     const { limit = 50, offset = 0, onlyUnread = false, tipo } = options;
 
     let whereCondition = and(
-      eq(notificacoes.id_usuario, userId),
-      isNull(notificacoes.deleted_at)
+      eq(notificacoes.idUsuario, userId),
+      isNull(notificacoes.deletedAt)
     );
 
     if (onlyUnread) {
@@ -97,8 +97,8 @@ export class NotificationService {
       .where(
         and(
           eq(notificacoes.id, notificationId),
-          eq(notificacoes.id_usuario, userId),
-          isNull(notificacoes.deleted_at)
+          eq(notificacoes.idUsuario, userId),
+          isNull(notificacoes.deletedAt)
         )
       ).returning();
 
@@ -117,9 +117,9 @@ export class NotificationService {
       })
       .where(
         and(
-          eq(notificacoes.id_usuario, userId),
+          eq(notificacoes.idUsuario, userId),
           eq(notificacoes.lida, false),
-          isNull(notificacoes.deleted_at)
+          isNull(notificacoes.deletedAt)
         )
       ).returning();
 
@@ -135,9 +135,9 @@ export class NotificationService {
       .from(notificacoes)
       .where(
         and(
-          eq(notificacoes.id_usuario, userId),
+          eq(notificacoes.idUsuario, userId),
           eq(notificacoes.lida, false),
-          isNull(notificacoes.deleted_at)
+          isNull(notificacoes.deletedAt)
         )
       );
 
@@ -151,13 +151,13 @@ export class NotificationService {
     const result = await db
       .update(notificacoes)
       .set({
-        deleted_at: new Date().toISOString(),
+        deletedAt: new Date().toISOString(),
       })
       .where(
         and(
           eq(notificacoes.id, notificationId),
-          eq(notificacoes.id_usuario, userId),
-          isNull(notificacoes.deleted_at)
+          eq(notificacoes.idUsuario, userId),
+          isNull(notificacoes.deletedAt)
         )
       ).returning();
 
@@ -173,12 +173,12 @@ export class NotificationService {
     const result = await db
       .update(notificacoes)
       .set({
-        deleted_at: new Date().toISOString(),
+        deletedAt: new Date().toISOString(),
       })
       .where(
         and(
           lte(notificacoes.data_envio, thirtyDaysAgo.toISOString()), // Alterado de data_criacao para data_envio
-          isNull(notificacoes.deleted_at)
+          isNull(notificacoes.deletedAt)
         )
       ).returning();
 
@@ -200,10 +200,10 @@ export class NotificationService {
         .from(notificacoes)
         .where(
           and(
-            eq(notificacoes.id_usuario, userId),
+            eq(notificacoes.idUsuario, userId),
             eq(notificacoes.tipo, 'Sistema'), // Usar um tipo válido do enum
             gte(notificacoes.data_envio, yesterday.toISOString()), // Alterado de data_criacao para data_envio
-            isNull(notificacoes.deleted_at)
+            isNull(notificacoes.deletedAt)
           )
         );
 
@@ -214,7 +214,7 @@ export class NotificationService {
 
       if (!isDuplicate) {
         await this.createNotification({
-          id_usuario: userId,
+          idUsuario: userId,
           tipo: 'Sistema', // Usar um tipo válido do enum
           titulo: insight.titulo,
           mensagem: insight.descricao,
@@ -251,10 +251,10 @@ export class NotificationService {
         .from(notificacoes)
         .where(
           and(
-            eq(notificacoes.id_usuario, userId),
+            eq(notificacoes.idUsuario, userId),
             eq(notificacoes.tipo, 'Alerta'), // Usar um tipo válido do enum
             gte(notificacoes.data_envio, twoDaysAgo.toISOString()), // Alterado de data_criacao para data_envio
-            isNull(notificacoes.deleted_at)
+            isNull(notificacoes.deletedAt)
           )
         );
 
@@ -265,7 +265,7 @@ export class NotificationService {
 
       if (!isDuplicate) {
         await this.createNotification({
-          id_usuario: userId,
+          idUsuario: userId,
           tipo: 'Alerta', // Usar um tipo válido do enum
           titulo: `🎯 ${recommendation.titulo}`,
           mensagem: recommendation.descricao,
@@ -290,7 +290,7 @@ export class NotificationService {
 
     if (meta_atingida) {
       await this.createNotification({
-        id_usuario: userId,
+        idUsuario: userId,
         tipo: 'Sistema', // Usar um tipo válido do enum
         titulo: '🎉 Meta Atingida!',
         mensagem: `Parabéns! Você atingiu sua meta de ${meta_tipo}.`,
@@ -303,7 +303,7 @@ export class NotificationService {
       });
     } else if (progresso_percentual >= 90) {
       await this.createNotification({
-        id_usuario: userId,
+        idUsuario: userId,
         tipo: 'Alerta', // Usar um tipo válido do enum
         titulo: '🔥 Quase lá!',
         mensagem: `Você está a ${(100 - progresso_percentual).toFixed(1)}% de atingir sua meta de ${meta_tipo}.`,
@@ -316,7 +316,7 @@ export class NotificationService {
       });
     } else if (progresso_percentual >= 75) {
       await this.createNotification({
-        id_usuario: userId,
+        idUsuario: userId,
         tipo: 'Alerta', // Usar um tipo válido do enum
         titulo: '💪 Bom progresso!',
         mensagem: `Você já completou ${progresso_percentual.toFixed(1)}% da sua meta de ${meta_tipo}.`,
@@ -339,7 +339,7 @@ export class NotificationService {
     switch (tipo_alerta) {
       case 'consumo_alto':
         await this.createNotification({
-          id_usuario: userId,
+          idUsuario: userId,
           tipo: 'Alerta', // Usar um tipo válido do enum
           titulo: '⚠️ Consumo Elevado',
           mensagem: `O veículo ${veiculo.marca} ${veiculo.modelo} está com consumo acima do normal.`,
@@ -354,13 +354,13 @@ export class NotificationService {
 
       case 'manutencao_preventiva':
         await this.createNotification({
-          id_usuario: userId,
+          idUsuario: userId,
           tipo: 'Sistema', // Usar um tipo válido do enum
           titulo: '🔧 Manutenção Preventiva',
           mensagem: `O veículo ${veiculo.marca} ${veiculo.modelo} pode precisar de manutenção em breve.`,
           dados_extras: {
             veiculo_id: veiculo.id,
-            km_atual: dados.km_atual,
+            kmAtual: dados.kmAtual,
             km_ultima_manutencao: dados.km_ultima_manutencao,
             km_recomendado: dados.km_recomendado,
           },
@@ -369,13 +369,13 @@ export class NotificationService {
 
       case 'eficiencia_baixa':
         await this.createNotification({
-          id_usuario: userId,
+          idUsuario: userId,
           tipo: 'Alerta', // Usar um tipo válido do enum
           titulo: '📉 Eficiência Baixa',
           mensagem: `A eficiência do veículo ${veiculo.marca} ${veiculo.modelo} está abaixo do esperado.`,
           dados_extras: {
             veiculo_id: veiculo.id,
-            ganho_por_km_atual: dados.ganho_por_km_atual,
+            ganho_por_kmAtual: dados.ganho_por_kmAtual,
             ganho_por_km_medio: dados.ganho_por_km_medio,
             diferenca_percentual: dados.diferenca_percentual,
           },
@@ -384,7 +384,7 @@ export class NotificationService {
 
       case 'meta_diaria_risco':
         await this.createNotification({
-          id_usuario: userId,
+          idUsuario: userId,
           tipo: 'Alerta', // Usar um tipo válido do enum
           titulo: '⏰ Meta Diária em Risco',
           mensagem: 'Você pode não atingir sua meta diária se continuar no ritmo atual.',

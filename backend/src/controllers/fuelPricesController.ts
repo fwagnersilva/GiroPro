@@ -15,7 +15,7 @@ interface ApiResponse<T = any> {
 
 interface FuelPrice {
   id?: string;
-  tipo_combustivel: FuelType;
+  tipoCombustivel: FuelType;
   preco_medio: number;
   preco_minimo?: number;
   preco_maximo?: number;
@@ -83,7 +83,7 @@ const fuelPricesQuerySchema = z.object({
     .min(2, "Cidade deve ter pelo menos 2 caracteres")
     .max(50, "Cidade deve ter no máximo 50 caracteres")
     .optional(),
-  tipo_combustivel: z.nativeEnum(FuelType).optional(),
+  tipoCombustivel: z.nativeEnum(FuelType).optional(),
   limit: z.coerce.number().min(1).max(100).default(20),
   offset: z.coerce.number().min(0).default(0)
 });
@@ -93,7 +93,7 @@ const priceHistoryQuerySchema = z.object({
   cidade: z.string()
     .min(2, "Cidade deve ter pelo menos 2 caracteres")
     .max(50, "Cidade deve ter no máximo 50 caracteres"),
-  tipo_combustivel: z.nativeEnum(FuelType),
+  tipoCombustivel: z.nativeEnum(FuelType),
   periodo_dias: z.coerce.number()
     .int("Período deve ser um número inteiro")
     .min(1, "Período mínimo é 1 dia")
@@ -102,7 +102,7 @@ const priceHistoryQuerySchema = z.object({
 });
 
 const regionalComparisonQuerySchema = z.object({
-  tipo_combustivel: z.nativeEnum(FuelType).default(FuelType.GASOLINA),
+  tipoCombustivel: z.nativeEnum(FuelType).default(FuelType.GASOLINA),
   estados: z.string()
     .optional()
     .transform(str => {
@@ -119,7 +119,7 @@ const fuelPriceReportSchema = z.object({
     .min(2, "Cidade deve ter pelo menos 2 caracteres")
     .max(50, "Cidade deve ter no máximo 50 caracteres")
     .trim(),
-  tipo_combustivel: z.nativeEnum(FuelType),
+  tipoCombustivel: z.nativeEnum(FuelType),
   preco_medio: z.number()
     .positive("Preço médio deve ser positivo")
     .max(20, "Preço não pode ser superior a R$ 20,00")
@@ -186,13 +186,13 @@ export class FuelPricesController {
         );
       }
 
-      const { estado, cidade, tipo_combustivel, limit, offset } = validation.data;
+      const { estado, cidade, tipoCombustivel, limit, offset } = validation.data;
 
       // Gerar dados simulados (em produção, buscar de API externa ou banco)
       const precos = MockDataGenerator.generatePrices(
         estado,
         cidade,
-        tipo_combustivel,
+        tipoCombustivel,
         limit,
         offset
       );
@@ -208,7 +208,7 @@ export class FuelPricesController {
         filtros: {
           estado: estado || null,
           cidade: cidade || null,
-          tipo_combustivel: tipo_combustivel || null
+          tipoCombustivel: tipoCombustivel || null
         },
         ultima_atualizacao: new Date().toISOString(),
         fonte: "Dados simulados - ANP"
@@ -242,13 +242,13 @@ export class FuelPricesController {
         );
       }
 
-      const { estado, cidade, tipo_combustivel, periodo_dias } = validation.data;
+      const { estado, cidade, tipoCombustivel, periodo_dias } = validation.data;
 
       // Gerar histórico simulado
       const historico = MockDataGenerator.generatePriceHistory(
         estado,
         cidade,
-        tipo_combustivel,
+        tipoCombustivel,
         periodo_dias
       );
 
@@ -259,7 +259,7 @@ export class FuelPricesController {
         parametros: {
           estado,
           cidade,
-          tipo_combustivel,
+          tipoCombustivel,
           periodo_dias
         },
         estatisticas
@@ -293,11 +293,11 @@ export class FuelPricesController {
         );
       }
 
-      const { tipo_combustivel, estados } = validation.data;
+      const { tipoCombustivel, estados } = validation.data;
 
       // Gerar comparativo simulado
       const comparativo = MockDataGenerator.generateRegionalComparison(
-        tipo_combustivel,
+        tipoCombustivel,
         estados
       );
 
@@ -316,7 +316,7 @@ export class FuelPricesController {
       };
 
       const responseData = {
-        tipo_combustivel,
+        tipoCombustivel,
         comparativo,
         estatisticas,
         total_estados: comparativo.length
@@ -366,7 +366,7 @@ export class FuelPricesController {
       const reportedPrice = {
         id: `price_${Date.now()}_${userId}`,
         ...priceData,
-        id_usuario: userId,
+        idUsuario: userId,
         data_registro: new Date().toISOString(),
         status: 'pendente_validacao',
         fonte: 'Usuario'
@@ -399,7 +399,7 @@ export class FuelPricesController {
         latitude: z.coerce.number().min(-90).max(90),
         longitude: z.coerce.number().min(-180).max(180),
         raio_km: z.coerce.number().positive().max(50).default(10),
-        tipo_combustivel: z.nativeEnum(FuelType).optional()
+        tipoCombustivel: z.nativeEnum(FuelType).optional()
       }).safeParse(req.query);
 
       if (!validation.success) {
@@ -411,14 +411,14 @@ export class FuelPricesController {
         );
       }
 
-      const { latitude, longitude, raio_km, tipo_combustivel } = validation.data;
+      const { latitude, longitude, raio_km, tipoCombustivel } = validation.data;
 
       // Gerar postos simulados próximos
       const postos = MockDataGenerator.generateNearbyStations(
         latitude,
         longitude,
         raio_km,
-        tipo_combustivel
+        tipoCombustivel
       );
 
       const responseData = {
@@ -429,7 +429,7 @@ export class FuelPricesController {
           raio_km
         },
         filtros: {
-          tipo_combustivel: tipo_combustivel || null
+          tipoCombustivel: tipoCombustivel || null
         },
         total_postos: postos.length
       };
@@ -491,7 +491,7 @@ class MockDataGenerator {
       const precoMedio = precoBase * estadoFactor * (1 + variacao);
       
       precos.push({
-        tipo_combustivel: tipo,
+        tipoCombustivel: tipo,
         preco_medio: Number(precoMedio.toFixed(3)),
         preco_minimo: Number((precoMedio * 0.9).toFixed(3)),
         preco_maximo: Number((precoMedio * 1.1).toFixed(3)),
@@ -593,7 +593,7 @@ class MockDataGenerator {
     return [
       {
         id: `alert_${userId}_1`,
-        tipo_combustivel: FuelType.GASOLINA,
+        tipoCombustivel: FuelType.GASOLINA,
         preco_maximo: 5.50,
         estado: 'SP',
         cidade: 'São Paulo',
@@ -636,7 +636,7 @@ class StatisticsCalculator {
 
 class PriceValidator {
   static validateReportedPrice(priceData: any): { isValid: boolean; message?: string } {
-    const precoBase = BASE_FUEL_PRICES[priceData.tipo_combustivel as FuelType];
+    const precoBase = BASE_FUEL_PRICES[priceData.tipoCombustivel as FuelType];
     const estadoFactor = STATE_PRICE_FACTORS[priceData.estado] || 1.0;
     const precoEsperado = precoBase * estadoFactor;
     

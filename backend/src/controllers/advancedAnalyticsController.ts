@@ -31,9 +31,9 @@ interface VehicleMetrics {
 
 // Schema de validação aprimorado
 const analyticsQuerySchema = z.object({
-  data_inicio: z.string().datetime().optional(),
-  data_fim: z.string().datetime().optional(),
-  id_veiculo: z.string().uuid().optional(),
+  dataInicio: z.string().datetime().optional(),
+  dataFim: z.string().datetime().optional(),
+  idVeiculo: z.string().uuid().optional(),
   periodo: z.enum(['7d', '30d', '90d', '6m', '1y']).default('30d'),
   incluir_comparacao: z.boolean().default(false),
   timezone: z.string().default('America/Sao_Paulo'),
@@ -49,16 +49,16 @@ export class AdvancedAnalyticsController {
    */
   private static calculatePeriod(
     periodo: string, 
-    data_inicio?: string, 
-    data_fim?: string,
+    dataInicio?: string, 
+    dataFim?: string,
     timezone: string = 'America/Sao_Paulo'
   ): Period {
     let startDate: Date;
     let endDate: Date = new Date();
 
-    if (data_inicio && data_fim) {
-      startDate = new Date(data_inicio);
-      endDate = new Date(data_fim);
+    if (dataInicio && dataFim) {
+      startDate = new Date(dataInicio);
+      endDate = new Date(dataFim);
     } else {
       const now = new Date();
       switch (periodo) {
@@ -171,8 +171,8 @@ export class AdvancedAnalyticsController {
       .from(veiculos)
       .where(and(
         eq(veiculos.id, vehicleId),
-        eq(veiculos.id_usuario, userId),
-        isNull(veiculos.deleted_at)
+        eq(veiculos.idUsuario, userId),
+        isNull(veiculos.deletedAt)
       ))
       .limit(1);
     
@@ -193,23 +193,23 @@ export class AdvancedAnalyticsController {
         throw new ValidationError('Parâmetros inválidos', validation.error.errors);
       }
 
-      const { data_inicio, data_fim, id_veiculo, periodo, timezone } = validation.data;
+      const { dataInicio, dataFim, idVeiculo, periodo, timezone } = validation.data;
       
       // Validar acesso ao veículo se especificado
-      if (id_veiculo && !(await this.validateVehicleAccess(req.user.id, id_veiculo))) {
+      if (idVeiculo && !(await this.validateVehicleAccess(req.user.id, idVeiculo))) {
         throw new NotFoundError('Veículo não encontrado ou sem acesso');
       }
 
-      const { startDate, endDate } = this.calculatePeriod(periodo, data_inicio, data_fim, timezone);
+      const { startDate, endDate } = this.calculatePeriod(periodo, dataInicio, dataFim, timezone);
 
       // Buscar veículos do usuário com query otimizada
       const vehicleConditions = [
-        eq(veiculos.id_usuario, req.user.id),
-        isNull(veiculos.deleted_at)
+        eq(veiculos.idUsuario, req.user.id),
+        isNull(veiculos.deletedAt)
       ];
 
-      if (id_veiculo) {
-        vehicleConditions.push(eq(veiculos.id, id_veiculo));
+      if (idVeiculo) {
+        vehicleConditions.push(eq(veiculos.id, idVeiculo));
       }
 
       const userVehicles = await db
@@ -219,7 +219,7 @@ export class AdvancedAnalyticsController {
           modelo: veiculos.modelo,
           ano: veiculos.ano,
           placa: veiculos.placa,
-          tipo_combustivel: veiculos.tipo_combustivel,
+          tipoCombustivel: veiculos.tipoCombustivel,
         })
         .from(veiculos)
         .where(and(...vehicleConditions));
@@ -236,46 +236,46 @@ export class AdvancedAnalyticsController {
           // Buscar abastecimentos otimizado
           db
             .select({
-              data_abastecimento: abastecimentos.data_abastecimento,
-              quantidade_litros: abastecimentos.quantidade_litros,
-              valor_total: abastecimentos.valor_total,
-              km_atual: abastecimentos.km_atual,
+              dataAbastecimento: abastecimentos.dataAbastecimento,
+              quantidadeLitros: abastecimentos.quantidadeLitros,
+              valorTotal: abastecimentos.valorTotal,
+              kmAtual: abastecimentos.kmAtual,
             })
             .from(abastecimentos)
             .where(
               and(
-                eq(abastecimentos.id_veiculo, vehicle.id),
-                eq(abastecimentos.id_usuario, req.user.id),
-                gte(abastecimentos.data_abastecimento, startDate.toISOString()),
-                lte(abastecimentos.data_abastecimento, endDate.toISOString()),
-                isNull(abastecimentos.deleted_at)
+                eq(abastecimentos.idVeiculo, vehicle.id),
+                eq(abastecimentos.idUsuario, req.user.id),
+                gte(abastecimentos.dataAbastecimento, startDate.toISOString()),
+                lte(abastecimentos.dataAbastecimento, endDate.toISOString()),
+                isNull(abastecimentos.deletedAt)
               )
             )
-            .orderBy(asc(abastecimentos.data_abastecimento)),
+            .orderBy(asc(abastecimentos.dataAbastecimento)),
 
           // Buscar jornadas otimizado
           db
             .select({
               km_total: jornadas.km_total,
-              data_inicio: jornadas.data_inicio,
-              data_fim: jornadas.data_fim,
+              dataInicio: jornadas.dataInicio,
+              dataFim: jornadas.dataFim,
               ganho_bruto: jornadas.ganho_bruto,
             })
             .from(jornadas)
             .where(
               and(
-                eq(jornadas.id_veiculo, vehicle.id),
-                eq(jornadas.id_usuario, req.user.id),
-                gte(jornadas.data_inicio, startDate.toISOString()),
-                lte(jornadas.data_inicio, endDate.toISOString()),
-                isNull(jornadas.deleted_at)
+                eq(jornadas.idVeiculo, vehicle.id),
+                eq(jornadas.idUsuario, req.user.id),
+                gte(jornadas.dataInicio, startDate.toISOString()),
+                lte(jornadas.dataInicio, endDate.toISOString()),
+                isNull(jornadas.deletedAt)
               )
             )
         ]);
 
         // Calcular métricas com validação
-        const totalLitros = fuelings.reduce((sum, f) => sum + (Number(f.quantidade_litros) || 0), 0);
-        const totalGastoCombustivel = fuelings.reduce((sum, f) => sum + (Number(f.valor_total) || 0), 0);
+        const totalLitros = fuelings.reduce((sum, f) => sum + (Number(f.quantidadeLitros) || 0), 0);
+        const totalGastoCombustivel = fuelings.reduce((sum, f) => sum + (Number(f.valorTotal) || 0), 0);
         const totalKm = journeys.reduce((sum, j) => sum + (Number(j.km_total) || 0), 0);
         const totalFaturamento = journeys.reduce((sum, j) => sum + (Number(j.ganho_bruto) || 0), 0);
         
@@ -285,7 +285,7 @@ export class AdvancedAnalyticsController {
 
         // Análise de eficiência temporal melhorada
         const fuelingsWithEfficiency = fuelings.map((fueling, index) => {
-          if (index === 0 || !fueling.km_atual) {
+          if (index === 0 || !fueling.kmAtual) {
             return { 
               ...fueling, 
               consumo_periodo: null, 
@@ -295,7 +295,7 @@ export class AdvancedAnalyticsController {
           }
           
           const prevFueling = fuelings[index - 1];
-          if (!prevFueling.km_atual) {
+          if (!prevFueling.kmAtual) {
             return { 
               ...fueling, 
               consumo_periodo: null, 
@@ -304,8 +304,8 @@ export class AdvancedAnalyticsController {
             };
           }
 
-          const kmPercorridos = Number(fueling.km_atual) - Number(prevFueling.km_atual);
-          const litrosConsumidos = Number(fueling.quantidade_litros) || 0;
+          const kmPercorridos = Number(fueling.kmAtual) - Number(prevFueling.kmAtual);
+          const litrosConsumidos = Number(fueling.quantidadeLitros) || 0;
           const consumoPeriodo = litrosConsumidos > 0 && kmPercorridos > 0 ? kmPercorridos / litrosConsumidos : 0;
           
           // Classificação mais detalhada
@@ -350,8 +350,8 @@ export class AdvancedAnalyticsController {
           historico_eficiencia: fuelingsWithEfficiency.slice(1),
           tendencia_consumo: consumoTrend,
           periodo: {
-            data_inicio: startDate.toISOString(),
-            data_fim: endDate.toISOString(),
+            dataInicio: startDate.toISOString(),
+            dataFim: endDate.toISOString(),
             descricao: this.getPeriodDescription(startDate, endDate),
             dias_analisados: Math.ceil((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24))
           }
@@ -369,8 +369,8 @@ export class AdvancedAnalyticsController {
           resumo_geral: this.calculateGeneralSummary(consumptionAnalysis),
           estatisticas_comparativas: estatisticasComparativas,
           periodo: {
-            data_inicio: startDate.toISOString(),
-            data_fim: endDate.toISOString(),
+            dataInicio: startDate.toISOString(),
+            dataFim: endDate.toISOString(),
             descricao: this.getPeriodDescription(startDate, endDate),
             timezone: timezone
           },
@@ -468,34 +468,34 @@ export class AdvancedAnalyticsController {
         throw new ValidationError('Parâmetros inválidos', validation.error.errors);
       }
 
-      const { data_inicio, data_fim, id_veiculo, periodo, timezone } = validation.data;
+      const { dataInicio, dataFim, idVeiculo, periodo, timezone } = validation.data;
 
-      if (id_veiculo && !(await this.validateVehicleAccess(req.user.id, id_veiculo))) {
+      if (idVeiculo && !(await this.validateVehicleAccess(req.user.id, idVeiculo))) {
         throw new NotFoundError('Veículo não encontrado ou sem acesso');
       }
 
-      const { startDate, endDate } = this.calculatePeriod(periodo, data_inicio, data_fim, timezone);
+      const { startDate, endDate } = this.calculatePeriod(periodo, dataInicio, dataFim, timezone);
 
       const conditions = [
-        eq(jornadas.id_usuario, req.user.id),
-        gte(jornadas.data_inicio, startDate.toISOString()),
-        lte(jornadas.data_inicio, endDate.toISOString()),
-        isNull(jornadas.deleted_at)
+        eq(jornadas.idUsuario, req.user.id),
+        gte(jornadas.dataInicio, startDate.toISOString()),
+        lte(jornadas.dataInicio, endDate.toISOString()),
+        isNull(jornadas.deletedAt)
       ];
 
-      if (id_veiculo) {
-        conditions.push(eq(jornadas.id_veiculo, id_veiculo));
+      if (idVeiculo) {
+        conditions.push(eq(jornadas.idVeiculo, idVeiculo));
       }
 
       const allJourneys = await db
         .select({
           id: jornadas.id,
-          data_inicio: jornadas.data_inicio,
-          data_fim: jornadas.data_fim,
+          dataInicio: jornadas.dataInicio,
+          dataFim: jornadas.dataFim,
           ganho_bruto: jornadas.ganho_bruto,
           km_total: jornadas.km_total,
           tempo_total: jornadas.tempo_total,
-          id_veiculo: jornadas.id_veiculo,
+          idVeiculo: jornadas.idVeiculo,
         })
         .from(jornadas)
         .where(and(...conditions));
@@ -509,8 +509,8 @@ export class AdvancedAnalyticsController {
             resumo_jornadas: {},
             tendencia_jornadas: {},
             periodo: {
-              data_inicio: startDate.toISOString(),
-              data_fim: endDate.toISOString(),
+              dataInicio: startDate.toISOString(),
+              dataFim: endDate.toISOString(),
               descricao: this.getPeriodDescription(startDate, endDate),
               timezone: timezone
             }
@@ -520,7 +520,7 @@ export class AdvancedAnalyticsController {
 
       // Agrupar jornadas por veículo para análise individual
       const journeysByVehicle = allJourneys.reduce((acc, journey) => {
-        const vehicleId = journey.id_veiculo;
+        const vehicleId = journey.idVeiculo;
         if (!acc[vehicleId]) {
           acc[vehicleId] = [];
         }
@@ -542,7 +542,7 @@ export class AdvancedAnalyticsController {
 
         // Análise por dia da semana
         const dailyPerformance = vehicleJourneys.reduce((acc, journey) => {
-          const date = new Date(journey.data_inicio);
+          const date = new Date(journey.dataInicio);
           const dayOfWeek = date.getDay(); // 0 = Domingo, 6 = Sábado
           const dayName = this.getDayOfWeekName(dayOfWeek);
 
@@ -594,8 +594,8 @@ export class AdvancedAnalyticsController {
           analise_jornadas: analysisResults,
           resumo_jornadas: resumoGeralJornadas,
           periodo: {
-            data_inicio: startDate.toISOString(),
-            data_fim: endDate.toISOString(),
+            dataInicio: startDate.toISOString(),
+            dataFim: endDate.toISOString(),
             descricao: this.getPeriodDescription(startDate, endDate),
             timezone: timezone
           },
@@ -629,32 +629,32 @@ export class AdvancedAnalyticsController {
         throw new ValidationError('Parâmetros inválidos', validation.error.errors);
       }
 
-      const { data_inicio, data_fim, id_veiculo, periodo, timezone } = validation.data;
+      const { dataInicio, dataFim, idVeiculo, periodo, timezone } = validation.data;
 
-      if (id_veiculo && !(await this.validateVehicleAccess(req.user.id, id_veiculo))) {
+      if (idVeiculo && !(await this.validateVehicleAccess(req.user.id, idVeiculo))) {
         throw new NotFoundError('Veículo não encontrado ou sem acesso');
       }
 
-      const { startDate, endDate } = this.calculatePeriod(periodo, data_inicio, data_fim, timezone);
+      const { startDate, endDate } = this.calculatePeriod(periodo, dataInicio, dataFim, timezone);
 
       const conditions = [
-        eq(despesas.id_usuario, req.user.id),
-        gte(despesas.data_despesa, startDate.toISOString()),
-        lte(despesas.data_despesa, endDate.toISOString()),
-        isNull(despesas.deleted_at)
+        eq(despesas.idUsuario, req.user.id),
+        gte(despesas.dataDespesa, startDate.toISOString()),
+        lte(despesas.dataDespesa, endDate.toISOString()),
+        isNull(despesas.deletedAt)
       ];
 
-      if (id_veiculo) {
-        conditions.push(eq(despesas.id_veiculo, id_veiculo));
+      if (idVeiculo) {
+        conditions.push(eq(despesas.idVeiculo, idVeiculo));
       }
 
       const allExpenses = await db
         .select({
           id: despesas.id,
-          data_despesa: despesas.data_despesa,
-          valor_despesa: despesas.valor_despesa,
-          tipo_despesa: despesas.tipo_despesa,
-          id_veiculo: despesas.id_veiculo,
+          dataDespesa: despesas.dataDespesa,
+          valorDespesa: despesas.valorDespesa,
+          tipoDespesa: despesas.tipoDespesa,
+          idVeiculo: despesas.idVeiculo,
         })
         .from(despesas)
         .where(and(...conditions));
@@ -667,8 +667,8 @@ export class AdvancedAnalyticsController {
             analise_despesas: [],
             resumo_despesas: {},
             periodo: {
-              data_inicio: startDate.toISOString(),
-              data_fim: endDate.toISOString(),
+              dataInicio: startDate.toISOString(),
+              dataFim: endDate.toISOString(),
               descricao: this.getPeriodDescription(startDate, endDate),
               timezone: timezone
             }
@@ -678,8 +678,8 @@ export class AdvancedAnalyticsController {
 
       // Agrupar despesas por categoria e veículo
       const expensesByCategoryAndVehicle = allExpenses.reduce((acc, expense) => {
-        const vehicleId = expense.id_veiculo || 'sem_veiculo';
-        const category = expense.tipo_despesa;
+        const vehicleId = expense.idVeiculo || 'sem_veiculo';
+        const category = expense.tipoDespesa;
 
         if (!acc[vehicleId]) {
           acc[vehicleId] = {};
@@ -687,7 +687,7 @@ export class AdvancedAnalyticsController {
         if (!acc[vehicleId][category]) {
           acc[vehicleId][category] = { total: 0, count: 0 };
         }
-        acc[vehicleId][category].total += Number(expense.valor_despesa) || 0;
+        acc[vehicleId][category].total += Number(expense.valorDespesa) || 0;
         acc[vehicleId][category].count++;
         return acc;
       }, {} as Record<string, Record<string, { total: number; count: number }>>);
@@ -720,11 +720,11 @@ export class AdvancedAnalyticsController {
       const resumoGeralDespesas = {
         total_despesas_geral: Math.round(analysisResults.reduce((sum, ar) => sum + ar.total_despesas_veiculo, 0)),
         despesas_por_categoria_geral: Object.values(allExpenses.reduce((acc, expense) => {
-          const category = expense.tipo_despesa;
+          const category = expense.tipoDespesa;
           if (!acc[category]) {
             acc[category] = { total: 0, count: 0 };
           }
-          acc[category].total += Number(expense.valor_despesa) || 0;
+          acc[category].total += Number(expense.valorDespesa) || 0;
           acc[category].count++;
           return acc;
         }, {} as Record<string, { total: number; count: number }>)).map(([category, data]) => ({
@@ -740,8 +740,8 @@ export class AdvancedAnalyticsController {
           analise_despesas: analysisResults,
           resumo_despesas: resumoGeralDespesas,
           periodo: {
-            data_inicio: startDate.toISOString(),
-            data_fim: endDate.toISOString(),
+            dataInicio: startDate.toISOString(),
+            dataFim: endDate.toISOString(),
             descricao: this.getPeriodDescription(startDate, endDate),
             timezone: timezone
           },
@@ -775,52 +775,52 @@ export class AdvancedAnalyticsController {
         throw new ValidationError('Parâmetros inválidos', validation.error.errors);
       }
 
-      const { data_inicio, data_fim, id_veiculo, periodo, timezone } = validation.data;
+      const { dataInicio, dataFim, idVeiculo, periodo, timezone } = validation.data;
 
-      if (id_veiculo && !(await this.validateVehicleAccess(req.user.id, id_veiculo))) {
+      if (idVeiculo && !(await this.validateVehicleAccess(req.user.id, idVeiculo))) {
         throw new NotFoundError('Veículo não encontrado ou sem acesso');
       }
 
-      const { startDate, endDate } = this.calculatePeriod(periodo, data_inicio, data_fim, timezone);
+      const { startDate, endDate } = this.calculatePeriod(periodo, dataInicio, dataFim, timezone);
 
       const journeyConditions = [
-        eq(jornadas.id_usuario, req.user.id),
-        gte(jornadas.data_inicio, startDate.toISOString()),
-        lte(jornadas.data_inicio, endDate.toISOString()),
-        isNull(jornadas.deleted_at)
+        eq(jornadas.idUsuario, req.user.id),
+        gte(jornadas.dataInicio, startDate.toISOString()),
+        lte(jornadas.dataInicio, endDate.toISOString()),
+        isNull(jornadas.deletedAt)
       ];
 
       const expenseConditions = [
-        eq(despesas.id_usuario, req.user.id),
-        gte(despesas.data_despesa, startDate.toISOString()),
-        lte(despesas.data_despesa, endDate.toISOString()),
-        isNull(despesas.deleted_at)
+        eq(despesas.idUsuario, req.user.id),
+        gte(despesas.dataDespesa, startDate.toISOString()),
+        lte(despesas.dataDespesa, endDate.toISOString()),
+        isNull(despesas.deletedAt)
       ];
 
-      if (id_veiculo) {
-        journeyConditions.push(eq(jornadas.id_veiculo, id_veiculo));
-        expenseConditions.push(eq(despesas.id_veiculo, id_veiculo));
+      if (idVeiculo) {
+        journeyConditions.push(eq(jornadas.idVeiculo, idVeiculo));
+        expenseConditions.push(eq(despesas.idVeiculo, idVeiculo));
       }
 
       const [allJourneys, allExpenses] = await Promise.all([
-        db.select({ ganho_bruto: jornadas.ganho_bruto, id_veiculo: jornadas.id_veiculo }).from(jornadas).where(and(...journeyConditions)),
-        db.select({ valor_despesa: despesas.valor_despesa, id_veiculo: despesas.id_veiculo }).from(despesas).where(and(...expenseConditions)),
+        db.select({ ganho_bruto: jornadas.ganho_bruto, idVeiculo: jornadas.idVeiculo }).from(jornadas).where(and(...journeyConditions)),
+        db.select({ valorDespesa: despesas.valorDespesa, idVeiculo: despesas.idVeiculo }).from(despesas).where(and(...expenseConditions)),
       ]);
 
       // Agrupar por veículo
       const profitabilityByVehicle = new Map<string, { totalReceita: number; totalDespesa: number }>();
 
       allJourneys.forEach(j => {
-        const vehicleId = j.id_veiculo;
+        const vehicleId = j.idVeiculo;
         const current = profitabilityByVehicle.get(vehicleId) || { totalReceita: 0, totalDespesa: 0 };
         current.totalReceita += Number(j.ganho_bruto) || 0;
         profitabilityByVehicle.set(vehicleId, current);
       });
 
       allExpenses.forEach(e => {
-        const vehicleId = e.id_veiculo || 'sem_veiculo'; // Despesas podem não ter veículo associado
+        const vehicleId = e.idVeiculo || 'sem_veiculo'; // Despesas podem não ter veículo associado
         const current = profitabilityByVehicle.get(vehicleId) || { totalReceita: 0, totalDespesa: 0 };
-        current.totalDespesa += Number(e.valor_despesa) || 0;
+        current.totalDespesa += Number(e.valorDespesa) || 0;
         profitabilityByVehicle.set(vehicleId, current);
       });
 
@@ -864,8 +864,8 @@ export class AdvancedAnalyticsController {
           analise_lucratividade: analysisResults,
           resumo_lucratividade: resumoGeralLucratividade,
           periodo: {
-            data_inicio: startDate.toISOString(),
-            data_fim: endDate.toISOString(),
+            dataInicio: startDate.toISOString(),
+            dataFim: endDate.toISOString(),
             descricao: this.getPeriodDescription(startDate, endDate),
             timezone: timezone
           },
@@ -899,9 +899,9 @@ export class AdvancedAnalyticsController {
       }
 
       const { vehicle_ids } = validation.data;
-      const { data_inicio, data_fim, periodo, timezone } = analyticsQuerySchema.safeParse(req.query).data; // Reutiliza o schema para período
+      const { dataInicio, dataFim, periodo, timezone } = analyticsQuerySchema.safeParse(req.query).data; // Reutiliza o schema para período
 
-      const { startDate, endDate } = this.calculatePeriod(periodo, data_inicio, data_fim, timezone);
+      const { startDate, endDate } = this.calculatePeriod(periodo, dataInicio, dataFim, timezone);
 
       const comparisonResults = [];
       for (const vehicleId of vehicle_ids) {
@@ -915,48 +915,48 @@ export class AdvancedAnalyticsController {
         // Buscar dados para o veículo
         const [fuelings, journeys, expenses] = await Promise.all([
           db.select({
-            quantidade_litros: abastecimentos.quantidade_litros,
-            valor_total: abastecimentos.valor_total,
-            km_atual: abastecimentos.km_atual,
-            data_abastecimento: abastecimentos.data_abastecimento
+            quantidadeLitros: abastecimentos.quantidadeLitros,
+            valorTotal: abastecimentos.valorTotal,
+            kmAtual: abastecimentos.kmAtual,
+            dataAbastecimento: abastecimentos.dataAbastecimento
           }).from(abastecimentos).where(and(
-            eq(abastecimentos.id_veiculo, vehicleId),
-            eq(abastecimentos.id_usuario, req.user.id),
-            gte(abastecimentos.data_abastecimento, startDate.toISOString()),
-            lte(abastecimentos.data_abastecimento, endDate.toISOString()),
-            isNull(abastecimentos.deleted_at)
+            eq(abastecimentos.idVeiculo, vehicleId),
+            eq(abastecimentos.idUsuario, req.user.id),
+            gte(abastecimentos.dataAbastecimento, startDate.toISOString()),
+            lte(abastecimentos.dataAbastecimento, endDate.toISOString()),
+            isNull(abastecimentos.deletedAt)
           )),
           db.select({
             ganho_bruto: jornadas.ganho_bruto,
             km_total: jornadas.km_total,
             tempo_total: jornadas.tempo_total,
-            data_inicio: jornadas.data_inicio
+            dataInicio: jornadas.dataInicio
           }).from(jornadas).where(and(
-            eq(jornadas.id_veiculo, vehicleId),
-            eq(jornadas.id_usuario, req.user.id),
-            gte(jornadas.data_inicio, startDate.toISOString()),
-            lte(jornadas.data_inicio, endDate.toISOString()),
-            isNull(jornadas.deleted_at)
+            eq(jornadas.idVeiculo, vehicleId),
+            eq(jornadas.idUsuario, req.user.id),
+            gte(jornadas.dataInicio, startDate.toISOString()),
+            lte(jornadas.dataInicio, endDate.toISOString()),
+            isNull(jornadas.deletedAt)
           )),
           db.select({
-            valor_despesa: despesas.valor_despesa,
-            tipo_despesa: despesas.tipo_despesa,
-            data_despesa: despesas.data_despesa
+            valorDespesa: despesas.valorDespesa,
+            tipoDespesa: despesas.tipoDespesa,
+            dataDespesa: despesas.dataDespesa
           }).from(despesas).where(and(
-            eq(despesas.id_veiculo, vehicleId),
-            eq(despesas.id_usuario, req.user.id),
-            gte(despesas.data_despesa, startDate.toISOString()),
-            lte(despesas.data_despesa, endDate.toISOString()),
-            isNull(despesas.deleted_at)
+            eq(despesas.idVeiculo, vehicleId),
+            eq(despesas.idUsuario, req.user.id),
+            gte(despesas.dataDespesa, startDate.toISOString()),
+            lte(despesas.dataDespesa, endDate.toISOString()),
+            isNull(despesas.deletedAt)
           )),
         ]);
 
         // Calcular métricas para o veículo
-        const totalLitros = fuelings.reduce((sum, f) => sum + (Number(f.quantidade_litros) || 0), 0);
-        const totalGastoCombustivel = fuelings.reduce((sum, f) => sum + (Number(f.valor_total) || 0), 0);
+        const totalLitros = fuelings.reduce((sum, f) => sum + (Number(f.quantidadeLitros) || 0), 0);
+        const totalGastoCombustivel = fuelings.reduce((sum, f) => sum + (Number(f.valorTotal) || 0), 0);
         const totalKmJornadas = journeys.reduce((sum, j) => sum + (Number(j.km_total) || 0), 0);
         const totalGanhoBrutoJornadas = journeys.reduce((sum, j) => sum + (Number(j.ganho_bruto) || 0), 0);
-        const totalDespesas = expenses.reduce((sum, e) => sum + (Number(e.valor_despesa) || 0), 0);
+        const totalDespesas = expenses.reduce((sum, e) => sum + (Number(e.valorDespesa) || 0), 0);
 
         const consumoMedio = totalKmJornadas > 0 && totalLitros > 0 ? totalKmJornadas / totalLitros : 0;
         const custoPorKm = totalKmJornadas > 0 ? (totalGastoCombustivel + totalDespesas) / totalKmJornadas : 0;
@@ -1007,8 +1007,8 @@ export class AdvancedAnalyticsController {
           rankings: rankings,
           estatisticas_consolidadas: estatisticasConsolidadas,
           periodo: {
-            data_inicio: startDate.toISOString(),
-            data_fim: endDate.toISOString(),
+            dataInicio: startDate.toISOString(),
+            dataFim: endDate.toISOString(),
             descricao: this.getPeriodDescription(startDate, endDate),
             timezone: timezone
           },

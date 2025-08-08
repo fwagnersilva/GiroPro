@@ -12,11 +12,11 @@ export class ExpenseService {
     try {
       const newExpense = {
         id: crypto.randomUUID(),
-        id_usuario: userId,
-        id_veiculo: expenseData.vehicleId,
-        data_despesa: expenseData.data,
-        tipo_despesa: expenseData.categoria as any, // Mapear categoria para tipo_despesa
-        valor_despesa: Math.round(expenseData.valor * 100), // Converter para centavos
+        idUsuario: userId,
+        idVeiculo: expenseData.vehicleId,
+        dataDespesa: expenseData.data,
+        tipoDespesa: expenseData.categoria as any, // Mapear categoria para tipoDespesa
+        valorDespesa: Math.round(expenseData.valor * 100), // Converter para centavos
         descricao: expenseData.descricao,
       };
 
@@ -40,7 +40,7 @@ export class ExpenseService {
       const result = await db
         .select()
         .from(despesas)
-        .where(and(eq(despesas.id_usuario, userId), isNull(despesas.deleted_at)));
+        .where(and(eq(despesas.idUsuario, userId), isNull(despesas.deletedAt)));
 
       return result.map(this.mapToExpense);
     } catch (error) {
@@ -58,8 +58,8 @@ export class ExpenseService {
         .from(despesas)
         .where(and(
           eq(despesas.id, expenseId),
-          eq(despesas.id_usuario, userId),
-          isNull(despesas.deleted_at)
+          eq(despesas.idUsuario, userId),
+          isNull(despesas.deletedAt)
         ));
 
       if (result.length === 0) {
@@ -80,16 +80,16 @@ export class ExpenseService {
       const updateFields: any = {};
 
       if (updateData.vehicleId !== undefined) {
-        updateFields.id_veiculo = updateData.vehicleId;
+        updateFields.idVeiculo = updateData.vehicleId;
       }
       if (updateData.data !== undefined) {
-        updateFields.data_despesa = new Date(updateData.data);
+        updateFields.dataDespesa = new Date(updateData.data);
       }
       if (updateData.categoria !== undefined) {
-        updateFields.tipo_despesa = updateData.categoria;
+        updateFields.tipoDespesa = updateData.categoria;
       }
       if (updateData.valor !== undefined) {
-        updateFields.valor_despesa = Math.round(updateData.valor * 100);
+        updateFields.valorDespesa = Math.round(updateData.valor * 100);
       }
       if (updateData.descricao !== undefined) {
         updateFields.descricao = updateData.descricao;
@@ -100,8 +100,8 @@ export class ExpenseService {
         .set(updateFields)
         .where(and(
           eq(despesas.id, expenseId),
-          eq(despesas.id_usuario, userId),
-          isNull(despesas.deleted_at)
+          eq(despesas.idUsuario, userId),
+          isNull(despesas.deletedAt)
         ))
         .returning();
 
@@ -122,11 +122,11 @@ export class ExpenseService {
     try {
       const result = await db
         .update(despesas)
-        .set({ deleted_at: new Date().toISOString() })
+        .set({ deletedAt: new Date().toISOString() })
         .where(and(
           eq(despesas.id, expenseId),
-          eq(despesas.id_usuario, userId),
-          isNull(despesas.deleted_at)
+          eq(despesas.idUsuario, userId),
+          isNull(despesas.deletedAt)
         ))
         .returning();
 
@@ -142,14 +142,14 @@ export class ExpenseService {
   private static mapToExpense(dbExpense: any): Expense {
     return {
       id: dbExpense.id,
-      userId: dbExpense.id_usuario,
-      vehicleId: dbExpense.id_veiculo,
-      data: dbExpense.data_despesa,
-      valor: dbExpense.valor_despesa / 100, // Converter de centavos para reais
+      userId: dbExpense.idUsuario,
+      vehicleId: dbExpense.idVeiculo,
+      data: dbExpense.dataDespesa,
+      valor: dbExpense.valorDespesa / 100, // Converter de centavos para reais
       descricao: dbExpense.descricao || '',
-      categoria: dbExpense.tipo_despesa,
-      createdAt: dbExpense.created_at || dbExpense.data_despesa,
-      updatedAt: dbExpense.updated_at || dbExpense.data_despesa,
+      categoria: dbExpense.tipoDespesa,
+      createdAt: dbExpense.createdAt || dbExpense.dataDespesa,
+      updatedAt: dbExpense.updatedAt || dbExpense.dataDespesa,
     };
   }
 }

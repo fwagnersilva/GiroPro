@@ -11,12 +11,12 @@ export class VehicleService {
     try {
       const newVehicle = {
         id: crypto.randomUUID(),
-        id_usuario: userId,
+        idUsuario: userId,
         marca: vehicleData.marca,
         modelo: vehicleData.modelo,
         ano: vehicleData.ano,
         placa: vehicleData.placa,
-        tipo_combustivel: vehicleData.tipo_combustivel as 'Gasolina' | 'Etanol' | 'Diesel' | 'GNV' | 'Flex' || 'Gasolina',
+        tipoCombustivel: vehicleData.tipoCombustivel as 'Gasolina' | 'Etanol' | 'Diesel' | 'GNV' | 'Flex' || 'Gasolina',
         tipo_uso: vehicleData.tipo_uso as 'Proprio' | 'Alugado' | 'Financiado' || 'Proprio',
         data_cadastro: new Date().toISOString(),
       };
@@ -41,7 +41,7 @@ export class VehicleService {
       const result = await db
         .select()
         .from(veiculos)
-        .where(and(eq(veiculos.id_usuario, userId), isNull(veiculos.deleted_at)));
+        .where(and(eq(veiculos.idUsuario, userId), isNull(veiculos.deletedAt)));
 
       return result.map(this.mapToVehicle);
     } catch (error) {
@@ -59,8 +59,8 @@ export class VehicleService {
         .from(veiculos)
         .where(and(
           eq(veiculos.id, vehicleId),
-          eq(veiculos.id_usuario, userId),
-          isNull(veiculos.deleted_at)
+          eq(veiculos.idUsuario, userId),
+          isNull(veiculos.deletedAt)
         ));
 
       if (result.length === 0) {
@@ -98,8 +98,8 @@ export class VehicleService {
         .set(updateFields)
         .where(and(
           eq(veiculos.id, vehicleId),
-          eq(veiculos.id_usuario, userId),
-          isNull(veiculos.deleted_at)
+          eq(veiculos.idUsuario, userId),
+          isNull(veiculos.deletedAt)
         ))
         .returning();
 
@@ -120,11 +120,11 @@ export class VehicleService {
     try {
       const result = await db
         .update(veiculos)
-        .set({ deleted_at: new Date().toISOString() })
+        .set({ deletedAt: new Date().toISOString() })
         .where(and(
           eq(veiculos.id, vehicleId),
-          eq(veiculos.id_usuario, userId),
-          isNull(veiculos.deleted_at)
+          eq(veiculos.idUsuario, userId),
+          isNull(veiculos.deletedAt)
         ))
         .returning();
 
@@ -140,18 +140,18 @@ export class VehicleService {
   private static mapToVehicle(dbVehicle: any): Vehicle {
     return {
       id: dbVehicle.id,
-      id_usuario: dbVehicle.id_usuario,
+      idUsuario: dbVehicle.idUsuario,
       marca: dbVehicle.marca,
       modelo: dbVehicle.modelo,
       ano: dbVehicle.ano,
       placa: dbVehicle.placa,
-      tipo_combustivel: dbVehicle.tipo_combustivel,
+      tipoCombustivel: dbVehicle.tipoCombustivel,
       tipo_uso: dbVehicle.tipo_uso,
       valor_aluguel: dbVehicle.valor_aluguel,
       valor_prestacao: dbVehicle.valor_prestacao,
       media_consumo: dbVehicle.media_consumo,
       data_cadastro: dbVehicle.data_cadastro,
-      deleted_at: dbVehicle.deleted_at,
+      deletedAt: dbVehicle.deletedAt,
     };
   }
 }

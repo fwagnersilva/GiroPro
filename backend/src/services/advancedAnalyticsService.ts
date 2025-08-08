@@ -17,8 +17,8 @@ export class AdvancedAnalyticsService {
 
     // Filtros base
     let vehicleFilter = and(
-      eq(veiculos.id_usuario, userId),
-      isNull(veiculos.deleted_at)
+      eq(veiculos.idUsuario, userId),
+      isNull(veiculos.deletedAt)
     );
 
     if (vehicleId) {
@@ -45,11 +45,11 @@ export class AdvancedAnalyticsService {
         .from(jornadas)
         .where(
           and(
-            eq(jornadas.id_veiculo, vehicle.id),
-            eq(jornadas.id_usuario, userId),
-            gte(jornadas.data_inicio, thirtyDaysAgo.toISOString()),
-            lte(jornadas.data_inicio, today.toISOString()),
-            isNull(jornadas.deleted_at)
+            eq(jornadas.idVeiculo, vehicle.id),
+            eq(jornadas.idUsuario, userId),
+            gte(jornadas.dataInicio, thirtyDaysAgo.toISOString()),
+            lte(jornadas.dataInicio, today.toISOString()),
+            isNull(jornadas.deletedAt)
           )
         );
 
@@ -57,18 +57,18 @@ export class AdvancedAnalyticsService {
       const fuelMetrics = await db
         .select({
           total_abastecimentos: count(abastecimentos.id),
-          total_litros: sum(abastecimentos.quantidade_litros),
-          total_gasto_combustivel: sum(abastecimentos.valor_total),
-          media_valor_litro: avg(abastecimentos.valor_litro),
+          total_litros: sum(abastecimentos.quantidadeLitros),
+          total_gasto_combustivel: sum(abastecimentos.valorTotal),
+          media_valorLitro: avg(abastecimentos.valorLitro),
         })
         .from(abastecimentos)
         .where(
           and(
-            eq(abastecimentos.id_veiculo, vehicle.id),
-            eq(abastecimentos.id_usuario, userId),
-            gte(abastecimentos.data_abastecimento, thirtyDaysAgo.toISOString()),
-            lte(abastecimentos.data_abastecimento, today.toISOString()),
-            isNull(abastecimentos.deleted_at)
+            eq(abastecimentos.idVeiculo, vehicle.id),
+            eq(abastecimentos.idUsuario, userId),
+            gte(abastecimentos.dataAbastecimento, thirtyDaysAgo.toISOString()),
+            lte(abastecimentos.dataAbastecimento, today.toISOString()),
+            isNull(abastecimentos.deletedAt)
           )
         );
 
@@ -76,17 +76,17 @@ export class AdvancedAnalyticsService {
       const expenseMetrics = await db
         .select({
           total_despesas: count(despesas.id),
-          total_valor_despesas: sum(despesas.valor_despesa),
-          media_despesa: avg(despesas.valor_despesa),
+          total_valorDespesas: sum(despesas.valorDespesa),
+          media_despesa: avg(despesas.valorDespesa),
         })
         .from(despesas)
         .where(
           and(
-            eq(despesas.id_veiculo, vehicle.id),
-            eq(despesas.id_usuario, userId),
-            gte(despesas.data_despesa, thirtyDaysAgo.toISOString()),
-            lte(despesas.data_despesa, today.toISOString()),
-            isNull(despesas.deleted_at)
+            eq(despesas.idVeiculo, vehicle.id),
+            eq(despesas.idUsuario, userId),
+            gte(despesas.dataDespesa, thirtyDaysAgo.toISOString()),
+            lte(despesas.dataDespesa, today.toISOString()),
+            isNull(despesas.deletedAt)
           )
         );
 
@@ -100,7 +100,7 @@ export class AdvancedAnalyticsService {
       const totalTempo = Number(journey.total_tempo) || 0;
       const totalLitros = Number(fuel.total_litros) || 0;
       const totalGastoCombustivel = Number(fuel.total_gasto_combustivel) || 0;
-      const totalDespesas = Number(expense.total_valor_despesas) || 0;
+      const totalDespesas = Number(expense.total_valorDespesas) || 0;
 
       // Eficiência operacional
       const consumoMedio = totalKm > 0 && totalLitros > 0 ? totalKm / totalLitros : 0;
@@ -127,7 +127,7 @@ export class AdvancedAnalyticsService {
           marca: vehicle.marca,
           modelo: vehicle.modelo,
           placa: vehicle.placa,
-          tipo_combustivel: vehicle.tipo_combustivel,
+          tipoCombustivel: vehicle.tipoCombustivel,
         },
         metricas_operacionais: {
           total_jornadas: Number(journey.total_jornadas) || 0,
@@ -177,8 +177,8 @@ export class AdvancedAnalyticsService {
 
     // Filtros
     let vehicleFilter = and(
-      eq(veiculos.id_usuario, userId),
-      isNull(veiculos.deleted_at)
+      eq(veiculos.idUsuario, userId),
+      isNull(veiculos.deletedAt)
     );
 
     if (vehicleId) {
@@ -188,46 +188,46 @@ export class AdvancedAnalyticsService {
     // Análise semanal
     const weeklyTrends = await db
       .select({
-        semana: sql<string>`DATE_TRUNC('week', ${jornadas.data_inicio})`,
+        semana: sql<string>`DATE_TRUNC('week', ${jornadas.dataInicio})`,
         total_faturamento: sum(jornadas.ganho_bruto),
         total_km: sum(jornadas.km_total),
         numero_jornadas: count(jornadas.id),
         tempo_total: sum(jornadas.tempo_total),
       })
       .from(jornadas)
-      .innerJoin(veiculos, eq(jornadas.id_veiculo, veiculos.id))
+      .innerJoin(veiculos, eq(jornadas.idVeiculo, veiculos.id))
       .where(
         and(
           vehicleFilter,
-          gte(jornadas.data_inicio, startDate.toISOString()),
-          lte(jornadas.data_inicio, endDate.toISOString()),
-          isNull(jornadas.deleted_at)
+          gte(jornadas.dataInicio, startDate.toISOString()),
+          lte(jornadas.dataInicio, endDate.toISOString()),
+          isNull(jornadas.deletedAt)
         )
       )
-      .groupBy(sql`DATE_TRUNC('week', ${jornadas.data_inicio})`)
-      .orderBy(sql`DATE_TRUNC('week', ${jornadas.data_inicio})`);
+      .groupBy(sql`DATE_TRUNC('week', ${jornadas.dataInicio})`)
+      .orderBy(sql`DATE_TRUNC('week', ${jornadas.dataInicio})`);
 
     // Análise mensal
     const monthlyTrends = await db
       .select({
-        mes: sql<string>`DATE_TRUNC('month', ${jornadas.data_inicio})`,
+        mes: sql<string>`DATE_TRUNC('month', ${jornadas.dataInicio})`,
         total_faturamento: sum(jornadas.ganho_bruto),
         total_km: sum(jornadas.km_total),
         numero_jornadas: count(jornadas.id),
         tempo_total: sum(jornadas.tempo_total),
       })
       .from(jornadas)
-      .innerJoin(veiculos, eq(jornadas.id_veiculo, veiculos.id))
+      .innerJoin(veiculos, eq(jornadas.idVeiculo, veiculos.id))
       .where(
         and(
           vehicleFilter,
-          gte(jornadas.data_inicio, startDate.toISOString()),
-          lte(jornadas.data_inicio, endDate.toISOString()),
-          isNull(jornadas.deleted_at)
+          gte(jornadas.dataInicio, startDate.toISOString()),
+          lte(jornadas.dataInicio, endDate.toISOString()),
+          isNull(jornadas.deletedAt)
         )
       )
-      .groupBy(sql`DATE_TRUNC('month', ${jornadas.data_inicio})`)
-      .orderBy(sql`DATE_TRUNC('month', ${jornadas.data_inicio})`);
+      .groupBy(sql`DATE_TRUNC('month', ${jornadas.dataInicio})`)
+      .orderBy(sql`DATE_TRUNC('month', ${jornadas.dataInicio})`);
 
     // Calcular tendências
     const calculateTrend = (data: any[], valueField: string) => {
@@ -274,8 +274,8 @@ export class AdvancedAnalyticsService {
         analise_jornadas: calculateTrend(monthlyTrends, 'numero_jornadas'),
       },
       periodo_analise: {
-        data_inicio: startDate.toISOString(),
-        data_fim: endDate.toISOString(),
+        dataInicio: startDate.toISOString(),
+        dataFim: endDate.toISOString(),
         total_dias: days,
       }
     };
@@ -290,8 +290,8 @@ export class AdvancedAnalyticsService {
   ) {
     // Filtros
     let vehicleFilter = and(
-      eq(veiculos.id_usuario, userId),
-      isNull(veiculos.deleted_at)
+      eq(veiculos.idUsuario, userId),
+      isNull(veiculos.deletedAt)
     );
 
     if (vehicleId) {
@@ -301,62 +301,62 @@ export class AdvancedAnalyticsService {
     // Análise por dia da semana
     const dayOfWeekAnalysis = await db
       .select({
-        dia_semana: sql<number>`EXTRACT(DOW FROM ${jornadas.data_inicio})`,
+        dia_semana: sql<number>`EXTRACT(DOW FROM ${jornadas.dataInicio})`,
         total_faturamento: sum(jornadas.ganho_bruto),
         total_km: sum(jornadas.km_total),
         numero_jornadas: count(jornadas.id),
         tempo_total: sum(jornadas.tempo_total),
       })
       .from(jornadas)
-      .innerJoin(veiculos, eq(jornadas.id_veiculo, veiculos.id))
+      .innerJoin(veiculos, eq(jornadas.idVeiculo, veiculos.id))
       .where(
         and(
           vehicleFilter,
-          isNull(jornadas.deleted_at)
+          isNull(jornadas.deletedAt)
         )
       )
-      .groupBy(sql`EXTRACT(DOW FROM ${jornadas.data_inicio})`)
-      .orderBy(sql`EXTRACT(DOW FROM ${jornadas.data_inicio})`);
+      .groupBy(sql`EXTRACT(DOW FROM ${jornadas.dataInicio})`)
+      .orderBy(sql`EXTRACT(DOW FROM ${jornadas.dataInicio})`);
 
     // Análise por hora do dia
     const hourAnalysis = await db
       .select({
-        hora: sql<number>`EXTRACT(HOUR FROM ${jornadas.data_inicio})`,
+        hora: sql<number>`EXTRACT(HOUR FROM ${jornadas.dataInicio})`,
         total_faturamento: sum(jornadas.ganho_bruto),
         total_km: sum(jornadas.km_total),
         numero_jornadas: count(jornadas.id),
         tempo_total: sum(jornadas.tempo_total),
       })
       .from(jornadas)
-      .innerJoin(veiculos, eq(jornadas.id_veiculo, veiculos.id))
+      .innerJoin(veiculos, eq(jornadas.idVeiculo, veiculos.id))
       .where(
         and(
           vehicleFilter,
-          isNull(jornadas.deleted_at)
+          isNull(jornadas.deletedAt)
         )
       )
-      .groupBy(sql`EXTRACT(HOUR FROM ${jornadas.data_inicio})`)
-      .orderBy(sql`EXTRACT(HOUR FROM ${jornadas.data_inicio})`);
+      .groupBy(sql`EXTRACT(HOUR FROM ${jornadas.dataInicio})`)
+      .orderBy(sql`EXTRACT(HOUR FROM ${jornadas.dataInicio})`);
 
     // Análise por mês
     const monthAnalysis = await db
       .select({
-        mes: sql<number>`EXTRACT(MONTH FROM ${jornadas.data_inicio})`,
+        mes: sql<number>`EXTRACT(MONTH FROM ${jornadas.dataInicio})`,
         total_faturamento: sum(jornadas.ganho_bruto),
         total_km: sum(jornadas.km_total),
         numero_jornadas: count(jornadas.id),
         tempo_total: sum(jornadas.tempo_total),
       })
       .from(jornadas)
-      .innerJoin(veiculos, eq(jornadas.id_veiculo, veiculos.id))
+      .innerJoin(veiculos, eq(jornadas.idVeiculo, veiculos.id))
       .where(
         and(
           vehicleFilter,
-          isNull(jornadas.deleted_at)
+          isNull(jornadas.deletedAt)
         )
       )
-      .groupBy(sql`EXTRACT(MONTH FROM ${jornadas.data_inicio})`)
-      .orderBy(sql`EXTRACT(MONTH FROM ${jornadas.data_inicio})`);
+      .groupBy(sql`EXTRACT(MONTH FROM ${jornadas.dataInicio})`)
+      .orderBy(sql`EXTRACT(MONTH FROM ${jornadas.dataInicio})`);
 
     const getDayName = (dayNum: number) => {
       const days = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
@@ -439,8 +439,8 @@ export class AdvancedAnalyticsService {
 
     // Filtros
     let vehicleFilter = and(
-      eq(veiculos.id_usuario, userId),
-      isNull(veiculos.deleted_at)
+      eq(veiculos.idUsuario, userId),
+      isNull(veiculos.deletedAt)
     );
 
     if (vehicleId) {
@@ -454,21 +454,21 @@ export class AdvancedAnalyticsService {
     for (const vehicle of vehicles) {
       const expenseMetrics = await db
         .select({
-          tipo_despesa: despesas.tipo_despesa,
-          total_valor: sum(despesas.valor_despesa),
+          tipoDespesa: despesas.tipoDespesa,
+          total_valor: sum(despesas.valorDespesa),
           numero_despesas: count(despesas.id),
         })
         .from(despesas)
         .where(
           and(
-            eq(despesas.id_veiculo, vehicle.id),
-            eq(despesas.id_usuario, userId),
-            gte(despesas.data_despesa, thirtyDaysAgo.toISOString()),
-            lte(despesas.data_despesa, today.toISOString()),
-            isNull(despesas.deleted_at)
+            eq(despesas.idVeiculo, vehicle.id),
+            eq(despesas.idUsuario, userId),
+            gte(despesas.dataDespesa, thirtyDaysAgo.toISOString()),
+            lte(despesas.dataDespesa, today.toISOString()),
+            isNull(despesas.deletedAt)
           )
         )
-        .groupBy(despesas.tipo_despesa);
+        .groupBy(despesas.tipoDespesa);
 
       const totalGasto = expenseMetrics.reduce((sum, item) => sum + (Number(item.total_valor) || 0), 0);
 
@@ -480,7 +480,7 @@ export class AdvancedAnalyticsService {
           placa: vehicle.placa,
         },
         despesas_por_categoria: expenseMetrics.map(item => ({
-          tipo_despesa: item.tipo_despesa,
+          tipoDespesa: item.tipoDespesa,
           total_gasto: Number(item.total_valor) || 0,
           numero_despesas: Number(item.numero_despesas) || 0,
           percentual: totalGasto > 0 ? ((Number(item.total_valor) || 0) / totalGasto) * 100 : 0,

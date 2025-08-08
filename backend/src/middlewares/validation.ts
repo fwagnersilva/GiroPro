@@ -92,11 +92,11 @@ export const paginationSchema = z.object({
 });
 
 export const dateRangeSchema = z.object({
-  data_inicio: z.string().datetime('Data de início deve estar no formato ISO 8601').optional(),
-  data_fim: z.string().datetime('Data de fim deve estar no formato ISO 8601').optional()
+  dataInicio: z.string().datetime('Data de início deve estar no formato ISO 8601').optional(),
+  dataFim: z.string().datetime('Data de fim deve estar no formato ISO 8601').optional()
 }).refine(data => {
-  if (data.data_inicio && data.data_fim) {
-    return new Date(data.data_inicio) <= new Date(data.data_fim);
+  if (data.dataInicio && data.dataFim) {
+    return new Date(data.dataInicio) <= new Date(data.dataFim);
   }
   return true;
 }, {

@@ -31,8 +31,8 @@ export async function getWeekPendingGoals({
     .where(
       and(
         eq(metas.periodo, "Semanal"), // Filtrar por metas semanais
-        lte(metas.data_inicio, endOfWeek.toISOString()),
-        gte(metas.data_fim, startOfWeek.toISOString()),
+        lte(metas.dataInicio, endOfWeek.toISOString()),
+        gte(metas.dataFim, startOfWeek.toISOString()),
         eq(metas.status, "Ativa"), // Apenas metas ativas
         sql`${metas.valor_atual} < ${metas.valor_objetivo}` // Onde o valor atual é menor que o objetivo
       )

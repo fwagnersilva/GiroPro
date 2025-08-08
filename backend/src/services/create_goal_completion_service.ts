@@ -32,7 +32,7 @@ export async function createGoalCompletion({
       valor_atual: novoValorAtual,
       percentual_concluido: novoPercentualConcluido,
       data_conclusao: novoPercentualConcluido === 100 ? new Date().toISOString() : undefined,
-      updated_at: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
     })
     .where(eq(metas.id, goalId))
     .returning();

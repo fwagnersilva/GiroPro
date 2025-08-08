@@ -59,11 +59,11 @@ export class ReportsService {
     return {
       periodo: {
         tipo: 'semanal' as const,
-        data_inicio: dataInicio.toISOString(),
-        data_fim: dataFim.toISOString(),
+        dataInicio: dataInicio.toISOString(),
+        dataFim: dataFim.toISOString(),
         descricao: DateUtils.formatPeriod(dataInicio, dataFim)
       },
-      filtros: { id_veiculo: vehicleId || null },
+      filtros: { idVeiculo: vehicleId || null },
       resumo_financeiro: financialData,
       indicadores: indicators,
       benchmarks,
@@ -108,11 +108,11 @@ export class ReportsService {
     return {
       periodo: {
         tipo: 'mensal' as const,
-        data_inicio: dataInicio.toISOString(),
-        data_fim: dataFim.toISOString(),
+        dataInicio: dataInicio.toISOString(),
+        dataFim: dataFim.toISOString(),
         descricao: DateUtils.formatPeriod(dataInicio, dataFim)
       },
-      filtros: { id_veiculo: vehicleId || null },
+      filtros: { idVeiculo: vehicleId || null },
       resumo_financeiro: financialData,
       indicadores: indicators,
       tendencias: trends,
@@ -146,8 +146,8 @@ export class ReportsService {
           .then(data => ({
             numero_semana: i + 1,
             periodo: DateUtils.formatPeriod(startDate, endDate),
-            data_inicio: startDate.toISOString(),
-            data_fim: endDate.toISOString(),
+            dataInicio: startDate.toISOString(),
+            dataFim: endDate.toISOString(),
             ...data
           }))
       );
@@ -188,8 +188,8 @@ export class ReportsService {
           .then(data => ({
             mes_ano: DateUtils.formatMonthYear(startDate),
             periodo: DateUtils.formatPeriod(startDate, endDate),
-            data_inicio: startDate.toISOString(),
-            data_fim: endDate.toISOString(),
+            dataInicio: startDate.toISOString(),
+            dataFim: endDate.toISOString(),
             ...data
           }))
       );
@@ -311,8 +311,8 @@ export class ReportsService {
         const summary = await ReportsService.getFinancialSummary(userId, week.startDate, week.endDate, vehicleId);
         return {
           semana: week.weekNumber,
-          data_inicio: week.startDate.toISOString(),
-          data_fim: week.endDate.toISOString(),
+          dataInicio: week.startDate.toISOString(),
+          dataFim: week.endDate.toISOString(),
           ...summary,
         };
       })
@@ -330,27 +330,27 @@ export class ReportsService {
     vehicleId?: string
   ) {
     const conditions = [
-      eq(despesas.id_usuario, userId),
-      gte(despesas.data_despesa, startDate.toISOString()),
-      lte(despesas.data_despesa, endDate.toISOString()),
-      isNull(despesas.deleted_at),
+      eq(despesas.idUsuario, userId),
+      gte(despesas.dataDespesa, startDate.toISOString()),
+      lte(despesas.dataDespesa, endDate.toISOString()),
+      isNull(despesas.deletedAt),
     ];
 
     if (vehicleId) {
-      conditions.push(eq(despesas.id_veiculo, vehicleId));
+      conditions.push(eq(despesas.idVeiculo, vehicleId));
     }
 
     const expenses = await db
       .select({
-        tipo_despesa: despesas.tipo_despesa,
-        valor_despesa: despesas.valor_despesa,
+        tipoDespesa: despesas.tipoDespesa,
+        valorDespesa: despesas.valorDespesa,
       })
       .from(despesas)
       .where(and(...conditions));
 
     const groupedExpenses = expenses.reduce((acc, expense) => {
-      const category = expense.tipo_despesa;
-      acc[category] = (acc[category] || 0) + (Number(expense.valor_despesa) || 0);
+      const category = expense.tipoDespesa;
+      acc[category] = (acc[category] || 0) + (Number(expense.valorDespesa) || 0);
       return acc;
     }, {} as Record<string, number>);
 
@@ -374,25 +374,25 @@ export class ReportsService {
     endDate?: Date
   ) {
     const conditions = [
-      eq(jornadas.id_usuario, userId),
-      isNull(jornadas.deleted_at),
+      eq(jornadas.idUsuario, userId),
+      isNull(jornadas.deletedAt),
     ];
 
     if (vehicleId) {
-      conditions.push(eq(jornadas.id_veiculo, vehicleId));
+      conditions.push(eq(jornadas.idVeiculo, vehicleId));
     }
 
     if (startDate) {
-      conditions.push(gte(jornadas.data_inicio, startDate.toISOString()));
+      conditions.push(gte(jornadas.dataInicio, startDate.toISOString()));
     }
     if (endDate) {
-      conditions.push(lte(jornadas.data_inicio, endDate.toISOString()));
+      conditions.push(lte(jornadas.dataInicio, endDate.toISOString()));
     }
 
     const topJourneys = await db
       .select({
         id: jornadas.id,
-        data_inicio: jornadas.data_inicio,
+        dataInicio: jornadas.dataInicio,
         ganho_bruto: jornadas.ganho_bruto,
         km_total: jornadas.km_total,
         observacoes: jornadas.observacoes,
@@ -419,14 +419,14 @@ export class ReportsService {
     vehicleId?: string
   ) {
     const conditions = [
-      eq(jornadas.id_usuario, userId),
-      gte(jornadas.data_inicio, startDate.toISOString()),
-      lte(jornadas.data_inicio, endDate.toISOString()),
-      isNull(jornadas.deleted_at),
+      eq(jornadas.idUsuario, userId),
+      gte(jornadas.dataInicio, startDate.toISOString()),
+      lte(jornadas.dataInicio, endDate.toISOString()),
+      isNull(jornadas.deletedAt),
     ];
 
     if (vehicleId) {
-      conditions.push(eq(jornadas.id_veiculo, vehicleId));
+      conditions.push(eq(jornadas.idVeiculo, vehicleId));
     }
 
     const result = await db
@@ -464,12 +464,12 @@ export class ReportsService {
     // Exemplo: buscar média de todos os usuários ou de um grupo similar
     // Por simplicidade, vamos usar dados fictícios ou uma média global do usuário
     const conditions = [
-      eq(jornadas.id_usuario, userId),
-      isNull(jornadas.deleted_at),
+      eq(jornadas.idUsuario, userId),
+      isNull(jornadas.deletedAt),
     ];
 
     if (vehicleId) {
-      conditions.push(eq(jornadas.id_veiculo, vehicleId));
+      conditions.push(eq(jornadas.idVeiculo, vehicleId));
     }
 
     const result = await db
@@ -534,9 +534,9 @@ export class ReportsService {
       .select()
       .from(jornadas)
       .where(and(
-        eq(jornadas.id_usuario, userId),
-        isNull(jornadas.deleted_at),
-        ne(jornadas.data_fim, null), // Considerar apenas jornadas finalizadas
+        eq(jornadas.idUsuario, userId),
+        isNull(jornadas.deletedAt),
+        ne(jornadas.dataFim, null), // Considerar apenas jornadas finalizadas
         sql`${jornadas.km_fim} < ${jornadas.km_inicio}`
       ));
 
@@ -547,7 +547,7 @@ export class ReportsService {
         count: incompleteJourneys.length,
         details: incompleteJourneys.map(j => ({
           id: j.id,
-          data_inicio: j.data_inicio,
+          dataInicio: j.dataInicio,
           km_inicio: j.km_inicio,
           km_fim: j.km_fim,
         })),
@@ -559,9 +559,9 @@ export class ReportsService {
       .select()
       .from(abastecimentos)
       .where(and(
-        eq(abastecimentos.id_usuario, userId),
-        isNull(abastecimentos.deleted_at),
-        sql`${abastecimentos.valor_total} <> ${abastecimentos.valor_litro} * ${abastecimentos.quantidade_litros}`
+        eq(abastecimentos.idUsuario, userId),
+        isNull(abastecimentos.deletedAt),
+        sql`${abastecimentos.valorTotal} <> ${abastecimentos.valorLitro} * ${abastecimentos.quantidadeLitros}`
       ));
 
     if (inconsistentFuelings.length > 0) {
@@ -571,23 +571,23 @@ export class ReportsService {
         count: inconsistentFuelings.length,
         details: inconsistentFuelings.map(f => ({
           id: f.id,
-          data_abastecimento: f.data_abastecimento,
-          valor_total: f.valor_total,
-          valor_litro: f.valor_litro,
-          quantidade_litros: f.quantidade_litros,
+          dataAbastecimento: f.dataAbastecimento,
+          valorTotal: f.valorTotal,
+          valorLitro: f.valorLitro,
+          quantidadeLitros: f.quantidadeLitros,
         })),
       });
     }
 
     // 3. Despesas sem categoria definida (se aplicável)
-    // Exemplo: se tipo_despesa for opcional ou puder ser nulo
+    // Exemplo: se tipoDespesa for opcional ou puder ser nulo
     const uncategorizedExpenses = await db
       .select()
       .from(despesas)
       .where(and(
-        eq(despesas.id_usuario, userId),
-        isNull(despesas.deleted_at),
-        isNull(despesas.tipo_despesa) // Ou eq(despesas.tipo_despesa, 'outros') se for um default
+        eq(despesas.idUsuario, userId),
+        isNull(despesas.deletedAt),
+        isNull(despesas.tipoDespesa) // Ou eq(despesas.tipoDespesa, 'outros') se for um default
       ));
 
     if (uncategorizedExpenses.length > 0) {
@@ -597,8 +597,8 @@ export class ReportsService {
         count: uncategorizedExpenses.length,
         details: uncategorizedExpenses.map(e => ({
           id: e.id,
-          data_despesa: e.data_despesa,
-          valor_despesa: e.valor_despesa,
+          dataDespesa: e.dataDespesa,
+          valorDespesa: e.valorDespesa,
           descricao: e.descricao,
         })),
       });
@@ -613,21 +613,21 @@ export class ReportsService {
     const inactiveVehicles = await db.execute(sql`
       SELECT v.id, v.marca, v.modelo
       FROM veiculos v
-      WHERE v.id_usuario = ${userId}
-        AND v.deleted_at IS NULL
+      WHERE v.idUsuario = ${userId}
+        AND v.deletedAt IS NULL
         AND NOT EXISTS (
           SELECT 1 FROM jornadas j
-          WHERE j.id_veiculo = v.id
-            AND j.id_usuario = ${userId}
-            AND j.deleted_at IS NULL
-            AND j.data_inicio >= ${ninetyDaysAgo.toISOString()}
+          WHERE j.idVeiculo = v.id
+            AND j.idUsuario = ${userId}
+            AND j.deletedAt IS NULL
+            AND j.dataInicio >= ${ninetyDaysAgo.toISOString()}
         )
         AND NOT EXISTS (
           SELECT 1 FROM abastecimentos a
-          WHERE a.id_veiculo = v.id
-            AND a.id_usuario = ${userId}
-            AND a.deleted_at IS NULL
-            AND a.data_abastecimento >= ${ninetyDaysAgo.toISOString()}
+          WHERE a.idVeiculo = v.id
+            AND a.idUsuario = ${userId}
+            AND a.deletedAt IS NULL
+            AND a.dataAbastecimento >= ${ninetyDaysAgo.toISOString()}
         );
     `);
 

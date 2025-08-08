@@ -21,7 +21,7 @@ export const vehicleSchema = z.object({
   modelo: z.string().min(1, 'Modelo é obrigatório').max(100),
   ano: z.number().int().min(1950, 'Ano deve ser maior ou igual a 1950').max(new Date().getFullYear() + 1),
   placa: z.string().regex(/^[A-Z]{3}[0-9][A-Z0-9][0-9]{2}$|^[A-Z]{3}[0-9]{4}$/, 'Formato de placa inválido'),
-  tipo_combustivel: z.enum(['Gasolina', 'Etanol', 'Diesel', 'GNV', 'Flex']),
+  tipoCombustivel: z.enum(['Gasolina', 'Etanol', 'Diesel', 'GNV', 'Flex']),
   tipo_uso: z.enum(['Proprio', 'Alugado', 'Financiado']),
   valor_aluguel: z.number().int().positive().optional(),
   valor_prestacao: z.number().int().positive().optional(),
@@ -29,7 +29,7 @@ export const vehicleSchema = z.object({
 
 // Schemas de validação para jornadas
 export const startJourneySchema = z.object({
-  id_veiculo: z.string().uuid('ID do veículo deve ser um UUID válido'),
+  idVeiculo: z.string().uuid('ID do veículo deve ser um UUID válido'),
   km_inicio: z.number().int().min(0, 'Quilometragem inicial deve ser positiva'),
   observacoes: z.string().optional(),
 });
@@ -41,21 +41,21 @@ export const endJourneySchema = z.object({
 
 // Schemas de validação para abastecimentos
 export const fuelingSchema = z.object({
-  id_veiculo: z.string().uuid('ID do veículo deve ser um UUID válido'),
-  data_abastecimento: z.string().datetime('Data de abastecimento inválida'),
-  tipo_combustivel: z.enum(['Gasolina', 'Etanol', 'Diesel', 'GNV', 'Flex']),
-  quantidade_litros: z.number().int().positive('Quantidade de litros deve ser positiva'),
-  valor_litro: z.number().int().positive('Valor por litro deve ser positivo'),
-  km_atual: z.number().int().min(0).optional(),
-  nome_posto: z.string().max(255).optional(),
+  idVeiculo: z.string().uuid('ID do veículo deve ser um UUID válido'),
+  dataAbastecimento: z.string().datetime('Data de abastecimento inválida'),
+  tipoCombustivel: z.enum(['Gasolina', 'Etanol', 'Diesel', 'GNV', 'Flex']),
+  quantidadeLitros: z.number().int().positive('Quantidade de litros deve ser positiva'),
+  valorLitro: z.number().int().positive('Valor por litro deve ser positivo'),
+  kmAtual: z.number().int().min(0).optional(),
+  nomePosto: z.string().max(255).optional(),
 });
 
 // Schemas de validação para despesas
 export const expenseSchema = z.object({
-  id_veiculo: z.string().uuid('ID do veículo deve ser um UUID válido').optional(),
-  data_despesa: z.string().datetime('Data da despesa inválida'),
-  tipo_despesa: z.enum(['Manutencao', 'Pneus', 'Seguro', 'Outros']),
-  valor_despesa: z.number().int().positive('Valor da despesa deve ser positivo'),
+  idVeiculo: z.string().uuid('ID do veículo deve ser um UUID válido').optional(),
+  dataDespesa: z.string().datetime('Data da despesa inválida'),
+  tipoDespesa: z.enum(['Manutencao', 'Pneus', 'Seguro', 'Outros']),
+  valorDespesa: z.number().int().positive('Valor da despesa deve ser positivo'),
   descricao: z.string().optional(),
 });
 

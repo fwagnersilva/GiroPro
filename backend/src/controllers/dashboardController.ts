@@ -8,22 +8,22 @@ import type { ServiceResult, CacheConfig } from '../types/common';
 // 📝 Schemas de validação otimizados
 const dashboardQuerySchema = z.object({
   periodo: z.enum(['hoje', 'semana', 'mes', 'ano', 'personalizado']).default('mes'),
-  data_inicio: z.string().datetime().optional(),
-  data_fim: z.string().datetime().optional(),
-  id_veiculo: z.string().uuid().optional(),
+  dataInicio: z.string().datetime().optional(),
+  dataFim: z.string().datetime().optional(),
+  idVeiculo: z.string().uuid().optional(),
   include_cache: z.boolean().default(true),
 });
 
 const evolutionQuerySchema = z.object({
   periodo: z.enum(['semana', 'mes', 'ano']).default('mes'),
-  id_veiculo: z.string().uuid().optional(),
+  idVeiculo: z.string().uuid().optional(),
   granularidade: z.enum(['diario', 'semanal', 'mensal']).optional(),
 });
 
 const comparisonQuerySchema = z.object({
   periodo: z.enum(['hoje', 'semana', 'mes', 'ano', 'personalizado']).default('mes'),
-  data_inicio: z.string().datetime().optional(),
-  data_fim: z.string().datetime().optional(),
+  dataInicio: z.string().datetime().optional(),
+  dataFim: z.string().datetime().optional(),
   incluir_inativos: z.boolean().default(false),
 });
 
@@ -112,18 +112,18 @@ class DashboardUtils {
   /**
    * Calcula período com validação robusta
    */
-  static calcularPeriodo(periodo: string, data_inicio?: string, data_fim?: string): { dataInicio: Date; dataFim: Date } {
+  static calcularPeriodo(periodo: string, dataInicio?: string, dataFim?: string): { dataInicio: Date; dataFim: Date } {
     const agora = new Date();
     let dataInicio: Date;
     let dataFim: Date = new Date(agora);
 
     if (periodo === 'personalizado') {
-      if (!data_inicio || !data_fim) {
+      if (!dataInicio || !dataFim) {
         throw new Error('Datas de início e fim são obrigatórias para período personalizado');
       }
       
-      dataInicio = new Date(data_inicio);
-      dataFim = new Date(data_fim);
+      dataInicio = new Date(dataInicio);
+      dataFim = new Date(dataFim);
       
       if (isNaN(dataInicio.getTime()) || isNaN(dataFim.getTime())) {
         throw new Error('Datas fornecidas são inválidas');
@@ -170,23 +170,23 @@ class DashboardUtils {
     const table = tableName === 'jornadas' ? jornadas : 
                   tableName === 'abastecimentos' ? abastecimentos : despesas;
     
-    const dateField = tableName === 'jornadas' ? jornadas.data_fim :
-                     tableName === 'abastecimentos' ? abastecimentos.data_abastecimento :
-                     despesas.data_despesa;
+    const dateField = tableName === 'jornadas' ? jornadas.dataFim :
+                     tableName === 'abastecimentos' ? abastecimentos.dataAbastecimento :
+                     despesas.dataDespesa;
 
     let conditions = and(
-      eq(table.id_usuario, userId),
+      eq(table.idUsuario, userId),
       gte(dateField, dataInicio.toISOString()),
       lte(dateField, dataFim.toISOString()),
-      isNull(table.deleted_at)
+      isNull(table.deletedAt)
     );
 
     if (tableName === 'jornadas') {
-      conditions = and(conditions, isNotNull(jornadas.data_fim));
+      conditions = and(conditions, isNotNull(jornadas.dataFim));
     }
 
     if (idVeiculo) {
-      conditions = and(conditions, eq(table.id_veiculo, idVeiculo));
+      conditions = and(conditions, eq(table.idVeiculo, idVeiculo));
     }
 
     return conditions;
@@ -255,8 +255,8 @@ class DashboardCalculations {
           COALESCE(
             SUM(
               CASE 
-                WHEN ${jornadas.data_fim} IS NOT NULL AND ${jornadas.data_inicio} IS NOT NULL
-                THEN (strftime('%s', ${jornadas.data_fim}) - strftime('%s', ${jornadas.data_inicio})) / 60
+                WHEN ${jornadas.dataFim} IS NOT NULL AND ${jornadas.dataInicio} IS NOT NULL
+                THEN (strftime('%s', ${jornadas.dataFim}) - strftime('%s', ${jornadas.dataInicio})) / 60
                 ELSE 0 
               END
             ), 
@@ -272,10 +272,10 @@ class DashboardCalculations {
     const despesasConditions = DashboardUtils.buildBaseConditions(userId, dataInicio, dataFim, idVeiculo, 'despesas');
 
     const [abastecimentosResult, despesasResult] = await Promise.all([
-      db.select({ total: sql<number>`COALESCE(SUM(${abastecimentos.valor_total}), 0)` })
+      db.select({ total: sql<number>`COALESCE(SUM(${abastecimentos.valorTotal}), 0)` })
         .from(abastecimentos)
         .where(abastecimentosConditions),
-      db.select({ total: sql<number>`COALESCE(SUM(${despesas.valor_despesa}), 0)` })
+      db.select({ total: sql<number>`COALESCE(SUM(${despesas.valorDespesa}), 0)` })
         .from(despesas)
         .where(despesasConditions)
     ]);
@@ -317,16 +317,16 @@ class DashboardCalculations {
     const despesasConditions = DashboardUtils.buildBaseConditions(userId, dataInicio, dataFim, idVeiculo, 'despesas');
 
     const [combustivelResult, despesasResult] = await Promise.all([
-      db.select({ total: sql<number>`COALESCE(SUM(${abastecimentos.valor_total}), 0)` })
+      db.select({ total: sql<number>`COALESCE(SUM(${abastecimentos.valorTotal}), 0)` })
         .from(abastecimentos)
         .where(abastecimentosConditions),
       db.select({
-        tipo_despesa: despesas.tipo_despesa,
-        total: sql<number>`COALESCE(SUM(${despesas.valor_despesa}), 0)`
+        tipoDespesa: despesas.tipoDespesa,
+        total: sql<number>`COALESCE(SUM(${despesas.valorDespesa}), 0)`
       })
         .from(despesas)
         .where(despesasConditions)
-        .groupBy(despesas.tipo_despesa)
+        .groupBy(despesas.tipoDespesa)
     ]);
 
     const distribuicao = [
@@ -338,7 +338,7 @@ class DashboardCalculations {
 
     despesasResult.forEach(categoria => {
       distribuicao.push({
-        categoria: categoria.tipo_despesa || 'Outros',
+        categoria: categoria.tipoDespesa || 'Outros',
         valor: DashboardUtils.formatCurrency(Number(categoria.total || 0))
       });
     });
@@ -425,8 +425,8 @@ export const dashboardRoutes: FastifyPluginAsyncZod = async (app) => {
           data: z.object({
             periodo: z.object({
               tipo: z.string(),
-              data_inicio: z.string(),
-              data_fim: z.string(),
+              dataInicio: z.string(),
+              dataFim: z.string(),
             }),
             metricas_principais: z.object({
               faturamento_bruto: z.number(),
@@ -446,7 +446,7 @@ export const dashboardRoutes: FastifyPluginAsyncZod = async (app) => {
               categoria: z.string(),
               valor: z.number(),
             })),
-            id_veiculo: z.string().nullable(),
+            idVeiculo: z.string().nullable(),
             performance_score: z.number(),
             cache_info: z.object({
               hit: z.boolean(),
@@ -466,13 +466,13 @@ export const dashboardRoutes: FastifyPluginAsyncZod = async (app) => {
         });
       }
 
-      const { periodo, data_inicio, data_fim, id_veiculo, include_cache } = request.query;
+      const { periodo, dataInicio, dataFim, idVeiculo, include_cache } = request.query;
 
       // Calcular período
-      const { dataInicio, dataFim } = DashboardUtils.calcularPeriodo(periodo, data_inicio, data_fim);
+      const { dataInicio, dataFim } = DashboardUtils.calcularPeriodo(periodo, dataInicio, dataFim);
 
       // Verificar cache
-      const cacheKey = `summary:${userId}:${periodo}:${id_veiculo || 'all'}:${dataInicio.getTime()}:${dataFim.getTime()}`;
+      const cacheKey = `summary:${userId}:${periodo}:${idVeiculo || 'all'}:${dataInicio.getTime()}:${dataFim.getTime()}`;
       let cacheHit = false;
       let result;
 
@@ -494,14 +494,14 @@ export const dashboardRoutes: FastifyPluginAsyncZod = async (app) => {
       }
 
       // Verificar se o veículo pertence ao usuário
-      if (id_veiculo) {
+      if (idVeiculo) {
         const [veiculo] = await db
           .select({ id: veiculos.id })
           .from(veiculos)
           .where(and(
-            eq(veiculos.id, id_veiculo),
-            eq(veiculos.id_usuario, userId),
-            isNull(veiculos.deleted_at)
+            eq(veiculos.id, idVeiculo),
+            eq(veiculos.idUsuario, userId),
+            isNull(veiculos.deletedAt)
           ))
           .limit(1);
 
@@ -515,8 +515,8 @@ export const dashboardRoutes: FastifyPluginAsyncZod = async (app) => {
 
       // Calcular métricas (paralelo)
       const [metricas, distribuicaoDespesas] = await Promise.all([
-        DashboardCalculations.calcularTodasMetricas(userId, dataInicio, dataFim, id_veiculo),
-        DashboardCalculations.calcularDistribuicaoDespesas(userId, dataInicio, dataFim, id_veiculo)
+        DashboardCalculations.calcularTodasMetricas(userId, dataInicio, dataFim, idVeiculo),
+        DashboardCalculations.calcularDistribuicaoDespesas(userId, dataInicio, dataFim, idVeiculo)
       ]);
 
       const performanceScore = DashboardUtils.calculatePerformanceScore(metricas);
@@ -524,8 +524,8 @@ export const dashboardRoutes: FastifyPluginAsyncZod = async (app) => {
       result = {
         periodo: {
           tipo: periodo,
-          data_inicio: dataInicio.toISOString(),
-          data_fim: dataFim.toISOString()
+          dataInicio: dataInicio.toISOString(),
+          dataFim: dataFim.toISOString()
         },
         metricas_principais: {
           faturamento_bruto: metricas.faturamento_bruto,
@@ -542,7 +542,7 @@ export const dashboardRoutes: FastifyPluginAsyncZod = async (app) => {
           ganho_por_hora: metricas.ganho_por_hora
         },
         distribuicao_despesas: distribuicaoDespesas,
-        id_veiculo: id_veiculo || null,
+        idVeiculo: idVeiculo || null,
         performance_score: performanceScore
       };
 
@@ -589,22 +589,22 @@ export const dashboardRoutes: FastifyPluginAsyncZod = async (app) => {
         });
       }
 
-      const { periodo, id_veiculo, granularidade = 'diario' } = request.query;
+      const { periodo, idVeiculo, granularidade = 'diario' } = request.query;
 
       // Verificar cache
-      const cacheKey = `evolution:${userId}:${periodo}:${id_veiculo || 'all'}:${granularidade}`;
+      const cacheKey = `evolution:${userId}:${periodo}:${idVeiculo || 'all'}:${granularidade}`;
       let result = DashboardCache.get(cacheKey);
 
       if (!result) {
         const dadosEvolucao = await DashboardCalculations.calcularDadosEvolucao(
-          userId, periodo, id_veiculo, granularidade
+          userId, periodo, idVeiculo, granularidade
         );
 
         result = {
           periodo,
           granularidade,
           evolucao: dadosEvolucao,
-          id_veiculo: id_veiculo || null
+          idVeiculo: idVeiculo || null
         };
 
         DashboardCache.set(cacheKey, result, 'evolution');
@@ -639,8 +639,8 @@ export const dashboardRoutes: FastifyPluginAsyncZod = async (app) => {
         });
       }
 
-      const { periodo, data_inicio, data_fim, incluir_inativos } = request.query;
-      const { dataInicio, dataFim } = DashboardUtils.calcularPeriodo(periodo, data_inicio, data_fim);
+      const { periodo, dataInicio, dataFim, incluir_inativos } = request.query;
+      const { dataInicio, dataFim } = DashboardUtils.calcularPeriodo(periodo, dataInicio, dataFim);
 
       // Verificar cache
       const cacheKey = `comparison:${userId}:${periodo}:${dataInicio.getTime()}:${dataFim.getTime()}:${incluir_inativos}`;
@@ -649,8 +649,8 @@ export const dashboardRoutes: FastifyPluginAsyncZod = async (app) => {
       if (!result) {
         // Obter veículos (com filtro de ativos/inativos)
         let veiculosConditions = and(
-          eq(veiculos.id_usuario, userId),
-          isNull(veiculos.deleted_at)
+          eq(veiculos.idUsuario, userId),
+          isNull(veiculos.deletedAt)
         );
 
         if (!incluir_inativos) {
@@ -705,8 +705,8 @@ export const dashboardRoutes: FastifyPluginAsyncZod = async (app) => {
         result = {
           periodo: {
             tipo: periodo,
-            data_inicio: dataInicio.toISOString(),
-            data_fim: dataFim.toISOString()
+            dataInicio: dataInicio.toISOString(),
+            dataFim: dataFim.toISOString()
           },
           comparativo,
           estatisticas_gerais: {
@@ -790,7 +790,7 @@ export const dashboardRoutes: FastifyPluginAsyncZod = async (app) => {
     schema: {
       querystring: z.object({
         periodo: z.enum(['hoje', 'semana', 'mes']).default('mes'),
-        id_veiculo: z.string().uuid().optional(),
+        idVeiculo: z.string().uuid().optional(),
         metrics: z.array(z.enum([
           'faturamento', 'despesas', 'lucro', 'jornadas', 'km', 'tempo'
         ])).default(['faturamento', 'despesas', 'lucro']),
@@ -806,16 +806,16 @@ export const dashboardRoutes: FastifyPluginAsyncZod = async (app) => {
         });
       }
 
-      const { periodo, id_veiculo, metrics } = request.query;
+      const { periodo, idVeiculo, metrics } = request.query;
       const { dataInicio, dataFim } = DashboardUtils.calcularPeriodo(periodo);
 
       // Verificar cache específico para widgets
-      const cacheKey = `metrics:${userId}:${periodo}:${id_veiculo || 'all'}:${metrics.join(',')}`;
+      const cacheKey = `metrics:${userId}:${periodo}:${idVeiculo || 'all'}:${metrics.join(',')}`;
       let result = DashboardCache.get(cacheKey);
 
       if (!result) {
         const allMetrics = await DashboardCalculations.calcularTodasMetricas(
-          userId, dataInicio, dataFim, id_veiculo
+          userId, dataInicio, dataFim, idVeiculo
         );
 
         // Filtrar apenas as métricas solicitadas
@@ -837,7 +837,7 @@ export const dashboardRoutes: FastifyPluginAsyncZod = async (app) => {
         data: {
           periodo,
           metricas: result,
-          id_veiculo: id_veiculo || null,
+          idVeiculo: idVeiculo || null,
           timestamp: new Date().toISOString()
         }
       });

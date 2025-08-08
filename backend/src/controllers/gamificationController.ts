@@ -89,7 +89,7 @@ export class GamificationController {
           usuarioConquistas, 
           and(
             eq(usuarioConquistas.id_conquista, conquistas.id),
-            eq(usuarioConquistas.id_usuario, req.user?.id)
+            eq(usuarioConquistas.idUsuario, req.user?.id)
           )
         )
         .where(and(...whereConditions))
@@ -152,7 +152,7 @@ export class GamificationController {
       const { page, limit, tipo_conquista, raridade } = validation.data;
       const offset = (page - 1) * limit;
 
-      let whereConditions = [eq(usuarioConquistas.id_usuario, req.user?.id)];
+      let whereConditions = [eq(usuarioConquistas.idUsuario, req.user?.id)];
       
       if (tipo_conquista) {
         whereConditions.push(eq(conquistas.tipo_conquista, tipo_conquista));
@@ -275,7 +275,7 @@ export class GamificationController {
           usuarioConquistas,
           and(
             eq(usuarioConquistas.id_conquista, conquistas.id),
-            eq(usuarioConquistas.id_usuario, req.user?.id)
+            eq(usuarioConquistas.idUsuario, req.user?.id)
           )
         )
         .where(eq(conquistas.ativa, true))
@@ -294,7 +294,7 @@ export class GamificationController {
         })
         .from(usuarioConquistas)
         .innerJoin(conquistas, eq(conquistas.id, usuarioConquistas.id_conquista))
-        .where(eq(usuarioConquistas.id_usuario, req.user?.id))
+        .where(eq(usuarioConquistas.idUsuario, req.user?.id))
         .orderBy(desc(usuarioConquistas.data_desbloqueio))
         .limit(5);
 
@@ -344,7 +344,7 @@ export class GamificationController {
           usuarioConquistas,
           and(
             eq(usuarioConquistas.id_conquista, conquistas.id),
-            eq(usuarioConquistas.id_usuario, userId)
+            eq(usuarioConquistas.idUsuario, userId)
           )
         )
         .where(
@@ -362,11 +362,11 @@ export class GamificationController {
         if (desbloqueou.unlocked) {
           // Desbloquear conquista
           await db.insert(usuarioConquistas).values({
-            id_usuario: userId,
+            idUsuario: userId,
             id_conquista: conquista.id,
             valor_atingido: desbloqueou.value,
             data_desbloqueio: new Date().toISOString(),
-            created_at: new Date().toISOString()
+            createdAt: new Date().toISOString()
           });
 
           // Atualizar pontos do usuário
@@ -442,8 +442,8 @@ export class GamificationController {
       .from(jornadas)
       .where(
         and(
-          eq(jornadas.id_usuario, userId),
-          isNull(jornadas.deleted_at)
+          eq(jornadas.idUsuario, userId),
+          isNull(jornadas.deletedAt)
         )
       );
 
@@ -467,8 +467,8 @@ export class GamificationController {
       .from(jornadas)
       .where(
         and(
-          eq(jornadas.id_usuario, userId),
-          isNull(jornadas.deleted_at)
+          eq(jornadas.idUsuario, userId),
+          isNull(jornadas.deletedAt)
         )
       );
 
@@ -492,8 +492,8 @@ export class GamificationController {
       .from(jornadas)
       .where(
         and(
-          eq(jornadas.id_usuario, userId),
-          isNull(jornadas.deleted_at)
+          eq(jornadas.idUsuario, userId),
+          isNull(jornadas.deletedAt)
         )
       );
 
@@ -519,8 +519,8 @@ export class GamificationController {
       .from(jornadas)
       .where(
         and(
-          eq(jornadas.id_usuario, userId),
-          isNull(jornadas.deleted_at)
+          eq(jornadas.idUsuario, userId),
+          isNull(jornadas.deletedAt)
         )
       );
 
@@ -550,9 +550,9 @@ export class GamificationController {
       .from(jornadas)
       .where(
         and(
-          eq(jornadas.id_usuario, userId),
-          gte(jornadas.data_inicio, dataLimite.toISOString()),
-          isNull(jornadas.deleted_at)
+          eq(jornadas.idUsuario, userId),
+          gte(jornadas.dataInicio, dataLimite.toISOString()),
+          isNull(jornadas.deletedAt)
         )
       );
 
@@ -576,9 +576,9 @@ export class GamificationController {
       .from(metas)
       .where(
         and(
-          eq(metas.id_usuario, userId),
+          eq(metas.idUsuario, userId),
           eq(metas.status, 'Concluida'),
-          isNull(metas.deleted_at)
+          isNull(metas.deletedAt)
         )
       );
 
@@ -635,7 +635,7 @@ export class GamificationController {
         .from(usuarioConquistas)
         .where(
           and(
-            eq(usuarioConquistas.id_usuario, req.user?.id),
+            eq(usuarioConquistas.idUsuario, req.user?.id),
             eq(usuarioConquistas.id_conquista, id_conquista)
           )
         );
@@ -649,11 +649,11 @@ export class GamificationController {
 
       // Desbloquear conquista
       await db.insert(usuarioConquistas).values({
-        id_usuario: req.user?.id,
+        idUsuario: req.user?.id,
         id_conquista,
         valor_atingido: valor_atingido || conquista.criterio_valor || 0,
         data_desbloqueio: new Date().toISOString(),
-        created_at: new Date().toISOString()
+        createdAt: new Date().toISOString()
       });
 
       // Atualizar pontos e conquistas desbloqueadas do usuário

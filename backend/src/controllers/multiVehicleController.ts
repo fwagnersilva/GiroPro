@@ -6,7 +6,7 @@ import { z } from 'zod';
 
 // Schema de validação para seleção de veículo
 const vehicleSelectionSchema = z.object({
-  id_veiculo: z.string().uuid('ID do veículo deve ser um UUID válido'),
+  idVeiculo: z.string().uuid('ID do veículo deve ser um UUID válido'),
 });
 
 // Schema de validação para múltiplos veículos
@@ -24,7 +24,7 @@ interface DailyUsageData {
   km: number;
   tempo: number;
   abastecimentos: number;
-  quantidade_litros: number;
+  quantidadeLitros: number;
   gasto_combustivel: number;
 }
 
@@ -50,8 +50,8 @@ export class MultiVehicleController {
 
       // Construir filtros
       let vehicleFilter = and(
-        eq(veiculos.id_usuario, req.user?.id),
-        incluir_inativos ? sql`true` : isNull(veiculos.deleted_at)
+        eq(veiculos.idUsuario, req.user?.id),
+        incluir_inativos ? sql`true` : isNull(veiculos.deletedAt)
       );
 
       if (ids_veiculos && ids_veiculos.length > 0) {
@@ -96,49 +96,49 @@ export class MultiVehicleController {
             total_faturamento: sum(jornadas.ganho_bruto),
             total_km: sum(jornadas.km_total),
             numero_jornadas: count(jornadas.id),
-            ultima_jornada: sql<Date>`MAX(${jornadas.data_inicio})`,
+            ultima_jornada: sql<Date>`MAX(${jornadas.dataInicio})`,
           })
           .from(jornadas)
           .where(
             and(
-              eq(jornadas.id_veiculo, vehicle.id),
-              eq(jornadas.id_usuario, req.user?.id),
-              gte(jornadas.data_inicio, thirtyDaysAgo.toISOString()),
-              isNull(jornadas.deleted_at)
+              eq(jornadas.idVeiculo, vehicle.id),
+              eq(jornadas.idUsuario, req.user?.id),
+              gte(jornadas.dataInicio, thirtyDaysAgo.toISOString()),
+              isNull(jornadas.deletedAt)
             )
           );
 
         // Métricas de abastecimentos
         const fuelingStats = await db
           .select({
-            total_litros: sum(abastecimentos.quantidade_litros),
-            total_gasto: sum(abastecimentos.valor_total),
+            total_litros: sum(abastecimentos.quantidadeLitros),
+            total_gasto: sum(abastecimentos.valorTotal),
             numero_abastecimentos: count(abastecimentos.id),
-            ultimo_abastecimento: sql<Date>`MAX(${abastecimentos.data_abastecimento})`,
+            ultimo_abastecimento: sql<Date>`MAX(${abastecimentos.dataAbastecimento})`,
           })
           .from(abastecimentos)
           .where(
             and(
-              eq(abastecimentos.id_veiculo, vehicle.id),
-              eq(abastecimentos.id_usuario, req.user?.id),
-              gte(abastecimentos.data_abastecimento, thirtyDaysAgo.toISOString()),
-              isNull(abastecimentos.deleted_at)
+              eq(abastecimentos.idVeiculo, vehicle.id),
+              eq(abastecimentos.idUsuario, req.user?.id),
+              gte(abastecimentos.dataAbastecimento, thirtyDaysAgo.toISOString()),
+              isNull(abastecimentos.deletedAt)
             )
           );
 
         // Métricas de despesas
         const expenseStats = await db
           .select({
-            total_despesas: sum(despesas.valor_despesa),
+            total_despesas: sum(despesas.valorDespesa),
             numero_despesas: count(despesas.id),
           })
           .from(despesas)
           .where(
             and(
-              eq(despesas.id_veiculo, vehicle.id),
-              eq(despesas.id_usuario, req.user?.id),
-              gte(despesas.data_despesa, thirtyDaysAgo.toISOString()),
-              isNull(despesas.deleted_at)
+              eq(despesas.idVeiculo, vehicle.id),
+              eq(despesas.idUsuario, req.user?.id),
+              gte(despesas.dataDespesa, thirtyDaysAgo.toISOString()),
+              isNull(despesas.deletedAt)
             )
           );
 
@@ -150,10 +150,10 @@ export class MultiVehicleController {
         const km = Number(journey.total_km) || 0;
         const gastoCombustivel = Number(fueling.total_gasto) || 0;
         const despesasTotal = Number(expense.total_despesas) || 0;
-        const quantidade_litros = Number(fueling.total_litros) || 0;
+        const quantidadeLitros = Number(fueling.total_litros) || 0;
 
         // Calcular métricas derivadas
-        const consumoMedio = km > 0 && quantidade_litros > 0 ? km / quantidade_litros : 0;
+        const consumoMedio = km > 0 && quantidadeLitros > 0 ? km / quantidadeLitros : 0;
         const lucroLiquido = faturamento - gastoCombustivel - despesasTotal;
         const margemLucro = faturamento > 0 ? (lucroLiquido / faturamento) * 100 : 0;
         const ganhoPorKm = km > 0 ? faturamento / km : 0;
@@ -182,7 +182,7 @@ export class MultiVehicleController {
             modelo: vehicle.modelo,
             ano: vehicle.ano,
             placa: vehicle.placa,
-            tipo_combustivel: vehicle.tipo_combustivel,
+            tipoCombustivel: vehicle.tipoCombustivel,
             tipo_uso: vehicle.tipo_uso,
             data_cadastro: vehicle.data_cadastro,
             status: statusVeiculo,
@@ -258,7 +258,7 @@ export class MultiVehicleController {
         });
       }
 
-      const { id_veiculo } = validation.data;
+      const { idVeiculo } = validation.data;
 
       // Verificar se o veículo pertence ao usuário
       const vehicle = await db
@@ -266,9 +266,9 @@ export class MultiVehicleController {
         .from(veiculos)
         .where(
           and(
-            eq(veiculos.id, id_veiculo),
-            eq(veiculos.id_usuario, req.user?.id),
-            isNull(veiculos.deleted_at)
+            eq(veiculos.id, idVeiculo),
+            eq(veiculos.idUsuario, req.user?.id),
+            isNull(veiculos.deletedAt)
           )
         );
 
@@ -320,8 +320,8 @@ export class MultiVehicleController {
         .from(veiculos)
         .where(
           and(
-            eq(veiculos.id_usuario, req.user?.id),
-            isNull(veiculos.deleted_at)
+            eq(veiculos.idUsuario, req.user?.id),
+            isNull(veiculos.deletedAt)
           )
         );
 
@@ -349,20 +349,20 @@ export class MultiVehicleController {
       // Estatísticas do dia atual
       const statsHoje = await db
         .select({
-          veiculos_ativos: sql<number>`COUNT(DISTINCT ${jornadas.id_veiculo})`,
+          veiculos_ativos: sql<number>`COUNT(DISTINCT ${jornadas.idVeiculo})`,
           faturamento_total: sum(jornadas.ganho_bruto),
           km_total: sum(jornadas.km_total),
           numero_jornadas: count(jornadas.id),
         })
         .from(jornadas)
-        .innerJoin(veiculos, eq(jornadas.id_veiculo, veiculos.id))
+        .innerJoin(veiculos, eq(jornadas.idVeiculo, veiculos.id))
         .where(
           and(
-            eq(veiculos.id_usuario, req.user?.id),
-            gte(jornadas.data_inicio, hoje.toISOString()),
-            sql`${jornadas.data_inicio} < ${amanha}`,
-            isNull(jornadas.deleted_at),
-            isNull(veiculos.deleted_at)
+            eq(veiculos.idUsuario, req.user?.id),
+            gte(jornadas.dataInicio, hoje.toISOString()),
+            sql`${jornadas.dataInicio} < ${amanha}`,
+            isNull(jornadas.deletedAt),
+            isNull(veiculos.deletedAt)
           )
         );
 
@@ -398,9 +398,9 @@ export class MultiVehicleController {
         return res.status(401).json({ success: false, error: { message: 'Usuário não autenticado' } });
       }
 
-      const { id_veiculo } = req.params;
+      const { idVeiculo } = req.params;
 
-      if (!id_veiculo) {
+      if (!idVeiculo) {
         return res.status(400).json({ 
           success: false, 
           error: { message: 'ID do veículo é obrigatório' } 
@@ -413,9 +413,9 @@ export class MultiVehicleController {
         .from(veiculos)
         .where(
           and(
-            eq(veiculos.id, id_veiculo),
-            eq(veiculos.id_usuario, req.user?.id),
-            isNull(veiculos.deleted_at)
+            eq(veiculos.id, idVeiculo),
+            eq(veiculos.idUsuario, req.user?.id),
+            isNull(veiculos.deletedAt)
           )
         );
 
@@ -433,7 +433,7 @@ export class MultiVehicleController {
       // Histórico de jornadas
       const journeyHistory = await db
         .select({
-          data: jornadas.data_inicio,
+          data: jornadas.dataInicio,
           faturamento: jornadas.ganho_bruto,
           km: jornadas.km_total,
           tempo: jornadas.tempo_total,
@@ -441,31 +441,31 @@ export class MultiVehicleController {
         .from(jornadas)
         .where(
           and(
-            eq(jornadas.id_veiculo, id_veiculo),
-            eq(jornadas.id_usuario, req.user?.id),
-            gte(jornadas.data_inicio, thirtyDaysAgo.toISOString()),
-            isNull(jornadas.deleted_at)
+            eq(jornadas.idVeiculo, idVeiculo),
+            eq(jornadas.idUsuario, req.user?.id),
+            gte(jornadas.dataInicio, thirtyDaysAgo.toISOString()),
+            isNull(jornadas.deletedAt)
           )
         )
-        .orderBy(desc(jornadas.data_inicio));
+        .orderBy(desc(jornadas.dataInicio));
 
       // Histórico de abastecimentos
       const fuelingHistory = await db
         .select({
-          data: abastecimentos.data_abastecimento,
-          quantidade_litros: abastecimentos.quantidade_litros,
-          valor_litro: abastecimentos.valor_litro,
+          data: abastecimentos.dataAbastecimento,
+          quantidadeLitros: abastecimentos.quantidadeLitros,
+          valorLitro: abastecimentos.valorLitro,
         })
         .from(abastecimentos)
         .where(
           and(
-            eq(abastecimentos.id_veiculo, id_veiculo),
-            eq(abastecimentos.id_usuario, req.user?.id),
-            gte(abastecimentos.data_abastecimento, thirtyDaysAgo.toISOString()),
-            isNull(abastecimentos.deleted_at)
+            eq(abastecimentos.idVeiculo, idVeiculo),
+            eq(abastecimentos.idUsuario, req.user?.id),
+            gte(abastecimentos.dataAbastecimento, thirtyDaysAgo.toISOString()),
+            isNull(abastecimentos.deletedAt)
           )
         )
-        .orderBy(desc(abastecimentos.data_abastecimento));
+        .orderBy(desc(abastecimentos.dataAbastecimento));
 
       // Agrupar por dia
       const dailyUsage: { [key: string]: DailyUsageData } = {};
@@ -480,7 +480,7 @@ journeyHistory.forEach(journey => {
             km: 0,
             tempo: 0,
             abastecimentos: 0,
-            quantidade_litros: 0,
+            quantidadeLitros: 0,
             gasto_combustivel: 0,
           };
         }
@@ -500,13 +500,13 @@ fuelingHistory.forEach(fueling => {
             km: 0,
             tempo: 0,
             abastecimentos: 0,
-            quantidade_litros: 0,
+            quantidadeLitros: 0,
             gasto_combustivel: 0,
           };
         }
         dailyUsage[date].abastecimentos++;
-        dailyUsage[date].quantidade_litros += Number(fueling.quantidade_litros) || 0;
-        dailyUsage[date].gasto_combustivel += Number(fueling.valor_litro) || 0;
+        dailyUsage[date].quantidadeLitros += Number(fueling.quantidadeLitros) || 0;
+        dailyUsage[date].gasto_combustivel += Number(fueling.valorLitro) || 0;
       });
 
       // Converter para array e ordenar por data
@@ -523,8 +523,8 @@ fuelingHistory.forEach(fueling => {
           },
           historico_uso_diario: dailyUsageArray,
           periodo_analise: {
-            data_inicio: thirtyDaysAgo.toISOString().split('T')[0],
-            data_fim: new Date().toISOString().split('T')[0],
+            dataInicio: thirtyDaysAgo.toISOString().split('T')[0],
+            dataFim: new Date().toISOString().split('T')[0],
             total_dias: 30,
           }
         }

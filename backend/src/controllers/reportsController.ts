@@ -26,15 +26,15 @@ interface JourneyStats {
 
 interface JourneyReport {
   id_jornada: string;
-  data_inicio: string | null;
-  data_fim: string | null;
+  dataInicio: string | null;
+  dataFim: string | null;
   duracao_minutos: number | null;
   veiculo: {
     id: string | null;
     marca: string | null;
     modelo: string | null;
     placa: string | null;
-    tipo_combustivel: string | null;
+    tipoCombustivel: string | null;
   };
   quilometragem: {
     inicio: number | null;
@@ -65,7 +65,7 @@ interface ExpenseEvolution {
 }
 
 interface VehicleComparison {
-  id_veiculo: string;
+  idVeiculo: string;
   veiculo: string;
   total_despesas: number;
   custo_por_km: number;
@@ -114,9 +114,9 @@ const EXPENSE_CATEGORIES = {
 
 const reportsQuerySchema = z.object({
   periodo: z.enum(['hoje', 'semana', 'mes', 'ano', 'personalizado']).default('mes'),
-  data_inicio: z.string().datetime().optional(),
-  data_fim: z.string().datetime().optional(),
-  id_veiculo: z.string().uuid().optional(),
+  dataInicio: z.string().datetime().optional(),
+  dataFim: z.string().datetime().optional(),
+  idVeiculo: z.string().uuid().optional(),
   formato: z.enum(['json', 'csv']).default('json')
 });
 
@@ -194,41 +194,41 @@ export class ReportsController {
       }
 
       const { userId, queryData } = validation;
-      const { periodo, data_inicio, data_fim, id_veiculo, formato } = queryData!;
-      const { dataInicio, dataFim } = DateHelper.calcularPeriodo(periodo, data_inicio, data_fim);
+      const { periodo, dataInicio, dataFim, idVeiculo, formato } = queryData!;
+      const { dataInicio, dataFim } = DateHelper.calcularPeriodo(periodo, dataInicio, dataFim);
 
       console.log(`[ReportsController] Gerando relatório de jornadas - Usuário: ${userId}, Período: ${periodo}`);
 
       // Construir condições de filtro
       const whereConditions = and(
-        eq(jornadas.id_usuario, userId!),
-        gte(jornadas.data_inicio, DateHelper.formatDateForSQL(dataInicio)),
-        lte(jornadas.data_fim, DateHelper.formatDateForSQL(dataFim)),
-        id_veiculo ? eq(jornadas.id_veiculo, id_veiculo) : undefined
+        eq(jornadas.idUsuario, userId!),
+        gte(jornadas.dataInicio, DateHelper.formatDateForSQL(dataInicio)),
+        lte(jornadas.dataFim, DateHelper.formatDateForSQL(dataFim)),
+        idVeiculo ? eq(jornadas.idVeiculo, idVeiculo) : undefined
       );
 
       // Buscar jornadas com informações do veículo
       const jornadasDetalhadas = await db
         .select({
           id: jornadas.id,
-          data_inicio: jornadas.data_inicio,
-          data_fim: jornadas.data_fim,
+          dataInicio: jornadas.dataInicio,
+          dataFim: jornadas.dataFim,
           km_inicio: jornadas.km_inicio,
           km_fim: jornadas.km_fim,
           km_total: jornadas.km_total,
           ganho_bruto: jornadas.ganho_bruto,
           tempo_total: jornadas.tempo_total,
           observacoes: jornadas.observacoes,
-          id_veiculo: jornadas.id_veiculo,
+          idVeiculo: jornadas.idVeiculo,
           veiculo_marca: veiculos.marca,
           veiculo_modelo: veiculos.modelo,
           veiculo_placa: veiculos.placa,
-          veiculo_tipo_combustivel: veiculos.tipo_combustivel
+          veiculo_tipoCombustivel: veiculos.tipoCombustivel
         })
         .from(jornadas)
-        .leftJoin(veiculos, eq(jornadas.id_veiculo, veiculos.id))
+        .leftJoin(veiculos, eq(jornadas.idVeiculo, veiculos.id))
         .where(whereConditions)
-        .orderBy(desc(jornadas.data_inicio));
+        .orderBy(desc(jornadas.dataInicio));
 
       // Processar jornadas e calcular dados financeiros
       const relatorioJornadas = await JourneyProcessor.processJourneys(jornadasDetalhadas, userId!);
@@ -239,11 +239,11 @@ export class ReportsController {
       const relatorio = {
         periodo: {
           tipo: periodo,
-          data_inicio: dataInicio.toISOString(),
-          data_fim: dataFim.toISOString()
+          dataInicio: dataInicio.toISOString(),
+          dataFim: dataFim.toISOString()
         },
         filtros: {
-          id_veiculo: id_veiculo || null
+          idVeiculo: idVeiculo || null
         },
         estatisticas,
         jornadas: relatorioJornadas,
@@ -275,8 +275,8 @@ export class ReportsController {
       }
 
       const { userId, queryData } = validation;
-      const { periodo, data_inicio, data_fim, id_veiculo, formato } = queryData!;
-      const { dataInicio, dataFim } = DateHelper.calcularPeriodo(periodo, data_inicio, data_fim);
+      const { periodo, dataInicio, dataFim, idVeiculo, formato } = queryData!;
+      const { dataInicio, dataFim } = DateHelper.calcularPeriodo(periodo, dataInicio, dataFim);
 
       console.log(`[ReportsController] Gerando relatório de despesas - Usuário: ${userId}, Período: ${periodo}`);
 
@@ -288,21 +288,21 @@ export class ReportsController {
         analiseCombustivel,
         resumoGeral
       ] = await Promise.all([
-        ExpenseAnalyzer.analisarDespesasPorCategoria(userId!, dataInicio, dataFim, id_veiculo),
-        ExpenseAnalyzer.analisarEvolucaoDespesas(userId!, dataInicio, dataFim, id_veiculo),
-        id_veiculo ? Promise.resolve(null) : ExpenseAnalyzer.compararDespesasVeiculos(userId!, dataInicio, dataFim),
-        ExpenseAnalyzer.analisarGastosCombustivel(userId!, dataInicio, dataFim, id_veiculo),
-        ExpenseAnalyzer.obterResumoGeral(userId!, dataInicio, dataFim, id_veiculo)
+        ExpenseAnalyzer.analisarDespesasPorCategoria(userId!, dataInicio, dataFim, idVeiculo),
+        ExpenseAnalyzer.analisarEvolucaoDespesas(userId!, dataInicio, dataFim, idVeiculo),
+        idVeiculo ? Promise.resolve(null) : ExpenseAnalyzer.compararDespesasVeiculos(userId!, dataInicio, dataFim),
+        ExpenseAnalyzer.analisarGastosCombustivel(userId!, dataInicio, dataFim, idVeiculo),
+        ExpenseAnalyzer.obterResumoGeral(userId!, dataInicio, dataFim, idVeiculo)
       ]);
 
       const relatorio = {
         periodo: {
           tipo: periodo,
-          data_inicio: dataInicio.toISOString(),
-          data_fim: dataFim.toISOString()
+          dataInicio: dataInicio.toISOString(),
+          dataFim: dataFim.toISOString()
         },
         filtros: {
-          id_veiculo: id_veiculo || null
+          idVeiculo: idVeiculo || null
         },
         resumo_geral: resumoGeral,
         despesas_por_categoria: despesasPorCategoria,
@@ -336,8 +336,8 @@ export class ReportsController {
       }
 
       const { userId, queryData } = validation;
-      const { periodo, data_inicio, data_fim, id_veiculo, formato } = queryData!;
-      const { dataInicio, dataFim } = DateHelper.calcularPeriodo(periodo, data_inicio, data_fim);
+      const { periodo, dataInicio, dataFim, idVeiculo, formato } = queryData!;
+      const { dataInicio, dataFim } = DateHelper.calcularPeriodo(periodo, dataInicio, dataFim);
 
       console.log(`[ReportsController] Gerando relatório de combustível - Usuário: ${userId}, Período: ${periodo}`);
 
@@ -349,21 +349,21 @@ export class ReportsController {
         analiseEficiencia,
         resumoAbastecimentos
       ] = await Promise.all([
-        FuelAnalyzer.analisarConsumoPorVeiculo(userId!, dataInicio, dataFim, id_veiculo),
-        FuelAnalyzer.analisarEvolucaoPrecos(userId!, dataInicio, dataFim, id_veiculo),
+        FuelAnalyzer.analisarConsumoPorVeiculo(userId!, dataInicio, dataFim, idVeiculo),
+        FuelAnalyzer.analisarEvolucaoPrecos(userId!, dataInicio, dataFim, idVeiculo),
         FuelAnalyzer.compararTiposCombustivel(userId!, dataInicio, dataFim),
-        FuelAnalyzer.analisarEficienciaCombustivel(userId!, dataInicio, dataFim, id_veiculo),
-        FuelAnalyzer.obterResumoAbastecimentos(userId!, dataInicio, dataFim, id_veiculo)
+        FuelAnalyzer.analisarEficienciaCombustivel(userId!, dataInicio, dataFim, idVeiculo),
+        FuelAnalyzer.obterResumoAbastecimentos(userId!, dataInicio, dataFim, idVeiculo)
       ]);
 
       const relatorio = {
         periodo: {
           tipo: periodo,
-          data_inicio: dataInicio.toISOString(),
-          data_fim: dataFim.toISOString()
+          dataInicio: dataInicio.toISOString(),
+          dataFim: dataFim.toISOString()
         },
         filtros: {
-          id_veiculo: id_veiculo || null
+          idVeiculo: idVeiculo || null
         },
         resumo_abastecimentos: resumoAbastecimentos,
         consumo_por_veiculo: consumoPorVeiculo,
@@ -397,8 +397,8 @@ export class ReportsController {
       }
 
       const { userId, queryData } = validation;
-      const { periodo, data_inicio, data_fim, id_veiculo } = queryData!;
-      const { dataInicio, dataFim } = DateHelper.calcularPeriodo(periodo, data_inicio, data_fim);
+      const { periodo, dataInicio, dataFim, idVeiculo } = queryData!;
+      const { dataInicio, dataFim } = DateHelper.calcularPeriodo(periodo, dataInicio, dataFim);
 
       console.log(`[ReportsController] Gerando dashboard - Usuário: ${userId}, Período: ${periodo}`);
 
@@ -410,21 +410,21 @@ export class ReportsController {
         veiculoMaisUtilizado,
         melhorDesempenho
       ] = await Promise.all([
-        DashboardAnalyzer.obterEstatisticasJornadas(userId!, dataInicio, dataFim, id_veiculo),
-        DashboardAnalyzer.obterTotalDespesas(userId!, dataInicio, dataFim, id_veiculo),
-        DashboardAnalyzer.obterTotalAbastecimentos(userId!, dataInicio, dataFim, id_veiculo),
-        id_veiculo ? Promise.resolve(null) : DashboardAnalyzer.obterVeiculoMaisUtilizado(userId!, dataInicio, dataFim),
-        DashboardAnalyzer.obterMelhorDesempenho(userId!, dataInicio, dataFim, id_veiculo)
+        DashboardAnalyzer.obterEstatisticasJornadas(userId!, dataInicio, dataFim, idVeiculo),
+        DashboardAnalyzer.obterTotalDespesas(userId!, dataInicio, dataFim, idVeiculo),
+        DashboardAnalyzer.obterTotalAbastecimentos(userId!, dataInicio, dataFim, idVeiculo),
+        idVeiculo ? Promise.resolve(null) : DashboardAnalyzer.obterVeiculoMaisUtilizado(userId!, dataInicio, dataFim),
+        DashboardAnalyzer.obterMelhorDesempenho(userId!, dataInicio, dataFim, idVeiculo)
       ]);
 
       const dashboard = {
         periodo: {
           tipo: periodo,
-          data_inicio: dataInicio.toISOString(),
-          data_fim: dataFim.toISOString()
+          dataInicio: dataInicio.toISOString(),
+          dataFim: dataFim.toISOString()
         },
         filtros: {
-          id_veiculo: id_veiculo || null
+          idVeiculo: idVeiculo || null
         },
         resumo: {
           jornadas: estatisticasJornadas,
@@ -447,14 +447,14 @@ export class ReportsController {
 // ====================== HELPER CLASSES ======================
 
 class DateHelper {
-  static calcularPeriodo(periodo: string, data_inicio?: string, data_fim?: string): PeriodRange {
+  static calcularPeriodo(periodo: string, dataInicio?: string, dataFim?: string): PeriodRange {
     const agora = new Date();
     let dataInicio: Date;
     let dataFim: Date = new Date(agora.getFullYear(), agora.getMonth(), agora.getDate(), 23, 59, 59, 999);
 
-    if (periodo === 'personalizado' && data_inicio && data_fim) {
-      dataInicio = new Date(data_inicio);
-      dataFim = new Date(data_fim);
+    if (periodo === 'personalizado' && dataInicio && dataFim) {
+      dataInicio = new Date(dataInicio);
+      dataFim = new Date(dataFim);
     } else {
       switch (periodo) {
         case 'hoje':
@@ -492,15 +492,15 @@ class QueryBuilder {
     idVeiculo?: string
   ) {
     let whereConditions = and(
-      eq(jornadas.id_usuario, userId),
-      isNotNull(jornadas.data_fim),
-      gte(jornadas.data_fim, DateHelper.formatDateForSQL(dataInicio)),
-      lte(jornadas.data_fim, DateHelper.formatDateForSQL(dataFim)),
-      isNull(jornadas.deleted_at)
+      eq(jornadas.idUsuario, userId),
+      isNotNull(jornadas.dataFim),
+      gte(jornadas.dataFim, DateHelper.formatDateForSQL(dataInicio)),
+      lte(jornadas.dataFim, DateHelper.formatDateForSQL(dataFim)),
+      isNull(jornadas.deletedAt)
     );
 
     if (idVeiculo) {
-      whereConditions = and(whereConditions, eq(jornadas.id_veiculo, idVeiculo));
+      whereConditions = and(whereConditions, eq(jornadas.idVeiculo, idVeiculo));
     }
 
     return whereConditions;
@@ -513,14 +513,14 @@ class QueryBuilder {
     idVeiculo?: string
   ) {
     let whereConditions = and(
-      eq(despesas.id_usuario, userId),
-      gte(despesas.data_despesa, DateHelper.formatDateForSQL(dataInicio)),
-      lte(despesas.data_despesa, DateHelper.formatDateForSQL(dataFim)),
-      isNull(despesas.deleted_at)
+      eq(despesas.idUsuario, userId),
+      gte(despesas.dataDespesa, DateHelper.formatDateForSQL(dataInicio)),
+      lte(despesas.dataDespesa, DateHelper.formatDateForSQL(dataFim)),
+      isNull(despesas.deletedAt)
     );
 
     if (idVeiculo) {
-      whereConditions = and(whereConditions, eq(despesas.id_veiculo, idVeiculo));
+      whereConditions = and(whereConditions, eq(despesas.idVeiculo, idVeiculo));
     }
 
     return whereConditions;
@@ -533,14 +533,14 @@ class QueryBuilder {
     idVeiculo?: string
   ) {
     let whereConditions = and(
-      eq(abastecimentos.id_usuario, userId),
-      gte(abastecimentos.data_abastecimento, DateHelper.formatDateForSQL(dataInicio)),
-      lte(abastecimentos.data_abastecimento, DateHelper.formatDateForSQL(dataFim)),
-      isNull(abastecimentos.deleted_at)
+      eq(abastecimentos.idUsuario, userId),
+      gte(abastecimentos.dataAbastecimento, DateHelper.formatDateForSQL(dataInicio)),
+      lte(abastecimentos.dataAbastecimento, DateHelper.formatDateForSQL(dataFim)),
+      isNull(abastecimentos.deletedAt)
     );
 
     if (idVeiculo) {
-      whereConditions = and(whereConditions, eq(abastecimentos.id_veiculo, idVeiculo));
+      whereConditions = and(whereConditions, eq(abastecimentos.idVeiculo, idVeiculo));
     }
 
     return whereConditions;
@@ -557,14 +557,14 @@ class JourneyProcessor {
       jornadasDetalhadas.map(async (jornada) => {
         const custoCombustivelEstimado = await FuelCalculator.estimarCustoCombustivel(
           jornada.km_total || 0,
-          jornada.veiculo_tipo_combustivel,
-          jornada.data_fim ? new Date(jornada.data_fim) : null
+          jornada.veiculo_tipoCombustivel,
+          jornada.dataFim ? new Date(jornada.dataFim) : null
         );
 
         const despesasJornada = await ExpenseCalculator.buscarDespesasJornada(
           userId,
-          jornada.data_inicio ? new Date(jornada.data_inicio) : null,
-          jornada.data_fim ? new Date(jornada.data_fim) : null,
+          jornada.dataInicio ? new Date(jornada.dataInicio) : null,
+          jornada.dataFim ? new Date(jornada.dataFim) : null,
           jornada.id
         );
 
@@ -573,15 +573,15 @@ class JourneyProcessor {
 
         return {
           id_jornada: jornada.id,
-          data_inicio: jornada.data_inicio,
-          data_fim: jornada.data_fim,
+          dataInicio: jornada.dataInicio,
+          dataFim: jornada.dataFim,
           duracao_minutos: jornada.tempo_total,
           veiculo: {
-            id: jornada.id_veiculo,
+            id: jornada.idVeiculo,
             marca: jornada.veiculo_marca,
             modelo: jornada.veiculo_modelo,
             placa: jornada.veiculo_placa,
-            tipo_combustivel: jornada.veiculo_tipo_combustivel
+            tipoCombustivel: jornada.veiculo_tipoCombustivel
           },
           quilometragem: {
             inicio: jornada.km_inicio,
@@ -637,16 +637,16 @@ class FuelCalculator {
 
       const result = await db
         .select({ 
-          preco_medio: sql<number>`CAST(AVG(${abastecimentos.preco_litro}) AS DECIMAL(10,2))` 
+          preco_medio: sql<number>`CAST(AVG(${abastecimentos.precoLitro}) AS DECIMAL(10,2))` 
         })
         .from(abastecimentos)
-        .leftJoin(veiculos, eq(abastecimentos.id_veiculo, veiculos.id))
+        .leftJoin(veiculos, eq(abastecimentos.idVeiculo, veiculos.id))
         .where(
           and(
-            eq(veiculos.tipo_combustivel, tipoCombustivel),
-            gte(abastecimentos.data_abastecimento, dataInicio.toISOString()),
-            lte(abastecimentos.data_abastecimento, dataFim.toISOString()),
-            isNull(abastecimentos.deleted_at)
+            eq(veiculos.tipoCombustivel, tipoCombustivel),
+            gte(abastecimentos.dataAbastecimento, dataInicio.toISOString()),
+            lte(abastecimentos.dataAbastecimento, dataFim.toISOString()),
+            isNull(abastecimentos.deletedAt)
           )
         );
 
@@ -673,14 +673,14 @@ class ExpenseCalculator {
 
     try {
       const result = await db
-        .select({ total: sql<number>`CAST(COALESCE(SUM(${despesas.valor_despesa}), 0) AS DECIMAL(10,2))` })
+        .select({ total: sql<number>`CAST(COALESCE(SUM(${despesas.valorDespesa}), 0) AS DECIMAL(10,2))` })
         .from(despesas)
         .where(
           and(
-            eq(despesas.id_usuario, userId),
-            gte(despesas.data_despesa, DateHelper.formatDateForSQL(dataInicio)),
-            lte(despesas.data_despesa, DateHelper.formatDateForSQL(dataFim)),
-            isNull(despesas.deleted_at)
+            eq(despesas.idUsuario, userId),
+            gte(despesas.dataDespesa, DateHelper.formatDateForSQL(dataInicio)),
+            lte(despesas.dataDespesa, DateHelper.formatDateForSQL(dataFim)),
+            isNull(despesas.deletedAt)
           )
         );
 
@@ -745,13 +745,13 @@ class ExpenseAnalyzer {
       const result = await db
         .select({
           categoria: despesas.categoria,
-          total: sql<number>`CAST(COALESCE(SUM(${despesas.valor_despesa}), 0) AS DECIMAL(10,2))`,
+          total: sql<number>`CAST(COALESCE(SUM(${despesas.valorDespesa}), 0) AS DECIMAL(10,2))`,
           quantidade: sql<number>`CAST(COUNT(*) AS INTEGER)`
         })
         .from(despesas)
         .where(whereConditions)
         .groupBy(despesas.categoria)
-        .orderBy(sql`SUM(${despesas.valor_despesa}) DESC`);
+        .orderBy(sql`SUM(${despesas.valorDespesa}) DESC`);
 
       const totalGeral = result.reduce((acc, item) => acc + Number(item.total), 0);
 
@@ -779,14 +779,14 @@ class ExpenseAnalyzer {
 
       const result = await db
         .select({
-          data: sql<string>`DATE(${despesas.data_despesa})`,
+          data: sql<string>`DATE(${despesas.dataDespesa})`,
           categoria: despesas.categoria,
-          total: sql<number>`CAST(COALESCE(SUM(${despesas.valor_despesa}), 0) AS DECIMAL(10,2))`
+          total: sql<number>`CAST(COALESCE(SUM(${despesas.valorDespesa}), 0) AS DECIMAL(10,2))`
         })
         .from(despesas)
         .where(whereConditions)
-        .groupBy(sql`DATE(${despesas.data_despesa})`, despesas.categoria)
-        .orderBy(sql`DATE(${despesas.data_despesa})`, despesas.categoria);
+        .groupBy(sql`DATE(${despesas.dataDespesa})`, despesas.categoria)
+        .orderBy(sql`DATE(${despesas.dataDespesa})`, despesas.categoria);
 
       return result.map(item => ({
         data: item.data,
@@ -808,36 +808,36 @@ class ExpenseAnalyzer {
     try {
       const result = await db
         .select({
-          id_veiculo: despesas.id_veiculo,
+          idVeiculo: despesas.idVeiculo,
           veiculo_marca: veiculos.marca,
           veiculo_modelo: veiculos.modelo,
           veiculo_placa: veiculos.placa,
-          total_despesas: sql<number>`CAST(COALESCE(SUM(${despesas.valor_despesa}), 0) AS DECIMAL(10,2))`,
+          total_despesas: sql<number>`CAST(COALESCE(SUM(${despesas.valorDespesa}), 0) AS DECIMAL(10,2))`,
           km_total: sql<number>`CAST(COALESCE(SUM(${jornadas.km_total}), 0) AS DECIMAL(10,2))`
         })
         .from(despesas)
-        .leftJoin(veiculos, eq(despesas.id_veiculo, veiculos.id))
+        .leftJoin(veiculos, eq(despesas.idVeiculo, veiculos.id))
         .leftJoin(jornadas, and(
-          eq(jornadas.id_veiculo, despesas.id_veiculo),
-          eq(jornadas.id_usuario, userId),
-          gte(jornadas.data_fim, DateHelper.formatDateForSQL(dataInicio)),
-          lte(jornadas.data_fim, DateHelper.formatDateForSQL(dataFim)),
-          isNull(jornadas.deleted_at)
+          eq(jornadas.idVeiculo, despesas.idVeiculo),
+          eq(jornadas.idUsuario, userId),
+          gte(jornadas.dataFim, DateHelper.formatDateForSQL(dataInicio)),
+          lte(jornadas.dataFim, DateHelper.formatDateForSQL(dataFim)),
+          isNull(jornadas.deletedAt)
         ))
         .where(
           and(
-            eq(despesas.id_usuario, userId),
-            gte(despesas.data_despesa, DateHelper.formatDateForSQL(dataInicio)),
-            lte(despesas.data_despesa, DateHelper.formatDateForSQL(dataFim)),
-            isNull(despesas.deleted_at),
-            isNotNull(despesas.id_veiculo)
+            eq(despesas.idUsuario, userId),
+            gte(despesas.dataDespesa, DateHelper.formatDateForSQL(dataInicio)),
+            lte(despesas.dataDespesa, DateHelper.formatDateForSQL(dataFim)),
+            isNull(despesas.deletedAt),
+            isNotNull(despesas.idVeiculo)
           )
         )
-        .groupBy(despesas.id_veiculo, veiculos.marca, veiculos.modelo, veiculos.placa)
-        .orderBy(sql`SUM(${despesas.valor_despesa}) DESC`);
+        .groupBy(despesas.idVeiculo, veiculos.marca, veiculos.modelo, veiculos.placa)
+        .orderBy(sql`SUM(${despesas.valorDespesa}) DESC`);
 
       return result.map(item => ({
-        id_veiculo: item.id_veiculo || '',
+        idVeiculo: item.idVeiculo || '',
         veiculo: `${item.veiculo_marca || 'N/A'} ${item.veiculo_modelo || 'N/A'} (${item.veiculo_placa || 'N/A'})`,
         total_despesas: Math.round(Number(item.total_despesas)),
         km_total: Number(item.km_total),
@@ -862,10 +862,10 @@ class ExpenseAnalyzer {
 
       const result = await db
         .select({
-          custo_total: sql<number>`CAST(COALESCE(SUM(${abastecimentos.valor_total}), 0) AS DECIMAL(10,2))`,
+          custo_total: sql<number>`CAST(COALESCE(SUM(${abastecimentos.valorTotal}), 0) AS DECIMAL(10,2))`,
           litros_total: sql<number>`CAST(COALESCE(SUM(${abastecimentos.litros}), 0) AS DECIMAL(10,2))`,
-          preco_medio: sql<number>`CAST(COALESCE(AVG(${abastecimentos.preco_litro}), 0) AS DECIMAL(10,2))`,
-          km_total: sql<number>`CAST(COALESCE(SUM(${abastecimentos.km_atual} - ${abastecimentos.km_anterior}), 0) AS DECIMAL(10,2))`
+          preco_medio: sql<number>`CAST(COALESCE(AVG(${abastecimentos.precoLitro}), 0) AS DECIMAL(10,2))`,
+          km_total: sql<number>`CAST(COALESCE(SUM(${abastecimentos.kmAtual} - ${abastecimentos.km_anterior}), 0) AS DECIMAL(10,2))`
         })
         .from(abastecimentos)
         .where(whereConditions);
@@ -904,11 +904,11 @@ class ExpenseAnalyzer {
 
       const result = await db
         .select({
-          total_despesas: sql<number>`CAST(COALESCE(SUM(${despesas.valor_despesa}), 0) AS DECIMAL(10,2))`,
+          total_despesas: sql<number>`CAST(COALESCE(SUM(${despesas.valorDespesa}), 0) AS DECIMAL(10,2))`,
           quantidade_despesas: sql<number>`CAST(COUNT(*) AS INTEGER)`,
-          maior_despesa: sql<number>`CAST(COALESCE(MAX(${despesas.valor_despesa}), 0) AS DECIMAL(10,2))`,
-          menor_despesa: sql<number>`CAST(COALESCE(MIN(${despesas.valor_despesa}), 0) AS DECIMAL(10,2))`,
-          media_despesa: sql<number>`CAST(COALESCE(AVG(${despesas.valor_despesa}), 0) AS DECIMAL(10,2))`
+          maior_despesa: sql<number>`CAST(COALESCE(MAX(${despesas.valorDespesa}), 0) AS DECIMAL(10,2))`,
+          menor_despesa: sql<number>`CAST(COALESCE(MIN(${despesas.valorDespesa}), 0) AS DECIMAL(10,2))`,
+          media_despesa: sql<number>`CAST(COALESCE(AVG(${despesas.valorDespesa}), 0) AS DECIMAL(10,2))`
         })
         .from(despesas)
         .where(whereConditions);
@@ -950,37 +950,37 @@ class FuelAnalyzer {
 
       const result = await db
         .select({
-          id_veiculo: abastecimentos.id_veiculo,
+          idVeiculo: abastecimentos.idVeiculo,
           veiculo_marca: veiculos.marca,
           veiculo_modelo: veiculos.modelo,
           veiculo_placa: veiculos.placa,
-          tipo_combustivel: veiculos.tipo_combustivel,
+          tipoCombustivel: veiculos.tipoCombustivel,
           total_litros: sql<number>`CAST(COALESCE(SUM(${abastecimentos.litros}), 0) AS DECIMAL(10,2))`,
-          total_valor: sql<number>`CAST(COALESCE(SUM(${abastecimentos.valor_total}), 0) AS DECIMAL(10,2))`,
-          km_percorridos: sql<number>`CAST(COALESCE(SUM(${abastecimentos.km_atual} - ${abastecimentos.km_anterior}), 0) AS DECIMAL(10,2))`,
+          total_valor: sql<number>`CAST(COALESCE(SUM(${abastecimentos.valorTotal}), 0) AS DECIMAL(10,2))`,
+          km_percorridos: sql<number>`CAST(COALESCE(SUM(${abastecimentos.kmAtual} - ${abastecimentos.km_anterior}), 0) AS DECIMAL(10,2))`,
           quantidade_abastecimentos: sql<number>`CAST(COUNT(*) AS INTEGER)`
         })
         .from(abastecimentos)
-        .leftJoin(veiculos, eq(abastecimentos.id_veiculo, veiculos.id))
+        .leftJoin(veiculos, eq(abastecimentos.idVeiculo, veiculos.id))
         .where(whereConditions)
         .groupBy(
-          abastecimentos.id_veiculo,
+          abastecimentos.idVeiculo,
           veiculos.marca,
           veiculos.modelo,
           veiculos.placa,
-          veiculos.tipo_combustivel
+          veiculos.tipoCombustivel
         )
-        .orderBy(sql`SUM(${abastecimentos.valor_total}) DESC`);
+        .orderBy(sql`SUM(${abastecimentos.valorTotal}) DESC`);
 
       return result.map(item => {
         const kmPercorridos = Number(item.km_percorridos);
         const litrosConsumidos = Number(item.total_litros);
         
         return {
-          id_veiculo: item.id_veiculo,
+          idVeiculo: item.idVeiculo,
           veiculo: `${item.veiculo_marca || 'N/A'} ${item.veiculo_modelo || 'N/A'}`,
           placa: item.veiculo_placa,
-          tipo_combustivel: item.tipo_combustivel,
+          tipoCombustivel: item.tipoCombustivel,
           consumo_medio: kmPercorridos > 0 && litrosConsumidos > 0 ? 
             Math.round((kmPercorridos / litrosConsumidos) * 100) / 100 : 0,
           total_litros: Math.round(litrosConsumidos * 100) / 100,
@@ -1007,20 +1007,20 @@ class FuelAnalyzer {
 
       const result = await db
         .select({
-          data: sql<string>`DATE(${abastecimentos.data_abastecimento})`,
-          tipo_combustivel: veiculos.tipo_combustivel,
-          preco_medio: sql<number>`CAST(AVG(${abastecimentos.preco_litro}) AS DECIMAL(10,2))`,
+          data: sql<string>`DATE(${abastecimentos.dataAbastecimento})`,
+          tipoCombustivel: veiculos.tipoCombustivel,
+          preco_medio: sql<number>`CAST(AVG(${abastecimentos.precoLitro}) AS DECIMAL(10,2))`,
           quantidade_abastecimentos: sql<number>`CAST(COUNT(*) AS INTEGER)`
         })
         .from(abastecimentos)
-        .leftJoin(veiculos, eq(abastecimentos.id_veiculo, veiculos.id))
+        .leftJoin(veiculos, eq(abastecimentos.idVeiculo, veiculos.id))
         .where(whereConditions)
-        .groupBy(sql`DATE(${abastecimentos.data_abastecimento})`, veiculos.tipo_combustivel)
-        .orderBy(sql`DATE(${abastecimentos.data_abastecimento})`);
+        .groupBy(sql`DATE(${abastecimentos.dataAbastecimento})`, veiculos.tipoCombustivel)
+        .orderBy(sql`DATE(${abastecimentos.dataAbastecimento})`);
 
       return result.map(item => ({
         data: item.data,
-        tipo_combustivel: item.tipo_combustivel,
+        tipoCombustivel: item.tipoCombustivel,
         preco_medio: Math.round(Number(item.preco_medio)),
         quantidade_abastecimentos: Number(item.quantidade_abastecimentos)
       }));
@@ -1041,24 +1041,24 @@ class FuelAnalyzer {
 
       const result = await db
         .select({
-          tipo_combustivel: veiculos.tipo_combustivel,
-          preco_medio: sql<number>`CAST(AVG(${abastecimentos.preco_litro}) AS DECIMAL(10,2))`,
-          consumo_medio: sql<number>`CAST(AVG((${abastecimentos.km_atual} - ${abastecimentos.km_anterior}) / ${abastecimentos.litros}) AS DECIMAL(10,2))`,
-          total_gasto: sql<number>`CAST(SUM(${abastecimentos.valor_total}) AS DECIMAL(10,2))`,
+          tipoCombustivel: veiculos.tipoCombustivel,
+          preco_medio: sql<number>`CAST(AVG(${abastecimentos.precoLitro}) AS DECIMAL(10,2))`,
+          consumo_medio: sql<number>`CAST(AVG((${abastecimentos.kmAtual} - ${abastecimentos.km_anterior}) / ${abastecimentos.litros}) AS DECIMAL(10,2))`,
+          total_gasto: sql<number>`CAST(SUM(${abastecimentos.valorTotal}) AS DECIMAL(10,2))`,
           total_litros: sql<number>`CAST(SUM(${abastecimentos.litros}) AS DECIMAL(10,2))`,
           quantidade_abastecimentos: sql<number>`CAST(COUNT(*) AS INTEGER)`
         })
         .from(abastecimentos)
-        .leftJoin(veiculos, eq(abastecimentos.id_veiculo, veiculos.id))
-        .where(and(whereConditions, isNotNull(veiculos.tipo_combustivel)))
-        .groupBy(veiculos.tipo_combustivel)
-        .orderBy(sql`AVG(${abastecimentos.preco_litro})`);
+        .leftJoin(veiculos, eq(abastecimentos.idVeiculo, veiculos.id))
+        .where(and(whereConditions, isNotNull(veiculos.tipoCombustivel)))
+        .groupBy(veiculos.tipoCombustivel)
+        .orderBy(sql`AVG(${abastecimentos.precoLitro})`);
 
       const comparacao: any = {};
       
       result.forEach(item => {
-        if (item.tipo_combustivel) {
-          comparacao[item.tipo_combustivel] = {
+        if (item.tipoCombustivel) {
+          comparacao[item.tipoCombustivel] = {
             preco_medio: Math.round(Number(item.preco_medio)),
             consumo_medio: Math.round(Number(item.consumo_medio || 0) * 100) / 100,
             total_gasto: Math.round(Number(item.total_gasto)),
@@ -1087,17 +1087,17 @@ class FuelAnalyzer {
 
       const result = await db
         .select({
-          melhor_consumo: sql<number>`CAST(MAX((${abastecimentos.km_atual} - ${abastecimentos.km_anterior}) / ${abastecimentos.litros}) AS DECIMAL(10,2))`,
-          pior_consumo: sql<number>`CAST(MIN((${abastecimentos.km_atual} - ${abastecimentos.km_anterior}) / ${abastecimentos.litros}) AS DECIMAL(10,2))`,
-          consumo_medio: sql<number>`CAST(AVG((${abastecimentos.km_atual} - ${abastecimentos.km_anterior}) / ${abastecimentos.litros}) AS DECIMAL(10,2))`,
-          desvio_padrao: sql<number>`CAST(SQRT(AVG(POWER(((${abastecimentos.km_atual} - ${abastecimentos.km_anterior}) / ${abastecimentos.litros}) - (SELECT AVG((${abastecimentos.km_atual} - ${abastecimentos.km_anterior}) / ${abastecimentos.litros}) FROM ${abastecimentos} WHERE ${whereConditions}), 2))) AS DECIMAL(10,2))`
+          melhor_consumo: sql<number>`CAST(MAX((${abastecimentos.kmAtual} - ${abastecimentos.km_anterior}) / ${abastecimentos.litros}) AS DECIMAL(10,2))`,
+          pior_consumo: sql<number>`CAST(MIN((${abastecimentos.kmAtual} - ${abastecimentos.km_anterior}) / ${abastecimentos.litros}) AS DECIMAL(10,2))`,
+          consumo_medio: sql<number>`CAST(AVG((${abastecimentos.kmAtual} - ${abastecimentos.km_anterior}) / ${abastecimentos.litros}) AS DECIMAL(10,2))`,
+          desvio_padrao: sql<number>`CAST(SQRT(AVG(POWER(((${abastecimentos.kmAtual} - ${abastecimentos.km_anterior}) / ${abastecimentos.litros}) - (SELECT AVG((${abastecimentos.kmAtual} - ${abastecimentos.km_anterior}) / ${abastecimentos.litros}) FROM ${abastecimentos} WHERE ${whereConditions}), 2))) AS DECIMAL(10,2))`
         })
         .from(abastecimentos)
-        .leftJoin(veiculos, eq(abastecimentos.id_veiculo, veiculos.id))
+        .leftJoin(veiculos, eq(abastecimentos.idVeiculo, veiculos.id))
         .where(
           and(
             whereConditions,
-            sql`(${abastecimentos.km_atual} - ${abastecimentos.km_anterior}) > 0`,
+            sql`(${abastecimentos.kmAtual} - ${abastecimentos.km_anterior}) > 0`,
             sql`${abastecimentos.litros} > 0`
           )
         );
@@ -1135,10 +1135,10 @@ class FuelAnalyzer {
         .select({
           total_abastecimentos: sql<number>`CAST(COUNT(*) AS INTEGER)`,
           total_litros: sql<number>`CAST(COALESCE(SUM(${abastecimentos.litros}), 0) AS DECIMAL(10,2))`,
-          total_valor: sql<number>`CAST(COALESCE(SUM(${abastecimentos.valor_total}), 0) AS DECIMAL(10,2))`,
-          preco_medio: sql<number>`CAST(COALESCE(AVG(${abastecimentos.preco_litro}), 0) AS DECIMAL(10,2))`,
-          maior_abastecimento: sql<number>`CAST(COALESCE(MAX(${abastecimentos.valor_total}), 0) AS DECIMAL(10,2))`,
-          menor_abastecimento: sql<number>`CAST(COALESCE(MIN(${abastecimentos.valor_total}), 0) AS DECIMAL(10,2))`
+          total_valor: sql<number>`CAST(COALESCE(SUM(${abastecimentos.valorTotal}), 0) AS DECIMAL(10,2))`,
+          preco_medio: sql<number>`CAST(COALESCE(AVG(${abastecimentos.precoLitro}), 0) AS DECIMAL(10,2))`,
+          maior_abastecimento: sql<number>`CAST(COALESCE(MAX(${abastecimentos.valorTotal}), 0) AS DECIMAL(10,2))`,
+          menor_abastecimento: sql<number>`CAST(COALESCE(MIN(${abastecimentos.valorTotal}), 0) AS DECIMAL(10,2))`
         })
         .from(abastecimentos)
         .where(whereConditions);
@@ -1229,7 +1229,7 @@ class DashboardAnalyzer {
 
       const result = await db
         .select({
-          total_despesas: sql<number>`CAST(COALESCE(SUM(${despesas.valor_despesa}), 0) AS DECIMAL(10,2))`,
+          total_despesas: sql<number>`CAST(COALESCE(SUM(${despesas.valorDespesa}), 0) AS DECIMAL(10,2))`,
           quantidade_despesas: sql<number>`CAST(COUNT(*) AS INTEGER)`
         })
         .from(despesas)
@@ -1263,7 +1263,7 @@ class DashboardAnalyzer {
       const result = await db
         .select({
           total_abastecimentos: sql<number>`CAST(COUNT(*) AS INTEGER)`,
-          total_valor: sql<number>`CAST(COALESCE(SUM(${abastecimentos.valor_total}), 0) AS DECIMAL(10,2))`,
+          total_valor: sql<number>`CAST(COALESCE(SUM(${abastecimentos.valorTotal}), 0) AS DECIMAL(10,2))`,
           total_litros: sql<number>`CAST(COALESCE(SUM(${abastecimentos.litros}), 0) AS DECIMAL(10,2))`
         })
         .from(abastecimentos)
@@ -1297,7 +1297,7 @@ class DashboardAnalyzer {
 
       const result = await db
         .select({
-          id_veiculo: jornadas.id_veiculo,
+          idVeiculo: jornadas.idVeiculo,
           veiculo_marca: veiculos.marca,
           veiculo_modelo: veiculos.modelo,
           veiculo_placa: veiculos.placa,
@@ -1305,9 +1305,9 @@ class DashboardAnalyzer {
           total_km: sql<number>`CAST(COALESCE(SUM(${jornadas.km_total}), 0) AS DECIMAL(10,2))`
         })
         .from(jornadas)
-        .leftJoin(veiculos, eq(jornadas.id_veiculo, veiculos.id))
-        .where(and(whereConditions, isNotNull(jornadas.id_veiculo)))
-        .groupBy(jornadas.id_veiculo, veiculos.marca, veiculos.modelo, veiculos.placa)
+        .leftJoin(veiculos, eq(jornadas.idVeiculo, veiculos.id))
+        .where(and(whereConditions, isNotNull(jornadas.idVeiculo)))
+        .groupBy(jornadas.idVeiculo, veiculos.marca, veiculos.modelo, veiculos.placa)
         .orderBy(sql`COUNT(*) DESC`)
         .limit(1);
 
@@ -1316,7 +1316,7 @@ class DashboardAnalyzer {
       if (!data) return null;
 
       return {
-        id_veiculo: data.id_veiculo,
+        idVeiculo: data.idVeiculo,
         veiculo: `${data.veiculo_marca || 'N/A'} ${data.veiculo_modelo || 'N/A'}`,
         placa: data.veiculo_placa,
         total_jornadas: Number(data.total_jornadas),
@@ -1343,7 +1343,7 @@ class DashboardAnalyzer {
           melhor_ganho: sql<number>`CAST(MAX(${jornadas.ganho_bruto}) AS DECIMAL(10,2))`,
           maior_km: sql<number>`CAST(MAX(${jornadas.km_total}) AS DECIMAL(10,2))`,
           melhor_tempo: sql<number>`CAST(MIN(${jornadas.tempo_total}) AS INTEGER)`,
-          data_melhor_ganho: sql<string>`(SELECT ${jornadas.data_inicio} FROM ${jornadas} WHERE ${whereConditions} AND ${jornadas.ganho_bruto} = MAX(${jornadas.ganho_bruto}) LIMIT 1)`
+          data_melhor_ganho: sql<string>`(SELECT ${jornadas.dataInicio} FROM ${jornadas} WHERE ${whereConditions} AND ${jornadas.ganho_bruto} = MAX(${jornadas.ganho_bruto}) LIMIT 1)`
         })
         .from(jornadas)
         .where(whereConditions);
@@ -1395,13 +1395,13 @@ class CSVGenerator {
 
     const rows = jornadas.map(j => [
       j.id_jornada,
-      j.data_inicio || '',
-      j.data_fim || '',
+      j.dataInicio || '',
+      j.dataFim || '',
       j.duracao_minutos || 0,
       j.veiculo.marca || '',
       j.veiculo.modelo || '',
       j.veiculo.placa || '',
-      j.veiculo.tipo_combustivel || '',
+      j.veiculo.tipoCombustivel || '',
       j.quilometragem.inicio || 0,
       j.quilometragem.fim || 0,
       j.quilometragem.total || 0,
@@ -1461,7 +1461,7 @@ class CSVGenerator {
     const rowsConsumo = consumoPorVeiculo.map(c => [
       c.veiculo || '',
       c.placa || '',
-      c.tipo_combustivel || '',
+      c.tipoCombustivel || '',
       c.consumo_medio.toString().replace('.', ','),
       c.total_litros.toString().replace('.', ','),
       (c.total_valor / 100).toFixed(2).replace('.', ','),
@@ -1480,7 +1480,7 @@ class CSVGenerator {
 
     const rowsPrecos = evolucaoPrecos.map(p => [
       p.data,
-      p.tipo_combustivel || '',
+      p.tipoCombustivel || '',
       (p.preco_medio / 100).toFixed(2).replace('.', ','),
       p.quantidade_abastecimentos
     ].join(';'));

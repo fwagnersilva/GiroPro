@@ -22,7 +22,7 @@ router.get('/vehicles-with-stats', MultiVehicleController.getVehiclesWithStats);
  * @route POST /api/v1/multi-vehicle/set-active-vehicle
  * @desc Definir veículo ativo/padrão para jornadas
  * @access Private
- * @body {string} id_veiculo - UUID do veículo a ser definido como ativo
+ * @body {string} idVeiculo - UUID do veículo a ser definido como ativo
  */
 router.post('/set-active-vehicle', MultiVehicleController.setActiveVehicle);
 
@@ -34,12 +34,12 @@ router.post('/set-active-vehicle', MultiVehicleController.setActiveVehicle);
 router.get('/quick-summary', MultiVehicleController.getQuickSummary);
 
 /**
- * @route GET /api/v1/multi-vehicle/vehicle-usage/:id_veiculo
+ * @route GET /api/v1/multi-vehicle/vehicle-usage/:idVeiculo
  * @desc Obter histórico de uso por veículo
  * @access Private
- * @param {string} id_veiculo - UUID do veículo
+ * @param {string} idVeiculo - UUID do veículo
  */
-router.get('/vehicle-usage/:id_veiculo', MultiVehicleController.getVehicleUsageHistory);
+router.get('/vehicle-usage/:idVeiculo', MultiVehicleController.getVehicleUsageHistory);
 
 export default router;
 

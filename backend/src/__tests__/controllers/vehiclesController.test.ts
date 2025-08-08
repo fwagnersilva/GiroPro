@@ -45,7 +45,7 @@ describe('VehiclesController', () => {
 
   afterEach(async () => {
     // Limpar dados após cada teste
-    await db.delete(veiculos).where(eq(veiculos.id_usuario, userId));
+    await db.delete(veiculos).where(eq(veiculos.idUsuario, userId));
     await db.delete(usuarios).where(eq(usuarios.id, userId));
   });
 
@@ -61,7 +61,7 @@ describe('VehiclesController', () => {
       expect(response.body.marca).toBe(testVehicle.marca);
       expect(response.body.modelo).toBe(testVehicle.modelo);
       expect(response.body.placa).toBe(testVehicle.placa);
-      expect(response.body.id_usuario).toBe(userId);
+      expect(response.body.idUsuario).toBe(userId);
     });
 
     it('should return 400 for invalid vehicle data', async () => {

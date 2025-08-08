@@ -66,7 +66,7 @@ const createVehicleSchema = z.object({
     .optional(),
   tipo_veiculo: z.nativeEnum(TipoVeiculo)
     .default(TipoVeiculo.CARRO),
-  tipo_combustivel: z.nativeEnum(TipoCombustivel)
+  tipoCombustivel: z.nativeEnum(TipoCombustivel)
     .default(TipoCombustivel.FLEX),
   consumo_medio: z.number()
     .positive('Consumo médio deve ser positivo')
@@ -76,7 +76,7 @@ const createVehicleSchema = z.object({
     .positive('Capacidade do tanque deve ser positiva')
     .max(200, 'Capacidade do tanque deve ser realista (máximo 200L)')
     .optional(),
-  km_atual: z.number()
+  kmAtual: z.number()
     .min(0, 'Quilometragem atual não pode ser negativa')
     .max(9999999, 'Quilometragem atual muito alta')
     .optional(),
@@ -90,7 +90,7 @@ const updateVehicleSchema = createVehicleSchema.partial();
 
 const queryParamsSchema = z.object({
   tipo_veiculo: z.nativeEnum(TipoVeiculo).optional(),
-  tipo_combustivel: z.nativeEnum(TipoCombustivel).optional(),
+  tipoCombustivel: z.nativeEnum(TipoCombustivel).optional(),
   ativo: z.coerce.boolean().optional(),
   limit: z.coerce.number().min(1).max(100).default(50),
   offset: z.coerce.number().min(0).default(0)
@@ -137,7 +137,7 @@ export class VehiclesController {
         .where(
           and(
             eq(veiculos.id, vehicleId),
-            isNull(veiculos.deleted_at)
+            isNull(veiculos.deletedAt)
           )
         );
 
@@ -145,7 +145,7 @@ export class VehiclesController {
         return { vehicle: null, error: 'Veículo não encontrado' };
       }
 
-      if (vehicles[0].id_usuario !== userId) {
+      if (vehicles[0].idUsuario !== userId) {
         return { vehicle: null, error: 'Acesso negado' };
       }
 
@@ -175,20 +175,20 @@ export class VehiclesController {
         );
       }
 
-      const { tipo_veiculo, tipo_combustivel, ativo, limit, offset } = queryValidation.data;
+      const { tipo_veiculo, tipoCombustivel, ativo, limit, offset } = queryValidation.data;
 
       // Construir condições de filtro
       let whereConditions = and(
-        eq(veiculos.id_usuario, userId),
-        isNull(veiculos.deleted_at)
+        eq(veiculos.idUsuario, userId),
+        isNull(veiculos.deletedAt)
       );
 
       if (tipo_veiculo) {
         whereConditions = and(whereConditions, eq(veiculos.tipo_veiculo, tipo_veiculo));
       }
 
-      if (tipo_combustivel) {
-        whereConditions = and(whereConditions, eq(veiculos.tipo_combustivel, tipo_combustivel));
+      if (tipoCombustivel) {
+        whereConditions = and(whereConditions, eq(veiculos.tipoCombustivel, tipoCombustivel));
       }
 
       if (ativo !== undefined) {
@@ -203,7 +203,7 @@ export class VehiclesController {
           .where(whereConditions)
           .limit(limit)
           .offset(offset)
-          .orderBy(veiculos.created_at),
+          .orderBy(veiculos.createdAt),
         db
           .select({ count: veiculos.id })
           .from(veiculos)
@@ -220,7 +220,7 @@ export class VehiclesController {
         },
         filters: {
           tipo_veiculo: tipo_veiculo || null,
-          tipo_combustivel: tipo_combustivel || null,
+          tipoCombustivel: tipoCombustivel || null,
           ativo: ativo !== undefined ? ativo : null
         }
       };
@@ -261,8 +261,8 @@ export class VehiclesController {
           .where(
             and(
               eq(veiculos.placa, validation.data.placa),
-              eq(veiculos.id_usuario, userId),
-              isNull(veiculos.deleted_at)
+              eq(veiculos.idUsuario, userId),
+              isNull(veiculos.deletedAt)
             )
           );
 
@@ -277,10 +277,10 @@ export class VehiclesController {
 
       const vehicleData = {
         ...validation.data,
-        id_usuario: userId,
+        idUsuario: userId,
         ativo: true,
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString()
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
       };
 
       const newVehicles = await db
@@ -378,8 +378,8 @@ export class VehiclesController {
           .where(
             and(
               eq(veiculos.placa, validation.data.placa),
-              eq(veiculos.id_usuario, userId),
-              isNull(veiculos.deleted_at)
+              eq(veiculos.idUsuario, userId),
+              isNull(veiculos.deletedAt)
             )
           );
 
@@ -394,7 +394,7 @@ export class VehiclesController {
 
       const updateData = {
         ...validation.data,
-        updated_at: new Date().toISOString()
+        updatedAt: new Date().toISOString()
       };
 
       const updatedVehicles = await db
@@ -457,8 +457,8 @@ export class VehiclesController {
       await db
         .update(veiculos)
         .set({
-          deleted_at: new Date().toISOString(),
-          updated_at: new Date().toISOString()
+          deletedAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString()
         })
         .where(eq(veiculos.id, id));
 
@@ -501,7 +501,7 @@ export class VehiclesController {
         .update(veiculos)
         .set({
           ativo: true,
-          updated_at: new Date().toISOString()
+          updatedAt: new Date().toISOString()
         })
         .where(eq(veiculos.id, id))
         .returning();
@@ -544,7 +544,7 @@ export class VehiclesController {
         .update(veiculos)
         .set({
           ativo: false,
-          updated_at: new Date().toISOString()
+          updatedAt: new Date().toISOString()
         })
         .where(eq(veiculos.id, id))
         .returning();
@@ -577,13 +577,13 @@ export class VehiclesController {
           total: veiculos.id,
           ativo: veiculos.ativo,
           tipo_veiculo: veiculos.tipo_veiculo,
-          tipo_combustivel: veiculos.tipo_combustivel
+          tipoCombustivel: veiculos.tipoCombustivel
         })
         .from(veiculos)
         .where(
           and(
-            eq(veiculos.id_usuario, userId),
-            isNull(veiculos.deleted_at)
+            eq(veiculos.idUsuario, userId),
+            isNull(veiculos.deletedAt)
           )
         );
 
