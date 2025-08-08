@@ -20,7 +20,6 @@
 2. Mapear funcionalidades existentes e identificar gaps.
 3. Testar os scripts de setup/inicialização e ajustar se necessário.
 
-## Instruções para a próxima conta
+## Instruções
 - Leia tudo acima.
-- Use o **Prompt de Continuação** a seguir para seguir com as tarefas listadas.
 - Não implemente nada além do que está listado.
