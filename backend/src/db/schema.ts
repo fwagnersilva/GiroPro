@@ -5,17 +5,17 @@ import { relations, sql } from 'drizzle-orm';
 // ENUMS TIPADOS E OTIMIZADOS
 // ===============================
 
-export const statusContaEnum = text("status_conta").$type<"ativo" | "inativo" | "suspenso">().notNull();
-export const tipoCombustivelEnum = text("tipo_combustivel").$type<"gasolina" | "etanol" | "diesel" | "gnv" | "flex">().notNull();
-export const tipoUsoEnum = text("tipo_uso").$type<"proprio" | "alugado" | "financiado">().notNull();
-export const tipoDespesaEnum = text("tipo_despesa").$type<"manutencao" | "pneus" | "seguro" | "outros">().notNull();
-export const tipoMetaEnum = text("tipo_meta").$type<"faturamento" | "quilometragem" | "jornadas" | "economia" | "lucro">().notNull();
-export const periodoMetaEnum = text("periodo_meta").$type<"semanal" | "mensal" | "trimestral" | "anual">().notNull();
-export const statusMetaEnum = text("status_meta").$type<"ativa" | "pausada" | "concluida" | "expirada">().notNull();
-export const tipoConquistaEnum = text("tipo_conquista").$type<"faturamento" | "quilometragem" | "jornadas" | "eficiencia" | "consistencia" | "metas" | "especial">().notNull();
+export const statusContaEnum = text("statusConta").$type<"ativo" | "inativo" | "suspenso">().notNull();
+export const tipoCombustivelEnum = text("tipoCombustivel").$type<"gasolina" | "etanol" | "diesel" | "gnv" | "flex">().notNull();
+export const tipoUsoEnum = text("tipoUso").$type<"proprio" | "alugado" | "financiado">().notNull();
+export const tipoDespesaEnum = text("tipoDespesa").$type<"manutencao" | "pneus" | "seguro" | "outros">().notNull();
+export const tipoMetaEnum = text("tipoMeta").$type<"faturamento" | "quilometragem" | "jornadas" | "economia" | "lucro">().notNull();
+export const periodoMetaEnum = text("periodoMeta").$type<"semanal" | "mensal" | "trimestral" | "anual">().notNull();
+export const statusMetaEnum = text("statusMeta").$type<"ativa" | "pausada" | "concluida" | "expirada">().notNull();
+export const tipoConquistaEnum = text("tipoConquista").$type<"faturamento" | "quilometragem" | "jornadas" | "eficiencia" | "consistencia" | "metas" | "especial">().notNull();
 export const raridadeEnum = text("raridade").$type<"comum" | "raro" | "epico" | "lendario">().notNull();
-export const nivelUsuarioEnum = text("nivel_usuario").$type<"iniciante" | "novato" | "experiente" | "motorista" | "profissional" | "especialista" | "mestre" | "lenda">().notNull();
-export const tipoNotificacaoEnum = text("tipo_notificacao").$type<"sistema" | "alerta" | "promocao" | "suporte">().notNull();
+export const nivelUsuarioEnum = text("nivelUsuario").$type<"iniciante" | "novato" | "experiente" | "motorista" | "profissional" | "especialista" | "mestre" | "lenda">().notNull();
+export const tipoNotificacaoEnum = text("tipoNotificacao").$type<"sistema" | "alerta" | "promocao" | "suporte">().notNull();
 
 // ===============================
 // TABELAS PRINCIPAIS
@@ -25,18 +25,18 @@ export const usuarios = sqliteTable("usuarios", {
   id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
   nome: text("nome", { length: 100 }).notNull(),
   email: text("email", { length: 255 }).notNull(),
-  senhaHash: text("senha_hash", { length: 255 }).notNull(),
+  senhaHash: text("senhaHash", { length: 255 }).notNull(),
   statusConta: statusContaEnum.default("ativo").notNull(),
-  dataCadastro: integer("data_cadastro", { mode: "timestamp" }).default(sql`(unixepoch())`).notNull(),
+  dataCadastro: integer("dataCadastro", { mode: "timestamp" }).default(sql`(unixepoch())`).notNull(),
   
   // Gamificação
-  pontosTotal: integer("pontos_total").default(0).notNull(),
+  pontosTotal: integer("pontosTotal").default(0).notNull(),
   nivelUsuario: nivelUsuarioEnum.default("iniciante").notNull(),
-  conquistasDesbloqueadas: integer("conquistas_desbloqueadas").default(0).notNull(),
+  conquistasDesbloqueadas: integer("conquistasDesbloqueadas").default(0).notNull(),
   
   // Auditoria
-  updatedAt: integer("updated_at", { mode: "timestamp" }).default(sql`(unixepoch())`).notNull(),
-  deletedAt: integer("deleted_at", { mode: "timestamp" }),
+  updatedAt: integer("updatedAt", { mode: "timestamp" }).default(sql`(unixepoch())`).notNull(),
+  deletedAt: integer("deletedAt", { mode: "timestamp" }),
 }, (table) => ({
   emailIdx: uniqueIndex("usuarios_email_idx").on(table.email),
   statusIdx: index("usuarios_status_idx").on(table.statusConta),
@@ -46,7 +46,7 @@ export const usuarios = sqliteTable("usuarios", {
 
 export const veiculos = sqliteTable("veiculos", {
   id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
-  idUsuario: text("id_usuario").notNull().references(() => usuarios.id, { onDelete: "cascade" }),
+  idUsuario: text("idUsuario").notNull().references(() => usuarios.id, { onDelete: "cascade" }),
   marca: text("marca", { length: 50 }).notNull(),
   modelo: text("modelo", { length: 100 }).notNull(),
   ano: integer("ano").notNull(),
@@ -55,13 +55,13 @@ export const veiculos = sqliteTable("veiculos", {
   tipoUso: tipoUsoEnum.notNull(),
   
   // Valores em centavos para precisão
-  valorAluguel: integer("valor_aluguel"), // Para tipo_uso = "alugado"
-  valorPrestacao: integer("valor_prestacao"), // Para tipo_uso = "financiado"
-  mediaConsumo: real("media_consumo"), // km/l - mais preciso como REAL
+  valorAluguel: integer("valorAluguel"), // Para tipo_uso = "alugado"
+  valorPrestacao: integer("valorPrestacao"), // Para tipo_uso = "financiado"
+  mediaConsumo: real("mediaConsumo"), // km/l - mais preciso como REAL
   
-  dataCadastro: integer("data_cadastro", { mode: "timestamp" }).default(sql`(unixepoch())`).notNull(),
-  updatedAt: integer("updated_at", { mode: "timestamp" }).default(sql`(unixepoch())`).notNull(),
-  deletedAt: integer("deleted_at", { mode: "timestamp" }),
+  dataCadastro: integer("dataCadastro", { mode: "timestamp" }).default(sql`(unixepoch())`).notNull(),
+  updatedAt: integer("updatedAt", { mode: "timestamp" }).default(sql`(unixepoch())`).notNull(),
+  deletedAt: integer("deletedAt", { mode: "timestamp" }),
 }, (table) => ({
   usuarioIdx: index("veiculos_usuario_idx").on(table.idUsuario),
   placaIdx: uniqueIndex("veiculos_placa_idx").on(table.placa),
@@ -72,23 +72,23 @@ export const veiculos = sqliteTable("veiculos", {
 
 export const jornadas = sqliteTable("jornadas", {
   id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
-  idUsuario: text("id_usuario").notNull().references(() => usuarios.id, { onDelete: "cascade" }),
-  idVeiculo: text("id_veiculo").notNull().references(() => veiculos.id, { onDelete: "cascade" }),
+  idUsuario: text("idUsuario").notNull().references(() => usuarios.id, { onDelete: "cascade" }),
+  idVeiculo: text("idVeiculo").notNull().references(() => veiculos.id, { onDelete: "cascade" }),
   
-  dataInicio: integer("data_inicio", { mode: "timestamp" }).notNull(),
-  kmInicio: integer("km_inicio").notNull(),
-  dataFim: integer("data_fim", { mode: "timestamp" }),
-  kmFim: integer("km_fim"),
+  dataInicio: integer("dataInicio", { mode: "timestamp" }).notNull(),
+  kmInicio: integer("kmInicio").notNull(),
+  dataFim: integer("dataFim", { mode: "timestamp" }),
+  kmFim: integer("kmFim"),
   
-  ganhoBruto: integer("ganho_bruto"), // Em centavos
-  kmTotal: integer("km_total"), // Calculado: km_fim - km_inicio
-  tempoTotal: integer("tempo_total"), // Em minutos
+  ganhoBruto: integer("ganhoBruto"), // Em centavos
+  kmTotal: integer("kmTotal"), // Calculado: km_fim - km_inicio
+  tempoTotal: integer("tempoTotal"), // Em minutos
   
   observacoes: text("observacoes", { length: 500 }),
   
-  createdAt: integer("created_at", { mode: "timestamp" }).default(sql`(unixepoch())`).notNull(),
-  updatedAt: integer("updated_at", { mode: "timestamp" }).default(sql`(unixepoch())`).notNull(),
-  deletedAt: integer("deleted_at", { mode: "timestamp" }),
+  createdAt: integer("createdAt", { mode: "timestamp" }).default(sql`(unixepoch())`).notNull(),
+  updatedAt: integer("updatedAt", { mode: "timestamp" }).default(sql`(unixepoch())`).notNull(),
+  deletedAt: integer("deletedAt", { mode: "timestamp" }),
 }, (table) => ({
   usuarioIdx: index("jornadas_usuario_idx").on(table.idUsuario),
   veiculoIdx: index("jornadas_veiculo_idx").on(table.idVeiculo),
@@ -100,20 +100,20 @@ export const jornadas = sqliteTable("jornadas", {
 
 export const abastecimentos = sqliteTable("abastecimentos", {
   id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
-  idUsuario: text("id_usuario").notNull().references(() => usuarios.id, { onDelete: "cascade" }),
-  idVeiculo: text("id_veiculo").notNull().references(() => veiculos.id, { onDelete: "cascade" }),
+  idUsuario: text("idUsuario").notNull().references(() => usuarios.id, { onDelete: "cascade" }),
+  idVeiculo: text("idVeiculo").notNull().references(() => veiculos.id, { onDelete: "cascade" }),
   
-  dataAbastecimento: integer("data_abastecimento", { mode: "timestamp" }).notNull(),
+  dataAbastecimento: integer("dataAbastecimento", { mode: "timestamp" }).notNull(),
   tipoCombustivel: tipoCombustivelEnum.notNull(),
-  quantidadeLitros: real("quantidade_litros").notNull(), // REAL para precisão
-  valorLitro: integer("valor_litro").notNull(), // Em centavos
-  valorTotal: integer("valor_total").notNull(), // Em centavos
-  kmAtual: integer("km_atual"),
-  nomePosto: text("nome_posto", { length: 100 }),
+  quantidadeLitros: real("quantidadeLitros").notNull(), // REAL para precisão
+  valorLitro: integer("valorLitro").notNull(), // Em centavos
+  valorTotal: integer("valorTotal").notNull(), // Em centavos
+  kmAtual: integer("kmAtual"),
+  nomePosto: text("nomePosto", { length: 100 }),
   
-  createdAt: integer("created_at", { mode: "timestamp" }).default(sql`(unixepoch())`).notNull(),
-  updatedAt: integer("updated_at", { mode: "timestamp" }).default(sql`(unixepoch())`).notNull(),
-  deletedAt: integer("deleted_at", { mode: "timestamp" }),
+  createdAt: integer("createdAt", { mode: "timestamp" }).default(sql`(unixepoch())`).notNull(),
+  updatedAt: integer("updatedAt", { mode: "timestamp" }).default(sql`(unixepoch())`).notNull(),
+  deletedAt: integer("deletedAt", { mode: "timestamp" }),
 }, (table) => ({
   usuarioIdx: index("abastecimentos_usuario_idx").on(table.idUsuario),
   veiculoIdx: index("abastecimentos_veiculo_idx").on(table.idVeiculo),
@@ -124,17 +124,17 @@ export const abastecimentos = sqliteTable("abastecimentos", {
 
 export const despesas = sqliteTable("despesas", {
   id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
-  idUsuario: text("id_usuario").notNull().references(() => usuarios.id, { onDelete: "cascade" }),
-  idVeiculo: text("id_veiculo").references(() => veiculos.id, { onDelete: "cascade" }),
+  idUsuario: text("idUsuario").notNull().references(() => usuarios.id, { onDelete: "cascade" }),
+  idVeiculo: text("idVeiculo").references(() => veiculos.id, { onDelete: "cascade" }),
   
-  dataDespesa: integer("data_despesa", { mode: "timestamp" }).notNull(),
+  dataDespesa: integer("dataDespesa", { mode: "timestamp" }).notNull(),
   tipoDespesa: tipoDespesaEnum.notNull(),
-  valorDespesa: integer("valor_despesa").notNull(), // Em centavos
+  valorDespesa: integer("valorDespesa").notNull(), // Em centavos
   descricao: text("descricao", { length: 300 }),
   
-  createdAt: integer("created_at", { mode: "timestamp" }).default(sql`(unixepoch())`).notNull(),
-  updatedAt: integer("updated_at", { mode: "timestamp" }).default(sql`(unixepoch())`).notNull(),
-  deletedAt: integer("deleted_at", { mode: "timestamp" }),
+  createdAt: integer("createdAt", { mode: "timestamp" }).default(sql`(unixepoch())`).notNull(),
+  updatedAt: integer("updatedAt", { mode: "timestamp" }).default(sql`(unixepoch())`).notNull(),
+  deletedAt: integer("deletedAt", { mode: "timestamp" }),
 }, (table) => ({
   usuarioIdx: index("despesas_usuario_idx").on(table.idUsuario),
   veiculoIdx: index("despesas_veiculo_idx").on(table.idVeiculo),
@@ -152,12 +152,12 @@ export const historicoPrecoCombustivel = sqliteTable("historico_preco_combustive
   cidade: text("cidade", { length: 100 }).notNull(),
   estado: text("estado", { length: 2 }).notNull(), // Sigla do estado
   tipoCombustivel: tipoCombustivelEnum.notNull(),
-  precoMedio: integer("preco_medio").notNull(), // Em centavos
-  dataRegistro: integer("data_registro", { mode: "timestamp" }).default(sql`(unixepoch())`).notNull(),
+  precoMedio: integer("precoMedio").notNull(), // Em centavos
+  dataRegistro: integer("dataRegistro", { mode: "timestamp" }).default(sql`(unixepoch())`).notNull(),
   fonte: text("fonte", { length: 100 }), // Fonte dos dados
   
-  createdAt: integer("created_at", { mode: "timestamp" }).default(sql`(unixepoch())`).notNull(),
-  deletedAt: integer("deleted_at", { mode: "timestamp" }),
+  createdAt: integer("createdAt", { mode: "timestamp" }).default(sql`(unixepoch())`).notNull(),
+  deletedAt: integer("deletedAt", { mode: "timestamp" }),
 }, (table) => ({
   localIdx: index("historico_local_idx").on(table.cidade, table.estado),
   combustivelIdx: index("historico_combustivel_idx").on(table.tipoCombustivel),
@@ -167,13 +167,13 @@ export const historicoPrecoCombustivel = sqliteTable("historico_preco_combustive
 
 export const logsAtividades = sqliteTable("logs_atividades", {
   id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
-  idUsuario: text("id_usuario").references(() => usuarios.id, { onDelete: "set null" }),
-  tipoAcao: text("tipo_acao", { length: 50 }).notNull(),
+  idUsuario: text("idUsuario").references(() => usuarios.id, { onDelete: "set null" }),
+  tipoAcao: text("tipoAcao", { length: 50 }).notNull(),
   descricao: text("descricao", { length: 500 }),
   metadados: text("metadados"), // JSON com dados extras
-  dataAcao: integer("data_acao", { mode: "timestamp" }).default(sql`(unixepoch())`).notNull(),
+  dataAcao: integer("dataAcao", { mode: "timestamp" }).default(sql`(unixepoch())`).notNull(),
   
-  deletedAt: integer("deleted_at", { mode: "timestamp" }),
+  deletedAt: integer("deletedAt", { mode: "timestamp" }),
 }, (table) => ({
   usuarioIdx: index("logs_usuario_idx").on(table.idUsuario),
   tipoIdx: index("logs_tipo_idx").on(table.tipoAcao),
@@ -187,27 +187,27 @@ export const logsAtividades = sqliteTable("logs_atividades", {
 
 export const metas = sqliteTable("metas", {
   id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
-  idUsuario: text("id_usuario").notNull().references(() => usuarios.id, { onDelete: "cascade" }),
-  idVeiculo: text("id_veiculo").references(() => veiculos.id, { onDelete: "cascade" }),
+  idUsuario: text("idUsuario").notNull().references(() => usuarios.id, { onDelete: "cascade" }),
+  idVeiculo: text("idVeiculo").references(() => veiculos.id, { onDelete: "cascade" }),
   
   titulo: text("titulo", { length: 100 }).notNull(),
   descricao: text("descricao", { length: 500 }),
   tipoMeta: tipoMetaEnum.notNull(),
   periodo: periodoMetaEnum.notNull(),
   
-  valorObjetivo: integer("valor_objetivo").notNull(), // Valor em centavos ou unidades
-  dataInicio: integer("data_inicio", { mode: "timestamp" }).notNull(),
-  dataFim: integer("data_fim", { mode: "timestamp" }).notNull(),
+  valorObjetivo: integer("valorObjetivo").notNull(), // Valor em centavos ou unidades
+  dataInicio: integer("dataInicio", { mode: "timestamp" }).notNull(),
+  dataFim: integer("dataFim", { mode: "timestamp" }).notNull(),
   status: statusMetaEnum.default("ativa").notNull(),
   
-  valorAtual: integer("valor_atual").default(0).notNull(),
-  percentualConcluido: integer("percentual_concluido").default(0).notNull(), // 0-100
-  dataConclusao: integer("data_conclusao", { mode: "timestamp" }),
-  notificacaoEnviada: integer("notificacao_enviada", { mode: "boolean" }).default(false).notNull(),
+  valorAtual: integer("valorAtual").default(0).notNull(),
+  percentualConcluido: integer("percentualConcluido").default(0).notNull(), // 0-100
+  dataConclusao: integer("dataConclusao", { mode: "timestamp" }),
+  notificacaoEnviada: integer("notificacaoEnviada", { mode: "boolean" }).default(false).notNull(),
   
-  createdAt: integer("created_at", { mode: "timestamp" }).default(sql`(unixepoch())`).notNull(),
-  updatedAt: integer("updated_at", { mode: "timestamp" }).default(sql`(unixepoch())`).notNull(),
-  deletedAt: integer("deleted_at", { mode: "timestamp" }),
+  createdAt: integer("createdAt", { mode: "timestamp" }).default(sql`(unixepoch())`).notNull(),
+  updatedAt: integer("updatedAt", { mode: "timestamp" }).default(sql`(unixepoch())`).notNull(),
+  deletedAt: integer("deletedAt", { mode: "timestamp" }),
 }, (table) => ({
   usuarioIdx: index("metas_usuario_idx").on(table.idUsuario),
   veiculoIdx: index("metas_veiculo_idx").on(table.idVeiculo),
@@ -220,17 +220,17 @@ export const metas = sqliteTable("metas", {
 
 export const progressoMetas = sqliteTable("progresso_metas", {
   id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
-  idMeta: text("id_meta").notNull().references(() => metas.id, { onDelete: "cascade" }),
+  idMeta: text("idMeta").notNull().references(() => metas.id, { onDelete: "cascade" }),
   
-  dataRegistro: integer("data_registro", { mode: "timestamp" }).default(sql`(unixepoch())`).notNull(),
-  valorAnterior: integer("valor_anterior").notNull(),
-  valorAtual: integer("valor_atual").notNull(),
+  dataRegistro: integer("dataRegistro", { mode: "timestamp" }).default(sql`(unixepoch())`).notNull(),
+  valorAnterior: integer("valorAnterior").notNull(),
+  valorAtual: integer("valorAtual").notNull(),
   incremento: integer("incremento").notNull(), // valor_atual - valor_anterior
-  percentualAnterior: integer("percentual_anterior").notNull(),
-  percentualAtual: integer("percentual_atual").notNull(),
+  percentualAnterior: integer("percentualAnterior").notNull(),
+  percentualAtual: integer("percentualAtual").notNull(),
   observacoes: text("observacoes", { length: 300 }),
   
-  createdAt: integer("created_at", { mode: "timestamp" }).default(sql`(unixepoch())`).notNull(),
+  createdAt: integer("createdAt", { mode: "timestamp" }).default(sql`(unixepoch())`).notNull(),
 }, (table) => ({
   metaIdx: index("progresso_meta_idx").on(table.idMeta),
   dataIdx: index("progresso_data_idx").on(table.dataRegistro),
@@ -250,15 +250,15 @@ export const conquistas = sqliteTable("conquistas", {
   
   icone: text("icone", { length: 50 }),
   cor: text("cor", { length: 7 }).default("#4CAF50"), // Hex color
-  criterioValor: integer("criterio_valor"),
-  criterioDescricao: text("criterio_descricao", { length: 500 }),
-  pontosRecompensa: integer("pontos_recompensa").default(10).notNull(),
+  criterioValor: integer("criterioValor"),
+  criterioDescricao: text("criterioDescricao", { length: 500 }),
+  pontosRecompensa: integer("pontosRecompensa").default(10).notNull(),
   
   ativa: integer("ativa", { mode: "boolean" }).default(true).notNull(),
-  ordemExibicao: integer("ordem_exibicao").default(0).notNull(),
+  ordemExibicao: integer("ordemExibicao").default(0).notNull(),
   
-  createdAt: integer("created_at", { mode: "timestamp" }).default(sql`(unixepoch())`).notNull(),
-  updatedAt: integer("updated_at", { mode: "timestamp" }).default(sql`(unixepoch())`).notNull(),
+  createdAt: integer("createdAt", { mode: "timestamp" }).default(sql`(unixepoch())`).notNull(),
+  updatedAt: integer("updatedAt", { mode: "timestamp" }).default(sql`(unixepoch())`).notNull(),
 }, (table) => ({
   tipoIdx: index("conquistas_tipo_idx").on(table.tipoConquista),
   raridadeIdx: index("conquistas_raridade_idx").on(table.raridade),
@@ -268,14 +268,14 @@ export const conquistas = sqliteTable("conquistas", {
 
 export const usuarioConquistas = sqliteTable("usuario_conquistas", {
   id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
-  idUsuario: text("id_usuario").notNull().references(() => usuarios.id, { onDelete: "cascade" }),
-  idConquista: text("id_conquista").notNull().references(() => conquistas.id, { onDelete: "cascade" }),
+  idUsuario: text("idUsuario").notNull().references(() => usuarios.id, { onDelete: "cascade" }),
+  idConquista: text("idConquista").notNull().references(() => conquistas.id, { onDelete: "cascade" }),
   
-  dataDesbloqueio: integer("data_desbloqueio", { mode: "timestamp" }).default(sql`(unixepoch())`).notNull(),
-  valorAtingido: integer("valor_atingido"),
-  notificacaoEnviada: integer("notificacao_enviada", { mode: "boolean" }).default(false).notNull(),
+  dataDesbloqueio: integer("dataDesbloqueio", { mode: "timestamp" }).default(sql`(unixepoch())`).notNull(),
+  valorAtingido: integer("valorAtingido"),
+  notificacaoEnviada: integer("notificacaoEnviada", { mode: "boolean" }).default(false).notNull(),
   
-  createdAt: integer("created_at", { mode: "timestamp" }).default(sql`(unixepoch())`).notNull(),
+  createdAt: integer("createdAt", { mode: "timestamp" }).default(sql`(unixepoch())`).notNull(),
 }, (table) => ({
   usuarioIdx: index("usuario_conquistas_usuario_idx").on(table.idUsuario),
   conquistaIdx: index("usuario_conquistas_conquista_idx").on(table.idConquista),
@@ -286,14 +286,14 @@ export const usuarioConquistas = sqliteTable("usuario_conquistas", {
 export const niveisUsuario = sqliteTable("niveis_usuario", {
   id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
   nivel: nivelUsuarioEnum.notNull(),
-  nomeExibicao: text("nome_exibicao", { length: 50 }).notNull(),
-  pontosNecessarios: integer("pontos_necessarios").notNull(),
+  nomeExibicao: text("nomeExibicao", { length: 50 }).notNull(),
+  pontosNecessarios: integer("pontosNecessarios").notNull(),
   cor: text("cor", { length: 7 }).default("#2196F3").notNull(),
   icone: text("icone", { length: 50 }),
   beneficios: text("beneficios", { length: 500 }),
   ordem: integer("ordem").notNull(),
   
-  createdAt: integer("created_at", { mode: "timestamp" }).default(sql`(unixepoch())`).notNull(),
+  createdAt: integer("createdAt", { mode: "timestamp" }).default(sql`(unixepoch())`).notNull(),
 }, (table) => ({
   nivelIdx: uniqueIndex("niveis_usuario_nivel_idx").on(table.nivel),
   pontosIdx: index("niveis_usuario_pontos_idx").on(table.pontosNecessarios),
@@ -306,19 +306,19 @@ export const niveisUsuario = sqliteTable("niveis_usuario", {
 
 export const notificacoes = sqliteTable("notificacoes", {
   id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
-  idUsuario: text("id_usuario").notNull().references(() => usuarios.id, { onDelete: "cascade" }),
+  idUsuario: text("idUsuario").notNull().references(() => usuarios.id, { onDelete: "cascade" }),
   
   titulo: text("titulo", { length: 100 }).notNull(),
   mensagem: text("mensagem", { length: 500 }).notNull(),
   tipo: tipoNotificacaoEnum.default("sistema").notNull(),
   
   lida: integer("lida", { mode: "boolean" }).default(false).notNull(),
-  dataEnvio: integer("data_envio", { mode: "timestamp" }).default(sql`(unixepoch())`).notNull(),
-  dataLeitura: integer("data_leitura", { mode: "timestamp" }),
-  dadosExtras: text("dados_extras"), // JSON com dados extras
+  dataEnvio: integer("dataEnvio", { mode: "timestamp" }).default(sql`(unixepoch())`).notNull(),
+  dataLeitura: integer("dataLeitura", { mode: "timestamp" }),
+  dadosExtras: text("dadosExtras"), // JSON com dados extras
   
-  expiresAt: integer("expires_at", { mode: "timestamp" }), // Para notificações temporárias
-  deletedAt: integer("deleted_at", { mode: "timestamp" }),
+  expiresAt: integer("expiresAt", { mode: "timestamp" }), // Para notificações temporárias
+  deletedAt: integer("deletedAt", { mode: "timestamp" }),
 }, (table) => ({
   usuarioIdx: index("notificacoes_usuario_idx").on(table.idUsuario),
   lidaIdx: index("notificacoes_lida_idx").on(table.lida),
@@ -459,5 +459,3 @@ export type NovaMeta = typeof metas.$inferInsert;
 
 export type Conquista = typeof conquistas.$inferSelect;
 export type NovaConquista = typeof conquistas.$inferInsert;
-
-
