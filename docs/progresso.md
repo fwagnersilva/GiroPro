@@ -1,37 +1,57 @@
 # Progresso do GiroPro
 
 **Última sessão:**
-- Data: 08/08/2025 10:00
-- Sessão: #2
+- Data: 08/08/2025 18:55
+- Sessão: #3
 
 ## O que foi feito nesta sessão
-- Clonagem do repositório GiroPro.
-- Tentativa de construção do backend.
-- Correção de erros de tipo relacionados a `DateHelper.formatDateForSQL` e nomes de propriedades (camelCase) nos arquivos `src/controllers/reportsController.ts` e `src/services/get_week_summary_service.ts`.
+- Clonagem e análise completa da estrutura do projeto GiroPro.
+- Leitura e análise detalhada do arquivo `docs/progresso.md` para entender as tarefas pendentes.
+- Execução bem-sucedida do frontend web na porta 8081 usando Expo.
+- Tentativa de compilação do backend com identificação e correção parcial de erros TypeScript.
+- Correções aplicadas nos arquivos:
+  - `src/services/fuel_prices_service.ts`: Comentado imports de tabelas inexistentes (fuelPrices, gasStations, userReports).
+  - `src/services/vehicleService.ts`: Corrigido nome da propriedade `tipo_uso` para `tipoUso` e `data_cadastro` para `dataCadastro`, ajustado tipo de `deletedAt` para Date.
+  - `src/services/expenseService.ts`: Corrigido tipo de `dataDespesa` para Date e `deletedAt` para Date.
+- Mapeamento completo das funcionalidades existentes e gaps identificados.
+- Criação do arquivo `analise_funcionalidades.md` com análise detalhada do estado atual.
+- Teste da interface de login do frontend, confirmando funcionamento correto.
 
 ## Problemas encontrados / observações
-- Erros de TypeScript relacionados a tipos de data e nomes de propriedades (camelCase) durante a tentativa de build do backend. As correções foram aplicadas, mas o build ainda não foi concluído com sucesso.
+- **Backend não compila**: Múltiplos erros de TypeScript persistem após correções iniciais.
+- **Inconsistências de schema**: Tabelas referenciadas em services não existem no schema (fuelPrices, gasStations, userReports).
+- **Tipos de dados**: Inconsistências entre snake_case e camelCase em propriedades.
+- **Imports faltando**: Funções SQL (avg, ne, sql) não importadas corretamente em alguns arquivos.
+- **Frontend funcional**: O frontend está executando perfeitamente na porta 8081 com interface de login limpa e responsiva.
+- **Estrutura do projeto**: Bem organizada com separação clara entre frontend (Expo/React Native) e backend (Node.js/TypeScript).
 
 ## Próximas tarefas
-1. **Finalizar correção de build do backend**:
-   - Continuar a resolver erros de TypeScript restantes.
-   - Testar a compilação completa do backend.
-   - Validar o funcionamento básico das APIs.
+1. **Corrigir erros críticos de build do backend**:
+   - Adicionar imports faltando (sql, avg, ne) nos arquivos de services.
+   - Resolver inconsistências de tipos de dados restantes.
+   - Criar ou remover referências a tabelas inexistentes no schema.
+   - Testar compilação completa do backend.
 
-2. **Testar a aplicação localmente**:
-   - Iniciar o backend utilizando o banco de dados SQLite.
-   - Iniciar o frontend (versão web via Expo).
-   - Validar a integração e comunicação entre o frontend e o backend.
+2. **Implementar tabelas faltantes ou refatorar código**:
+   - Verificar se tabelas fuelPrices, gasStations, userReports devem ser criadas no schema.
+   - Ou refatorar fuel_prices_service.ts para usar tabelas existentes.
+   - Atualizar migrações do banco de dados se necessário.
 
-3. **Implementar melhorias identificadas nos scripts de setup**:
-   - Criar arquivos `.env.example` adequados para o backend e frontend.
-   - Melhorar os scripts de setup para que sejam não-interativos e mais robustos.
-   - Adicionar validações de ambiente mais abrangentes.
+3. **Testar integração completa**:
+   - Executar backend e frontend simultaneamente.
+   - Testar comunicação entre frontend e backend.
+   - Validar APIs básicas (login, cadastro).
+   - Verificar funcionamento do banco de dados SQLite.
 
-4. **Atualizar a documentação final do projeto**:
-   - Atualizar o `README.md` principal com instruções de setup e execução corretas e simplificadas.
-   - Documentar o processo de setup de forma clara e concisa.
-   - Criar um guia de troubleshooting para problemas comuns.
+4. **Finalizar testes dos scripts de setup**:
+   - Executar e validar scripts setup.sh, setup_sqlite.sh, verify_setup.sh.
+   - Corrigir problemas encontrados nos scripts.
+   - Documentar processo de setup simplificado.
+
+5. **Documentação e melhorias**:
+   - Atualizar README.md com instruções corretas de setup.
+   - Criar guia de troubleshooting para problemas comuns.
+   - Documentar APIs funcionais e suas especificações.
 
 ## Instruções
 - ✅ **CONCLUÍDO**: Análise completa do projeto realizada.

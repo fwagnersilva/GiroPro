@@ -14,7 +14,7 @@ export class ExpenseService {
         id: crypto.randomUUID(),
         idUsuario: userId,
         idVeiculo: expenseData.vehicleId,
-        dataDespesa: expenseData.data,
+        dataDespesa: new Date(expenseData.data),
         tipoDespesa: expenseData.categoria as any, // Mapear categoria para tipoDespesa
         valorDespesa: Math.round(expenseData.valor * 100), // Converter para centavos
         descricao: expenseData.descricao,
@@ -122,7 +122,7 @@ export class ExpenseService {
     try {
       const result = await db
         .update(despesas)
-        .set({ deletedAt: new Date().toISOString() })
+        .set({ deletedAt: new Date() })
         .where(and(
           eq(despesas.id, expenseId),
           eq(despesas.idUsuario, userId),

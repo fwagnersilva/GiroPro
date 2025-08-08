@@ -1,6 +1,6 @@
 import { db } from '../db/connection';
 import { eq, and, gte, lte, desc, asc, sql, inArray } from 'drizzle-orm';
-import { fuelPrices, gasStations, userReports } from '../db/schema';
+// import { fuelPrices, gasStations, userReports } from '../db/schema'; // Tabelas não encontradas no schema
 
 // ========== TIPOS E INTERFACES ==========
 

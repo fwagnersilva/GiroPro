@@ -17,8 +17,8 @@ export class VehicleService {
         ano: vehicleData.ano,
         placa: vehicleData.placa,
         tipoCombustivel: vehicleData.tipoCombustivel as 'Gasolina' | 'Etanol' | 'Diesel' | 'GNV' | 'Flex' || 'Gasolina',
-        tipo_uso: vehicleData.tipo_uso as 'Proprio' | 'Alugado' | 'Financiado' || 'Proprio',
-        data_cadastro: new Date().toISOString(),
+        tipoUso: vehicleData.tipo_uso as 'Proprio' | 'Alugado' | 'Financiado' || 'Proprio',
+        dataCadastro: new Date(),
       };
 
       const result = await db.insert(veiculos).values(newVehicle).returning();
@@ -120,7 +120,7 @@ export class VehicleService {
     try {
       const result = await db
         .update(veiculos)
-        .set({ deletedAt: new Date().toISOString() })
+        .set({ deletedAt: new Date() })
         .where(and(
           eq(veiculos.id, vehicleId),
           eq(veiculos.idUsuario, userId),
