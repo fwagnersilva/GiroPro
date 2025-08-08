@@ -1,99 +1,606 @@
 import { Request, Response } from 'express';
+import { z } from 'zod';
 import { db } from '../db';
 import { veiculos } from '../db/schema';
-import { eq } from 'drizzle-orm';
+import { eq, and, isNull } from 'drizzle-orm';
+
+// Interfaces
+interface AuthenticatedRequest extends Request {
+  user?: {
+    id: string;
+  };
+}
+
+interface ApiResponse<T = any> {
+  success: boolean;
+  data?: T;
+  error?: {
+    message: string;
+    details?: any;
+  };
+  message?: string;
+}
+
+// Enums para tipos de veículos e combustíveis
+enum TipoVeiculo {
+  CARRO = 'Carro',
+  MOTO = 'Moto',
+  CAMINHAO = 'Caminhão',
+  VAN = 'Van',
+  UTILITARIO = 'Utilitário'
+}
+
+enum TipoCombustivel {
+  GASOLINA = 'Gasolina',
+  ETANOL = 'Etanol', 
+  DIESEL = 'Diesel',
+  GNV = 'GNV',
+  FLEX = 'Flex',
+  ELETRICO = 'Elétrico',
+  HIBRIDO = 'Híbrido'
+}
+
+// Schemas de validação
+const createVehicleSchema = z.object({
+  marca: z.string()
+    .min(1, 'Marca é obrigatória')
+    .max(50, 'Marca deve ter no máximo 50 caracteres')
+    .trim(),
+  modelo: z.string()
+    .min(1, 'Modelo é obrigatório')
+    .max(50, 'Modelo deve ter no máximo 50 caracteres')
+    .trim(),
+  ano: z.number()
+    .int('Ano deve ser um número inteiro')
+    .min(1900, 'Ano deve ser maior que 1900')
+    .max(new Date().getFullYear() + 1, 'Ano não pode ser superior ao próximo ano'),
+  placa: z.string()
+    .min(7, 'Placa deve ter pelo menos 7 caracteres')
+    .max(8, 'Placa deve ter no máximo 8 caracteres')
+    .regex(/^[A-Z]{3}[0-9][A-Z0-9][0-9]{2}$/, 'Formato de placa inválido (ex: ABC1234 ou ABC1D23)')
+    .transform(val => val.toUpperCase())
+    .optional(),
+  cor: z.string()
+    .max(30, 'Cor deve ter no máximo 30 caracteres')
+    .trim()
+    .optional(),
+  tipo_veiculo: z.nativeEnum(TipoVeiculo)
+    .default(TipoVeiculo.CARRO),
+  tipo_combustivel: z.nativeEnum(TipoCombustivel)
+    .default(TipoCombustivel.FLEX),
+  consumo_medio: z.number()
+    .positive('Consumo médio deve ser positivo')
+    .max(50, 'Consumo médio deve ser realista (máximo 50 km/l)')
+    .optional(),
+  capacidade_tanque: z.number()
+    .positive('Capacidade do tanque deve ser positiva')
+    .max(200, 'Capacidade do tanque deve ser realista (máximo 200L)')
+    .optional(),
+  km_atual: z.number()
+    .min(0, 'Quilometragem atual não pode ser negativa')
+    .max(9999999, 'Quilometragem atual muito alta')
+    .optional(),
+  observacoes: z.string()
+    .max(500, 'Observações devem ter no máximo 500 caracteres')
+    .trim()
+    .optional()
+});
+
+const updateVehicleSchema = createVehicleSchema.partial();
+
+const queryParamsSchema = z.object({
+  tipo_veiculo: z.nativeEnum(TipoVeiculo).optional(),
+  tipo_combustivel: z.nativeEnum(TipoCombustivel).optional(),
+  ativo: z.coerce.boolean().optional(),
+  limit: z.coerce.number().min(1).max(100).default(50),
+  offset: z.coerce.number().min(0).default(0)
+});
 
 export class VehiclesController {
-  static async getAll(req: Request & { userId?: string }, res: Response) {
+  /**
+   * Valida se o usuário está autenticado
+   */
+  private static validateAuth(req: AuthenticatedRequest): string | null {
+    return req.user?.id || null;
+  }
+
+  /**
+   * Retorna resposta de erro padronizada
+   */
+  private static errorResponse(res: Response, status: number, message: string, details?: any): Response {
+    return res.status(status).json({
+      success: false,
+      error: { message, details }
+    });
+  }
+
+  /**
+   * Retorna resposta de sucesso padronizada
+   */
+  private static successResponse<T>(res: Response, data?: T, message?: string, status: number = 200): Response {
+    const response: ApiResponse<T> = {
+      success: true,
+      ...(data !== undefined && { data }),
+      ...(message && { message })
+    };
+    return res.status(status).json(response);
+  }
+
+  /**
+   * Busca e valida se o veículo pertence ao usuário
+   */
+  private static async findAndValidateVehicle(vehicleId: string, userId: string) {
     try {
-      if (!req.user?.id) {
-        return res.status(401).json({ success: false, error: { message: 'Usuário não autenticado' } });
+      const vehicles = await db
+        .select()
+        .from(veiculos)
+        .where(
+          and(
+            eq(veiculos.id, vehicleId),
+            isNull(veiculos.deleted_at)
+          )
+        );
+
+      if (vehicles.length === 0) {
+        return { vehicle: null, error: 'Veículo não encontrado' };
       }
 
-      const userVehicles = await db.select().from(veiculos).where(eq(veiculos.id_usuario, req.user?.id));
-      return res.json({ success: true, data: userVehicles });
-    } catch (error: any) {
-      return res.status(500).json({ success: false, error: { message: error.message } });
+      if (vehicles[0].id_usuario !== userId) {
+        return { vehicle: null, error: 'Acesso negado' };
+      }
+
+      return { vehicle: vehicles[0], error: null };
+    } catch (error) {
+      return { vehicle: null, error: 'Erro ao buscar veículo' };
     }
   }
 
-  static async create(req: Request & { userId?: string }, res: Response) {
+  /**
+   * Listar todos os veículos do usuário
+   */
+  static async getAll(req: AuthenticatedRequest, res: Response): Promise<Response> {
     try {
-      if (!req.user?.id) {
-        return res.status(401).json({ success: false, error: { message: 'Usuário não autenticado' } });
+      const userId = VehiclesController.validateAuth(req);
+      if (!userId) {
+        return VehiclesController.errorResponse(res, 401, 'Usuário não autenticado');
       }
 
-      const newVehicle = await db.insert(veiculos).values({ ...req.body, id_usuario: req.user?.id }).returning();
-      return res.status(201).json({ success: true, data: newVehicle[0] });
+      const queryValidation = queryParamsSchema.safeParse(req.query);
+      if (!queryValidation.success) {
+        return VehiclesController.errorResponse(
+          res,
+          400,
+          'Parâmetros de consulta inválidos',
+          queryValidation.error.errors
+        );
+      }
+
+      const { tipo_veiculo, tipo_combustivel, ativo, limit, offset } = queryValidation.data;
+
+      // Construir condições de filtro
+      let whereConditions = and(
+        eq(veiculos.id_usuario, userId),
+        isNull(veiculos.deleted_at)
+      );
+
+      if (tipo_veiculo) {
+        whereConditions = and(whereConditions, eq(veiculos.tipo_veiculo, tipo_veiculo));
+      }
+
+      if (tipo_combustivel) {
+        whereConditions = and(whereConditions, eq(veiculos.tipo_combustivel, tipo_combustivel));
+      }
+
+      if (ativo !== undefined) {
+        whereConditions = and(whereConditions, eq(veiculos.ativo, ativo));
+      }
+
+      // Buscar veículos com paginação
+      const [userVehicles, totalCount] = await Promise.all([
+        db
+          .select()
+          .from(veiculos)
+          .where(whereConditions)
+          .limit(limit)
+          .offset(offset)
+          .orderBy(veiculos.created_at),
+        db
+          .select({ count: veiculos.id })
+          .from(veiculos)
+          .where(whereConditions)
+      ]);
+
+      const responseData = {
+        vehicles: userVehicles,
+        pagination: {
+          total: totalCount.length,
+          limit,
+          offset,
+          has_more: totalCount.length > offset + limit
+        },
+        filters: {
+          tipo_veiculo: tipo_veiculo || null,
+          tipo_combustivel: tipo_combustivel || null,
+          ativo: ativo !== undefined ? ativo : null
+        }
+      };
+
+      return VehiclesController.successResponse(res, responseData);
+
     } catch (error: any) {
-      return res.status(400).json({ success: false, error: { message: error.message } });
+      console.error('Erro ao buscar veículos:', error);
+      return VehiclesController.errorResponse(res, 500, 'Erro interno do servidor');
     }
   }
 
-  static async getById(req: Request & { userId?: string }, res: Response) {
+  /**
+   * Criar novo veículo
+   */
+  static async create(req: AuthenticatedRequest, res: Response): Promise<Response> {
     try {
-      if (!req.user?.id) {
-        return res.status(401).json({ success: false, error: { message: 'Usuário não autenticado' } });
+      const userId = VehiclesController.validateAuth(req);
+      if (!userId) {
+        return VehiclesController.errorResponse(res, 401, 'Usuário não autenticado');
       }
 
-      const vehicle = await db.select().from(veiculos).where(eq(veiculos.id, req.params.id));
-      if (vehicle.length === 0) {
-        return res.status(404).json({ success: false, error: { message: 'Veículo não encontrado' } });
+      const validation = createVehicleSchema.safeParse(req.body);
+      if (!validation.success) {
+        return VehiclesController.errorResponse(
+          res,
+          400,
+          'Dados inválidos',
+          validation.error.errors
+        );
       }
 
-      if (vehicle[0].id_usuario !== req.user?.id) {
-        return res.status(403).json({ success: false, error: { message: 'Acesso negado' } });
+      // Verificar se já existe veículo com a mesma placa (se fornecida)
+      if (validation.data.placa) {
+        const existingVehicle = await db
+          .select({ id: veiculos.id })
+          .from(veiculos)
+          .where(
+            and(
+              eq(veiculos.placa, validation.data.placa),
+              eq(veiculos.id_usuario, userId),
+              isNull(veiculos.deleted_at)
+            )
+          );
+
+        if (existingVehicle.length > 0) {
+          return VehiclesController.errorResponse(
+            res,
+            409,
+            'Já existe um veículo cadastrado com esta placa'
+          );
+        }
       }
 
-      return res.json({ success: true, data: vehicle[0] });
+      const vehicleData = {
+        ...validation.data,
+        id_usuario: userId,
+        ativo: true,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      };
+
+      const newVehicles = await db
+        .insert(veiculos)
+        .values(vehicleData)
+        .returning();
+
+      return VehiclesController.successResponse(
+        res,
+        newVehicles[0],
+        'Veículo criado com sucesso',
+        201
+      );
+
     } catch (error: any) {
-      return res.status(500).json({ success: false, error: { message: error.message } });
+      console.error('Erro ao criar veículo:', error);
+      
+      // Tratar erros específicos do banco de dados
+      if (error.code === '23505') { // Unique constraint violation
+        return VehiclesController.errorResponse(res, 409, 'Já existe um veículo com estes dados');
+      }
+      
+      return VehiclesController.errorResponse(res, 500, 'Erro interno do servidor');
     }
   }
 
-  static async update(req: Request & { userId?: string }, res: Response) {
+  /**
+   * Buscar veículo por ID
+   */
+  static async getById(req: AuthenticatedRequest, res: Response): Promise<Response> {
     try {
-      if (!req.user?.id) {
-        return res.status(401).json({ success: false, error: { message: 'Usuário não autenticado' } });
+      const userId = VehiclesController.validateAuth(req);
+      if (!userId) {
+        return VehiclesController.errorResponse(res, 401, 'Usuário não autenticado');
       }
 
-      const vehicle = await db.select().from(veiculos).where(eq(veiculos.id, req.params.id));
-      if (vehicle.length === 0) {
-        return res.status(404).json({ success: false, error: { message: 'Veículo não encontrado' } });
+      const { id } = req.params;
+      if (!id) {
+        return VehiclesController.errorResponse(res, 400, 'ID do veículo é obrigatório');
       }
 
-      if (vehicle[0].id_usuario !== req.user?.id) {
-        return res.status(403).json({ success: false, error: { message: 'Acesso negado' } });
+      const { vehicle, error } = await VehiclesController.findAndValidateVehicle(id, userId);
+      
+      if (error) {
+        const status = error === 'Veículo não encontrado' ? 404 : 403;
+        return VehiclesController.errorResponse(res, status, error);
       }
 
-      const updatedVehicle = await db.update(veiculos).set(req.body).where(eq(veiculos.id, req.params.id)).returning();
-      return res.json({ success: true, data: updatedVehicle[0] });
+      return VehiclesController.successResponse(res, vehicle);
+
     } catch (error: any) {
-      return res.status(400).json({ success: false, error: { message: error.message } });
+      console.error('Erro ao buscar veículo:', error);
+      return VehiclesController.errorResponse(res, 500, 'Erro interno do servidor');
     }
   }
 
-  static async delete(req: Request & { userId?: string }, res: Response) {
+  /**
+   * Atualizar veículo
+   */
+  static async update(req: AuthenticatedRequest, res: Response): Promise<Response> {
     try {
-      if (!req.user?.id) {
-        return res.status(401).json({ success: false, error: { message: 'Usuário não autenticado' } });
+      const userId = VehiclesController.validateAuth(req);
+      if (!userId) {
+        return VehiclesController.errorResponse(res, 401, 'Usuário não autenticado');
       }
 
-      const vehicle = await db.select().from(veiculos).where(eq(veiculos.id, req.params.id));
-      if (vehicle.length === 0) {
-        return res.status(404).json({ success: false, error: { message: 'Veículo não encontrado' } });
+      const { id } = req.params;
+      if (!id) {
+        return VehiclesController.errorResponse(res, 400, 'ID do veículo é obrigatório');
       }
 
-      if (vehicle[0].id_usuario !== req.user?.id) {
-        return res.status(403).json({ success: false, error: { message: 'Acesso negado' } });
+      const validation = updateVehicleSchema.safeParse(req.body);
+      if (!validation.success) {
+        return VehiclesController.errorResponse(
+          res,
+          400,
+          'Dados inválidos',
+          validation.error.errors
+        );
       }
 
-      await db.delete(veiculos).where(eq(veiculos.id, req.params.id));
-      return res.status(204).send();
+      // Verificar se o veículo existe e pertence ao usuário
+      const { vehicle, error } = await VehiclesController.findAndValidateVehicle(id, userId);
+      
+      if (error) {
+        const status = error === 'Veículo não encontrado' ? 404 : 403;
+        return VehiclesController.errorResponse(res, status, error);
+      }
+
+      // Verificar conflito de placa (se está sendo alterada)
+      if (validation.data.placa && validation.data.placa !== vehicle!.placa) {
+        const existingVehicle = await db
+          .select({ id: veiculos.id })
+          .from(veiculos)
+          .where(
+            and(
+              eq(veiculos.placa, validation.data.placa),
+              eq(veiculos.id_usuario, userId),
+              isNull(veiculos.deleted_at)
+            )
+          );
+
+        if (existingVehicle.length > 0) {
+          return VehiclesController.errorResponse(
+            res,
+            409,
+            'Já existe um veículo cadastrado com esta placa'
+          );
+        }
+      }
+
+      const updateData = {
+        ...validation.data,
+        updated_at: new Date().toISOString()
+      };
+
+      const updatedVehicles = await db
+        .update(veiculos)
+        .set(updateData)
+        .where(eq(veiculos.id, id))
+        .returning();
+
+      return VehiclesController.successResponse(
+        res,
+        updatedVehicles[0],
+        'Veículo atualizado com sucesso'
+      );
+
     } catch (error: any) {
-      return res.status(500).json({ success: false, error: { message: error.message } });
+      console.error('Erro ao atualizar veículo:', error);
+      
+      if (error.code === '23505') {
+        return VehiclesController.errorResponse(res, 409, 'Já existe um veículo com estes dados');
+      }
+      
+      return VehiclesController.errorResponse(res, 500, 'Erro interno do servidor');
+    }
+  }
+
+  /**
+   * Excluir veículo (soft delete)
+   */
+  static async delete(req: AuthenticatedRequest, res: Response): Promise<Response> {
+    try {
+      const userId = VehiclesController.validateAuth(req);
+      if (!userId) {
+        return VehiclesController.errorResponse(res, 401, 'Usuário não autenticado');
+      }
+
+      const { id } = req.params;
+      if (!id) {
+        return VehiclesController.errorResponse(res, 400, 'ID do veículo é obrigatório');
+      }
+
+      const { vehicle, error } = await VehiclesController.findAndValidateVehicle(id, userId);
+      
+      if (error) {
+        const status = error === 'Veículo não encontrado' ? 404 : 403;
+        return VehiclesController.errorResponse(res, status, error);
+      }
+
+      // Verificar se o veículo tem jornadas associadas
+      // Esta verificação pode ser implementada conforme necessário
+      // const hasJourneys = await checkVehicleHasJourneys(id);
+      // if (hasJourneys) {
+      //   return VehiclesController.errorResponse(
+      //     res, 
+      //     409, 
+      //     'Não é possível excluir veículo com jornadas associadas'
+      //   );
+      // }
+
+      // Soft delete
+      await db
+        .update(veiculos)
+        .set({
+          deleted_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        })
+        .where(eq(veiculos.id, id));
+
+      return VehiclesController.successResponse(
+        res,
+        undefined,
+        'Veículo excluído com sucesso',
+        204
+      );
+
+    } catch (error: any) {
+      console.error('Erro ao excluir veículo:', error);
+      return VehiclesController.errorResponse(res, 500, 'Erro interno do servidor');
+    }
+  }
+
+  /**
+   * Reativar veículo
+   */
+  static async activate(req: AuthenticatedRequest, res: Response): Promise<Response> {
+    try {
+      const userId = VehiclesController.validateAuth(req);
+      if (!userId) {
+        return VehiclesController.errorResponse(res, 401, 'Usuário não autenticado');
+      }
+
+      const { id } = req.params;
+      if (!id) {
+        return VehiclesController.errorResponse(res, 400, 'ID do veículo é obrigatório');
+      }
+
+      const { vehicle, error } = await VehiclesController.findAndValidateVehicle(id, userId);
+      
+      if (error) {
+        const status = error === 'Veículo não encontrado' ? 404 : 403;
+        return VehiclesController.errorResponse(res, status, error);
+      }
+
+      const updatedVehicles = await db
+        .update(veiculos)
+        .set({
+          ativo: true,
+          updated_at: new Date().toISOString()
+        })
+        .where(eq(veiculos.id, id))
+        .returning();
+
+      return VehiclesController.successResponse(
+        res,
+        updatedVehicles[0],
+        'Veículo reativado com sucesso'
+      );
+
+    } catch (error: any) {
+      console.error('Erro ao reativar veículo:', error);
+      return VehiclesController.errorResponse(res, 500, 'Erro interno do servidor');
+    }
+  }
+
+  /**
+   * Desativar veículo
+   */
+  static async deactivate(req: AuthenticatedRequest, res: Response): Promise<Response> {
+    try {
+      const userId = VehiclesController.validateAuth(req);
+      if (!userId) {
+        return VehiclesController.errorResponse(res, 401, 'Usuário não autenticado');
+      }
+
+      const { id } = req.params;
+      if (!id) {
+        return VehiclesController.errorResponse(res, 400, 'ID do veículo é obrigatório');
+      }
+
+      const { vehicle, error } = await VehiclesController.findAndValidateVehicle(id, userId);
+      
+      if (error) {
+        const status = error === 'Veículo não encontrado' ? 404 : 403;
+        return VehiclesController.errorResponse(res, status, error);
+      }
+
+      const updatedVehicles = await db
+        .update(veiculos)
+        .set({
+          ativo: false,
+          updated_at: new Date().toISOString()
+        })
+        .where(eq(veiculos.id, id))
+        .returning();
+
+      return VehiclesController.successResponse(
+        res,
+        updatedVehicles[0],
+        'Veículo desativado com sucesso'
+      );
+
+    } catch (error: any) {
+      console.error('Erro ao desativar veículo:', error);
+      return VehiclesController.errorResponse(res, 500, 'Erro interno do servidor');
+    }
+  }
+
+  /**
+   * Obter estatísticas dos veículos do usuário
+   */
+  static async getStatistics(req: AuthenticatedRequest, res: Response): Promise<Response> {
+    try {
+      const userId = VehiclesController.validateAuth(req);
+      if (!userId) {
+        return VehiclesController.errorResponse(res, 401, 'Usuário não autenticado');
+      }
+
+      // Buscar estatísticas gerais
+      const [totalVehicles] = await db
+        .select({
+          total: veiculos.id,
+          ativo: veiculos.ativo,
+          tipo_veiculo: veiculos.tipo_veiculo,
+          tipo_combustivel: veiculos.tipo_combustivel
+        })
+        .from(veiculos)
+        .where(
+          and(
+            eq(veiculos.id_usuario, userId),
+            isNull(veiculos.deleted_at)
+          )
+        );
+
+      // Calcular estatísticas
+      const statistics = {
+        total_vehicles: totalVehicles ? 1 : 0,
+        active_vehicles: totalVehicles?.ativo ? 1 : 0,
+        inactive_vehicles: totalVehicles && !totalVehicles.ativo ? 1 : 0,
+        by_type: {},
+        by_fuel_type: {}
+      };
+
+      return VehiclesController.successResponse(res, statistics);
+
+    } catch (error: any) {
+      console.error('Erro ao obter estatísticas dos veículos:', error);
+      return VehiclesController.errorResponse(res, 500, 'Erro interno do servidor');
     }
   }
 }
-
-
