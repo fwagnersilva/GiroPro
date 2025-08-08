@@ -1,18 +1,20 @@
 # Progresso do GiroPro
 
 **Última sessão:**
-- Data: 08/08/2025
-- Sessão: #5
+- Data: 08/08/2025 10:00
+- Sessão: #2
 
 ## O que foi feito nesta sessão
-- ✅ **Reestruturação do Roadmap**: O arquivo `docs/roadmap.md` foi completamente reestruturado para focar no estado atual das funcionalidades, nas próximas etapas essenciais para a funcionalidade mínima e na visão futura do sistema, sem atrelar a datas ou prazos. Isso proporciona uma visão mais clara do que o projeto já possui, o que precisa ser feito para se tornar funcional e para onde ele se dirige.
+- Clonagem do repositório GiroPro.
+- Tentativa de construção do backend.
+- Correção de erros de tipo relacionados a `DateHelper.formatDateForSQL` e nomes de propriedades (camelCase) nos arquivos `src/controllers/reportsController.ts` e `src/services/get_week_summary_service.ts`.
 
 ## Problemas encontrados / observações
-- ❌ **Sistema Não Funcional**: O sistema ainda não está funcional, o que exigiu a revisão do roadmap para priorizar a estabilização e funcionalidade básica.
+- Erros de TypeScript relacionados a tipos de data e nomes de propriedades (camelCase) durante a tentativa de build do backend. As correções foram aplicadas, mas o build ainda não foi concluído com sucesso.
 
 ## Próximas tarefas
 1. **Finalizar correção de build do backend**:
-   - Resolver erros de TypeScript restantes após a conversão para camelCase.
+   - Continuar a resolver erros de TypeScript restantes.
    - Testar a compilação completa do backend.
    - Validar o funcionamento básico das APIs.
 
