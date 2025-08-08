@@ -16,8 +16,11 @@ REQUIRED_FILES=(
   "docs/analise_problemas.md"
   "docs/relatorio_testes_scripts.md"
   "docs/backend_correcoes_especificas.md"
-)
-ALL_FILES_EXIST=true
+  "docs/relatorios_e_dashboards.md"
+  "docs/roadmap.md"
+  "docs/estrategia_precificacao.md"
+  "docs/detalhamento_apis_modelos_dados.md"
+)ALL_FILES_EXIST=true
 for file in "${REQUIRED_FILES[@]}"; do
   if [ ! -f "$file" ]; then
     echo "❌ Arquivo não encontrado: $file"

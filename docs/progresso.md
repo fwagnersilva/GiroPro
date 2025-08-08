@@ -2,16 +2,18 @@
 
 **Última sessão:**
 - Data: 08/08/2025
-- Sessão: #2
+- Sessão: #3
 
 ## O que foi feito nesta sessão
-- ✅ **Unificação de Documentação**: Os arquivos `docs/⚙️EspecificaçõesTécnicas-GiroPro.md` e `docs/EspecificacoesTecnicasCompletas.md` foram unificados em um único arquivo: `docs/EspecificacoesTecnicasGiroPro.md`. Este novo documento inclui detalhes completos sobre o stack tecnológico, padrões de dados, estrutura de APIs, fórmulas de negócio, considerações de design/UX e estrutura do projeto.
-- ✅ **Organização e Limpeza de Arquivos**:
-  - Removido `relatorio_correcoes_schema.md` da raiz do projeto.
-  - Movido e renomeado `backend/relatorio-correcoes.md` para `docs/backend_correcoes_especificas.md`.
-  - Removidos os arquivos de especificações técnicas duplicados (`docs/⚙️EspecificaçõesTécnicas-GiroPro.md` e `docs/EspecificacoesTecnicasCompletas.md`).
-  - Atualizado `verify_setup.sh` para refletir a nova estrutura de arquivos e remover verificações de arquivos não existentes (como `CONTRIBUTING.md` e `DEVELOPMENT_PRINCIPLES.md`).
-  - Criado um `README.md` simplificado na raiz do projeto, que agora serve como um guia rápido e aponta para a documentação detalhada na pasta `docs/`.
+- ✅ **Revisão e Otimização da Estrutura de Pastas e Arquivos**:
+  - **Deletado**: `docs/GiroPro - Gestão Financeira para Motoristas de Aplicativo.md` (redundante).
+  - **Renomeado e Movido**: `backend/relatorio-correcoes.md` para `docs/backend_correcoes_especificas.md`.
+  - **Renomeado**: `docs/Relatórios e Dashboards` para `docs/relatorios_e_dashboards.md`.
+  - **Renomeado**: `docs/Roadmap do Projeto GiroPro - 2025-2026.md` para `docs/roadmap.md`.
+  - **Renomeado**: `docs/💰 Estratégia de Precificação para o GiroPro_ Foco no Motorista de Aplicativo.md` para `docs/estrategia_precificacao.md`.
+  - **Renomeado**: `docs/🚀DetalhamentodeAPIseModelosdeDadosdoGiroPro.md` para `docs/detalhamento_apis_modelos_dados.md`.
+  - **Atualizado**: `verify_setup.sh` para refletir os novos nomes dos arquivos e remover verificações de arquivos não existentes (`CONTRIBUTING.md`, `DEVELOPMENT_PRINCIPLES.md`).
+  - **Criado**: Um `README.md` simplificado na raiz do projeto, que serve como um guia rápido e aponta para a documentação detalhada na pasta `docs/`.
 
 ## Problemas encontrados / observações
 - ✅ **Organização de Arquivos**: A estrutura de documentação e scripts foi aprimorada para maior clareza e centralização das informações.
@@ -52,6 +54,10 @@
 - `docs/analise_problemas.md` - Problemas técnicos identificados e soluções.
 - `docs/relatorio_testes_scripts.md` - Testes e correções dos scripts de setup.
 - `docs/backend_correcoes_especificas.md` - Relatório de correções específicas do backend.
+- `docs/relatorios_e_dashboards.md` - Documento sobre relatórios e dashboards.
+- `docs/roadmap.md` - Roadmap do projeto.
+- `docs/estrategia_precificacao.md` - Estratégia de precificação.
+- `docs/detalhamento_apis_modelos_dados.md` - Detalhamento de APIs e modelos de dados.
 - `scripts/fix_snake_case.sh` - Script de conversão automática para camelCase.
 - `README.md` - Guia rápido e índice para a documentação.
 
