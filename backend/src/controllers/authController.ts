@@ -18,7 +18,12 @@ export const authRoutes: FastifyPluginAsyncZod = async (app) => {
           201: z.object({
             success: z.boolean(),
             message: z.string(),
-            userId: z.string().uuid(),
+            accessToken: z.string(),
+            user: z.object({
+              id: z.string().uuid(),
+              nome: z.string(),
+              email: z.string().email(),
+            }),
           }),
           400: z.object({
             success: z.boolean(),
@@ -39,8 +44,8 @@ export const authRoutes: FastifyPluginAsyncZod = async (app) => {
     async (request, reply) => {
       try {
         const { email, senha, nome } = request.body;
-        const { userId } = await AuthService.register({ email, senha, nome });
-        reply.status(201).send({ success: true, message: 'Usuário registrado com sucesso', userId });
+        const { token, user } = await AuthService.register({ email, senha, nome });
+        reply.status(201).send({ success: true, message: 'Usuário registrado com sucesso', accessToken: token, user });
       } catch (error: any) {
         if (error instanceof ValidationError) {
           reply.status(400).send({ success: false, error: error.message, details: error.details });

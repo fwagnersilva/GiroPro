@@ -24,3 +24,16 @@ declare module 'fastify' {
 }
 
 
+
+
+import { FastifyRequest } from 'fastify';
+
+export interface AuthenticatedRequest extends FastifyRequest {
+  user: {
+    id: string;
+    email: string;
+    [key: string]: any;
+  };
+}
+
+
