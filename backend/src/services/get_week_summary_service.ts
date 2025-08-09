@@ -36,7 +36,7 @@ export async function getWeekSummary({
     .from(metas)
     .leftJoin(
       progressoMetas,
-      sql`${progressoMetas.id_meta} = ${metas.id} AND ${progressoMetas.data_registro} >= ${startOfWeek} AND ${progressoMetas.data_registro} <= ${endOfWeek}`
+      sql`${progressoMetas.id_meta} = ${metas.id} AND ${progressoMetas.dataRegistro} >= ${startOfWeek} AND ${progressoMetas.dataRegistro} <= ${endOfWeek}`
     )
     .groupBy(metas.id, metas.titulo, metas.valor_objetivo);
 
@@ -44,14 +44,14 @@ export async function getWeekSummary({
   const completionsByDay = await db
     .select({
       goalId: progressoMetas.id_meta,
-      day: sql<string>`DATE(${progressoMetas.data_registro})`.as("day"),
+      day: sql<string>`DATE(${progressoMetas.dataRegistro})`.as("day"),
       goalTitle: metas.titulo,
       desiredWeeklyFrequency: metas.valor_objetivo,
     })
     .from(progressoMetas)
     .innerJoin(metas, eq(metas.id, progressoMetas.id_meta))
     .where(
-      sql`${progressoMetas.data_registro} >= ${startOfWeek} AND ${progressoMetas.data_registro} <= ${endOfWeek}`
+      sql`${progressoMetas.dataRegistro} >= ${startOfWeek} AND ${progressoMetas.dataRegistro} <= ${endOfWeek}`
     );
 
   // Calcular estatísticas

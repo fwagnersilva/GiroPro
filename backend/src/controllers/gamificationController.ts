@@ -4,7 +4,7 @@ import { db } from '../db';
 import {
   conquistas,
   usuarioConquistas,
-  nivelUsuario,
+  niveisUsuario,
   usuarios,
   jornadas,
   abastecimentos,
@@ -24,7 +24,7 @@ const gamificationQuerySchema = z.object({
   page: z.string().optional().transform(val => val ? parseInt(val) : 1),
   limit: z.string().optional().transform(val => val ? parseInt(val) : 20),
   tipo_conquista: z.enum(['Faturamento', 'Quilometragem', 'Jornadas', 'Eficiencia', 'Consistencia', 'Metas', 'Especial']).optional(),
-  raridade: z.enum(['Comum', 'Raro', 'Epico', 'Lendario']).optional(),
+  raridade: z.enum(["comum", "raro", "epico", "lendario"]).optional(),
   desbloqueada: z.string().optional().transform(val => val === 'true' ? true : val === 'false' ? false : undefined)
 });
 
@@ -72,17 +72,17 @@ export class GamificationController {
           id: conquistas.id,
           nome: conquistas.nome,
           descricao: conquistas.descricao,
-          tipo_conquista: conquistas.tipo_conquista,
+          tipoConquista: conquistas.tipoConquista,
           raridade: conquistas.raridade,
           icone: conquistas.icone,
           cor: conquistas.cor,
-          criterio_valor: conquistas.criterio_valor,
-          criterio_descricao: conquistas.criterio_descricao,
-          pontos_recompensa: conquistas.pontos_recompensa,
-          ordem_exibicao: conquistas.ordem_exibicao,
+          criterioValor: conquistas.criterioValor,
+          criterioDescricao: conquistas.criterioDescricao,
+          pontosRecompensa: conquistas.pontosRecompensa,
+          ordemExibicao: conquistas.ordemExibicao,
           desbloqueada: sql<boolean>`CASE WHEN ${usuarioConquistas.id} IS NOT NULL THEN true ELSE false END`,
-          data_desbloqueio: usuarioConquistas.data_desbloqueio,
-          valor_atingido: usuarioConquistas.valor_atingido
+          dataDesbloqueio: usuarioConquistas.dataDesbloqueio,
+          valorAtingido: usuarioConquistas.valorAtingido
         })
         .from(conquistas)
         .leftJoin(
@@ -170,11 +170,11 @@ export class GamificationController {
               id: conquistas.id,
               nome: conquistas.nome,
               descricao: conquistas.descricao,
-              tipo_conquista: conquistas.tipo_conquista,
+              tipoConquista: conquistas.tipoConquista,
               raridade: conquistas.raridade,
               icone: conquistas.icone,
               cor: conquistas.cor,
-              pontos_recompensa: conquistas.pontos_recompensa
+              pontosRecompensa: conquistas.pontosRecompensa
             },
             data_desbloqueio: usuarioConquistas.data_desbloqueio,
             valor_atingido: usuarioConquistas.valor_atingido
@@ -235,9 +235,9 @@ export class GamificationController {
       // Buscar dados do usuário
       const [usuario] = await db
         .select({
-          pontos_total: usuarios.pontos_total,
-          nivel_usuario: usuarios.nivel_usuario,
-          conquistas_desbloqueadas: usuarios.conquistas_desbloqueadas
+          pontosTotal: usuarios.pontosTotal,
+          nivelUsuario: usuarios.nivelUsuario,
+          conquistasDesbloqueadas: usuarios.conquistasDesbloqueadas
         })
         .from(usuarios)
         .where(eq(usuarios.id, req.user?.id));
@@ -253,20 +253,20 @@ export class GamificationController {
       const [nivelAtual] = await db
         .select()
         .from(nivelUsuario)
-        .where(eq(nivelUsuario.nivel, usuario.nivel_usuario || 'Iniciante'));
+        .where(eq(nivelUsuario.nivel, usuario.nivelUsuario || 'Iniciante'));
 
       // Buscar próximo nível
       const [proximoNivel] = await db
         .select()
         .from(nivelUsuario)
-        .where(gte(nivelUsuario.pontos_necessarios, usuario.pontos_total || 0))
+        .where(gte(nivelUsuario.pontos_necessarios, usuario.pontosTotal || 0))
         .orderBy(asc(nivelUsuario.pontos_necessarios))
         .limit(1);
 
       // Estatísticas de conquistas por tipo
       const conquistasPorTipo = await db
         .select({
-          tipo_conquista: conquistas.tipo_conquista,
+          tipoConquista: conquistas.tipoConquista,
           total: count(),
           desbloqueadas: sql<number>`COUNT(CASE WHEN ${usuarioConquistas.id} IS NOT NULL THEN 1 END)`
         })
@@ -288,7 +288,7 @@ export class GamificationController {
             nome: conquistas.nome,
             icone: conquistas.icone,
             cor: conquistas.cor,
-            pontos_recompensa: conquistas.pontos_recompensa
+            pontosRecompensa: conquistas.pontosRecompensa
           },
           data_desbloqueio: usuarioConquistas.data_desbloqueio
         })
@@ -300,23 +300,23 @@ export class GamificationController {
 
       // Calcular progresso para o próximo nível
       const pontosParaProximoNivel = proximoNivel 
-        ? proximoNivel.pontos_necessarios - (usuario.pontos_total || 0)
+        ? proximoNivel.pontos_necessarios - (usuario.pontosTotal || 0)
         : 0;
 
       const progressoNivel = proximoNivel && nivelAtual
-        ? Math.round(((usuario.pontos_total || 0) - nivelAtual.pontos_necessarios) / 
+        ? Math.round(((usuario.pontosTotal || 0) - nivelAtual.pontos_necessarios) / 
           (proximoNivel.pontos_necessarios - nivelAtual.pontos_necessarios) * 100)
         : 100;
 
       return res.json({
         success: true,
         data: {
-          pontos_total: usuario.pontos_total || 0,
+          pontosTotal: usuario.pontosTotal || 0,
           nivel_atual: nivelAtual,
           proximo_nivel: proximoNivel,
           pontos_para_proximo_nivel: pontosParaProximoNivel,
           progresso_nivel: Math.max(0, Math.min(100, progressoNivel)),
-          total_conquistas_desbloqueadas: usuario.conquistas_desbloqueadas || 0,
+          total_conquistasDesbloqueadas: usuario.conquistasDesbloqueadas || 0,
           conquistas_por_tipo: conquistasPorTipo,
           conquistas_recentes: conquistasRecentes
         }
@@ -373,8 +373,8 @@ export class GamificationController {
           await db
             .update(usuarios)
             .set({
-              pontos_total: sql`${usuarios.pontos_total} + ${conquista.pontos_recompensa}`,
-              conquistas_desbloqueadas: sql`${usuarios.conquistas_desbloqueadas} + 1`,
+              pontosTotal: sql`${usuarios.pontosTotal} + ${conquista.pontosRecompensa}`,
+              conquistasDesbloqueadas: sql`${usuarios.conquistasDesbloqueadas} + 1`,
             })
             .where(eq(usuarios.id, userId));
 
@@ -437,7 +437,7 @@ export class GamificationController {
   private static async checkFaturamentoAchievement(userId: string, conquista: any): Promise<{ unlocked: boolean; value?: number }> {
     const [resultado] = await db
       .select({
-        total_faturamento: sql<number>`COALESCE(SUM(${jornadas.ganho_bruto}), 0)`
+        total_faturamento: sql<number>`COALESCE(SUM(${jornadas.ganhoBruto}), 0)`
       })
       .from(jornadas)
       .where(
@@ -448,7 +448,7 @@ export class GamificationController {
       );
 
     const faturamentoTotal = resultado?.total_faturamento || 0;
-    const criterio = conquista.criterio_valor || 0;
+    const criterio = conquista.criterioValor || 0;
 
     return {
       unlocked: faturamentoTotal >= criterio,
@@ -462,7 +462,7 @@ export class GamificationController {
   private static async checkQuilometragemAchievement(userId: string, conquista: any): Promise<{ unlocked: boolean; value?: number }> {
     const [resultado] = await db
       .select({
-        total_km: sql<number>`COALESCE(SUM(${jornadas.km_total}), 0)`
+        total_km: sql<number>`COALESCE(SUM(${jornadas.kmTotal}), 0)`
       })
       .from(jornadas)
       .where(
@@ -473,7 +473,7 @@ export class GamificationController {
       );
 
     const kmTotal = resultado?.total_km || 0;
-    const criterio = conquista.criterio_valor || 0;
+    const criterio = conquista.criterioValor || 0;
 
     return {
       unlocked: kmTotal >= criterio,
@@ -498,7 +498,7 @@ export class GamificationController {
       );
 
     const totalJornadas = resultado?.total_jornadas || 0;
-    const criterio = conquista.criterio_valor || 0;
+    const criterio = conquista.criterioValor || 0;
 
     return {
       unlocked: totalJornadas >= criterio,
@@ -513,8 +513,8 @@ export class GamificationController {
     // Exemplo: Eficiência baseada em ganho por km
     const [resultado] = await db
       .select({
-        total_ganho: sql<number>`COALESCE(SUM(${jornadas.ganho_bruto}), 0)`,
-        total_km: sql<number>`COALESCE(SUM(${jornadas.km_total}), 0)`
+        total_ganho: sql<number>`COALESCE(SUM(${jornadas.ganhoBruto}), 0)`,
+        total_km: sql<number>`COALESCE(SUM(${jornadas.kmTotal}), 0)`
       })
       .from(jornadas)
       .where(
@@ -527,7 +527,7 @@ export class GamificationController {
     const ganhoPorKm = (resultado?.total_km || 0) > 0 
       ? (resultado?.total_ganho || 0) / (resultado?.total_km || 0)
       : 0;
-    const criterio = conquista.criterio_valor || 0;
+    const criterio = conquista.criterioValor || 0;
 
     return {
       unlocked: ganhoPorKm >= criterio,
@@ -541,7 +541,7 @@ export class GamificationController {
   private static async checkConsistenciaAchievement(userId: string, conquista: any): Promise<{ unlocked: boolean; value?: number }> {
     // Exemplo: Concluir 5 jornadas em 7 dias
     const dataLimite = new Date();
-    dataLimite.setDate(dataLimite.getDate() - (conquista.criterio_valor_dias || 0));
+    dataLimite.setDate(dataLimite.getDate() - (conquista.criterioValor_dias || 0));
 
     const [resultado] = await db
       .select({
@@ -557,7 +557,7 @@ export class GamificationController {
       );
 
     const totalJornadas = resultado?.total_jornadas || 0;
-    const criterio = conquista.criterio_valor || 0;
+    const criterio = conquista.criterioValor || 0;
 
     return {
       unlocked: totalJornadas >= criterio,
@@ -583,7 +583,7 @@ export class GamificationController {
       );
 
     const totalMetasConcluidas = resultado?.total_metas_concluidas || 0;
-    const criterio = conquista.criterio_valor || 0;
+    const criterio = conquista.criterioValor || 0;
 
     return {
       unlocked: totalMetasConcluidas >= criterio,
@@ -651,7 +651,7 @@ export class GamificationController {
       await db.insert(usuarioConquistas).values({
         idUsuario: req.user?.id,
         id_conquista,
-        valor_atingido: valor_atingido || conquista.criterio_valor || 0,
+        valor_atingido: valor_atingido || conquista.criterioValor || 0,
         data_desbloqueio: new Date().toISOString(),
         createdAt: new Date().toISOString()
       });
@@ -660,8 +660,8 @@ export class GamificationController {
       await db
         .update(usuarios)
         .set({
-          pontos_total: sql`${usuarios.pontos_total} + ${conquista.pontos_recompensa}`,
-          conquistas_desbloqueadas: sql`${usuarios.conquistas_desbloqueadas} + 1`,
+          pontosTotal: sql`${usuarios.pontosTotal} + ${conquista.pontosRecompensa}`,
+          conquistasDesbloqueadas: sql`${usuarios.conquistasDesbloqueadas} + 1`,
         })
         .where(eq(usuarios.id, req.user?.id));
 
@@ -690,8 +690,8 @@ export class GamificationController {
     try {
       const [usuario] = await db
         .select({
-          pontos_total: usuarios.pontos_total,
-          nivel_usuario: usuarios.nivel_usuario
+          pontosTotal: usuarios.pontosTotal,
+          nivelUsuario: usuarios.nivelUsuario
         })
         .from(usuarios)
         .where(eq(usuarios.id, userId));
@@ -704,15 +704,15 @@ export class GamificationController {
       const [proximoNivel] = await db
         .select()
         .from(nivelUsuario)
-        .where(gte(nivelUsuario.pontos_necessarios, usuario.pontos_total || 0))
+        .where(gte(nivelUsuario.pontos_necessarios, usuario.pontosTotal || 0))
         .orderBy(asc(nivelUsuario.pontos_necessarios))
         .limit(1);
 
-      if (proximoNivel && proximoNivel.nivel !== usuario.nivel_usuario) {
+      if (proximoNivel && proximoNivel.nivel !== usuario.nivelUsuario) {
         await db
           .update(usuarios)
           .set({
-            nivel_usuario: proximoNivel.nivel
+            nivelUsuario: proximoNivel.nivel
           })
           .where(eq(usuarios.id, userId));
         console.log(`Usuário ${userId} subiu para o nível ${proximoNivel.nivel}`);

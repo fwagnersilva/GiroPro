@@ -34,21 +34,21 @@ export class AdvancedAnalyticsService {
       // Métricas de jornadas
       const journeyMetrics = await db
         .select({
-          total_jornadas: count(jornadas.id),
-          total_faturamento: sum(jornadas.ganho_bruto),
-          total_km: sum(jornadas.km_total),
-          total_tempo: sum(jornadas.tempo_total),
-          media_ganho: avg(jornadas.ganho_bruto),
-          media_km: avg(jornadas.km_total),
-          media_tempo: avg(jornadas.tempo_total),
+          totalJornadas: count(jornadas.id),
+          totalFaturamento: sum(jornadas.ganhoBruto),
+          totalKm: sum(jornadas.kmTotal),
+          totalTempo: sum(jornadas.tempoTotal),
+          mediaGanho: avg(jornadas.ganhoBruto),
+          mediaKm: avg(jornadas.kmTotal),
+          mediaTempo: avg(jornadas.tempoTotal),
         })
         .from(jornadas)
         .where(
           and(
             eq(jornadas.idVeiculo, vehicle.id),
             eq(jornadas.idUsuario, userId),
-            gte(jornadas.dataInicio, thirtyDaysAgo.toISOString()),
-            lte(jornadas.dataInicio, today.toISOString()),
+            gte(jornadas.dataInicio, thirtyDaysAgo.getTime()),
+            lte(jornadas.dataInicio, today.getTime()),
             isNull(jornadas.deletedAt)
           )
         );
@@ -56,18 +56,18 @@ export class AdvancedAnalyticsService {
       // Métricas de combustível
       const fuelMetrics = await db
         .select({
-          total_abastecimentos: count(abastecimentos.id),
-          total_litros: sum(abastecimentos.quantidadeLitros),
-          total_gasto_combustivel: sum(abastecimentos.valorTotal),
-          media_valorLitro: avg(abastecimentos.valorLitro),
+          totalAbastecimentos: count(abastecimentos.id),
+          totalLitros: sum(abastecimentos.quantidadeLitros),
+          totalGastoCombustivel: sum(abastecimentos.valorTotal),
+          mediaValorLitro: avg(abastecimentos.valorLitro),
         })
         .from(abastecimentos)
         .where(
           and(
             eq(abastecimentos.idVeiculo, vehicle.id),
             eq(abastecimentos.idUsuario, userId),
-            gte(abastecimentos.dataAbastecimento, thirtyDaysAgo.toISOString()),
-            lte(abastecimentos.dataAbastecimento, today.toISOString()),
+            gte(abastecimentos.dataAbastecimento, thirtyDaysAgo.getTime()),
+            lte(abastecimentos.dataAbastecimento, today.getTime()),
             isNull(abastecimentos.deletedAt)
           )
         );
@@ -75,17 +75,17 @@ export class AdvancedAnalyticsService {
       // Métricas de despesas
       const expenseMetrics = await db
         .select({
-          total_despesas: count(despesas.id),
-          total_valorDespesas: sum(despesas.valorDespesa),
-          media_despesa: avg(despesas.valorDespesa),
+          totalDespesas: count(despesas.id),
+          totalValorDespesas: sum(despesas.valorDespesa),
+          mediaDespesa: avg(despesas.valorDespesa),
         })
         .from(despesas)
         .where(
           and(
             eq(despesas.idVeiculo, vehicle.id),
             eq(despesas.idUsuario, userId),
-            gte(despesas.dataDespesa, thirtyDaysAgo.toISOString()),
-            lte(despesas.dataDespesa, today.toISOString()),
+            gte(despesas.dataDespesa, thirtyDaysAgo.getTime()),
+            lte(despesas.dataDespesa, today.getTime()),
             isNull(despesas.deletedAt)
           )
         );
@@ -95,12 +95,12 @@ export class AdvancedAnalyticsService {
       const expense = expenseMetrics[0];
 
       // Calcular métricas derivadas
-      const totalFaturamento = Number(journey.total_faturamento) || 0;
-      const totalKm = Number(journey.total_km) || 0;
-      const totalTempo = Number(journey.total_tempo) || 0;
-      const totalLitros = Number(fuel.total_litros) || 0;
-      const totalGastoCombustivel = Number(fuel.total_gasto_combustivel) || 0;
-      const totalDespesas = Number(expense.total_valorDespesas) || 0;
+      const totalFaturamento = Number(journey.totalFaturamento) || 0;
+      const totalKm = Number(journey.totalKm) || 0;
+      const totalTempo = Number(journey.totalTempo) || 0;
+      const totalLitros = Number(fuel.totalLitros) || 0;
+      const totalGastoCombustivel = Number(fuel.totalGastoCombustivel) || 0;
+      const totalDespesas = Number(expense.totalValorDespesas) || 0;
 
       // Eficiência operacional
       const consumoMedio = totalKm > 0 && totalLitros > 0 ? totalKm / totalLitros : 0;
@@ -129,34 +129,34 @@ export class AdvancedAnalyticsService {
           placa: vehicle.placa,
           tipoCombustivel: vehicle.tipoCombustivel,
         },
-        metricas_operacionais: {
-          total_jornadas: Number(journey.total_jornadas) || 0,
-          total_km: totalKm,
-          total_tempo_horas: Math.round((totalTempo / 60) * 100) / 100,
-          total_abastecimentos: Number(fuel.total_abastecimentos) || 0,
-          total_despesas: Number(expense.total_despesas) || 0,
+        metricasOperacionais: {
+          totalJornadas: Number(journey.totalJornadas) || 0,
+          totalKm: totalKm,
+          totalTempoHoras: Math.round((totalTempo / 60) * 100) / 100,
+          totalAbastecimentos: Number(fuel.totalAbastecimentos) || 0,
+          totalDespesas: Number(expense.totalDespesas) || 0,
         },
-        metricas_financeiras: {
-          faturamento_total: totalFaturamento,
-          gasto_combustivel: totalGastoCombustivel,
-          outras_despesas: totalDespesas,
-          lucro_liquido: lucroLiquido,
-          margem_lucro: Math.round(margemLucro * 100) / 100,
+        metricasFinanceiras: {
+          faturamentoTotal: totalFaturamento,
+          gastoCombustivel: totalGastoCombustivel,
+          outrasDespesas: totalDespesas,
+          lucroLiquido: lucroLiquido,
+          margemLucro: Math.round(margemLucro * 100) / 100,
         },
-        metricas_eficiencia: {
-          consumo_medio: Math.round(consumoMedio * 100) / 100,
-          ganho_por_km: Math.round(ganhoPorKm),
-          ganho_por_hora: Math.round(ganhoPorHora),
-          custo_por_km: Math.round(custoPorKm),
-          eficiencia_energetica: Math.round(eficienciaEnergetica),
-          classificacao_eficiencia: classificacaoEficiencia,
-          classificacao_consumo: classificacaoConsumo,
+        metricasEficiencia: {
+          consumoMedio: Math.round(consumoMedio * 100) / 100,
+          ganhoPorKm: Math.round(ganhoPorKm),
+          ganhoPorHora: Math.round(ganhoPorHora),
+          custoPorKm: Math.round(custoPorKm),
+          eficienciaEnergetica: Math.round(eficienciaEnergetica),
+          classificacaoEficiencia: classificacaoEficiencia,
+          classificacaoConsumo: classificacaoConsumo,
         },
-        indicadores_performance: {
-          jornadas_por_dia: totalKm > 0 ? Math.round((Number(journey.total_jornadas) / 30) * 100) / 100 : 0,
-          km_por_dia: Math.round((totalKm / 30) * 100) / 100,
-          faturamento_por_dia: Math.round((totalFaturamento / 30)),
-          tempo_medio_jornada: Number(journey.total_jornadas) > 0 ? Math.round((totalTempo / Number(journey.total_jornadas))) : 0,
+        indicadoresPerformance: {
+          jornadasPorDia: totalKm > 0 ? Math.round((Number(journey.totalJornadas) / 30) * 100) / 100 : 0,
+          kmPorDia: Math.round((totalKm / 30) * 100) / 100,
+          faturamentoPorDia: Math.round((totalFaturamento / 30)),
+          tempoMedioJornada: Number(journey.totalJornadas) > 0 ? Math.round((totalTempo / Number(journey.totalJornadas))) : 0,
         }
       });
     }
@@ -189,18 +189,18 @@ export class AdvancedAnalyticsService {
     const weeklyTrends = await db
       .select({
         semana: sql<string>`DATE_TRUNC('week', ${jornadas.dataInicio})`,
-        total_faturamento: sum(jornadas.ganho_bruto),
-        total_km: sum(jornadas.km_total),
-        numero_jornadas: count(jornadas.id),
-        tempo_total: sum(jornadas.tempo_total),
+        totalFaturamento: sum(jornadas.ganhoBruto),
+        totalKm: sum(jornadas.kmTotal),
+        numeroJornadas: count(jornadas.id),
+        tempoTotal: sum(jornadas.tempoTotal),
       })
       .from(jornadas)
       .innerJoin(veiculos, eq(jornadas.idVeiculo, veiculos.id))
       .where(
         and(
           vehicleFilter,
-          gte(jornadas.dataInicio, startDate.toISOString()),
-          lte(jornadas.dataInicio, endDate.toISOString()),
+          gte(jornadas.dataInicio, startDate.getTime()),
+          lte(jornadas.dataInicio, endDate.getTime()),
           isNull(jornadas.deletedAt)
         )
       )
@@ -211,18 +211,18 @@ export class AdvancedAnalyticsService {
     const monthlyTrends = await db
       .select({
         mes: sql<string>`DATE_TRUNC('month', ${jornadas.dataInicio})`,
-        total_faturamento: sum(jornadas.ganho_bruto),
-        total_km: sum(jornadas.km_total),
-        numero_jornadas: count(jornadas.id),
-        tempo_total: sum(jornadas.tempo_total),
+        totalFaturamento: sum(jornadas.ganhoBruto),
+        totalKm: sum(jornadas.kmTotal),
+        numeroJornadas: count(jornadas.id),
+        tempoTotal: sum(jornadas.tempoTotal),
       })
       .from(jornadas)
       .innerJoin(veiculos, eq(jornadas.idVeiculo, veiculos.id))
       .where(
         and(
           vehicleFilter,
-          gte(jornadas.dataInicio, startDate.toISOString()),
-          lte(jornadas.dataInicio, endDate.toISOString()),
+          gte(jornadas.dataInicio, startDate.getTime()),
+          lte(jornadas.dataInicio, endDate.getTime()),
           isNull(jornadas.deletedAt)
         )
       )
@@ -249,34 +249,34 @@ export class AdvancedAnalyticsService {
     };
 
     return {
-      tendencias_semanais: {
+      tendenciasSemanais: {
         dados: weeklyTrends.map(week => ({
           periodo: week.semana,
-          faturamento: Number(week.total_faturamento) || 0,
-          km: Number(week.total_km) || 0,
-          jornadas: Number(week.numero_jornadas) || 0,
-          tempo_horas: Math.round((Number(week.tempo_total) / 60) * 100) / 100,
+          faturamento: Number(week.totalFaturamento) || 0,
+          km: Number(week.totalKm) || 0,
+          jornadas: Number(week.numeroJornadas) || 0,
+          tempoHoras: Math.round((Number(week.tempoTotal) / 60) * 100) / 100,
         })),
-        analise_faturamento: calculateTrend(weeklyTrends, 'total_faturamento'),
-        analise_km: calculateTrend(weeklyTrends, 'total_km'),
-        analise_jornadas: calculateTrend(weeklyTrends, 'numero_jornadas'),
+        analiseFaturamento: calculateTrend(weeklyTrends, 'totalFaturamento'),
+        analiseKm: calculateTrend(weeklyTrends, 'totalKm'),
+        analiseJornadas: calculateTrend(weeklyTrends, 'numeroJornadas'),
       },
-      tendencias_mensais: {
+      tendenciasMensais: {
         dados: monthlyTrends.map(month => ({
           periodo: month.mes,
-          faturamento: Number(month.total_faturamento) || 0,
-          km: Number(month.total_km) || 0,
-          jornadas: Number(month.numero_jornadas) || 0,
-          tempo_horas: Math.round((Number(month.tempo_total) / 60) * 100) / 100,
+          faturamento: Number(month.totalFaturamento) || 0,
+          km: Number(month.totalKm) || 0,
+          jornadas: Number(month.numeroJornadas) || 0,
+          tempoHoras: Math.round((Number(month.tempoTotal) / 60) * 100) / 100,
         })),
-        analise_faturamento: calculateTrend(monthlyTrends, 'total_faturamento'),
-        analise_km: calculateTrend(monthlyTrends, 'total_km'),
-        analise_jornadas: calculateTrend(monthlyTrends, 'numero_jornadas'),
+        analiseFaturamento: calculateTrend(monthlyTrends, 'totalFaturamento'),
+        analiseKm: calculateTrend(monthlyTrends, 'totalKm'),
+        analiseJornadas: calculateTrend(monthlyTrends, 'numeroJornadas'),
       },
-      periodo_analise: {
+      periodoAnalise: {
         dataInicio: startDate.toISOString(),
         dataFim: endDate.toISOString(),
-        total_dias: days,
+        totalDias: days,
       }
     };
   }
@@ -301,11 +301,11 @@ export class AdvancedAnalyticsService {
     // Análise por dia da semana
     const dayOfWeekAnalysis = await db
       .select({
-        dia_semana: sql<number>`EXTRACT(DOW FROM ${jornadas.dataInicio})`,
-        total_faturamento: sum(jornadas.ganho_bruto),
-        total_km: sum(jornadas.km_total),
-        numero_jornadas: count(jornadas.id),
-        tempo_total: sum(jornadas.tempo_total),
+        diaSemana: sql<number>`EXTRACT(DOW FROM ${jornadas.dataInicio})`,
+        totalFaturamento: sum(jornadas.ganhoBruto),
+        totalKm: sum(jornadas.kmTotal),
+        numeroJornadas: count(jornadas.id),
+        tempoTotal: sum(jornadas.tempoTotal),
       })
       .from(jornadas)
       .innerJoin(veiculos, eq(jornadas.idVeiculo, veiculos.id))
@@ -322,10 +322,10 @@ export class AdvancedAnalyticsService {
     const hourAnalysis = await db
       .select({
         hora: sql<number>`EXTRACT(HOUR FROM ${jornadas.dataInicio})`,
-        total_faturamento: sum(jornadas.ganho_bruto),
-        total_km: sum(jornadas.km_total),
-        numero_jornadas: count(jornadas.id),
-        tempo_total: sum(jornadas.tempo_total),
+        totalFaturamento: sum(jornadas.ganhoBruto),
+        totalKm: sum(jornadas.kmTotal),
+        numeroJornadas: count(jornadas.id),
+        tempoTotal: sum(jornadas.tempoTotal),
       })
       .from(jornadas)
       .innerJoin(veiculos, eq(jornadas.idVeiculo, veiculos.id))
@@ -342,10 +342,10 @@ export class AdvancedAnalyticsService {
     const monthAnalysis = await db
       .select({
         mes: sql<number>`EXTRACT(MONTH FROM ${jornadas.dataInicio})`,
-        total_faturamento: sum(jornadas.ganho_bruto),
-        total_km: sum(jornadas.km_total),
-        numero_jornadas: count(jornadas.id),
-        tempo_total: sum(jornadas.tempo_total),
+        totalFaturamento: sum(jornadas.ganhoBruto),
+        totalKm: sum(jornadas.kmTotal),
+        numeroJornadas: count(jornadas.id),
+        tempoTotal: sum(jornadas.tempoTotal),
       })
       .from(jornadas)
       .innerJoin(veiculos, eq(jornadas.idVeiculo, veiculos.id))
@@ -370,56 +370,56 @@ export class AdvancedAnalyticsService {
 
     // Identificar padrões
     const bestDayOfWeek = dayOfWeekAnalysis.reduce((best, current) => 
-      (Number(current.total_faturamento) || 0) > (Number(best.total_faturamento) || 0) ? current : best
+      (Number(current.totalFaturamento) || 0) > (Number(best.totalFaturamento) || 0) ? current : best
     );
 
     const bestHour = hourAnalysis.reduce((best, current) => 
-      (Number(current.total_faturamento) || 0) > (Number(best.total_faturamento) || 0) ? current : best
+      (Number(current.totalFaturamento) || 0) > (Number(best.totalFaturamento) || 0) ? current : best
     );
 
     const bestMonth = monthAnalysis.reduce((best, current) => 
-      (Number(current.total_faturamento) || 0) > (Number(best.total_faturamento) || 0) ? current : best
+      (Number(current.totalFaturamento) || 0) > (Number(best.totalFaturamento) || 0) ? current : best
     );
 
     return {
-      analise_dia_semana: dayOfWeekAnalysis.map(day => ({
-        dia_semana: getDayName(day.dia_semana),
-        dia_numero: day.dia_semana,
-        faturamento_total: Number(day.total_faturamento) || 0,
-        km_total: Number(day.total_km) || 0,
-        numero_jornadas: Number(day.numero_jornadas) || 0,
-        faturamento_medio: Number(day.numero_jornadas) > 0 ? Math.round((Number(day.total_faturamento) || 0) / Number(day.numero_jornadas)) : 0,
+      analiseDiaSemana: dayOfWeekAnalysis.map(day => ({
+        diaSemana: getDayName(day.diaSemana),
+        diaNumero: day.diaSemana,
+        faturamentoTotal: Number(day.totalFaturamento) || 0,
+        kmTotal: Number(day.totalKm) || 0,
+        numeroJornadas: Number(day.numeroJornadas) || 0,
+        faturamentoMedio: Number(day.numeroJornadas) > 0 ? Math.round((Number(day.totalFaturamento) || 0) / Number(day.numeroJornadas)) : 0,
       })),
-      analise_horario: hourAnalysis.map(hour => ({
+      analiseHorario: hourAnalysis.map(hour => ({
         hora: hour.hora,
-        faturamento_total: Number(hour.total_faturamento) || 0,
-        km_total: Number(hour.total_km) || 0,
-        numero_jornadas: Number(hour.numero_jornadas) || 0,
-        faturamento_medio: Number(hour.numero_jornadas) > 0 ? Math.round((Number(hour.total_faturamento) || 0) / Number(hour.numero_jornadas)) : 0,
+        faturamentoTotal: Number(hour.totalFaturamento) || 0,
+        kmTotal: Number(hour.totalKm) || 0,
+        numeroJornadas: Number(hour.numeroJornadas) || 0,
+        faturamentoMedio: Number(hour.numeroJornadas) > 0 ? Math.round((Number(hour.totalFaturamento) || 0) / Number(hour.numeroJornadas)) : 0,
       })),
-      analise_mensal: monthAnalysis.map(month => ({
+      analiseMensal: monthAnalysis.map(month => ({
         mes: getMonthName(month.mes),
-        mes_numero: month.mes,
-        faturamento_total: Number(month.total_faturamento) || 0,
-        km_total: Number(month.total_km) || 0,
-        numero_jornadas: Number(month.numero_jornadas) || 0,
-        faturamento_medio: Number(month.numero_jornadas) > 0 ? Math.round((Number(month.total_faturamento) || 0) / Number(month.numero_jornadas)) : 0,
+        mesNumero: month.mes,
+        faturamentoTotal: Number(month.totalFaturamento) || 0,
+        kmTotal: Number(month.totalKm) || 0,
+        numeroJornadas: Number(month.numeroJornadas) || 0,
+        faturamentoMedio: Number(month.numeroJornadas) > 0 ? Math.round((Number(month.totalFaturamento) || 0) / Number(month.numeroJornadas)) : 0,
       })),
-      padroes_identificados: {
-        melhor_dia_semana: {
-          dia: getDayName(bestDayOfWeek.dia_semana),
-          faturamento_total: Number(bestDayOfWeek.total_faturamento) || 0,
-          numero_jornadas: Number(bestDayOfWeek.numero_jornadas) || 0,
+      padroesIdentificados: {
+        melhorDiaSemana: {
+          dia: getDayName(bestDayOfWeek.diaSemana),
+          faturamentoTotal: Number(bestDayOfWeek.totalFaturamento) || 0,
+          numeroJornadas: Number(bestDayOfWeek.numeroJornadas) || 0,
         },
-        melhor_horario: {
+        melhorHorario: {
           hora: bestHour.hora,
-          faturamento_total: Number(bestHour.total_faturamento) || 0,
-          numero_jornadas: Number(bestHour.numero_jornadas) || 0,
+          faturamentoTotal: Number(bestHour.totalFaturamento) || 0,
+          numeroJornadas: Number(bestHour.numeroJornadas) || 0,
         },
-        melhor_mes: {
+        melhorMes: {
           mes: getMonthName(bestMonth.mes),
-          faturamento_total: Number(bestMonth.total_faturamento) || 0,
-          numero_jornadas: Number(bestMonth.numero_jornadas) || 0,
+          faturamentoTotal: Number(bestMonth.totalFaturamento) || 0,
+          numeroJornadas: Number(bestMonth.numeroJornadas) || 0,
         },
       }
     };
@@ -447,117 +447,154 @@ export class AdvancedAnalyticsService {
       vehicleFilter = and(vehicleFilter, eq(veiculos.id, vehicleId));
     }
 
-    const vehicles = await db.select().from(veiculos).where(vehicleFilter);
-
-    const costAnalysis = [];
-
-    for (const vehicle of vehicles) {
-      const expenseMetrics = await db
-        .select({
-          tipoDespesa: despesas.tipoDespesa,
-          total_valor: sum(despesas.valorDespesa),
-          numero_despesas: count(despesas.id),
-        })
-        .from(despesas)
-        .where(
-          and(
-            eq(despesas.idVeiculo, vehicle.id),
-            eq(despesas.idUsuario, userId),
-            gte(despesas.dataDespesa, thirtyDaysAgo.toISOString()),
-            lte(despesas.dataDespesa, today.toISOString()),
-            isNull(despesas.deletedAt)
-          )
+    const costAnalysis = await db
+      .select({
+        tipoDespesa: despesas.tipoDespesa,
+        totalValor: sum(despesas.valorDespesa),
+        quantidade: count(despesas.id),
+      })
+      .from(despesas)
+      .innerJoin(veiculos, eq(despesas.idVeiculo, veiculos.id))
+      .where(
+        and(
+          vehicleFilter,
+          gte(despesas.dataDespesa, thirtyDaysAgo.getTime()),
+          lte(despesas.dataDespesa, today.getTime()),
+          isNull(despesas.deletedAt)
         )
-        .groupBy(despesas.tipoDespesa);
+      )
+      .groupBy(despesas.tipoDespesa);
 
-      const totalGasto = expenseMetrics.reduce((sum, item) => sum + (Number(item.total_valor) || 0), 0);
+    const totalGasto = costAnalysis.reduce((sum, item) => sum + (Number(item.totalValor) || 0), 0);
 
-      costAnalysis.push({
-        veiculo: {
-          id: vehicle.id,
-          marca: vehicle.marca,
-          modelo: vehicle.modelo,
-          placa: vehicle.placa,
-        },
-        despesas_por_categoria: expenseMetrics.map(item => ({
-          tipoDespesa: item.tipoDespesa,
-          total_gasto: Number(item.total_valor) || 0,
-          numero_despesas: Number(item.numero_despesas) || 0,
-          percentual: totalGasto > 0 ? ((Number(item.total_valor) || 0) / totalGasto) * 100 : 0,
-        })),
-        total_gasto_periodo: totalGasto,
-      });
-    }
-
-    return costAnalysis;
+    return {
+      custosPorCategoria: costAnalysis.map(item => ({
+        categoria: item.tipoDespesa,
+        totalGasto: Number(item.totalValor) || 0,
+        quantidade: Number(item.quantidade) || 0,
+        percentual: totalGasto > 0 ? Math.round(((Number(item.totalValor) || 0) / totalGasto) * 10000) / 100 : 0,
+      })),
+      totalGasto,
+    };
   }
 
   /**
-   * Gerar insights e recomendações com base nas análises
+   * Análise de rentabilidade por jornada
    */
-  static generateInsights(
-    efficiencyMetrics: any[],
-    trends: any,
-    seasonality: any,
-    costs: any
+  static async analyzeJourneyProfitability(
+    userId: string,
+    vehicleId?: string,
+    startDate?: Date,
+    endDate?: Date
   ) {
-    const insights = [];
-    const recommendations = [];
-    let resumo_geral = {};
+    const thirtyDaysAgo = startDate || new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+    const today = endDate || new Date();
 
-    // Exemplo de insights e recomendações (simplificado)
-    if (efficiencyMetrics.length > 0) {
-      const overallEfficiency = efficiencyMetrics.reduce((acc, curr) => acc + curr.metricas_eficiencia.ganho_por_km, 0) / efficiencyMetrics.length;
-      if (overallEfficiency < 70) {
-        insights.push({
-          titulo: 'Baixa Eficiência Geral',
-          descricao: 'Seu ganho médio por KM está abaixo do ideal. Considere otimizar suas rotas e horários.',
-          tipo: 'warning',
-        });
-        recommendations.push({
-          titulo: 'Otimizar Rotas',
-          descricao: 'Utilize aplicativos de navegação que sugiram rotas mais lucrativas.',
-          prioridade: 'alta',
-        });
-      }
+    // Filtros
+    let journeyFilter = and(
+      eq(jornadas.idUsuario, userId),
+      isNull(jornadas.deletedAt),
+      gte(jornadas.dataInicio, thirtyDaysAgo.getTime()),
+      lte(jornadas.dataInicio, today.getTime()),
+    );
+
+    if (vehicleId) {
+      journeyFilter = and(journeyFilter, eq(jornadas.idVeiculo, vehicleId));
     }
 
-    if (trends && trends.tendencias_mensais.analise_faturamento.tendencia === 'Decrescente') {
-      insights.push({
-        titulo: 'Faturamento em Queda',
-        descricao: 'Seu faturamento mensal tem apresentado queda. Analise os períodos de maior demanda.',
-        tipo: 'error',
+    const journeysData = await db
+      .select({
+        id: jornadas.id,
+        ganhoBruto: jornadas.ganhoBruto,
+        kmTotal: jornadas.kmTotal,
+        dataInicio: jornadas.dataInicio,
+        idVeiculo: jornadas.idVeiculo,
+      })
+      .from(jornadas)
+      .where(journeyFilter);
+
+    const profitabilityMetrics = [];
+
+    for (const journey of journeysData) {
+      // Estimativa de custo de combustível (simplificada, idealmente viria de abastecimentos)
+      const veiculoInfo = await db.select().from(veiculos).where(eq(veiculos.id, journey.idVeiculo)).limit(1);
+      const tipoCombustivel = veiculoInfo[0]?.tipoCombustivel || 'Gasolina'; // Default
+      const precoLitro = FUEL_PRICES[tipoCombustivel] || 0;
+      const consumoEstimadoLitros = (Number(journey.kmTotal) || 0) / 12; // Assumindo 12 km/l
+      const custoCombustivelEstimado = consumoEstimadoLitros * precoLitro;
+
+      // Outras despesas relacionadas à jornada (simplificado, idealmente buscaria despesas por período da jornada)
+      const outrasDespesas = await db
+        .select({ total: sum(despesas.valorDespesa) })
+        .from(despesas)
+        .where(
+          and(
+            eq(despesas.idVeiculo, journey.idVeiculo),
+            gte(despesas.dataDespesa, journey.dataInicio),
+            lte(despesas.dataDespesa, journey.dataInicio + (journey.kmTotal || 0) * 1000 * 60 * 60 / 60), // Estimativa de duração
+            isNull(despesas.deletedAt)
+          )
+        );
+      const totalOutrasDespesas = Number(outrasDespesas[0]?.total) || 0;
+
+      const lucroLiquido = (Number(journey.ganhoBruto) || 0) - custoCombustivelEstimado - totalOutrasDespesas;
+      const margemLucro = (Number(journey.ganhoBruto) || 0) > 0 ? (lucroLiquido / (Number(journey.ganhoBruto) || 0)) * 100 : 0;
+
+      profitabilityMetrics.push({
+        idJornada: journey.id,
+        dataInicio: new Date(journey.dataInicio).toISOString(),
+        ganhoBruto: Number(journey.ganhoBruto) || 0,
+        kmTotal: Number(journey.kmTotal) || 0,
+        custoCombustivelEstimado: Math.round(custoCombustivelEstimado),
+        outrasDespesas: totalOutrasDespesas,
+        lucroLiquido: Math.round(lucroLiquido),
+        margemLucro: Math.round(margemLucro * 100) / 100,
       });
-      recommendations.push({
-        titulo: 'Analisar Sazonalidade',
-        descricao: 'Verifique os padrões de sazonalidade para identificar os melhores meses para trabalhar.',
-        prioridade: 'media',
-      });
     }
 
-    if (costs && costs.length > 0) {
-      const totalCosts = costs.reduce((acc: number, curr: { total_gasto_periodo: number; }) => acc + curr.total_gasto_periodo, 0);
-      if (totalCosts > 100000) { // Exemplo: mais de R$1000 em despesas
-        insights.push({
-          titulo: 'Altos Custos Operacionais',
-          descricao: 'Suas despesas estão elevadas. Identifique as categorias de maior gasto.',
-          tipo: 'warning',
-        });
-        recommendations.push({
-          titulo: 'Revisar Despesas',
-          descricao: 'Categorize e analise suas despesas para encontrar oportunidades de economia.',
-          prioridade: 'alta',
-        });
-      }
+    return profitabilityMetrics;
+  }
+
+  /**
+   * Previsão de faturamento (simplificada)
+   */
+  static async predictRevenue(
+    userId: string,
+    vehicleId?: string,
+    daysToPredict: number = 30
+  ) {
+    const today = new Date();
+    const thirtyDaysAgo = new Date(today.getTime() - 30 * 24 * 60 * 60 * 1000);
+
+    let journeyFilter = and(
+      eq(jornadas.idUsuario, userId),
+      isNull(jornadas.deletedAt),
+      gte(jornadas.dataInicio, thirtyDaysAgo.getTime()),
+      lte(jornadas.dataInicio, today.getTime()),
+    );
+
+    if (vehicleId) {
+      journeyFilter = and(journeyFilter, eq(jornadas.idVeiculo, vehicleId));
     }
 
-    resumo_geral = {
-      total_insights: insights.length,
-      total_recommendations: recommendations.length,
-      // Adicione mais resumos conforme necessário
+    const recentJourneys = await db
+      .select({
+        ganhoBruto: jornadas.ganhoBruto,
+      })
+      .from(jornadas)
+      .where(journeyFilter);
+
+    const totalGanhoBrutoRecente = recentJourneys.reduce((sum, j) => sum + (Number(j.ganhoBruto) || 0), 0);
+    const mediaDiaria = recentJourneys.length > 0 ? totalGanhoBrutoRecente / 30 : 0;
+
+    const predictedRevenue = mediaDiaria * daysToPredict;
+
+    return {
+      mediaDiariaRecente: Math.round(mediaDiaria),
+      diasPrevistos: daysToPredict,
+      faturamentoPrevisto: Math.round(predictedRevenue),
     };
-
-    return { insights, recommendations, resumo_geral };
   }
 }
+
 

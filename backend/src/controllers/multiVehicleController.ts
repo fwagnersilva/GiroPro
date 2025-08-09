@@ -93,8 +93,8 @@ export class MultiVehicleController {
         // Métricas de jornadas
         const journeyStats = await db
           .select({
-            total_faturamento: sum(jornadas.ganho_bruto),
-            total_km: sum(jornadas.km_total),
+            total_faturamento: sum(jornadas.ganhoBruto),
+            total_km: sum(jornadas.kmTotal),
             numero_jornadas: count(jornadas.id),
             ultima_jornada: sql<Date>`MAX(${jornadas.dataInicio})`,
           })
@@ -189,7 +189,7 @@ export class MultiVehicleController {
           },
           estatisticas_30_dias: {
             faturamento_total: faturamento,
-            km_total: km,
+            kmTotal: km,
             gasto_combustivel: gastoCombustivel,
             outras_despesas: despesasTotal,
             lucro_liquido: lucroLiquido,
@@ -212,7 +212,7 @@ export class MultiVehicleController {
         veiculos_pouco_ativos: vehiclesWithStats.filter(v => v.veiculo.status === 'Pouco Ativo').length,
         veiculos_inativos: vehiclesWithStats.filter(v => v.veiculo.status === 'Inativo').length,
         faturamento_total_geral: totalFaturamentoGeral,
-        km_total_geral: totalKmGeral,
+        kmTotal_geral: totalKmGeral,
         gasto_combustivel_geral: totalGastoCombustivelGeral,
         veiculo_mais_produtivo: vehiclesWithStats.reduce((best, current) => 
           current.estatisticas_30_dias.faturamento_total > best.estatisticas_30_dias.faturamento_total ? current : best
@@ -334,7 +334,7 @@ export class MultiVehicleController {
             total_veiculos: 0,
             veiculos_com_jornadas_hoje: 0,
             faturamento_total_hoje: 0,
-            km_total_hoje: 0,
+            kmTotal_hoje: 0,
             message: 'Nenhum veículo cadastrado'
           }
         });
@@ -350,8 +350,8 @@ export class MultiVehicleController {
       const statsHoje = await db
         .select({
           veiculos_ativos: sql<number>`COUNT(DISTINCT ${jornadas.idVeiculo})`,
-          faturamento_total: sum(jornadas.ganho_bruto),
-          km_total: sum(jornadas.km_total),
+          faturamento_total: sum(jornadas.ganhoBruto),
+          kmTotal: sum(jornadas.kmTotal),
           numero_jornadas: count(jornadas.id),
         })
         .from(jornadas)
@@ -374,7 +374,7 @@ export class MultiVehicleController {
           total_veiculos: totalVeiculos,
           veiculos_com_jornadas_hoje: Number(stats.veiculos_ativos) || 0,
           faturamento_total_hoje: Number(stats.faturamento_total) || 0,
-          km_total_hoje: Number(stats.km_total) || 0,
+          kmTotal_hoje: Number(stats.kmTotal) || 0,
           numero_jornadas_hoje: Number(stats.numero_jornadas) || 0,
           data_referencia: hoje.toISOString().split('T')[0]
         }
@@ -434,8 +434,8 @@ export class MultiVehicleController {
       const journeyHistory = await db
         .select({
           data: jornadas.dataInicio,
-          faturamento: jornadas.ganho_bruto,
-          km: jornadas.km_total,
+          faturamento: jornadas.ganhoBruto,
+          km: jornadas.kmTotal,
           tempo: jornadas.tempo_total,
         })
         .from(jornadas)

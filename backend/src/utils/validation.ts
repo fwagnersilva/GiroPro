@@ -15,6 +15,24 @@ export const loginSchema = z.object({
   senha: z.string().min(1, 'Senha é obrigatória'),
 });
 
+export const requestPasswordResetSchema = z.object({
+  email: z.string().email('Email inválido'),
+});
+
+export const resetPasswordSchema = z.object({
+  token: z.string().min(1, 'Token é obrigatório'),
+  newPassword: z.string().min(8, 'Nova senha deve ter pelo menos 8 caracteres')
+    .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/, 
+           'Nova senha deve conter pelo menos: 1 letra minúscula, 1 maiúscula, 1 número e 1 caractere especial'),
+});
+
+export const changePasswordSchema = z.object({
+  currentPassword: z.string().min(1, 'Senha atual é obrigatória'),
+  newPassword: z.string().min(8, 'Nova senha deve ter pelo menos 8 caracteres')
+    .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/, 
+           'Nova senha deve conter pelo menos: 1 letra minúscula, 1 maiúscula, 1 número e 1 caractere especial'),
+});
+
 // Schemas de validação para veículos
 export const vehicleSchema = z.object({
   marca: z.string().min(1, 'Marca é obrigatória').max(100),
@@ -36,7 +54,7 @@ export const startJourneySchema = z.object({
 
 export const endJourneySchema = z.object({
   km_fim: z.number().int().min(0, 'Quilometragem final deve ser positiva'),
-  ganho_bruto: z.number().int().positive('Ganho bruto deve ser positivo'),
+  ganhoBruto: z.number().int().positive('Ganho bruto deve ser positivo'),
 });
 
 // Schemas de validação para abastecimentos

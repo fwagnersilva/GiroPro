@@ -1,8 +1,8 @@
 import { Request, Response, NextFunction } from 'express';
 import { z } from 'zod';
-import { AuthenticatedRequest } from '../types';
-import { FuelPricesService } from '../services/fuelPricesService';
-import { CacheService } from '../services/cacheService';
+
+import { FuelPricesService } from "../services/fuel_prices_service";
+import { cacheService } from "../services/cacheService";
 
 // ========== SCHEMAS DE VALIDAÇÃO ==========
 
@@ -64,7 +64,7 @@ const reportPriceSchema = z.object({
     .min(2, "Cidade deve ter pelo menos 2 caracteres")
     .max(100, "Nome da cidade muito longo"),
   tipoCombustivel: z.enum(['Gasolina', 'Etanol', 'Diesel', 'GNV']),
-  preco_medio: z.number()
+  precoMedio: z.number()
     .positive("Preço médio deve ser positivo")
     .max(50, "Preço parece muito alto, verifique")
     .refine(val => Number(val.toFixed(3)) === val, "Máximo 3 casas decimais"),

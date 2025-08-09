@@ -21,8 +21,8 @@ describe('Dashboard Integration Tests', () => {
     modelo: 'Corolla',
     ano: 2020,
     placa: 'ABC1234',
-    combustivel: 'flex' as const,
-    capacidadeTanque: 50
+    tipoCombustivel: 'flex' as const,
+    tipoUso: 'proprio' as const,
   };
 
   beforeAll(async () => {
@@ -66,13 +66,13 @@ describe('Dashboard Integration Tests', () => {
         id: uuidv4(),
         idUsuario: userId,
         idVeiculo: vehicleId,
-        dataInicio: yesterday.toISOString(),
-        dataFim: today.toISOString(),
-        km_inicio: 1000,
-        km_fim: 1100,
-        ganho_bruto: 15000, // em centavos
-        km_total: 100,
-        tempo_total: 480, // em minutos
+        dataInicio: yesterday.getTime(),
+        dataFim: today.getTime(),
+        kmInicio: 1000,
+        kmFim: 1100,
+        ganhoBruto: 15000, // em centavos
+        kmTotal: 100,
+        tempoTotal: 480, // em minutos
         observacoes: 'Jornada de teste'
       }
     ]);
@@ -83,13 +83,13 @@ describe('Dashboard Integration Tests', () => {
         id: uuidv4(),
         idUsuario: userId,
         idVeiculo: vehicleId,
-        dataAbastecimento: yesterday.toISOString(),
+        dataAbastecimento: yesterday.getTime(),
         quantidadeLitros: 40,
         valorTotal: 24000, // em centavos
         valorLitro: 600, // em centavos
         nomePosto: 'Posto Teste',
         kmAtual: 1050,
-        tipoCombustivel: 'Gasolina'
+        tipoCombustivel: 'gasolina' as const,
       }
     ]);
 
@@ -99,8 +99,8 @@ describe('Dashboard Integration Tests', () => {
         id: uuidv4(),
         idUsuario: userId,
         idVeiculo: vehicleId,
-        dataDespesa: yesterday.toISOString(),
-        tipoDespesa: 'Manutencao',
+        dataDespesa: yesterday.getTime(),
+        tipoDespesa: 'manutencao' as const,
         descricao: 'Troca de óleo',
         valorDespesa: 8000 // em centavos
       }
@@ -114,17 +114,19 @@ describe('Dashboard Integration Tests', () => {
         .set('Authorization', `Bearer ${authToken}`)
         .expect(200);
 
-      expect(response.body).toHaveProperty('receita');
-      expect(response.body).toHaveProperty('despesas');
-      expect(response.body).toHaveProperty('lucro');
-      expect(response.body).toHaveProperty('kmRodados');
-      expect(response.body).toHaveProperty('consumoMedio');
-      expect(response.body).toHaveProperty('periodo');
+      expect(response.body.data).toHaveProperty('metricasPrincipais');
+      expect(response.body.data.metricasPrincipais).toHaveProperty('faturamentoBruto');
+      expect(response.body.data.metricasPrincipais).toHaveProperty('totalDespesas');
+      expect(response.body.data.metricasPrincipais).toHaveProperty('lucroLiquido');
+      expect(response.body.data.metricasPrincipais).toHaveProperty('margemLucro');
+      expect(response.body.data.metricasOperacionais).toHaveProperty('kmTotal');
+      expect(response.body.data.metricasOperacionais).toHaveProperty('custoPorKm');
+      expect(response.body.data).toHaveProperty('periodo');
 
-      expect(typeof response.body.receita).toBe('number');
-      expect(typeof response.body.despesas).toBe('number');
-      expect(typeof response.body.lucro).toBe('number');
-      expect(typeof response.body.kmRodados).toBe('number');
+      expect(typeof response.body.data.metricasPrincipais.faturamentoBruto).toBe('number');
+      expect(typeof response.body.data.metricasPrincipais.totalDespesas).toBe('number');
+      expect(typeof response.body.data.metricasPrincipais.lucroLiquido).toBe('number');
+      expect(typeof response.body.data.metricasOperacionais.kmTotal).toBe('number');
     });
 
     it('deve aplicar cache na resposta', async () => {
@@ -138,18 +140,18 @@ describe('Dashboard Integration Tests', () => {
         .set('Authorization', `Bearer ${authToken}`)
         .expect(200);
 
-      expect(response1.headers['x-cache']).toBe('MISS');
-      expect(response2.headers['x-cache']).toBe('HIT');
+      expect(response1.body.data.cacheInfo.hit).toBe(false);
+      expect(response2.body.data.cacheInfo.hit).toBe(true);
     });
 
     it('deve filtrar por período quando especificado', async () => {
       const response = await request(app)
-        .get('/api/v1/dashboard/summary?period=today')
+        .get('/api/v1/dashboard/summary?periodo=hoje')
         .set('Authorization', `Bearer ${authToken}`)
         .expect(200);
 
-      expect(response.body).toHaveProperty('periodo');
-      expect(response.body.periodo).toBe('today');
+      expect(response.body.data).toHaveProperty('periodo');
+      expect(response.body.data.periodo.tipo).toBe('hoje');
     });
 
     it('deve retornar erro sem autenticação', async () => {
@@ -168,16 +170,16 @@ describe('Dashboard Integration Tests', () => {
         .set('Authorization', `Bearer ${authToken}`)
         .expect(200);
 
-      expect(response.body).toHaveProperty('dados');
-      expect(response.body).toHaveProperty('periodo');
-      expect(Array.isArray(response.body.dados)).toBe(true);
+      expect(response.body.data).toHaveProperty('evolucao');
+      expect(response.body.data).toHaveProperty('periodo');
+      expect(Array.isArray(response.body.data.evolucao)).toBe(true);
 
-      if (response.body.dados.length > 0) {
-        const item = response.body.dados[0];
+      if (response.body.data.evolucao.length > 0) {
+        const item = response.body.data.evolucao[0];
         expect(item).toHaveProperty('data');
-        expect(item).toHaveProperty('receita');
-        expect(item).toHaveProperty('despesas');
-        expect(item).toHaveProperty('lucro');
+        expect(item).toHaveProperty('faturamentoBruto');
+        expect(item).toHaveProperty('totalDespesas');
+        expect(item).toHaveProperty('lucroLiquido');
       }
     });
 
@@ -192,8 +194,8 @@ describe('Dashboard Integration Tests', () => {
         .set('Authorization', `Bearer ${authToken}`)
         .expect(200);
 
-      expect(response1.headers['x-cache']).toBe('MISS');
-      expect(response2.headers['x-cache']).toBe('HIT');
+      expect(response1.body.data.cacheInfo.hit).toBe(false);
+      expect(response2.body.data.cacheInfo.hit).toBe(true);
     });
 
     it('deve retornar erro sem autenticação', async () => {
@@ -205,46 +207,48 @@ describe('Dashboard Integration Tests', () => {
     });
   });
 
-  describe('GET /api/v1/dashboard/vehicles', () => {
+  describe('GET /api/v1/dashboard/comparison', () => {
     it('deve retornar comparativo entre veículos', async () => {
       const response = await request(app)
-        .get('/api/v1/dashboard/vehicles')
+        .get('/api/v1/dashboard/comparison')
         .set('Authorization', `Bearer ${authToken}`)
         .expect(200);
 
-      expect(response.body).toHaveProperty('veiculos');
-      expect(Array.isArray(response.body.veiculos)).toBe(true);
+      expect(response.body.data).toHaveProperty('comparacaoVeiculos');
+      expect(Array.isArray(response.body.data.comparacaoVeiculos)).toBe(true);
 
-      if (response.body.veiculos.length > 0) {
-        const veiculo = response.body.veiculos[0];
-        expect(veiculo).toHaveProperty('id');
-        expect(veiculo).toHaveProperty('marca');
-        expect(veiculo).toHaveProperty('modelo');
-        expect(veiculo).toHaveProperty('receita');
-        expect(veiculo).toHaveProperty('despesas');
-        expect(veiculo).toHaveProperty('lucro');
-        expect(veiculo).toHaveProperty('kmRodados');
+      if (response.body.data.comparacaoVeiculos.length > 0) {
+        const veiculo = response.body.data.comparacaoVeiculos[0];
+        expect(veiculo).toHaveProperty('veiculo');
+        expect(veiculo.veiculo).toHaveProperty('id');
+        expect(veiculo.veiculo).toHaveProperty('marca');
+        expect(veiculo.veiculo).toHaveProperty('modelo');
+        expect(veiculo).toHaveProperty('metricas');
+        expect(veiculo.metricas).toHaveProperty('faturamentoBruto');
+        expect(veiculo.metricas).toHaveProperty('totalDespesas');
+        expect(veiculo.metricas).toHaveProperty('lucroLiquido');
+        expect(veiculo.metricas).toHaveProperty('kmTotal');
       }
     });
 
     it('deve aplicar cache na resposta', async () => {
       const response1 = await request(app)
-        .get('/api/v1/dashboard/vehicles')
+        .get('/api/v1/dashboard/comparison')
         .set('Authorization', `Bearer ${authToken}`)
         .expect(200);
 
       const response2 = await request(app)
-        .get('/api/v1/dashboard/vehicles')
+        .get('/api/v1/dashboard/comparison')
         .set('Authorization', `Bearer ${authToken}`)
         .expect(200);
 
-      expect(response1.headers['x-cache']).toBe('MISS');
-      expect(response2.headers['x-cache']).toBe('HIT');
+      expect(response1.body.data.cacheInfo.hit).toBe(false);
+      expect(response2.body.data.cacheInfo.hit).toBe(true);
     });
 
     it('deve retornar erro sem autenticação', async () => {
       const response = await request(app)
-        .get('/api/v1/dashboard/vehicles')
+        .get('/api/v1/dashboard/comparison')
         .expect(401);
 
       expect(response.body).toHaveProperty('error');
@@ -291,7 +295,7 @@ describe('Dashboard Integration Tests', () => {
       
       responses.forEach(response => {
         expect(response.status).toBe(200);
-        expect(response.body).toHaveProperty('receita');
+        expect(response.body.data).toHaveProperty('metricasPrincipais');
       });
     });
   });
@@ -310,12 +314,13 @@ describe('Dashboard Integration Tests', () => {
 
     it('deve validar parâmetros de query', async () => {
       const response = await request(app)
-        .get('/api/v1/dashboard/summary?period=invalid')
+        .get('/api/v1/dashboard/summary?periodo=invalid')
         .set('Authorization', `Bearer ${authToken}`)
         .expect(200); // Deve usar período padrão
 
-      expect(response.body).toHaveProperty('periodo');
+      expect(response.body.data).toHaveProperty('periodo');
     });
   });
 });
+
 

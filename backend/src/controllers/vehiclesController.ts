@@ -8,6 +8,7 @@ import { eq, and, isNull } from 'drizzle-orm';
 interface AuthenticatedRequest extends Request {
   user?: {
     id: string;
+    email: string;
   };
 }
 

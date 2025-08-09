@@ -135,7 +135,7 @@ describe('User Journey E2E Tests', () => {
         dataFim: new Date(Date.now() + 8 * 60 * 60 * 1000).toISOString(), // 8 horas depois
         kmInicial: 15000,
         kmFinal: 15200,
-        ganho_bruto: 280.50,
+        ganhoBruto: 280.50,
         plataforma: 'uber',
         observacoes: 'Dia de trabalho normal'
       };
@@ -147,7 +147,7 @@ describe('User Journey E2E Tests', () => {
         .expect(201);
 
       expect(response.body).toHaveProperty('id');
-      expect(response.body.ganho_bruto).toBe(journeyData.ganho_bruto);
+      expect(response.body.ganhoBruto).toBe(journeyData.ganhoBruto);
       expect(response.body.plataforma).toBe(journeyData.plataforma);
       expect(response.body.km_inicio).toBe(journeyData.kmInicial);
       expect(response.body.km_fim).toBe(journeyData.kmFinal);

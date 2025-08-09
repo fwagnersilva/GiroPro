@@ -11,7 +11,7 @@ export const periodoMetaEnum = text("periodo_meta").$type<"Semanal" | "Mensal" |
 export const statusMetaEnum = text("status_meta").$type<"Ativa" | "Pausada" | "Concluida" | "Expirada">().notNull();
 export const tipoConquistaEnum = text("tipo_conquista").$type<"Faturamento" | "Quilometragem" | "Jornadas" | "Eficiencia" | "Consistencia" | "Metas" | "Especial">().notNull();
 export const raridadeEnum = text("raridade").$type<"Comum" | "Raro" | "Epico" | "Lendario">().notNull();
-export const nivelUsuarioEnum = text("nivel_usuario").$type<"Iniciante" | "Novato" | "Experiente" | "Motorista" | "Profissional" | "Especialista" | "Mestre" | "Lenda">().notNull();
+export const nivelUsuarioEnum = text("nivelUsuario").$type<"Iniciante" | "Novato" | "Experiente" | "Motorista" | "Profissional" | "Especialista" | "Mestre" | "Lenda">().notNull();
 export const tipoNotificacaoEnum = text("tipo_notificacao").$type<"Sistema" | "Alerta" | "Promocao" | "Suporte">().notNull();
 
 // Tables
@@ -23,9 +23,9 @@ export const usuarios = sqliteTable("usuarios", {
   status_conta: statusContaEnum.default("Ativo").notNull(),
   data_cadastro: text("data_cadastro").default(sql`CURRENT_TIMESTAMP`).notNull(),
   // Campos de gamificação
-  pontos_total: integer("pontos_total").default(0).notNull(),
-  nivel_usuario: nivelUsuarioEnum.default("Iniciante").notNull(),
-  conquistas_desbloqueadas: integer("conquistas_desbloqueadas").default(0).notNull(),
+  pontosTotal: integer("pontosTotal").default(0).notNull(),
+  nivelUsuario: nivelUsuarioEnum.default("Iniciante").notNull(),
+  conquistasDesbloqueadas: integer("conquistasDesbloqueadas").default(0).notNull(),
   deletedAt: text("deletedAt"), // Soft delete
 });
 
@@ -53,8 +53,8 @@ export const jornadas = sqliteTable("jornadas", {
   km_inicio: integer("km_inicio").notNull(),
   dataFim: text("dataFim"),
   km_fim: integer("km_fim"),
-  ganho_bruto: integer("ganho_bruto"),
-  km_total: integer("km_total"), // Calculado
+  ganhoBruto: integer("ganhoBruto"),
+  kmTotal: integer("kmTotal"), // Calculado
   tempo_total: integer("tempo_total"), // Calculado em minutos
   observacoes: text("observacoes"),
   deletedAt: text("deletedAt"),
@@ -90,8 +90,8 @@ export const historicoPrecoCombustivel = sqliteTable("historico_preco_combustive
   cidade: text("cidade").notNull(),
   estado: text("estado").notNull(),
   tipoCombustivel: tipoCombustivelEnum.notNull(),
-  preco_medio: integer("preco_medio").notNull(), // Preço em centavos
-  data_registro: text("data_registro").default(sql`CURRENT_TIMESTAMP`).notNull(),
+  precoMedio: integer("precoMedio").notNull(), // Preço em centavos
+  dataRegistro: text("dataRegistro").default(sql`CURRENT_TIMESTAMP`).notNull(),
   deletedAt: text("deletedAt"),
 });
 
@@ -129,7 +129,7 @@ export const metas = sqliteTable("metas", {
 export const progressoMetas = sqliteTable("progresso_metas", {
   id: text("id").primaryKey().default(sql`uuid_generate_v4()`),
   id_meta: text("id_meta").notNull().references(() => metas.id, { onDelete: "cascade" }),
-  data_registro: text("data_registro").default(sql`CURRENT_TIMESTAMP`).notNull(),
+  dataRegistro: text("dataRegistro").default(sql`CURRENT_TIMESTAMP`).notNull(),
   valor_anterior: integer("valor_anterior").notNull(),
   valor_atual: integer("valor_atual").notNull(),
   incremento: integer("incremento").notNull(), // valor_atual - valor_anterior
@@ -148,9 +148,9 @@ export const conquistas = sqliteTable("conquistas", {
   raridade: raridadeEnum.default("Comum").notNull(),
   icone: text("icone"),
   cor: text("cor").default("#4CAF50"),
-  criterio_valor: integer("criterio_valor"), // Valor necessário para desbloquear
+  criterioValor: integer("criterioValor"), // Valor necessário para desbloquear
   criterio_descricao: text("criterio_descricao"), // Descrição detalhada do critério
-  pontos_recompensa: integer("pontos_recompensa").default(10).notNull(),
+  pontosRecompensa: integer("pontosRecompensa").default(10).notNull(),
   ativa: integer("ativa", { mode: "boolean" }).default(sql`TRUE`).notNull(),
   ordem_exibicao: integer("ordem_exibicao").default(0).notNull(),
   createdAt: text("createdAt").default(sql`CURRENT_TIMESTAMP`).notNull(),
@@ -167,7 +167,7 @@ export const usuarioConquistas = sqliteTable("usuario_conquistas", {
   createdAt: text("createdAt").default(sql`CURRENT_TIMESTAMP`).notNull(),
 });
 
-export const nivelUsuario = sqliteTable("nivel_usuario", {
+export const nivelUsuario = sqliteTable("nivelUsuario", {
   id: text("id").primaryKey().default(sql`uuid_generate_v4()`),
   nivel: nivelUsuarioEnum.notNull().unique(),
   nome_exibicao: text("nome_exibicao").notNull(),

@@ -1,308 +1,290 @@
-import { Request, Response } from 'express';
-import { AuthService } from '../services/AuthService';
-import { validateData, registerSchema, loginSchema, changePasswordSchema, refreshTokenSchema } from '../utils/validation';
-import { UnauthorizedError, NotFoundError, ValidationError, ConflictError, TooManyRequestsError } from '../utils/customErrors';
+import { FastifyPluginAsyncZod } from 'fastify-type-provider-zod';
+import { z } from 'zod';
+import { AuthService } from '../services/authService';
+import { loginSchema, registerSchema, requestPasswordResetSchema, resetPasswordSchema, changePasswordSchema } from '../utils/validation';
+import { UnauthorizedError, NotFoundError, ValidationError, ConflictError } from "../utils/customErrors";
+import { AuthenticatedRequest } from "../types/common";
 
-// Extend Request type to include user
-interface AuthenticatedRequest extends Request {
-  user?: {
-    id: string;
-    [key: string]: any;
-  };
-}
 
-export class AuthController {
-  static async register(req: Request, res: Response) {
-    try {
-      const validatedData = validateData(registerSchema, req.body);
-      const result = await AuthService.register(validatedData);
-      
-      // Set refresh token as httpOnly cookie
-      res.cookie('refreshToken', result.refreshToken, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'strict',
-        maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
-        path: '/api/auth/refresh'
-      });
 
-      // Don't send refresh token in response body
-      const { refreshToken, ...responseData } = result;
-      
-      return res.status(201).json({
-        success: true,
-        message: 'Usuário registrado com sucesso',
-        data: responseData,
-      });
-    } catch (error: any) {
-      console.error('Erro no registro:', error);
-      
-      if (error.name === 'ZodError') {
-        throw new ValidationError('Dados de entrada inválidos', error.errors);
-      }
-      
-      if (error.message === 'Email já está em uso') {
-        throw new ConflictError('Email já está em uso');
-      }
-      
-      throw error;
-    }
-  }
-
-  static async login(req: Request, res: Response) {
-    try {
-      const validatedData = validateData(loginSchema, req.body);
-      const result = await AuthService.login(validatedData);
-      
-      // Set refresh token as httpOnly cookie
-      res.cookie('refreshToken', result.refreshToken, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'strict',
-        maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
-        path: '/api/auth/refresh'
-      });
-
-      // Don't send refresh token in response body
-      const { refreshToken, ...responseData } = result;
-      
-      return res.json({
-        success: true,
-        message: 'Login realizado com sucesso',
-        data: responseData,
-      });
-    } catch (error: any) {
-      console.error('Erro no login:', error);
-      
-      if (error.name === 'ZodError') {
-        throw new ValidationError('Dados de entrada inválidos', error.errors);
-      }
-      
-      if (error.message.includes('bloqueada')) {
-        throw new TooManyRequestsError(error.message);
-      }
-      
-      if (error.message === 'Credenciais inválidas' || 
-          error.message === 'Conta inativa ou suspensa') {
-        throw new UnauthorizedError(error.message);
-      }
-      
-      throw error;
-    }
-  }
-
-  static async refreshToken(req: Request, res: Response) {
-    try {
-      // Get refresh token from cookie or body
-      const refreshToken = req.cookies?.refreshToken || req.body.refreshToken;
-      
-      if (!refreshToken) {
-        throw new UnauthorizedError('Refresh token não fornecido');
-      }
-
-      const result = await AuthService.refreshToken(refreshToken);
-      
-      // Set new refresh token as httpOnly cookie
-      res.cookie('refreshToken', result.refreshToken, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'strict',
-        maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
-        path: '/api/auth/refresh'
-      });
-      
-      return res.json({
-        success: true,
-        message: 'Token renovado com sucesso',
-        data: {
-          token: result.token
+export const authRoutes: FastifyPluginAsyncZod = async (app) => {
+  // Rota de registro de usuário
+  app.post(
+    '/auth/register',
+    {
+      schema: {
+        body: registerSchema,
+        response: {
+          201: z.object({
+            success: z.boolean(),
+            message: z.string(),
+            userId: z.string().uuid(),
+          }),
+          400: z.object({
+            success: z.boolean(),
+            error: z.string(),
+            details: z.array(z.object({ message: z.string() })).optional(),
+          }),
+          409: z.object({
+            success: z.boolean(),
+            error: z.string(),
+          }),
+          500: z.object({
+            success: z.boolean(),
+            error: z.string(),
+          }),
         },
-      });
-    } catch (error: any) {
-      console.error('Erro ao renovar token:', error);
-      
-      // Clear invalid refresh token cookie
-      res.clearCookie('refreshToken', { path: '/api/auth/refresh' });
-      
-      throw new UnauthorizedError('Refresh token inválido ou expirado');
-    }
-  }
-
-  static async me(req: AuthenticatedRequest, res: Response) {
-    try {
-      if (!req.user?.id) {
-        throw new UnauthorizedError('Usuário não autenticado');
-      }
-
-      const user = await AuthService.getUserById(req.user.id);
-      
-      return res.json({
-        success: true,
-        data: { user },
-      });
-    } catch (error: any) {
-      console.error('Erro ao buscar dados do usuário:', error);
-      
-      if (error.message === 'Usuário não encontrado') {
-        throw new NotFoundError('Usuário não encontrado');
-      }
-      
-      throw error;
-    }
-  }
-
-  static async changePassword(req: AuthenticatedRequest, res: Response) {
-    try {
-      if (!req.user?.id) {
-        throw new UnauthorizedError('Usuário não autenticado');
-      }
-
-      const validatedData = validateData(changePasswordSchema, req.body);
-      
-      await AuthService.changePassword(
-        req.user.id,
-        validatedData.currentPassword,
-        validatedData.newPassword
-      );
-      
-      return res.json({
-        success: true,
-        message: 'Senha alterada com sucesso',
-      });
-    } catch (error: any) {
-      console.error('Erro ao alterar senha:', error);
-      
-      if (error.name === 'ZodError') {
-        throw new ValidationError('Dados de entrada inválidos', error.errors);
-      }
-      
-      if (error.message === 'Senha atual inválida') {
-        throw new UnauthorizedError('Senha atual inválida');
-      }
-      
-      throw error;
-    }
-  }
-
-  static async logout(req: Request, res: Response) {
-    try {
-      // Clear refresh token cookie
-      res.clearCookie('refreshToken', { 
-        path: '/api/auth/refresh',
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'strict'
-      });
-      
-      return res.json({
-        success: true,
-        message: 'Logout realizado com sucesso',
-      });
-    } catch (error: any) {
-      console.error('Erro no logout:', error);
-      throw error;
-    }
-  }
-
-  static async deactivateAccount(req: AuthenticatedRequest, res: Response) {
-    try {
-      if (!req.user?.id) {
-        throw new UnauthorizedError('Usuário não autenticado');
-      }
-
-      await AuthService.deactivateAccount(req.user.id);
-      
-      // Clear refresh token cookie
-      res.clearCookie('refreshToken', { 
-        path: '/api/auth/refresh',
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'strict'
-      });
-      
-      return res.json({
-        success: true,
-        message: 'Conta desativada com sucesso',
-      });
-    } catch (error: any) {
-      console.error('Erro ao desativar conta:', error);
-      throw error;
-    }
-  }
-
-  // Endpoint para verificar se o token ainda é válido
-  static async verifyToken(req: AuthenticatedRequest, res: Response) {
-    try {
-      if (!req.user?.id) {
-        throw new UnauthorizedError('Token inválido');
-      }
-
-      // Se chegou até aqui, o token é válido (verificado pelo middleware)
-      return res.json({
-        success: true,
-        message: 'Token válido',
-        data: {
-          userId: req.user.id,
-          valid: true
+      },
+    },
+    async (request, reply) => {
+      try {
+        const { email, senha, nome } = request.body;
+        const { userId } = await AuthService.register({ email, senha, nome });
+        reply.status(201).send({ success: true, message: 'Usuário registrado com sucesso', userId });
+      } catch (error: any) {
+        if (error instanceof ValidationError) {
+          reply.status(400).send({ success: false, error: error.message, details: error.details });
+        } else if (error.message === 'Email já está em uso') {
+          reply.status(409).send({ success: false, error: error.message });
+        } else {
+          console.error('Erro no registro:', error);
+          reply.status(500).send({ success: false, error: 'Erro interno do servidor' });
         }
-      });
-    } catch (error: any) {
-      console.error('Erro ao verificar token:', error);
-      throw new UnauthorizedError('Token inválido');
-    }
-  }
-
-  // Endpoint para listar sessões ativas (futuro)
-  static async getActiveSessions(req: AuthenticatedRequest, res: Response) {
-    try {
-      if (!req.user?.id) {
-        throw new UnauthorizedError('Usuário não autenticado');
       }
-
-      // TODO: Implementar sistema de sessões ativas
-      // Por enquanto, retorna informação básica
-      return res.json({
-        success: true,
-        message: 'Funcionalidade em desenvolvimento',
-        data: {
-          sessions: [],
-          message: 'Sistema de sessões ativas será implementado em breve'
-        }
-      });
-    } catch (error: any) {
-      console.error('Erro ao buscar sessões ativas:', error);
-      throw error;
     }
-  }
+  );
 
-  // Endpoint para invalidar todas as sessões (futuro)
-  static async logoutAllSessions(req: AuthenticatedRequest, res: Response) {
-    try {
-      if (!req.user?.id) {
-        throw new UnauthorizedError('Usuário não autenticado');
+  // Rota de login de usuário
+  app.post(
+    '/auth/login',
+    {
+      schema: {
+        body: loginSchema,
+        response: {
+          200: z.object({
+            success: z.boolean(),
+            message: z.string(),
+            accessToken: z.string(),
+            refreshToken: z.string(),
+          }),
+          400: z.object({
+            success: z.boolean(),
+            error: z.string(),
+            details: z.array(z.object({ message: z.string() })).optional(),
+          }),
+          401: z.object({
+            success: z.boolean(),
+            error: z.string(),
+          }),
+          500: z.object({
+            success: z.boolean(),
+            error: z.string(),
+          }),
+        },
+      },
+    },
+    async (request, reply) => {
+      try {
+        const { email, senha } = request.body;
+        const { token: accessToken, refreshToken } = await AuthService.login({ email, senha });
+        reply.send({ success: true, message: 'Login bem-sucedido', accessToken, refreshToken });
+      } catch (error: any) {
+        if (error instanceof ValidationError) {
+          reply.status(400).send({ success: false, error: error.message, details: error.details });
+        } else if (error instanceof UnauthorizedError) {
+          reply.status(401).send({ success: false, error: error.message });
+        } else {
+          console.error('Erro no login:', error);
+          reply.status(500).send({ success: false, error: 'Erro interno do servidor' });
+        }
       }
-
-      // Clear refresh token cookie
-      res.clearCookie('refreshToken', { 
-        path: '/api/auth/refresh',
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'strict'
-      });
-
-      // TODO: Implementar invalidação de todas as sessões
-      // Por enquanto, apenas limpa o cookie atual
-      
-      return res.json({
-        success: true,
-        message: 'Logout realizado em todas as sessões',
-        data: {
-          message: 'Sistema completo de sessões será implementado em breve'
-        }
-      });
-    } catch (error: any) {
-      console.error('Erro ao fazer logout de todas as sessões:', error);
-      throw error;
     }
-  }
-}
+  );
+
+  // Rota para solicitar redefinição de senha
+  app.post(
+    '/auth/request-password-reset',
+    {
+      schema: {
+        body: requestPasswordResetSchema,
+        response: {
+          200: z.object({
+            success: z.boolean(),
+            message: z.string(),
+          }),
+          400: z.object({
+            success: z.boolean(),
+            error: z.string(),
+            details: z.array(z.object({ message: z.string() })).optional(),
+          }),
+          404: z.object({
+            success: z.boolean(),
+            error: z.string(),
+          }),
+          500: z.object({
+            success: z.boolean(),
+            error: z.string(),
+          }),
+        },
+      },
+    },
+    async (request, reply) => {
+      try {
+        const { email } = request.body;
+        await AuthService.requestPasswordReset(email);
+        reply.send({ success: true, message: 'Se o email estiver registrado, um link de redefinição de senha foi enviado.' });
+      } catch (error: any) {
+        if (error instanceof ValidationError) {
+          reply.status(400).send({ success: false, error: error.message, details: error.details });
+        } else if (error instanceof NotFoundError) {
+          reply.status(404).send({ success: false, error: error.message });
+        } else {
+          console.error('Erro ao solicitar redefinição de senha:', error);
+          reply.status(500).send({ success: false, error: 'Erro interno do servidor' });
+        }
+      }
+    }
+  );
+
+  // Rota para redefinir senha
+  app.post(
+    '/auth/reset-password',
+    {
+      schema: {
+        body: resetPasswordSchema,
+        response: {
+          200: z.object({
+            success: z.boolean(),
+            message: z.string(),
+          }),
+          400: z.object({
+            success: z.boolean(),
+            error: z.string(),
+            details: z.array(z.object({ message: z.string() })).optional(),
+          }),
+          401: z.object({
+            success: z.boolean(),
+            error: z.string(),
+          }),
+          404: z.object({
+            success: z.boolean(),
+            error: z.string(),
+          }),
+          500: z.object({
+            success: z.boolean(),
+            error: z.string(),
+          }),
+        },
+      },
+    },
+    async (request, reply) => {
+      try {
+        const { token, newPassword } = request.body;
+        await AuthService.resetPassword(token, newPassword);
+        reply.send({ success: true, message: 'Senha redefinida com sucesso.' });
+      } catch (error: any) {
+        if (error instanceof ValidationError) {
+          reply.status(400).send({ success: false, error: error.message, details: error.details });
+        } else if (error instanceof UnauthorizedError || error instanceof NotFoundError) {
+          reply.status(401).send({ success: false, error: error.message });
+        } else {
+          console.error('Erro ao redefinir senha:', error);
+          reply.status(500).send({ success: false, error: 'Erro interno do servidor' });
+        }
+      }
+    }
+  );
+
+  // Rota para refresh de token
+  app.post(
+    '/auth/refresh-token',
+    {
+      schema: {
+        body: z.object({ refreshToken: z.string() }),
+        response: {
+          200: z.object({
+            success: z.boolean(),
+            message: z.string(),
+            accessToken: z.string(),
+            refreshToken: z.string(),
+          }),
+          401: z.object({
+            success: z.boolean(),
+            error: z.string(),
+          }),
+          500: z.object({
+            success: z.boolean(),
+            error: z.string(),
+          }),
+        },
+      },
+    },
+    async (request, reply) => {
+      try {
+        const { refreshToken } = request.body;
+        const { token: accessToken, refreshToken: newRefreshToken } = await AuthService.refreshToken(refreshToken);
+        reply.send({ success: true, message: 'Token atualizado com sucesso', accessToken, refreshToken: newRefreshToken });
+      } catch (error: any) {
+        if (error instanceof UnauthorizedError) {
+          reply.status(401).send({ success: false, error: error.message });
+        } else {
+          console.error('Erro ao atualizar token:', error);
+          reply.status(500).send({ success: false, error: 'Erro interno do servidor' });
+        }
+      }
+    }
+  );
+
+  // Rota para alterar senha (autenticada)
+  app.post(
+    '/auth/change-password',
+    {
+      preHandler: app.authenticate, // Middleware de autenticação
+      schema: {
+        body: changePasswordSchema,
+        response: {
+          200: z.object({
+            success: z.boolean(),
+            message: z.string(),
+          }),
+          400: z.object({
+            success: z.boolean(),
+            error: z.string(),
+            details: z.array(z.object({ message: z.string() })).optional(),
+          }),
+          401: z.object({
+            success: z.boolean(),
+            error: z.string(),
+          }),
+          500: z.object({
+            success: z.boolean(),
+            error: z.string(),
+          }),
+        },
+      },
+    },
+    async (request: AuthenticatedRequest, reply) => {
+      try {
+        const userId = request.user?.id;
+        if (!userId) {
+          throw new UnauthorizedError('Usuário não autenticado');
+        }
+        const { currentPassword, newPassword } = request.body;
+        await AuthService.changePassword(userId, currentPassword, newPassword);
+        reply.send({ success: true, message: 'Senha alterada com sucesso.' });
+      } catch (error: any) {
+        if (error instanceof ValidationError) {
+          reply.status(400).send({ success: false, error: error.message, details: error.details });
+        } else if (error instanceof UnauthorizedError) {
+          reply.status(401).send({ success: false, error: error.message });
+        } else {
+          console.error('Erro ao alterar senha:', error);
+          reply.status(500).send({ success: false, error: 'Erro interno do servidor' });
+        }
+      }
+    }
+  );
+};
+
+
+

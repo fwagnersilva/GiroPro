@@ -62,7 +62,7 @@ export async function createGoalCompletion({
   return {
     id: progresso.id,
     goalId: progresso.id_meta,
-    createdAt: new Date(progresso.data_registro),
+    createdAt: new Date(progresso.dataRegistro),
   };
 }
 

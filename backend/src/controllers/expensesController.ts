@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { ExpenseService } from '../services/expenseService';
-import { CreateExpenseRequest, UpdateExpenseRequest } from '../types';
+import { AuthenticatedRequest } from "../types/common";
 import { z } from 'zod';
 
 // Schemas de validação com Zod
@@ -20,12 +20,7 @@ const idParamSchema = z.object({
 });
 
 // Tipos para melhor type safety
-interface AuthenticatedRequest extends Request {
-  user: {
-    id: string;
-    email?: string;
-  };
-}
+
 
 // Middleware para extrair e validar userId
 const extractUserId = (req: Request): string => {

@@ -14,8 +14,8 @@ export class JourneyService {
       km_inicio: journeyData.km_inicio,
       dataFim: null,
       km_fim: null,
-      ganho_bruto: null,
-      km_total: null,
+      ganhoBruto: null,
+      kmTotal: null,
       tempo_total: null,
       observacoes: journeyData.observacoes || null,
     };
@@ -93,14 +93,14 @@ export class JourneyService {
       
       if (journeyData.km_fim !== undefined) {
         dataToUpdate.km_fim = journeyData.km_fim;
-        // Calcular km_total se tivermos km_inicio e km_fim
+        // Calcular kmTotal se tivermos km_inicio e km_fim
         if (journeyData.km_fim && existingJourney.km_inicio) {
-          dataToUpdate.km_total = journeyData.km_fim - existingJourney.km_inicio;
+          dataToUpdate.kmTotal = journeyData.km_fim - existingJourney.km_inicio;
         }
       }
       
-      if (journeyData.ganho_bruto !== undefined) {
-        dataToUpdate.ganho_bruto = journeyData.ganho_bruto;
+      if (journeyData.ganhoBruto !== undefined) {
+        dataToUpdate.ganhoBruto = journeyData.ganhoBruto;
       }
       
       if (journeyData.observacoes !== undefined) {
@@ -153,11 +153,11 @@ export class JourneyService {
   }
 
   // Método adicional para finalizar uma jornada
-  static async finishJourney(id: string, userId: string, km_fim: number, ganho_bruto?: number, observacoes?: string) {
+  static async finishJourney(id: string, userId: string, km_fim: number, ganhoBruto?: number, observacoes?: string) {
     return await this.updateJourney(id, userId, {
       dataFim: new Date().toISOString(),
       km_fim,
-      ganho_bruto,
+      ganhoBruto,
       observacoes
     });
   }

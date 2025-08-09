@@ -16,13 +16,13 @@ interface ApiResponse<T = any> {
 interface FuelPrice {
   id?: string;
   tipoCombustivel: FuelType;
-  preco_medio: number;
-  preco_minimo?: number;
-  preco_maximo?: number;
+  precoMedio: number;
+  precoMinimo?: number;
+  precoMaximo?: number;
   estado: string;
   cidade: string;
-  numero_postos?: number;
-  data_coleta: string;
+  numeroPostos?: number;
+  dataColeta: string;
   fonte?: string;
 }
 
@@ -34,16 +34,16 @@ interface PriceHistory {
 
 interface RegionalComparison {
   estado: string;
-  preco_medio: number;
+  precoMedio: number;
   variacao_semanal: number;
-  numero_postos: number;
+  numeroPostos: number;
   ultima_atualizacao: string;
 }
 
 interface PriceStatistics {
-  preco_minimo: number;
-  preco_maximo: number;
-  preco_medio: number;
+  precoMinimo: number;
+  precoMaximo: number;
+  precoMedio: number;
   variacao_percentual: number;
 }
 
@@ -120,7 +120,7 @@ const fuelPriceReportSchema = z.object({
     .max(50, "Cidade deve ter no máximo 50 caracteres")
     .trim(),
   tipoCombustivel: z.nativeEnum(FuelType),
-  preco_medio: z.number()
+  precoMedio: z.number()
     .positive("Preço médio deve ser positivo")
     .max(20, "Preço não pode ser superior a R$ 20,00")
     .multipleOf(0.001, "Preço deve ter no máximo 3 casas decimais"),
@@ -302,13 +302,13 @@ export class FuelPricesController {
       );
 
       // Ordenar por preço e calcular estatísticas
-      comparativo.sort((a, b) => a.preco_medio - b.preco_medio);
+      comparativo.sort((a, b) => a.precoMedio - b.precoMedio);
 
       const estatisticas = {
         menor_preco: comparativo[0],
         maior_preco: comparativo[comparativo.length - 1],
         diferenca_maxima: Number(
-          (comparativo[comparativo.length - 1].preco_medio - comparativo[0].preco_medio).toFixed(3)
+          (comparativo[comparativo.length - 1].precoMedio - comparativo[0].precoMedio).toFixed(3)
         ),
         variacao_media: Number(
           (comparativo.reduce((acc, item) => acc + Math.abs(item.variacao_semanal), 0) / comparativo.length).toFixed(3)
@@ -367,7 +367,7 @@ export class FuelPricesController {
         id: `price_${Date.now()}_${userId}`,
         ...priceData,
         idUsuario: userId,
-        data_registro: new Date().toISOString(),
+        dataRegistro: new Date().toISOString(),
         status: 'pendente_validacao',
         fonte: 'Usuario'
       };
@@ -492,13 +492,13 @@ class MockDataGenerator {
       
       precos.push({
         tipoCombustivel: tipo,
-        preco_medio: Number(precoMedio.toFixed(3)),
-        preco_minimo: Number((precoMedio * 0.9).toFixed(3)),
-        preco_maximo: Number((precoMedio * 1.1).toFixed(3)),
+        precoMedio: Number(precoMedio.toFixed(3)),
+        precoMinimo: Number((precoMedio * 0.9).toFixed(3)),
+        precoMaximo: Number((precoMedio * 1.1).toFixed(3)),
         estado: estado || 'SP',
         cidade: cidade || 'São Paulo',
-        numero_postos: Math.floor(Math.random() * 50) + 10,
-        data_coleta: new Date().toISOString(),
+        numeroPostos: Math.floor(Math.random() * 50) + 10,
+        dataColeta: new Date().toISOString(),
         fonte: 'ANP'
       });
     }
@@ -547,9 +547,9 @@ class MockDataGenerator {
       
       return {
         estado,
-        preco_medio: Number(precoMedio.toFixed(3)),
+        precoMedio: Number(precoMedio.toFixed(3)),
         variacao_semanal: Number(((Math.random() - 0.5) * 0.2).toFixed(3)), // -10% a +10%
-        numero_postos: Math.floor(Math.random() * 500) + 100,
+        numeroPostos: Math.floor(Math.random() * 500) + 100,
         ultima_atualizacao: new Date().toISOString()
       };
     });
@@ -594,7 +594,7 @@ class MockDataGenerator {
       {
         id: `alert_${userId}_1`,
         tipoCombustivel: FuelType.GASOLINA,
-        preco_maximo: 5.50,
+        precoMaximo: 5.50,
         estado: 'SP',
         cidade: 'São Paulo',
         ativo: true,
@@ -608,9 +608,9 @@ class StatisticsCalculator {
   static calculatePriceStatistics(historico: PriceHistory[]): PriceStatistics {
     if (historico.length === 0) {
       return {
-        preco_minimo: 0,
-        preco_maximo: 0,
-        preco_medio: 0,
+        precoMinimo: 0,
+        precoMaximo: 0,
+        precoMedio: 0,
         variacao_percentual: 0
       };
     }
@@ -626,9 +626,9 @@ class StatisticsCalculator {
       ((precoFinal - precoInicial) / precoInicial) * 100 : 0;
 
     return {
-      preco_minimo: Number(precoMinimo.toFixed(3)),
-      preco_maximo: Number(precoMaximo.toFixed(3)),
-      preco_medio: Number(precoMedio.toFixed(3)),
+      precoMinimo: Number(precoMinimo.toFixed(3)),
+      precoMaximo: Number(precoMaximo.toFixed(3)),
+      precoMedio: Number(precoMedio.toFixed(3)),
       variacao_percentual: Number(variacaoPercentual.toFixed(2))
     };
   }
@@ -644,14 +644,14 @@ class PriceValidator {
     const limiteMinimo = precoEsperado * 0.5;
     const limiteMaximo = precoEsperado * 1.5;
     
-    if (priceData.preco_medio < limiteMinimo) {
+    if (priceData.precoMedio < limiteMinimo) {
       return {
         isValid: false,
         message: `Preço muito baixo. Preço mínimo esperado: R$ ${limiteMinimo.toFixed(3)}`
       };
     }
     
-    if (priceData.preco_medio > limiteMaximo) {
+    if (priceData.precoMedio > limiteMaximo) {
       return {
         isValid: false,
         message: `Preço muito alto. Preço máximo esperado: R$ ${limiteMaximo.toFixed(3)}`

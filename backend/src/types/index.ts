@@ -98,8 +98,8 @@ export interface CreateJourneyRequest {
   km_inicio: number;
   dataFim?: string;
   km_fim?: number;
-  ganho_bruto?: number;
-  km_total?: number;
+  ganhoBruto?: number;
+  kmTotal?: number;
   tempo_total?: number;
   observacoes?: string;
 }
@@ -110,8 +110,8 @@ export interface UpdateJourneyRequest {
   km_inicio?: number;
   dataFim?: string;
   km_fim?: number;
-  ganho_bruto?: number;
-  km_total?: number;
+  ganhoBruto?: number;
+  kmTotal?: number;
   tempo_total?: number;
   observacoes?: string;
 }

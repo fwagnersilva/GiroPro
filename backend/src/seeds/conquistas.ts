@@ -13,9 +13,9 @@ export async function seedConquistas() {
       raridade: 'Comum' as const,
       icone: '💰',
       cor: '#4CAF50',
-      criterio_valor: 1, // R$ 0,01
+      criterioValor: 1, // R$ 0,01
       criterio_descricao: 'Ganhe pelo menos R$ 0,01 em jornadas',
-      pontos_recompensa: 10,
+      pontosRecompensa: 10,
       ordem_exibicao: 1
     },
     {
@@ -25,9 +25,9 @@ export async function seedConquistas() {
       raridade: 'Comum' as const,
       icone: '💵',
       cor: '#4CAF50',
-      criterio_valor: 10000, // R$ 100,00 em centavos
+      criterioValor: 10000, // R$ 100,00 em centavos
       criterio_descricao: 'Acumule R$ 100,00 em faturamento total',
-      pontos_recompensa: 25,
+      pontosRecompensa: 25,
       ordem_exibicao: 2
     },
     {
@@ -37,9 +37,9 @@ export async function seedConquistas() {
       raridade: 'Raro' as const,
       icone: '💸',
       cor: '#2196F3',
-      criterio_valor: 100000, // R$ 1.000,00 em centavos
+      criterioValor: 100000, // R$ 1.000,00 em centavos
       criterio_descricao: 'Acumule R$ 1.000,00 em faturamento total',
-      pontos_recompensa: 50,
+      pontosRecompensa: 50,
       ordem_exibicao: 3
     },
     {
@@ -49,9 +49,9 @@ export async function seedConquistas() {
       raridade: 'Epico' as const,
       icone: '🏆',
       cor: '#9C27B0',
-      criterio_valor: 1000000, // R$ 10.000,00 em centavos
+      criterioValor: 1000000, // R$ 10.000,00 em centavos
       criterio_descricao: 'Acumule R$ 10.000,00 em faturamento total',
-      pontos_recompensa: 100,
+      pontosRecompensa: 100,
       ordem_exibicao: 4
     },
 
@@ -63,9 +63,9 @@ export async function seedConquistas() {
       raridade: 'Comum' as const,
       icone: '🚗',
       cor: '#FF9800',
-      criterio_valor: 10,
+      criterioValor: 10,
       criterio_descricao: 'Percorra 10 km em jornadas',
-      pontos_recompensa: 10,
+      pontosRecompensa: 10,
       ordem_exibicao: 5
     },
     {
@@ -75,9 +75,9 @@ export async function seedConquistas() {
       raridade: 'Comum' as const,
       icone: '🛣️',
       cor: '#FF9800',
-      criterio_valor: 100,
+      criterioValor: 100,
       criterio_descricao: 'Percorra 100 km em jornadas',
-      pontos_recompensa: 25,
+      pontosRecompensa: 25,
       ordem_exibicao: 6
     },
     {
@@ -87,9 +87,9 @@ export async function seedConquistas() {
       raridade: 'Raro' as const,
       icone: '🌍',
       cor: '#2196F3',
-      criterio_valor: 1000,
+      criterioValor: 1000,
       criterio_descricao: 'Percorra 1.000 km em jornadas',
-      pontos_recompensa: 50,
+      pontosRecompensa: 50,
       ordem_exibicao: 7
     },
     {
@@ -99,9 +99,9 @@ export async function seedConquistas() {
       raridade: 'Epico' as const,
       icone: '🚀',
       cor: '#9C27B0',
-      criterio_valor: 10000,
+      criterioValor: 10000,
       criterio_descricao: 'Percorra 10.000 km em jornadas',
-      pontos_recompensa: 100,
+      pontosRecompensa: 100,
       ordem_exibicao: 8
     },
 
@@ -113,9 +113,9 @@ export async function seedConquistas() {
       raridade: 'Comum' as const,
       icone: '🎯',
       cor: '#607D8B',
-      criterio_valor: 1,
+      criterioValor: 1,
       criterio_descricao: 'Complete 1 jornada',
-      pontos_recompensa: 10,
+      pontosRecompensa: 10,
       ordem_exibicao: 9
     },
     {
@@ -125,9 +125,9 @@ export async function seedConquistas() {
       raridade: 'Comum' as const,
       icone: '📈',
       cor: '#607D8B',
-      criterio_valor: 10,
+      criterioValor: 10,
       criterio_descricao: 'Complete 10 jornadas',
-      pontos_recompensa: 25,
+      pontosRecompensa: 25,
       ordem_exibicao: 10
     },
     {
@@ -137,9 +137,9 @@ export async function seedConquistas() {
       raridade: 'Raro' as const,
       icone: '🎖️',
       cor: '#2196F3',
-      criterio_valor: 100,
+      criterioValor: 100,
       criterio_descricao: 'Complete 100 jornadas',
-      pontos_recompensa: 50,
+      pontosRecompensa: 50,
       ordem_exibicao: 11
     },
     {
@@ -149,9 +149,9 @@ export async function seedConquistas() {
       raridade: 'Lendario' as const,
       icone: '👑',
       cor: '#FF6F00',
-      criterio_valor: 1000,
+      criterioValor: 1000,
       criterio_descricao: 'Complete 1.000 jornadas',
-      pontos_recompensa: 200,
+      pontosRecompensa: 200,
       ordem_exibicao: 12
     },
 
@@ -163,9 +163,9 @@ export async function seedConquistas() {
       raridade: 'Raro' as const,
       icone: '⚡',
       cor: '#FFEB3B',
-      criterio_valor: 100, // R$ 1,00 por km em centavos
+      criterioValor: 100, // R$ 1,00 por km em centavos
       criterio_descricao: 'Mantenha uma média de R$ 1,00 por km',
-      pontos_recompensa: 50,
+      pontosRecompensa: 50,
       ordem_exibicao: 13
     },
     {
@@ -175,9 +175,9 @@ export async function seedConquistas() {
       raridade: 'Epico' as const,
       icone: '💎',
       cor: '#9C27B0',
-      criterio_valor: 200, // R$ 2,00 por km em centavos
+      criterioValor: 200, // R$ 2,00 por km em centavos
       criterio_descricao: 'Mantenha uma média de R$ 2,00 por km',
-      pontos_recompensa: 100,
+      pontosRecompensa: 100,
       ordem_exibicao: 14
     },
 
@@ -189,9 +189,9 @@ export async function seedConquistas() {
       raridade: 'Comum' as const,
       icone: '📅',
       cor: '#795548',
-      criterio_valor: 3,
+      criterioValor: 3,
       criterio_descricao: 'Complete jornadas em 3 dias consecutivos',
-      pontos_recompensa: 25,
+      pontosRecompensa: 25,
       ordem_exibicao: 15
     },
     {
@@ -201,9 +201,9 @@ export async function seedConquistas() {
       raridade: 'Raro' as const,
       icone: '🔥',
       cor: '#F44336',
-      criterio_valor: 7,
+      criterioValor: 7,
       criterio_descricao: 'Complete jornadas em 7 dias consecutivos',
-      pontos_recompensa: 75,
+      pontosRecompensa: 75,
       ordem_exibicao: 16
     },
     {
@@ -213,9 +213,9 @@ export async function seedConquistas() {
       raridade: 'Lendario' as const,
       icone: '🌟',
       cor: '#FF6F00',
-      criterio_valor: 30,
+      criterioValor: 30,
       criterio_descricao: 'Complete jornadas em 30 dias consecutivos',
-      pontos_recompensa: 300,
+      pontosRecompensa: 300,
       ordem_exibicao: 17
     },
 
@@ -227,9 +227,9 @@ export async function seedConquistas() {
       raridade: 'Comum' as const,
       icone: '🎯',
       cor: '#3F51B5',
-      criterio_valor: 1,
+      criterioValor: 1,
       criterio_descricao: 'Crie 1 meta',
-      pontos_recompensa: 15,
+      pontosRecompensa: 15,
       ordem_exibicao: 18
     },
     {
@@ -239,9 +239,9 @@ export async function seedConquistas() {
       raridade: 'Raro' as const,
       icone: '🏅',
       cor: '#2196F3',
-      criterio_valor: 1,
+      criterioValor: 1,
       criterio_descricao: 'Complete 1 meta',
-      pontos_recompensa: 50,
+      pontosRecompensa: 50,
       ordem_exibicao: 19
     },
     {
@@ -251,9 +251,9 @@ export async function seedConquistas() {
       raridade: 'Epico' as const,
       icone: '🏆',
       cor: '#9C27B0',
-      criterio_valor: 5,
+      criterioValor: 5,
       criterio_descricao: 'Complete 5 metas',
-      pontos_recompensa: 150,
+      pontosRecompensa: 150,
       ordem_exibicao: 20
     }
   ];

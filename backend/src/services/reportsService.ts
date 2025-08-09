@@ -146,8 +146,8 @@ export class ReportsService {
           .then(data => ({
             numero_semana: i + 1,
             periodo: DateUtils.formatPeriod(startDate, endDate),
-            dataInicio: startDate.toISOString(),
-            dataFim: endDate.toISOString(),
+            dataInicio: startDate,
+            dataFim: endDate,
             ...data
           }))
       );
@@ -188,8 +188,8 @@ export class ReportsService {
           .then(data => ({
             mes_ano: DateUtils.formatMonthYear(startDate),
             periodo: DateUtils.formatPeriod(startDate, endDate),
-            dataInicio: startDate.toISOString(),
-            dataFim: endDate.toISOString(),
+            dataInicio: startDate,
+            dataFim: endDate,
             ...data
           }))
       );
@@ -311,8 +311,8 @@ export class ReportsService {
         const summary = await ReportsService.getFinancialSummary(userId, week.startDate, week.endDate, vehicleId);
         return {
           semana: week.weekNumber,
-          dataInicio: week.startDate.toISOString(),
-          dataFim: week.endDate.toISOString(),
+          dataInicio: week.startDate,
+          dataFim: week.endDate,
           ...summary,
         };
       })
@@ -331,8 +331,8 @@ export class ReportsService {
   ) {
     const conditions = [
       eq(despesas.idUsuario, userId),
-      gte(despesas.dataDespesa, startDate.toISOString()),
-      lte(despesas.dataDespesa, endDate.toISOString()),
+      gte(despesas.dataDespesa, startDate),
+      lte(despesas.dataDespesa, endDate),
       isNull(despesas.deletedAt),
     ];
 
@@ -383,29 +383,29 @@ export class ReportsService {
     }
 
     if (startDate) {
-      conditions.push(gte(jornadas.dataInicio, startDate.toISOString()));
+      conditions.push(gte(jornadas.dataInicio, startDate));
     }
     if (endDate) {
-      conditions.push(lte(jornadas.dataInicio, endDate.toISOString()));
+      conditions.push(lte(jornadas.dataInicio, endDate));
     }
 
     const topJourneys = await db
       .select({
         id: jornadas.id,
         dataInicio: jornadas.dataInicio,
-        ganho_bruto: jornadas.ganho_bruto,
-        km_total: jornadas.km_total,
+        ganhoBruto: jornadas.ganhoBruto,
+        kmTotal: jornadas.kmTotal,
         observacoes: jornadas.observacoes,
       })
       .from(jornadas)
       .where(and(...conditions))
-      .orderBy(desc(jornadas.ganho_bruto))
+      .orderBy(desc(jornadas.ganhoBruto))
       .limit(limit);
 
     return topJourneys.map(j => ({
       ...j,
-      ganho_bruto: Math.round(Number(j.ganho_bruto) || 0),
-      km_total: Math.round(Number(j.km_total) || 0),
+      ganhoBruto: Math.round(Number(j.ganhoBruto) || 0),
+      kmTotal: Math.round(Number(j.kmTotal) || 0),
     }));
   }
 
@@ -420,8 +420,8 @@ export class ReportsService {
   ) {
     const conditions = [
       eq(jornadas.idUsuario, userId),
-      gte(jornadas.dataInicio, startDate.toISOString()),
-      lte(jornadas.dataInicio, endDate.toISOString()),
+      gte(jornadas.dataInicio, startDate),
+      lte(jornadas.dataInicio, endDate),
       isNull(jornadas.deletedAt),
     ];
 
@@ -431,8 +431,8 @@ export class ReportsService {
 
     const result = await db
       .select({
-        totalGanhoBruto: sum(jornadas.ganho_bruto),
-        totalKm: sum(jornadas.km_total),
+        totalGanhoBruto: sum(jornadas.ganhoBruto),
+        totalKm: sum(jornadas.kmTotal),
         totalTempo: sum(jornadas.tempo_total),
         countJornadas: count(jornadas.id),
       })
@@ -447,7 +447,7 @@ export class ReportsService {
     const countJornadas = Number(metrics.countJornadas) || 0;
 
     return {
-      total_ganho_bruto: Math.round(totalGanhoBruto),
+      total_ganhoBruto: Math.round(totalGanhoBruto),
       total_km: Math.round(totalKm),
       total_tempo_minutos: Math.round(totalTempo),
       numero_jornadas: countJornadas,
@@ -474,8 +474,8 @@ export class ReportsService {
 
     const result = await db
       .select({
-        avgGanhoBruto: avg(jornadas.ganho_bruto),
-        avgKm: avg(jornadas.km_total),
+        avgGanhoBruto: avg(jornadas.ganhoBruto),
+        avgKm: avg(jornadas.kmTotal),
         avgTempo: avg(jornadas.tempo_total),
       })
       .from(jornadas)
@@ -484,7 +484,7 @@ export class ReportsService {
     const avgMetrics = result[0];
 
     return {
-      media_ganho_bruto_jornada: Math.round(Number(avgMetrics.avgGanhoBruto) || 0),
+      media_ganhoBruto_jornada: Math.round(Number(avgMetrics.avgGanhoBruto) || 0),
       media_km_jornada: Math.round(Number(avgMetrics.avgKm) || 0),
       media_tempo_jornada_minutos: Math.round(Number(avgMetrics.avgTempo) || 0),
       // Adicionar benchmarks de consumo de combustível, despesas, etc.

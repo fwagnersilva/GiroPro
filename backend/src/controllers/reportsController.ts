@@ -13,22 +13,22 @@ interface PeriodRange {
 }
 
 interface JourneyStats {
-  total_ganho_bruto: number;
-  total_custo_estimado: number;
-  total_lucro_liquido: number;
-  media_ganho_por_jornada: number;
-  media_lucro_por_jornada: number;
-  margem_lucro_media: number;
-  total_km: number;
-  media_km_por_jornada: number;
-  total_jornadas: number;
+  totalGanhoBruto: number;
+  totalCustoEstimado: number;
+  totalLucroLiquido: number;
+  mediaGanhoPorJornada: number;
+  mediaLucroPorJornada: number;
+  margemLucroMedia: number;
+  totalKm: number;
+  mediaKmPorJornada: number;
+  totalJornadas: number;
 }
 
 interface JourneyReport {
-  id_jornada: string;
+  idJornada: string;
   dataInicio: string | null;
   dataFim: string | null;
-  duracao_minutos: number | null;
+  duracaoMinutos: number | null;
   veiculo: {
     id: string | null;
     marca: string | null;
@@ -42,11 +42,11 @@ interface JourneyReport {
     total: number | null;
   };
   financeiro: {
-    ganho_bruto: number;
-    custo_combustivel_estimado: number;
-    outras_despesas: number;
-    lucro_liquido_estimado: number;
-    margem_lucro: number;
+    ganhoBruto: number;
+    custoCombustivelEstimado: number;
+    outrasDespesas: number;
+    lucroLiquidoEstimado: number;
+    margemLucro: number;
   };
   observacoes: string | null;
 }
@@ -67,16 +67,16 @@ interface ExpenseEvolution {
 interface VehicleComparison {
   idVeiculo: string;
   veiculo: string;
-  total_despesas: number;
-  custo_por_km: number;
-  km_total: number;
+  totalDespesas: number;
+  custoPorKm: number;
+  kmTotal: number;
 }
 
 interface FuelAnalysisData {
-  consumo_medio: number;
-  custo_total: number;
-  litros_total: number;
-  preco_medio_litro: number;
+  consumoMedio: number;
+  custoTotal: number;
+  litrosTotal: number;
+  precoMedioLitro: number;
 }
 
 interface ReportResponse<T = any> {
@@ -158,13 +158,16 @@ export class ReportsController {
   private static validateQueryParams(req: AuthenticatedRequest) {
     const userId = this.validateAuth(req);
     if (!userId) {
-      return { userId: null, error: 'Usuário não autenticado' };
+      return {
+        userId: null,
+        error: 'Usuário não autenticado'
+      };
     }
 
     const queryValidation = reportsQuerySchema.safeParse(req.query);
     if (!queryValidation.success) {
-      return { 
-        userId: null, 
+      return {
+        userId: null,
         error: 'Parâmetros de consulta inválidos',
         details: queryValidation.error.errors
       };
@@ -195,15 +198,15 @@ export class ReportsController {
 
       const { userId, queryData } = validation;
       const { periodo, dataInicio, dataFim, idVeiculo, formato } = queryData!;
-      const { dataInicio, dataFim } = DateHelper.calcularPeriodo(periodo, dataInicio, dataFim);
+      const { dataInicio: parsedDataInicio, dataFim: parsedDataFim } = DateHelper.calcularPeriodo(periodo, dataInicio, dataFim);
 
       console.log(`[ReportsController] Gerando relatório de jornadas - Usuário: ${userId}, Período: ${periodo}`);
 
       // Construir condições de filtro
       const whereConditions = and(
         eq(jornadas.idUsuario, userId!),
-        gte(jornadas.dataInicio, DateHelper.formatDateForSQL(dataInicio)),
-        lte(jornadas.dataFim, DateHelper.formatDateForSQL(dataFim)),
+        gte(jornadas.dataInicio, parsedDataInicio.getTime()),
+        lte(jornadas.dataFim, parsedDataFim.getTime()),
         idVeiculo ? eq(jornadas.idVeiculo, idVeiculo) : undefined
       );
 
@@ -213,17 +216,17 @@ export class ReportsController {
           id: jornadas.id,
           dataInicio: jornadas.dataInicio,
           dataFim: jornadas.dataFim,
-          km_inicio: jornadas.km_inicio,
-          km_fim: jornadas.km_fim,
-          km_total: jornadas.km_total,
-          ganho_bruto: jornadas.ganho_bruto,
-          tempo_total: jornadas.tempo_total,
+          kmInicio: jornadas.kmInicio,
+          kmFim: jornadas.kmFim,
+          kmTotal: jornadas.kmTotal,
+          ganhoBruto: jornadas.ganhoBruto,
+          tempoTotal: jornadas.tempoTotal,
           observacoes: jornadas.observacoes,
           idVeiculo: jornadas.idVeiculo,
-          veiculo_marca: veiculos.marca,
-          veiculo_modelo: veiculos.modelo,
-          veiculo_placa: veiculos.placa,
-          veiculo_tipoCombustivel: veiculos.tipoCombustivel
+          veiculoMarca: veiculos.marca,
+          veiculoModelo: veiculos.modelo,
+          veiculoPlaca: veiculos.placa,
+          veiculoTipoCombustivel: veiculos.tipoCombustivel
         })
         .from(jornadas)
         .leftJoin(veiculos, eq(jornadas.idVeiculo, veiculos.id))
@@ -239,16 +242,16 @@ export class ReportsController {
       const relatorio = {
         periodo: {
           tipo: periodo,
-          dataInicio: dataInicio.toISOString(),
-          dataFim: dataFim.toISOString()
+          dataInicio: parsedDataInicio.toISOString(),
+          dataFim: parsedDataFim.toISOString()
         },
         filtros: {
           idVeiculo: idVeiculo || null
         },
         estatisticas,
         jornadas: relatorioJornadas,
-        total_jornadas: relatorioJornadas.length,
-        gerado_em: new Date().toISOString()
+        totalJornadas: relatorioJornadas.length,
+        geradoEm: new Date().toISOString()
       };
 
       if (formato === 'csv') {
@@ -276,7 +279,7 @@ export class ReportsController {
 
       const { userId, queryData } = validation;
       const { periodo, dataInicio, dataFim, idVeiculo, formato } = queryData!;
-      const { dataInicio, dataFim } = DateHelper.calcularPeriodo(periodo, dataInicio, dataFim);
+      const { dataInicio: parsedDataInicio, dataFim: parsedDataFim } = DateHelper.calcularPeriodo(periodo, dataInicio, dataFim);
 
       console.log(`[ReportsController] Gerando relatório de despesas - Usuário: ${userId}, Período: ${periodo}`);
 
@@ -288,28 +291,28 @@ export class ReportsController {
         analiseCombustivel,
         resumoGeral
       ] = await Promise.all([
-        ExpenseAnalyzer.analisarDespesasPorCategoria(userId!, dataInicio, dataFim, idVeiculo),
-        ExpenseAnalyzer.analisarEvolucaoDespesas(userId!, dataInicio, dataFim, idVeiculo),
-        idVeiculo ? Promise.resolve(null) : ExpenseAnalyzer.compararDespesasVeiculos(userId!, dataInicio, dataFim),
-        ExpenseAnalyzer.analisarGastosCombustivel(userId!, dataInicio, dataFim, idVeiculo),
-        ExpenseAnalyzer.obterResumoGeral(userId!, dataInicio, dataFim, idVeiculo)
+        ExpenseAnalyzer.analisarDespesasPorCategoria(userId!, parsedDataInicio, parsedDataFim, idVeiculo),
+        ExpenseAnalyzer.analisarEvolucaoDespesas(userId!, parsedDataInicio, parsedDataFim, idVeiculo),
+        idVeiculo ? Promise.resolve(null) : ExpenseAnalyzer.compararDespesasVeiculos(userId!, parsedDataInicio, parsedDataFim),
+        ExpenseAnalyzer.analisarGastosCombustivel(userId!, parsedDataInicio, parsedDataFim, idVeiculo),
+        ExpenseAnalyzer.obterResumoGeral(userId!, parsedDataInicio, parsedDataFim, idVeiculo)
       ]);
 
       const relatorio = {
         periodo: {
           tipo: periodo,
-          dataInicio: dataInicio.toISOString(),
-          dataFim: dataFim.toISOString()
+          dataInicio: parsedDataInicio.toISOString(),
+          dataFim: parsedDataFim.toISOString()
         },
         filtros: {
           idVeiculo: idVeiculo || null
         },
-        resumo_geral: resumoGeral,
-        despesas_por_categoria: despesasPorCategoria,
-        evolucao_despesas: evolucaoDespesas,
-        comparacao_veiculos: comparacaoVeiculos,
-        analise_combustivel: analiseCombustivel,
-        gerado_em: new Date().toISOString()
+        resumoGeral: resumoGeral,
+        despesasPorCategoria: despesasPorCategoria,
+        evolucaoDespesas: evolucaoDespesas,
+        comparacaoVeiculos: comparacaoVeiculos,
+        analiseCombustivel: analiseCombustivel,
+        geradoEm: new Date().toISOString()
       };
 
       if (formato === 'csv') {
@@ -337,7 +340,7 @@ export class ReportsController {
 
       const { userId, queryData } = validation;
       const { periodo, dataInicio, dataFim, idVeiculo, formato } = queryData!;
-      const { dataInicio, dataFim } = DateHelper.calcularPeriodo(periodo, dataInicio, dataFim);
+      const { dataInicio: parsedDataInicio, dataFim: parsedDataFim } = DateHelper.calcularPeriodo(periodo, dataInicio, dataFim);
 
       console.log(`[ReportsController] Gerando relatório de combustível - Usuário: ${userId}, Período: ${periodo}`);
 
@@ -349,28 +352,28 @@ export class ReportsController {
         analiseEficiencia,
         resumoAbastecimentos
       ] = await Promise.all([
-        FuelAnalyzer.analisarConsumoPorVeiculo(userId!, dataInicio, dataFim, idVeiculo),
-        FuelAnalyzer.analisarEvolucaoPrecos(userId!, dataInicio, dataFim, idVeiculo),
-        FuelAnalyzer.compararTiposCombustivel(userId!, dataInicio, dataFim),
-        FuelAnalyzer.analisarEficienciaCombustivel(userId!, dataInicio, dataFim, idVeiculo),
-        FuelAnalyzer.obterResumoAbastecimentos(userId!, dataInicio, dataFim, idVeiculo)
+        FuelAnalyzer.analisarConsumoPorVeiculo(userId!, parsedDataInicio, parsedDataFim, idVeiculo),
+        FuelAnalyzer.analisarEvolucaoPrecos(userId!, parsedDataInicio, parsedDataFim, idVeiculo),
+        FuelAnalyzer.compararTiposCombustivel(userId!, parsedDataInicio, parsedDataFim),
+        FuelAnalyzer.analisarEficienciaCombustivel(userId!, parsedDataInicio, parsedDataFim, idVeiculo),
+        FuelAnalyzer.obterResumoAbastecimentos(userId!, parsedDataInicio, parsedDataFim, idVeiculo)
       ]);
 
       const relatorio = {
         periodo: {
           tipo: periodo,
-          dataInicio: dataInicio.toISOString(),
-          dataFim: dataFim.toISOString()
+          dataInicio: parsedDataInicio.toISOString(),
+          dataFim: parsedDataFim.toISOString()
         },
         filtros: {
           idVeiculo: idVeiculo || null
         },
-        resumo_abastecimentos: resumoAbastecimentos,
-        consumo_por_veiculo: consumoPorVeiculo,
-        evolucao_precos: evolucaoPrecos,
-        comparacao_combustiveis: comparacaoCombustiveis,
-        analise_eficiencia: analiseEficiencia,
-        gerado_em: new Date().toISOString()
+        resumoAbastecimentos: resumoAbastecimentos,
+        consumoPorVeiculo: consumoPorVeiculo,
+        evolucaoPrecos: evolucaoPrecos,
+        comparacaoCombustiveis: comparacaoCombustiveis,
+        analiseEficiencia: analiseEficiencia,
+        geradoEm: new Date().toISOString()
       };
 
       if (formato === 'csv') {
@@ -398,7 +401,7 @@ export class ReportsController {
 
       const { userId, queryData } = validation;
       const { periodo, dataInicio, dataFim, idVeiculo } = queryData!;
-      const { dataInicio, dataFim } = DateHelper.calcularPeriodo(periodo, dataInicio, dataFim);
+      const { dataInicio: parsedDataInicio, dataFim: parsedDataFim } = DateHelper.calcularPeriodo(periodo, dataInicio, dataFim);
 
       console.log(`[ReportsController] Gerando dashboard - Usuário: ${userId}, Período: ${periodo}`);
 
@@ -410,18 +413,18 @@ export class ReportsController {
         veiculoMaisUtilizado,
         melhorDesempenho
       ] = await Promise.all([
-        DashboardAnalyzer.obterEstatisticasJornadas(userId!, dataInicio, dataFim, idVeiculo),
-        DashboardAnalyzer.obterTotalDespesas(userId!, dataInicio, dataFim, idVeiculo),
-        DashboardAnalyzer.obterTotalAbastecimentos(userId!, dataInicio, dataFim, idVeiculo),
-        idVeiculo ? Promise.resolve(null) : DashboardAnalyzer.obterVeiculoMaisUtilizado(userId!, dataInicio, dataFim),
-        DashboardAnalyzer.obterMelhorDesempenho(userId!, dataInicio, dataFim, idVeiculo)
+        DashboardAnalyzer.obterEstatisticasJornadas(userId!, parsedDataInicio, parsedDataFim, idVeiculo),
+        DashboardAnalyzer.obterTotalDespesas(userId!, parsedDataInicio, parsedDataFim, idVeiculo),
+        DashboardAnalyzer.obterTotalAbastecimentos(userId!, parsedDataInicio, parsedDataFim, idVeiculo),
+        idVeiculo ? Promise.resolve(null) : DashboardAnalyzer.obterVeiculoMaisUtilizado(userId!, parsedDataInicio, parsedDataFim),
+        DashboardAnalyzer.obterMelhorDesempenho(userId!, parsedDataInicio, parsedDataFim, idVeiculo)
       ]);
 
       const dashboard = {
         periodo: {
           tipo: periodo,
-          dataInicio: dataInicio.toISOString(),
-          dataFim: dataFim.toISOString()
+          dataInicio: parsedDataInicio.toISOString(),
+          dataFim: parsedDataFim.toISOString()
         },
         filtros: {
           idVeiculo: idVeiculo || null
@@ -430,10 +433,10 @@ export class ReportsController {
           jornadas: estatisticasJornadas,
           despesas: totalDespesas,
           abastecimentos: totalAbastecimentos,
-          veiculo_mais_utilizado: veiculoMaisUtilizado,
-          melhor_desempenho: melhorDesempenho
+          veiculoMaisUtilizado: veiculoMaisUtilizado,
+          melhorDesempenho: melhorDesempenho
         },
-        gerado_em: new Date().toISOString()
+        geradoEm: new Date().toISOString()
       };
 
       return ReportsController.successResponse(res, dashboard);
@@ -449,927 +452,567 @@ export class ReportsController {
 class DateHelper {
   static calcularPeriodo(periodo: string, dataInicio?: string, dataFim?: string): PeriodRange {
     const agora = new Date();
-    let dataInicio: Date;
-    let dataFim: Date = new Date(agora.getFullYear(), agora.getMonth(), agora.getDate(), 23, 59, 59, 999);
+    let dataInicioObj: Date;
+    let dataFimObj: Date = new Date(agora.getFullYear(), agora.getMonth(), agora.getDate(), 23, 59, 59, 999);
 
     if (periodo === 'personalizado' && dataInicio && dataFim) {
-      dataInicio = new Date(dataInicio);
-      dataFim = new Date(dataFim);
+      dataInicioObj = new Date(dataInicio);
+      dataFimObj = new Date(dataFim);
     } else {
       switch (periodo) {
         case 'hoje':
-          dataInicio = new Date(agora.getFullYear(), agora.getMonth(), agora.getDate(), 0, 0, 0, 0);
+          dataInicioObj = new Date(agora.getFullYear(), agora.getMonth(), agora.getDate(), 0, 0, 0, 0);
           break;
         case 'semana':
-          dataInicio = new Date(agora);
-          dataInicio.setDate(agora.getDate() - 7);
-          dataInicio.setHours(0, 0, 0, 0);
+          dataInicioObj = new Date(agora);
+          dataInicioObj.setDate(agora.getDate() - 7);
+          dataInicioObj.setHours(0, 0, 0, 0);
           break;
         case 'mes':
-          dataInicio = new Date(agora.getFullYear(), agora.getMonth(), 1, 0, 0, 0, 0);
+          dataInicioObj = new Date(agora.getFullYear(), agora.getMonth(), 1, 0, 0, 0, 0);
           break;
         case 'ano':
-          dataInicio = new Date(agora.getFullYear(), 0, 1, 0, 0, 0, 0);
+          dataInicioObj = new Date(agora.getFullYear(), 0, 1, 0, 0, 0, 0);
           break;
         default:
-          dataInicio = new Date(agora.getFullYear(), agora.getMonth(), 1, 0, 0, 0, 0);
+          dataInicioObj = new Date(agora.getFullYear(), agora.getMonth(), 1, 0, 0, 0, 0);
       }
     }
 
-    return { dataInicio, dataFim };
+    return { dataInicio: dataInicioObj, dataFim: dataFimObj };
   }
 
-  static formatDateForSQL(date: Date): string {
-    return date.toISOString();
-  }
-}
-
-class QueryBuilder {
-  static buildJourneyWhereConditions(
-    userId: string,
-    dataInicio: Date,
-    dataFim: Date,
-    idVeiculo?: string
-  ) {
-    let whereConditions = and(
-      eq(jornadas.idUsuario, userId),
-      isNotNull(jornadas.dataFim),
-      gte(jornadas.dataFim, DateHelper.formatDateForSQL(dataInicio)),
-      lte(jornadas.dataFim, DateHelper.formatDateForSQL(dataFim)),
-      isNull(jornadas.deletedAt)
-    );
-
-    if (idVeiculo) {
-      whereConditions = and(whereConditions, eq(jornadas.idVeiculo, idVeiculo));
-    }
-
-    return whereConditions;
-  }
-
-  static buildExpenseWhereConditions(
-    userId: string,
-    dataInicio: Date,
-    dataFim: Date,
-    idVeiculo?: string
-  ) {
-    let whereConditions = and(
-      eq(despesas.idUsuario, userId),
-      gte(despesas.dataDespesa, DateHelper.formatDateForSQL(dataInicio)),
-      lte(despesas.dataDespesa, DateHelper.formatDateForSQL(dataFim)),
-      isNull(despesas.deletedAt)
-    );
-
-    if (idVeiculo) {
-      whereConditions = and(whereConditions, eq(despesas.idVeiculo, idVeiculo));
-    }
-
-    return whereConditions;
-  }
-
-  static buildFuelWhereConditions(
-    userId: string,
-    dataInicio: Date,
-    dataFim: Date,
-    idVeiculo?: string
-  ) {
-    let whereConditions = and(
-      eq(abastecimentos.idUsuario, userId),
-      gte(abastecimentos.dataAbastecimento, DateHelper.formatDateForSQL(dataInicio)),
-      lte(abastecimentos.dataAbastecimento, DateHelper.formatDateForSQL(dataFim)),
-      isNull(abastecimentos.deletedAt)
-    );
-
-    if (idVeiculo) {
-      whereConditions = and(whereConditions, eq(abastecimentos.idVeiculo, idVeiculo));
-    }
-
-    return whereConditions;
+  static formatDateForSQL(date: Date): number {
+    return date.getTime();
   }
 }
 
 class JourneyProcessor {
   static async processJourneys(jornadasDetalhadas: any[], userId: string): Promise<JourneyReport[]> {
-    if (jornadasDetalhadas.length === 0) {
-      return [];
+    const relatorioJornadas: JourneyReport[] = [];
+
+    for (const jornada of jornadasDetalhadas) {
+      const custoCombustivelEstimado = await this.calcularCustoCombustivelEstimado(jornada);
+      const outrasDespesas = await this.calcularOutrasDespesas(userId, jornada.idVeiculo, new Date(jornada.dataInicio), new Date(jornada.dataFim));
+
+      const lucroLiquidoEstimado = (jornada.ganhoBruto || 0) - custoCombustivelEstimado - outrasDespesas;
+      const margemLucro = jornada.ganhoBruto ? (lucroLiquidoEstimado / jornada.ganhoBruto) * 100 : 0;
+
+      relatorioJornadas.push({
+        idJornada: jornada.id,
+        dataInicio: new Date(jornada.dataInicio).toISOString(),
+        dataFim: jornada.dataFim ? new Date(jornada.dataFim).toISOString() : null,
+        duracaoMinutos: jornada.tempoTotal,
+        veiculo: {
+          id: jornada.idVeiculo,
+          marca: jornada.veiculoMarca,
+          modelo: jornada.veiculoModelo,
+          placa: jornada.veiculoPlaca,
+          tipoCombustivel: jornada.veiculoTipoCombustivel,
+        },
+        quilometragem: {
+          inicio: jornada.kmInicio,
+          fim: jornada.kmFim,
+          total: jornada.kmTotal,
+        },
+        financeiro: {
+          ganhoBruto: jornada.ganhoBruto || 0,
+          custoCombustivelEstimado,
+          outrasDespesas,
+          lucroLiquidoEstimado,
+          margemLucro,
+        },
+        observacoes: jornada.observacoes,
+      });
     }
-
-    return Promise.all(
-      jornadasDetalhadas.map(async (jornada) => {
-        const custoCombustivelEstimado = await FuelCalculator.estimarCustoCombustivel(
-          jornada.km_total || 0,
-          jornada.veiculo_tipoCombustivel,
-          jornada.dataFim ? new Date(jornada.dataFim) : null
-        );
-
-        const despesasJornada = await ExpenseCalculator.buscarDespesasJornada(
-          userId,
-          jornada.dataInicio ? new Date(jornada.dataInicio) : null,
-          jornada.dataFim ? new Date(jornada.dataFim) : null,
-          jornada.id
-        );
-
-        const ganhoBruto = jornada.ganho_bruto || 0;
-        const lucroLiquidoEstimado = ganhoBruto - custoCombustivelEstimado - despesasJornada;
-
-        return {
-          id_jornada: jornada.id,
-          dataInicio: jornada.dataInicio,
-          dataFim: jornada.dataFim,
-          duracao_minutos: jornada.tempo_total,
-          veiculo: {
-            id: jornada.idVeiculo,
-            marca: jornada.veiculo_marca,
-            modelo: jornada.veiculo_modelo,
-            placa: jornada.veiculo_placa,
-            tipoCombustivel: jornada.veiculo_tipoCombustivel
-          },
-          quilometragem: {
-            inicio: jornada.km_inicio,
-            fim: jornada.km_fim,
-            total: jornada.km_total
-          },
-          financeiro: {
-            ganho_bruto: ganhoBruto,
-            custo_combustivel_estimado: custoCombustivelEstimado,
-            outras_despesas: despesasJornada,
-            lucro_liquido_estimado: lucroLiquidoEstimado,
-            margem_lucro: ganhoBruto > 0 ? 
-              Math.round((lucroLiquidoEstimado / ganhoBruto) * 10000) / 100 : 0
-          },
-          observacoes: jornada.observacoes
-        };
-      })
-    );
-  }
-}
-
-class FuelCalculator {
-  static async estimarCustoCombustivel(
-    kmTotal: number,
-    tipoCombustivel: string | null,
-    dataJornada: Date | null
-  ): Promise<number> {
-    if (!kmTotal || !tipoCombustivel || !dataJornada) return 0;
-
-    try {
-      // Tentar buscar preço real primeiro
-      const precoReal = await this.buscarPrecoRealCombustivel(tipoCombustivel, dataJornada);
-      const precoFinal = precoReal || this.buscarPrecoMedioCombustivel(tipoCombustivel);
-      
-      const litrosConsumidos = kmTotal / DEFAULT_CONSUMPTION;
-      
-      return Math.round(litrosConsumidos * precoFinal);
-    } catch (error) {
-      console.warn('Erro ao calcular custo combustível, usando preço médio:', error);
-      const precoMedio = this.buscarPrecoMedioCombustivel(tipoCombustivel);
-      const litrosConsumidos = kmTotal / DEFAULT_CONSUMPTION;
-      return Math.round(litrosConsumidos * precoMedio);
-    }
+    return relatorioJornadas;
   }
 
-  private static async buscarPrecoRealCombustivel(tipoCombustivel: string, data: Date): Promise<number | null> {
-    try {
-      // Buscar abastecimentos próximos à data da jornada para obter preço real
-      const dataInicio = new Date(data);
-      dataInicio.setDate(data.getDate() - 7); // 7 dias antes
-      const dataFim = new Date(data);
-      dataFim.setDate(data.getDate() + 7); // 7 dias depois
+  private static async calcularCustoCombustivelEstimado(jornada: any): Promise<number> {
+    if (!jornada.kmTotal || !jornada.veiculoTipoCombustivel) return 0;
 
-      const result = await db
-        .select({ 
-          preco_medio: sql<number>`CAST(AVG(${abastecimentos.precoLitro}) AS DECIMAL(10,2))` 
-        })
-        .from(abastecimentos)
-        .leftJoin(veiculos, eq(abastecimentos.idVeiculo, veiculos.id))
-        .where(
-          and(
-            eq(veiculos.tipoCombustivel, tipoCombustivel),
-            gte(abastecimentos.dataAbastecimento, dataInicio.toISOString()),
-            lte(abastecimentos.dataAbastecimento, dataFim.toISOString()),
-            isNull(abastecimentos.deletedAt)
-          )
-        );
-
-      return result[0]?.preco_medio || null;
-    } catch (error) {
-      console.warn('Erro ao buscar preço real:', error);
-      return null;
-    }
+    const consumoEstimadoLitros = jornada.kmTotal / DEFAULT_CONSUMPTION;
+    const precoLitro = FUEL_PRICES[jornada.veiculoTipoCombustivel] || 0;
+    return consumoEstimadoLitros * precoLitro;
   }
 
-  private static buscarPrecoMedioCombustivel(tipoCombustivel: string): number {
-    return FUEL_PRICES[tipoCombustivel] || FUEL_PRICES['Gasolina'];
-  }
-}
-
-class ExpenseCalculator {
-  static async buscarDespesasJornada(
-    userId: string,
-    dataInicio: Date | null,
-    dataFim: Date | null,
-    idJornada: string
-  ): Promise<number> {
-    if (!dataInicio || !dataFim) return 0;
-
-    try {
-      const result = await db
-        .select({ total: sql<number>`CAST(COALESCE(SUM(${despesas.valorDespesa}), 0) AS DECIMAL(10,2))` })
-        .from(despesas)
-        .where(
-          and(
-            eq(despesas.idUsuario, userId),
-            gte(despesas.dataDespesa, DateHelper.formatDateForSQL(dataInicio)),
-            lte(despesas.dataDespesa, DateHelper.formatDateForSQL(dataFim)),
-            isNull(despesas.deletedAt)
-          )
-        );
-
-      return Math.round(Number(result[0]?.total || 0));
-    } catch (error) {
-      console.warn('Erro ao buscar despesas da jornada:', error);
-      return 0;
-    }
+  private static async calcularOutrasDespesas(userId: string, idVeiculo: string, dataInicio: Date, dataFim: Date): Promise<number> {
+    const despesasRelacionadas = await db
+      .select({ valorDespesa: sum(despesas.valorDespesa) })
+      .from(despesas)
+      .where(
+        and(
+          eq(despesas.idUsuario, userId),
+          eq(despesas.idVeiculo, idVeiculo),
+          gte(despesas.dataDespesa, dataInicio.getTime()),
+          lte(despesas.dataDespesa, dataFim.getTime()),
+          ne(despesas.tipoDespesa, 'combustivel') // Excluir despesas de combustível
+        )
+      );
+    return Number(despesasRelacionadas[0]?.valorDespesa) || 0;
   }
 }
 
 class StatisticsCalculator {
   static calcularEstatisticasJornadas(jornadas: JourneyReport[]): JourneyStats {
-    if (jornadas.length === 0) {
-      return {
-        total_ganho_bruto: 0,
-        total_custo_estimado: 0,
-        total_lucro_liquido: 0,
-        media_ganho_por_jornada: 0,
-        media_lucro_por_jornada: 0,
-        margem_lucro_media: 0,
-        total_km: 0,
-        media_km_por_jornada: 0,
-        total_jornadas: 0
-      };
-    }
-
-    const totals = jornadas.reduce((acc, jornada) => ({
-      ganhoBruto: acc.ganhoBruto + jornada.financeiro.ganho_bruto,
-      custoEstimado: acc.custoEstimado + jornada.financeiro.custo_combustivel_estimado + jornada.financeiro.outras_despesas,
-      lucroLiquido: acc.lucroLiquido + jornada.financeiro.lucro_liquido_estimado,
-      km: acc.km + (jornada.quilometragem.total || 0)
-    }), { ganhoBruto: 0, custoEstimado: 0, lucroLiquido: 0, km: 0 });
+    const totalGanhoBruto = jornadas.reduce((sum, j) => sum + j.financeiro.ganhoBruto, 0);
+    const totalCustoEstimado = jornadas.reduce((sum, j) => sum + j.financeiro.custoCombustivelEstimado + j.financeiro.outrasDespesas, 0);
+    const totalLucroLiquido = jornadas.reduce((sum, j) => sum + j.financeiro.lucroLiquidoEstimado, 0);
+    const totalKm = jornadas.reduce((sum, j) => sum + (j.quilometragem.total || 0), 0);
+    const totalJornadas = jornadas.length;
 
     return {
-      total_ganho_bruto: totals.ganhoBruto,
-      total_custo_estimado: totals.custoEstimado,
-      total_lucro_liquido: totals.lucroLiquido,
-      media_ganho_por_jornada: Math.round(totals.ganhoBruto / jornadas.length),
-      media_lucro_por_jornada: Math.round(totals.lucroLiquido / jornadas.length),
-      margem_lucro_media: totals.ganhoBruto > 0 ? 
-        Math.round((totals.lucroLiquido / totals.ganhoBruto) * 10000) / 100 : 0,
-      total_km: totals.km,
-      media_km_por_jornada: Math.round(totals.km / jornadas.length),
-      total_jornadas: jornadas.length
+      totalGanhoBruto,
+      totalCustoEstimado,
+      totalLucroLiquido,
+      mediaGanhoPorJornada: totalJornadas ? totalGanhoBruto / totalJornadas : 0,
+      mediaLucroPorJornada: totalJornadas ? totalLucroLiquido / totalJornadas : 0,
+      margemLucroMedia: totalGanhoBruto ? (totalLucroLiquido / totalGanhoBruto) * 100 : 0,
+      totalKm,
+      mediaKmPorJornada: totalJornadas ? totalKm / totalJornadas : 0,
+      totalJornadas,
     };
   }
 }
 
-// ====================== EXPENSE ANALYZER ======================
-
 class ExpenseAnalyzer {
-  static async analisarDespesasPorCategoria(
-    userId: string,
-    dataInicio: Date,
-    dataFim: Date,
-    idVeiculo?: string
-  ): Promise<ExpenseByCategory[]> {
-    try {
-      const whereConditions = QueryBuilder.buildExpenseWhereConditions(userId, dataInicio, dataFim, idVeiculo);
+  static async analisarDespesasPorCategoria(userId: string, dataInicio: Date, dataFim: Date, idVeiculo?: string): Promise<ExpenseByCategory[]> {
+    const whereConditions = and(
+      eq(despesas.idUsuario, userId),
+      gte(despesas.dataDespesa, dataInicio.getTime()),
+      lte(despesas.dataDespesa, dataFim.getTime()),
+      idVeiculo ? eq(despesas.idVeiculo, idVeiculo) : undefined
+    );
 
-      const result = await db
-        .select({
-          categoria: despesas.categoria,
-          total: sql<number>`CAST(COALESCE(SUM(${despesas.valorDespesa}), 0) AS DECIMAL(10,2))`,
-          quantidade: sql<number>`CAST(COUNT(*) AS INTEGER)`
-        })
-        .from(despesas)
-        .where(whereConditions)
-        .groupBy(despesas.categoria)
-        .orderBy(sql`SUM(${despesas.valorDespesa}) DESC`);
+    const results = await db
+      .select({
+        tipoDespesa: despesas.tipoDespesa,
+        total: sum(despesas.valorDespesa),
+        quantidade: count(despesas.id),
+      })
+      .from(despesas)
+      .where(whereConditions)
+      .groupBy(despesas.tipoDespesa);
 
-      const totalGeral = result.reduce((acc, item) => acc + Number(item.total), 0);
+    const totalGeral = results.reduce((sum, r) => sum + Number(r.total), 0);
 
-      return result.map(item => ({
-        categoria: EXPENSE_CATEGORIES[item.categoria as keyof typeof EXPENSE_CATEGORIES] || item.categoria,
-        total: Math.round(Number(item.total)),
-        percentual: totalGeral > 0 ? Math.round((Number(item.total) / totalGeral) * 10000) / 100 : 0,
-        quantidade: Number(item.quantidade)
-      }));
-
-    } catch (error) {
-      console.error('Erro ao analisar despesas por categoria:', error);
-      return [];
-    }
+    return results.map(r => ({
+      categoria: EXPENSE_CATEGORIES[r.tipoDespesa as keyof typeof EXPENSE_CATEGORIES] || r.tipoDespesa,
+      total: Number(r.total),
+      percentual: totalGeral ? (Number(r.total) / totalGeral) * 100 : 0,
+      quantidade: Number(r.quantidade),
+    }));
   }
 
-  static async analisarEvolucaoDespesas(
-    userId: string,
-    dataInicio: Date,
-    dataFim: Date,
-    idVeiculo?: string
-  ): Promise<ExpenseEvolution[]> {
-    try {
-      const whereConditions = QueryBuilder.buildExpenseWhereConditions(userId, dataInicio, dataFim, idVeiculo);
+  static async analisarEvolucaoDespesas(userId: string, dataInicio: Date, dataFim: Date, idVeiculo?: string): Promise<ExpenseEvolution[]> {
+    const whereConditions = and(
+      eq(despesas.idUsuario, userId),
+      gte(despesas.dataDespesa, dataInicio.getTime()),
+      lte(despesas.dataDespesa, dataFim.getTime()),
+      idVeiculo ? eq(despesas.idVeiculo, idVeiculo) : undefined
+    );
 
-      const result = await db
-        .select({
-          data: sql<string>`DATE(${despesas.dataDespesa})`,
-          categoria: despesas.categoria,
-          total: sql<number>`CAST(COALESCE(SUM(${despesas.valorDespesa}), 0) AS DECIMAL(10,2))`
-        })
-        .from(despesas)
-        .where(whereConditions)
-        .groupBy(sql`DATE(${despesas.dataDespesa})`, despesas.categoria)
-        .orderBy(sql`DATE(${despesas.dataDespesa})`, despesas.categoria);
+    const results = await db
+      .select({
+        data: sql<string>`strftime('%Y-%m-%d', ${despesas.dataDespesa} / 1000, 'unixepoch')`,
+        total: sum(despesas.valorDespesa),
+        categoria: despesas.tipoDespesa,
+      })
+      .from(despesas)
+      .where(whereConditions)
+      .groupBy(sql`strftime('%Y-%m-%d', ${despesas.dataDespesa} / 1000, 'unixepoch')`, despesas.tipoDespesa)
+      .orderBy(sql`strftime('%Y-%m-%d', ${despesas.dataDespesa} / 1000, 'unixepoch')`, despesas.tipoDespesa);
 
-      return result.map(item => ({
-        data: item.data,
-        categoria: EXPENSE_CATEGORIES[item.categoria as keyof typeof EXPENSE_CATEGORIES] || item.categoria,
-        total: Math.round(Number(item.total))
-      }));
-
-    } catch (error) {
-      console.error('Erro ao analisar evolução de despesas:', error);
-      return [];
-    }
+    return results.map(r => ({
+      data: r.data,
+      total: Number(r.total),
+      categoria: EXPENSE_CATEGORIES[r.categoria as keyof typeof EXPENSE_CATEGORIES] || r.categoria,
+    }));
   }
 
-  static async compararDespesasVeiculos(
-    userId: string,
-    dataInicio: Date,
-    dataFim: Date
-  ): Promise<VehicleComparison[]> {
-    try {
-      const result = await db
-        .select({
-          idVeiculo: despesas.idVeiculo,
-          veiculo_marca: veiculos.marca,
-          veiculo_modelo: veiculos.modelo,
-          veiculo_placa: veiculos.placa,
-          total_despesas: sql<number>`CAST(COALESCE(SUM(${despesas.valorDespesa}), 0) AS DECIMAL(10,2))`,
-          km_total: sql<number>`CAST(COALESCE(SUM(${jornadas.km_total}), 0) AS DECIMAL(10,2))`
-        })
-        .from(despesas)
-        .leftJoin(veiculos, eq(despesas.idVeiculo, veiculos.id))
-        .leftJoin(jornadas, and(
-          eq(jornadas.idVeiculo, despesas.idVeiculo),
-          eq(jornadas.idUsuario, userId),
-          gte(jornadas.dataFim, DateHelper.formatDateForSQL(dataInicio)),
-          lte(jornadas.dataFim, DateHelper.formatDateForSQL(dataFim)),
-          isNull(jornadas.deletedAt)
-        ))
-        .where(
-          and(
-            eq(despesas.idUsuario, userId),
-            gte(despesas.dataDespesa, DateHelper.formatDateForSQL(dataInicio)),
-            lte(despesas.dataDespesa, DateHelper.formatDateForSQL(dataFim)),
-            isNull(despesas.deletedAt),
-            isNotNull(despesas.idVeiculo)
-          )
+  static async compararDespesasVeiculos(userId: string, dataInicio: Date, dataFim: Date): Promise<VehicleComparison[]> {
+    const results = await db
+      .select({
+        idVeiculo: despesas.idVeiculo,
+        totalDespesas: sum(despesas.valorDespesa),
+        kmTotal: sum(jornadas.kmTotal), // Assumindo que jornadas e despesas podem ser relacionadas por veículo e período
+      })
+      .from(despesas)
+      .leftJoin(jornadas, and(
+        eq(despesas.idVeiculo, jornadas.idVeiculo),
+        eq(despesas.idUsuario, jornadas.idUsuario),
+        gte(despesas.dataDespesa, jornadas.dataInicio),
+        lte(despesas.dataDespesa, jornadas.dataFim)
+      ))
+      .where(
+        and(
+          eq(despesas.idUsuario, userId),
+          gte(despesas.dataDespesa, dataInicio.getTime()),
+          lte(despesas.dataDespesa, dataFim.getTime())
         )
-        .groupBy(despesas.idVeiculo, veiculos.marca, veiculos.modelo, veiculos.placa)
-        .orderBy(sql`SUM(${despesas.valorDespesa}) DESC`);
+      )
+      .groupBy(despesas.idVeiculo);
 
-      return result.map(item => ({
-        idVeiculo: item.idVeiculo || '',
-        veiculo: `${item.veiculo_marca || 'N/A'} ${item.veiculo_modelo || 'N/A'} (${item.veiculo_placa || 'N/A'})`,
-        total_despesas: Math.round(Number(item.total_despesas)),
-        km_total: Number(item.km_total),
-        custo_por_km: Number(item.km_total) > 0 ? 
-          Math.round((Number(item.total_despesas) / Number(item.km_total)) * 100) / 100 : 0
-      }));
+    const veiculosInfo = await db.select().from(veiculos).where(eq(veiculos.idUsuario, userId));
+    const veiculosMap = new Map(veiculosInfo.map(v => [v.id, v.marca + ' ' + v.modelo]));
 
-    } catch (error) {
-      console.error('Erro ao comparar despesas por veículo:', error);
-      return [];
-    }
+    return results.map(r => ({
+      idVeiculo: r.idVeiculo || 'N/A',
+      veiculo: veiculosMap.get(r.idVeiculo || '') || 'Veículo Desconhecido',
+      totalDespesas: Number(r.totalDespesas) || 0,
+      kmTotal: Number(r.kmTotal) || 0,
+      custoPorKm: (Number(r.kmTotal) || 0) > 0 ? (Number(r.totalDespesas) || 0) / (Number(r.kmTotal) || 0) : 0,
+    }));
   }
 
-  static async analisarGastosCombustivel(
-    userId: string,
-    dataInicio: Date,
-    dataFim: Date,
-    idVeiculo?: string
-  ): Promise<FuelAnalysisData> {
-    try {
-      const whereConditions = QueryBuilder.buildFuelWhereConditions(userId, dataInicio, dataFim, idVeiculo);
+  static async analisarGastosCombustivel(userId: string, dataInicio: Date, dataFim: Date, idVeiculo?: string): Promise<FuelAnalysisData> {
+    const whereConditions = and(
+      eq(abastecimentos.idUsuario, userId),
+      gte(abastecimentos.dataAbastecimento, dataInicio.getTime()),
+      lte(abastecimentos.dataAbastecimento, dataFim.getTime()),
+      idVeiculo ? eq(abastecimentos.idVeiculo, idVeiculo) : undefined
+    );
 
-      const result = await db
-        .select({
-          custo_total: sql<number>`CAST(COALESCE(SUM(${abastecimentos.valorTotal}), 0) AS DECIMAL(10,2))`,
-          litros_total: sql<number>`CAST(COALESCE(SUM(${abastecimentos.litros}), 0) AS DECIMAL(10,2))`,
-          preco_medio: sql<number>`CAST(COALESCE(AVG(${abastecimentos.precoLitro}), 0) AS DECIMAL(10,2))`,
-          km_total: sql<number>`CAST(COALESCE(SUM(${abastecimentos.kmAtual} - ${abastecimentos.km_anterior}), 0) AS DECIMAL(10,2))`
-        })
-        .from(abastecimentos)
-        .where(whereConditions);
+    const results = await db
+      .select({
+        totalLitros: sum(abastecimentos.quantidadeLitros),
+        totalValor: sum(abastecimentos.valorTotal),
+      })
+      .from(abastecimentos)
+      .where(whereConditions);
 
-      const data = result[0];
-      const litrosTotal = Number(data?.litros_total || 0);
-      const kmTotal = Number(data?.km_total || 0);
+    const totalLitros = Number(results[0]?.totalLitros) || 0;
+    const totalValor = Number(results[0]?.totalValor) || 0;
+    const precoMedioLitro = totalLitros > 0 ? totalValor / totalLitros : 0;
 
-      return {
-        consumo_medio: kmTotal > 0 && litrosTotal > 0 ? 
-          Math.round((kmTotal / litrosTotal) * 100) / 100 : 0,
-        custo_total: Math.round(Number(data?.custo_total || 0)),
-        litros_total: Math.round(litrosTotal * 100) / 100,
-        preco_medio_litro: Math.round(Number(data?.preco_medio || 0))
-      };
+    // Consumo médio (km/l) requer dados de km rodados, que não estão diretamente nos abastecimentos
+    // Seria necessário correlacionar com jornadas ou ter um campo de odômetro nos abastecimentos
+    const consumoMedio = DEFAULT_CONSUMPTION; // Placeholder
 
-    } catch (error) {
-      console.error('Erro ao analisar gastos com combustível:', error);
-      return {
-        consumo_medio: 0,
-        custo_total: 0,
-        litros_total: 0,
-        preco_medio_litro: 0
-      };
-    }
+    return {
+      consumoMedio,
+      custoTotal: totalValor,
+      litrosTotal: totalLitros,
+      precoMedioLitro,
+    };
   }
 
-  static async obterResumoGeral(
-    userId: string,
-    dataInicio: Date,
-    dataFim: Date,
-    idVeiculo?: string
-  ): Promise<any> {
-    try {
-      const whereConditions = QueryBuilder.buildExpenseWhereConditions(userId, dataInicio, dataFim, idVeiculo);
+  static async obterResumoGeral(userId: string, dataInicio: Date, dataFim: Date, idVeiculo?: string): Promise<any> {
+    const totalJornadas = await db
+      .select({ count: count(jornadas.id) })
+      .from(jornadas)
+      .where(
+        and(
+          eq(jornadas.idUsuario, userId),
+          gte(jornadas.dataInicio, dataInicio.getTime()),
+          lte(jornadas.dataFim, dataFim.getTime()),
+          idVeiculo ? eq(jornadas.idVeiculo, idVeiculo) : undefined
+        )
+      );
 
-      const result = await db
-        .select({
-          total_despesas: sql<number>`CAST(COALESCE(SUM(${despesas.valorDespesa}), 0) AS DECIMAL(10,2))`,
-          quantidade_despesas: sql<number>`CAST(COUNT(*) AS INTEGER)`,
-          maior_despesa: sql<number>`CAST(COALESCE(MAX(${despesas.valorDespesa}), 0) AS DECIMAL(10,2))`,
-          menor_despesa: sql<number>`CAST(COALESCE(MIN(${despesas.valorDespesa}), 0) AS DECIMAL(10,2))`,
-          media_despesa: sql<number>`CAST(COALESCE(AVG(${despesas.valorDespesa}), 0) AS DECIMAL(10,2))`
-        })
-        .from(despesas)
-        .where(whereConditions);
+    const totalGanhoBruto = await db
+      .select({ total: sum(jornadas.ganhoBruto) })
+      .from(jornadas)
+      .where(
+        and(
+          eq(jornadas.idUsuario, userId),
+          gte(jornadas.dataInicio, dataInicio.getTime()),
+          lte(jornadas.dataFim, dataFim.getTime()),
+          idVeiculo ? eq(jornadas.idVeiculo, idVeiculo) : undefined
+        )
+      );
 
-      const data = result[0];
+    const totalDespesas = await db
+      .select({ total: sum(despesas.valorDespesa) })
+      .from(despesas)
+      .where(
+        and(
+          eq(despesas.idUsuario, userId),
+          gte(despesas.dataDespesa, dataInicio.getTime()),
+          lte(despesas.dataDespesa, dataFim.getTime()),
+          idVeiculo ? eq(despesas.idVeiculo, idVeiculo) : undefined
+        )
+      );
 
-      return {
-        total_despesas: Math.round(Number(data?.total_despesas || 0)),
-        quantidade_despesas: Number(data?.quantidade_despesas || 0),
-        maior_despesa: Math.round(Number(data?.maior_despesa || 0)),
-        menor_despesa: Math.round(Number(data?.menor_despesa || 0)),
-        media_despesa: Math.round(Number(data?.media_despesa || 0))
-      };
-
-    } catch (error) {
-      console.error('Erro ao obter resumo geral de despesas:', error);
-      return {
-        total_despesas: 0,
-        quantidade_despesas: 0,
-        maior_despesa: 0,
-        menor_despesa: 0,
-        media_despesa: 0
-      };
-    }
+    return {
+      totalJornadas: Number(totalJornadas[0]?.count) || 0,
+      totalGanhoBruto: Number(totalGanhoBruto[0]?.total) || 0,
+      totalDespesas: Number(totalDespesas[0]?.total) || 0,
+    };
   }
 }
-
-// ====================== FUEL ANALYZER ======================
 
 class FuelAnalyzer {
-  static async analisarConsumoPorVeiculo(
-    userId: string,
-    dataInicio: Date,
-    dataFim: Date,
-    idVeiculo?: string
-  ): Promise<any> {
-    try {
-      const whereConditions = QueryBuilder.buildFuelWhereConditions(userId, dataInicio, dataFim, idVeiculo);
+  static async analisarConsumoPorVeiculo(userId: string, dataInicio: Date, dataFim: Date, idVeiculo?: string): Promise<any[]> {
+    const whereConditions = and(
+      eq(abastecimentos.idUsuario, userId),
+      gte(abastecimentos.dataAbastecimento, dataInicio.getTime()),
+      lte(abastecimentos.dataAbastecimento, dataFim.getTime()),
+      idVeiculo ? eq(abastecimentos.idVeiculo, idVeiculo) : undefined
+    );
 
-      const result = await db
-        .select({
-          idVeiculo: abastecimentos.idVeiculo,
-          veiculo_marca: veiculos.marca,
-          veiculo_modelo: veiculos.modelo,
-          veiculo_placa: veiculos.placa,
-          tipoCombustivel: veiculos.tipoCombustivel,
-          total_litros: sql<number>`CAST(COALESCE(SUM(${abastecimentos.litros}), 0) AS DECIMAL(10,2))`,
-          total_valor: sql<number>`CAST(COALESCE(SUM(${abastecimentos.valorTotal}), 0) AS DECIMAL(10,2))`,
-          km_percorridos: sql<number>`CAST(COALESCE(SUM(${abastecimentos.kmAtual} - ${abastecimentos.km_anterior}), 0) AS DECIMAL(10,2))`,
-          quantidade_abastecimentos: sql<number>`CAST(COUNT(*) AS INTEGER)`
-        })
-        .from(abastecimentos)
-        .leftJoin(veiculos, eq(abastecimentos.idVeiculo, veiculos.id))
-        .where(whereConditions)
-        .groupBy(
-          abastecimentos.idVeiculo,
-          veiculos.marca,
-          veiculos.modelo,
-          veiculos.placa,
-          veiculos.tipoCombustivel
+    const results = await db
+      .select({
+        idVeiculo: abastecimentos.idVeiculo,
+        totalLitros: sum(abastecimentos.quantidadeLitros),
+        totalValor: sum(abastecimentos.valorTotal),
+      })
+      .from(abastecimentos)
+      .where(whereConditions)
+      .groupBy(abastecimentos.idVeiculo);
+
+    const veiculosInfo = await db.select().from(veiculos).where(eq(veiculos.idUsuario, userId));
+    const veiculosMap = new Map(veiculosInfo.map(v => [v.id, v.marca + ' ' + v.modelo]));
+
+    return results.map(r => ({
+      idVeiculo: r.idVeiculo,
+      veiculo: veiculosMap.get(r.idVeiculo || '') || 'Veículo Desconhecido',
+      totalLitros: Number(r.totalLitros) || 0,
+      totalValor: Number(r.totalValor) || 0,
+      // Consumo médio (km/l) e custo por km exigiriam dados de km rodados por veículo no período
+    }));
+  }
+
+  static async analisarEvolucaoPrecos(userId: string, dataInicio: Date, dataFim: Date, idVeiculo?: string): Promise<any[]> {
+    const whereConditions = and(
+      eq(abastecimentos.idUsuario, userId),
+      gte(abastecimentos.dataAbastecimento, dataInicio.getTime()),
+      lte(abastecimentos.dataAbastecimento, dataFim.getTime()),
+      idVeiculo ? eq(abastecimentos.idVeiculo, idVeiculo) : undefined
+    );
+
+    const results = await db
+      .select({
+        data: sql<string>`strftime('%Y-%m-%d', ${abastecimentos.dataAbastecimento} / 1000, 'unixepoch')`,
+        tipoCombustivel: abastecimentos.tipoCombustivel,
+        precoMedio: avg(abastecimentos.valorLitro),
+      })
+      .from(abastecimentos)
+      .where(whereConditions)
+      .groupBy(sql`strftime('%Y-%m-%d', ${abastecimentos.dataAbastecimento} / 1000, 'unixepoch')`, abastecimentos.tipoCombustivel)
+      .orderBy(sql`strftime('%Y-%m-%d', ${abastecimentos.dataAbastecimento} / 1000, 'unixepoch')`, abastecimentos.tipoCombustivel);
+
+    return results.map(r => ({
+      data: r.data,
+      tipoCombustivel: r.tipoCombustivel,
+      precoMedio: Number(r.precoMedio) || 0,
+    }));
+  }
+
+  static async compararTiposCombustivel(userId: string, dataInicio: Date, dataFim: Date): Promise<any[]> {
+    const whereConditions = and(
+      eq(abastecimentos.idUsuario, userId),
+      gte(abastecimentos.dataAbastecimento, dataInicio.getTime()),
+      lte(abastecimentos.dataAbastecimento, dataFim.getTime())
+    );
+
+    const results = await db
+      .select({
+        tipoCombustivel: abastecimentos.tipoCombustivel,
+        totalLitros: sum(abastecimentos.quantidadeLitros),
+        totalValor: sum(abastecimentos.valorTotal),
+      })
+      .from(abastecimentos)
+      .where(whereConditions)
+      .groupBy(abastecimentos.tipoCombustivel);
+
+    return results.map(r => ({
+      tipoCombustivel: r.tipoCombustivel,
+      totalLitros: Number(r.totalLitros) || 0,
+      totalValor: Number(r.totalValor) || 0,
+    }));
+  }
+
+  static async analisarEficienciaCombustivel(userId: string, dataInicio: Date, dataFim: Date, idVeiculo?: string): Promise<any[]> {
+    // Esta análise exige dados de km rodados por abastecimento ou por período de abastecimento
+    // Por enquanto, retorna um mock ou dados limitados
+    return [];
+  }
+
+  static async obterResumoAbastecimentos(userId: string, dataInicio: Date, dataFim: Date, idVeiculo?: string): Promise<any> {
+    const totalAbastecimentos = await db
+      .select({ count: count(abastecimentos.id) })
+      .from(abastecimentos)
+      .where(
+        and(
+          eq(abastecimentos.idUsuario, userId),
+          gte(abastecimentos.dataAbastecimento, dataInicio.getTime()),
+          lte(abastecimentos.dataAbastecimento, dataFim.getTime()),
+          idVeiculo ? eq(abastecimentos.idVeiculo, idVeiculo) : undefined
         )
-        .orderBy(sql`SUM(${abastecimentos.valorTotal}) DESC`);
+      );
 
-      return result.map(item => {
-        const kmPercorridos = Number(item.km_percorridos);
-        const litrosConsumidos = Number(item.total_litros);
-        
-        return {
-          idVeiculo: item.idVeiculo,
-          veiculo: `${item.veiculo_marca || 'N/A'} ${item.veiculo_modelo || 'N/A'}`,
-          placa: item.veiculo_placa,
-          tipoCombustivel: item.tipoCombustivel,
-          consumo_medio: kmPercorridos > 0 && litrosConsumidos > 0 ? 
-            Math.round((kmPercorridos / litrosConsumidos) * 100) / 100 : 0,
-          total_litros: Math.round(litrosConsumidos * 100) / 100,
-          total_valor: Math.round(Number(item.total_valor)),
-          km_percorridos: kmPercorridos,
-          quantidade_abastecimentos: Number(item.quantidade_abastecimentos)
-        };
-      });
+    const totalLitros = await db
+      .select({ total: sum(abastecimentos.quantidadeLitros) })
+      .from(abastecimentos)
+      .where(
+        and(
+          eq(abastecimentos.idUsuario, userId),
+          gte(abastecimentos.dataAbastecimento, dataInicio.getTime()),
+          lte(abastecimentos.dataAbastecimento, dataFim.getTime()),
+          idVeiculo ? eq(abastecimentos.idVeiculo, idVeiculo) : undefined
+        )
+      );
 
-    } catch (error) {
-      console.error('Erro ao analisar consumo por veículo:', error);
-      return [];
-    }
-  }
+    const totalGasto = await db
+      .select({ total: sum(abastecimentos.valorTotal) })
+      .from(abastecimentos)
+      .where(
+        and(
+          eq(abastecimentos.idUsuario, userId),
+          gte(abastecimentos.dataAbastecimento, dataInicio.getTime()),
+          lte(abastecimentos.dataAbastecimento, dataFim.getTime()),
+          idVeiculo ? eq(abastecimentos.idVeiculo, idVeiculo) : undefined
+        )
+      );
 
-  static async analisarEvolucaoPrecos(
-    userId: string,
-    dataInicio: Date,
-    dataFim: Date,
-    idVeiculo?: string
-  ): Promise<any[]> {
-    try {
-      const whereConditions = QueryBuilder.buildFuelWhereConditions(userId, dataInicio, dataFim, idVeiculo);
-
-      const result = await db
-        .select({
-          data: sql<string>`DATE(${abastecimentos.dataAbastecimento})`,
-          tipoCombustivel: veiculos.tipoCombustivel,
-          preco_medio: sql<number>`CAST(AVG(${abastecimentos.precoLitro}) AS DECIMAL(10,2))`,
-          quantidade_abastecimentos: sql<number>`CAST(COUNT(*) AS INTEGER)`
-        })
-        .from(abastecimentos)
-        .leftJoin(veiculos, eq(abastecimentos.idVeiculo, veiculos.id))
-        .where(whereConditions)
-        .groupBy(sql`DATE(${abastecimentos.dataAbastecimento})`, veiculos.tipoCombustivel)
-        .orderBy(sql`DATE(${abastecimentos.dataAbastecimento})`);
-
-      return result.map(item => ({
-        data: item.data,
-        tipoCombustivel: item.tipoCombustivel,
-        preco_medio: Math.round(Number(item.preco_medio)),
-        quantidade_abastecimentos: Number(item.quantidade_abastecimentos)
-      }));
-
-    } catch (error) {
-      console.error('Erro ao analisar evolução de preços:', error);
-      return [];
-    }
-  }
-
-  static async compararTiposCombustivel(
-    userId: string,
-    dataInicio: Date,
-    dataFim: Date
-  ): Promise<any> {
-    try {
-      const whereConditions = QueryBuilder.buildFuelWhereConditions(userId, dataInicio, dataFim);
-
-      const result = await db
-        .select({
-          tipoCombustivel: veiculos.tipoCombustivel,
-          preco_medio: sql<number>`CAST(AVG(${abastecimentos.precoLitro}) AS DECIMAL(10,2))`,
-          consumo_medio: sql<number>`CAST(AVG((${abastecimentos.kmAtual} - ${abastecimentos.km_anterior}) / ${abastecimentos.litros}) AS DECIMAL(10,2))`,
-          total_gasto: sql<number>`CAST(SUM(${abastecimentos.valorTotal}) AS DECIMAL(10,2))`,
-          total_litros: sql<number>`CAST(SUM(${abastecimentos.litros}) AS DECIMAL(10,2))`,
-          quantidade_abastecimentos: sql<number>`CAST(COUNT(*) AS INTEGER)`
-        })
-        .from(abastecimentos)
-        .leftJoin(veiculos, eq(abastecimentos.idVeiculo, veiculos.id))
-        .where(and(whereConditions, isNotNull(veiculos.tipoCombustivel)))
-        .groupBy(veiculos.tipoCombustivel)
-        .orderBy(sql`AVG(${abastecimentos.precoLitro})`);
-
-      const comparacao: any = {};
-      
-      result.forEach(item => {
-        if (item.tipoCombustivel) {
-          comparacao[item.tipoCombustivel] = {
-            preco_medio: Math.round(Number(item.preco_medio)),
-            consumo_medio: Math.round(Number(item.consumo_medio || 0) * 100) / 100,
-            total_gasto: Math.round(Number(item.total_gasto)),
-            total_litros: Math.round(Number(item.total_litros) * 100) / 100,
-            quantidade_abastecimentos: Number(item.quantidade_abastecimentos)
-          };
-        }
-      });
-
-      return comparacao;
-
-    } catch (error) {
-      console.error('Erro ao comparar tipos de combustível:', error);
-      return {};
-    }
-  }
-
-  static async analisarEficienciaCombustivel(
-    userId: string,
-    dataInicio: Date,
-    dataFim: Date,
-    idVeiculo?: string
-  ): Promise<any> {
-    try {
-      const whereConditions = QueryBuilder.buildFuelWhereConditions(userId, dataInicio, dataFim, idVeiculo);
-
-      const result = await db
-        .select({
-          melhor_consumo: sql<number>`CAST(MAX((${abastecimentos.kmAtual} - ${abastecimentos.km_anterior}) / ${abastecimentos.litros}) AS DECIMAL(10,2))`,
-          pior_consumo: sql<number>`CAST(MIN((${abastecimentos.kmAtual} - ${abastecimentos.km_anterior}) / ${abastecimentos.litros}) AS DECIMAL(10,2))`,
-          consumo_medio: sql<number>`CAST(AVG((${abastecimentos.kmAtual} - ${abastecimentos.km_anterior}) / ${abastecimentos.litros}) AS DECIMAL(10,2))`,
-          desvio_padrao: sql<number>`CAST(SQRT(AVG(POWER(((${abastecimentos.kmAtual} - ${abastecimentos.km_anterior}) / ${abastecimentos.litros}) - (SELECT AVG((${abastecimentos.kmAtual} - ${abastecimentos.km_anterior}) / ${abastecimentos.litros}) FROM ${abastecimentos} WHERE ${whereConditions}), 2))) AS DECIMAL(10,2))`
-        })
-        .from(abastecimentos)
-        .leftJoin(veiculos, eq(abastecimentos.idVeiculo, veiculos.id))
-        .where(
-          and(
-            whereConditions,
-            sql`(${abastecimentos.kmAtual} - ${abastecimentos.km_anterior}) > 0`,
-            sql`${abastecimentos.litros} > 0`
-          )
-        );
-
-      const data = result[0];
-
-      return {
-        melhor_consumo: Math.round(Number(data?.melhor_consumo || 0) * 100) / 100,
-        pior_consumo: Math.round(Number(data?.pior_consumo || 0) * 100) / 100,
-        consumo_medio: Math.round(Number(data?.consumo_medio || 0) * 100) / 100,
-        variabilidade: Math.round(Number(data?.desvio_padrao || 0) * 100) / 100
-      };
-
-    } catch (error) {
-      console.error('Erro ao analisar eficiência de combustível:', error);
-      return {
-        melhor_consumo: 0,
-        pior_consumo: 0,
-        consumo_medio: 0,
-        variabilidade: 0
-      };
-    }
-  }
-
-  static async obterResumoAbastecimentos(
-    userId: string,
-    dataInicio: Date,
-    dataFim: Date,
-    idVeiculo?: string
-  ): Promise<any> {
-    try {
-      const whereConditions = QueryBuilder.buildFuelWhereConditions(userId, dataInicio, dataFim, idVeiculo);
-
-      const result = await db
-        .select({
-          total_abastecimentos: sql<number>`CAST(COUNT(*) AS INTEGER)`,
-          total_litros: sql<number>`CAST(COALESCE(SUM(${abastecimentos.litros}), 0) AS DECIMAL(10,2))`,
-          total_valor: sql<number>`CAST(COALESCE(SUM(${abastecimentos.valorTotal}), 0) AS DECIMAL(10,2))`,
-          preco_medio: sql<number>`CAST(COALESCE(AVG(${abastecimentos.precoLitro}), 0) AS DECIMAL(10,2))`,
-          maior_abastecimento: sql<number>`CAST(COALESCE(MAX(${abastecimentos.valorTotal}), 0) AS DECIMAL(10,2))`,
-          menor_abastecimento: sql<number>`CAST(COALESCE(MIN(${abastecimentos.valorTotal}), 0) AS DECIMAL(10,2))`
-        })
-        .from(abastecimentos)
-        .where(whereConditions);
-
-      const data = result[0];
-
-      return {
-        total_abastecimentos: Number(data?.total_abastecimentos || 0),
-        total_litros: Math.round(Number(data?.total_litros || 0) * 100) / 100,
-        total_valor: Math.round(Number(data?.total_valor || 0)),
-        preco_medio: Math.round(Number(data?.preco_medio || 0)),
-        maior_abastecimento: Math.round(Number(data?.maior_abastecimento || 0)),
-        menor_abastecimento: Math.round(Number(data?.menor_abastecimento || 0))
-      };
-
-    } catch (error) {
-      console.error('Erro ao obter resumo de abastecimentos:', error);
-      return {
-        total_abastecimentos: 0,
-        total_litros: 0,
-        total_valor: 0,
-        preco_medio: 0,
-        maior_abastecimento: 0,
-        menor_abastecimento: 0
-      };
-    }
+    return {
+      totalAbastecimentos: Number(totalAbastecimentos[0]?.count) || 0,
+      totalLitros: Number(totalLitros[0]?.total) || 0,
+      totalGasto: Number(totalGasto[0]?.total) || 0,
+    };
   }
 }
-
-// ====================== DASHBOARD ANALYZER ======================
 
 class DashboardAnalyzer {
-  static async obterEstatisticasJornadas(
-    userId: string,
-    dataInicio: Date,
-    dataFim: Date,
-    idVeiculo?: string
-  ): Promise<any> {
-    try {
-      const whereConditions = QueryBuilder.buildJourneyWhereConditions(userId, dataInicio, dataFim, idVeiculo);
+  static async obterEstatisticasJornadas(userId: string, dataInicio: Date, dataFim: Date, idVeiculo?: string): Promise<JourneyStats> {
+    const whereConditions = and(
+      eq(jornadas.idUsuario, userId),
+      gte(jornadas.dataInicio, dataInicio.getTime()),
+      lte(jornadas.dataFim, dataFim.getTime()),
+      idVeiculo ? eq(jornadas.idVeiculo, idVeiculo) : undefined
+    );
 
-      const result = await db
-        .select({
-          total_jornadas: sql<number>`CAST(COUNT(*) AS INTEGER)`,
-          total_km: sql<number>`CAST(COALESCE(SUM(${jornadas.km_total}), 0) AS DECIMAL(10,2))`,
-          total_ganho: sql<number>`CAST(COALESCE(SUM(${jornadas.ganho_bruto}), 0) AS DECIMAL(10,2))`,
-          tempo_total: sql<number>`CAST(COALESCE(SUM(${jornadas.tempo_total}), 0) AS INTEGER)`,
-          media_ganho: sql<number>`CAST(COALESCE(AVG(${jornadas.ganho_bruto}), 0) AS DECIMAL(10,2))`,
-          media_km: sql<number>`CAST(COALESCE(AVG(${jornadas.km_total}), 0) AS DECIMAL(10,2))`
-        })
-        .from(jornadas)
-        .where(whereConditions);
+    const results = await db
+      .select({
+        totalGanhoBruto: sum(jornadas.ganhoBruto),
+        totalKm: sum(jornadas.kmTotal),
+        totalJornadas: count(jornadas.id),
+      })
+      .from(jornadas)
+      .where(whereConditions);
 
-      const data = result[0];
+    const totalGanhoBruto = Number(results[0]?.totalGanhoBruto) || 0;
+    const totalKm = Number(results[0]?.totalKm) || 0;
+    const totalJornadas = Number(results[0]?.totalJornadas) || 0;
 
-      return {
-        total_jornadas: Number(data?.total_jornadas || 0),
-        total_km: Math.round(Number(data?.total_km || 0)),
-        total_ganho: Math.round(Number(data?.total_ganho || 0)),
-        tempo_total_minutos: Number(data?.tempo_total || 0),
-        tempo_total_horas: Math.round((Number(data?.tempo_total || 0) / 60) * 100) / 100,
-        media_ganho: Math.round(Number(data?.media_ganho || 0)),
-        media_km: Math.round(Number(data?.media_km || 0))
-      };
+    // Estimativas simplificadas de custo e lucro
+    const totalCustoEstimado = (totalKm / DEFAULT_CONSUMPTION) * FUEL_PRICES['Gasolina']; // Estimativa
+    const totalLucroLiquido = totalGanhoBruto - totalCustoEstimado;
 
-    } catch (error) {
-      console.error('Erro ao obter estatísticas de jornadas:', error);
-      return {
-        total_jornadas: 0,
-        total_km: 0,
-        total_ganho: 0,
-        tempo_total_minutos: 0,
-        tempo_total_horas: 0,
-        media_ganho: 0,
-        media_km: 0
-      };
-    }
+    return {
+      totalGanhoBruto,
+      totalCustoEstimado,
+      totalLucroLiquido,
+      mediaGanhoPorJornada: totalJornadas ? totalGanhoBruto / totalJornadas : 0,
+      mediaLucroPorJornada: totalJornadas ? totalLucroLiquido / totalJornadas : 0,
+      margemLucroMedia: totalGanhoBruto ? (totalLucroLiquido / totalGanhoBruto) * 100 : 0,
+      totalKm,
+      mediaKmPorJornada: totalJornadas ? totalKm / totalJornadas : 0,
+      totalJornadas,
+    };
   }
 
-  static async obterTotalDespesas(
-    userId: string,
-    dataInicio: Date,
-    dataFim: Date,
-    idVeiculo?: string
-  ): Promise<any> {
-    try {
-      const whereConditions = QueryBuilder.buildExpenseWhereConditions(userId, dataInicio, dataFim, idVeiculo);
+  static async obterTotalDespesas(userId: string, dataInicio: Date, dataFim: Date, idVeiculo?: string): Promise<number> {
+    const whereConditions = and(
+      eq(despesas.idUsuario, userId),
+      gte(despesas.dataDespesa, dataInicio.getTime()),
+      lte(despesas.dataDespesa, dataFim.getTime()),
+      idVeiculo ? eq(despesas.idVeiculo, idVeiculo) : undefined
+    );
 
-      const result = await db
-        .select({
-          total_despesas: sql<number>`CAST(COALESCE(SUM(${despesas.valorDespesa}), 0) AS DECIMAL(10,2))`,
-          quantidade_despesas: sql<number>`CAST(COUNT(*) AS INTEGER)`
-        })
-        .from(despesas)
-        .where(whereConditions);
+    const result = await db
+      .select({ total: sum(despesas.valorDespesa) })
+      .from(despesas)
+      .where(whereConditions);
 
-      const data = result[0];
-
-      return {
-        total_despesas: Math.round(Number(data?.total_despesas || 0)),
-        quantidade_despesas: Number(data?.quantidade_despesas || 0)
-      };
-
-    } catch (error) {
-      console.error('Erro ao obter total de despesas:', error);
-      return {
-        total_despesas: 0,
-        quantidade_despesas: 0
-      };
-    }
+    return Number(result[0]?.total) || 0;
   }
 
-  static async obterTotalAbastecimentos(
-    userId: string,
-    dataInicio: Date,
-    dataFim: Date,
-    idVeiculo?: string
-  ): Promise<any> {
-    try {
-      const whereConditions = QueryBuilder.buildFuelWhereConditions(userId, dataInicio, dataFim, idVeiculo);
+  static async obterTotalAbastecimentos(userId: string, dataInicio: Date, dataFim: Date, idVeiculo?: string): Promise<number> {
+    const whereConditions = and(
+      eq(abastecimentos.idUsuario, userId),
+      gte(abastecimentos.dataAbastecimento, dataInicio.getTime()),
+      lte(abastecimentos.dataAbastecimento, dataFim.getTime()),
+      idVeiculo ? eq(abastecimentos.idVeiculo, idVeiculo) : undefined
+    );
 
-      const result = await db
-        .select({
-          total_abastecimentos: sql<number>`CAST(COUNT(*) AS INTEGER)`,
-          total_valor: sql<number>`CAST(COALESCE(SUM(${abastecimentos.valorTotal}), 0) AS DECIMAL(10,2))`,
-          total_litros: sql<number>`CAST(COALESCE(SUM(${abastecimentos.litros}), 0) AS DECIMAL(10,2))`
-        })
-        .from(abastecimentos)
-        .where(whereConditions);
+    const result = await db
+      .select({ total: sum(abastecimentos.valorTotal) })
+      .from(abastecimentos)
+      .where(whereConditions);
 
-      const data = result[0];
-
-      return {
-        total_abastecimentos: Number(data?.total_abastecimentos || 0),
-        total_valor: Math.round(Number(data?.total_valor || 0)),
-        total_litros: Math.round(Number(data?.total_litros || 0) * 100) / 100
-      };
-
-    } catch (error) {
-      console.error('Erro ao obter total de abastecimentos:', error);
-      return {
-        total_abastecimentos: 0,
-        total_valor: 0,
-        total_litros: 0
-      };
-    }
+    return Number(result[0]?.total) || 0;
   }
 
-  static async obterVeiculoMaisUtilizado(
-    userId: string,
-    dataInicio: Date,
-    dataFim: Date
-  ): Promise<any> {
-    try {
-      const whereConditions = QueryBuilder.buildJourneyWhereConditions(userId, dataInicio, dataFim);
+  static async obterVeiculoMaisUtilizado(userId: string, dataInicio: Date, dataFim: Date): Promise<any> {
+    const results = await db
+      .select({
+        idVeiculo: jornadas.idVeiculo,
+        totalKm: sum(jornadas.kmTotal),
+      })
+      .from(jornadas)
+      .where(
+        and(
+          eq(jornadas.idUsuario, userId),
+          gte(jornadas.dataInicio, dataInicio.getTime()),
+          lte(jornadas.dataFim, dataFim.getTime())
+        )
+      )
+      .groupBy(jornadas.idVeiculo)
+      .orderBy(desc(sql`totalKm`))
+      .limit(1);
 
-      const result = await db
-        .select({
-          idVeiculo: jornadas.idVeiculo,
-          veiculo_marca: veiculos.marca,
-          veiculo_modelo: veiculos.modelo,
-          veiculo_placa: veiculos.placa,
-          total_jornadas: sql<number>`CAST(COUNT(*) AS INTEGER)`,
-          total_km: sql<number>`CAST(COALESCE(SUM(${jornadas.km_total}), 0) AS DECIMAL(10,2))`
-        })
-        .from(jornadas)
-        .leftJoin(veiculos, eq(jornadas.idVeiculo, veiculos.id))
-        .where(and(whereConditions, isNotNull(jornadas.idVeiculo)))
-        .groupBy(jornadas.idVeiculo, veiculos.marca, veiculos.modelo, veiculos.placa)
-        .orderBy(sql`COUNT(*) DESC`)
-        .limit(1);
+    if (results.length === 0) return null;
 
-      const data = result[0];
-      
-      if (!data) return null;
+    const veiculoInfo = await db.select().from(veiculos).where(eq(veiculos.id, results[0].idVeiculo)).limit(1);
 
-      return {
-        idVeiculo: data.idVeiculo,
-        veiculo: `${data.veiculo_marca || 'N/A'} ${data.veiculo_modelo || 'N/A'}`,
-        placa: data.veiculo_placa,
-        total_jornadas: Number(data.total_jornadas),
-        total_km: Math.round(Number(data.total_km))
-      };
-
-    } catch (error) {
-      console.error('Erro ao obter veículo mais utilizado:', error);
-      return null;
-    }
+    return {
+      idVeiculo: results[0].idVeiculo,
+      nome: veiculoInfo[0]?.marca + ' ' + veiculoInfo[0]?.modelo,
+      totalKm: Number(results[0].totalKm),
+    };
   }
 
-  static async obterMelhorDesempenho(
-    userId: string,
-    dataInicio: Date,
-    dataFim: Date,
-    idVeiculo?: string
-  ): Promise<any> {
-    try {
-      const whereConditions = QueryBuilder.buildJourneyWhereConditions(userId, dataInicio, dataFim, idVeiculo);
+  static async obterMelhorDesempenho(userId: string, dataInicio: Date, dataFim: Date, idVeiculo?: string): Promise<any> {
+    const whereConditions = and(
+      eq(jornadas.idUsuario, userId),
+      gte(jornadas.dataInicio, dataInicio.getTime()),
+      lte(jornadas.dataFim, dataFim.getTime()),
+      idVeiculo ? eq(jornadas.idVeiculo, idVeiculo) : undefined
+    );
 
-      const result = await db
-        .select({
-          melhor_ganho: sql<number>`CAST(MAX(${jornadas.ganho_bruto}) AS DECIMAL(10,2))`,
-          maior_km: sql<number>`CAST(MAX(${jornadas.km_total}) AS DECIMAL(10,2))`,
-          melhor_tempo: sql<number>`CAST(MIN(${jornadas.tempo_total}) AS INTEGER)`,
-          data_melhor_ganho: sql<string>`(SELECT ${jornadas.dataInicio} FROM ${jornadas} WHERE ${whereConditions} AND ${jornadas.ganho_bruto} = MAX(${jornadas.ganho_bruto}) LIMIT 1)`
-        })
-        .from(jornadas)
-        .where(whereConditions);
+    const results = await db
+      .select({
+        idJornada: jornadas.id,
+        ganhoBruto: jornadas.ganhoBruto,
+        kmTotal: jornadas.kmTotal,
+        dataInicio: jornadas.dataInicio,
+      })
+      .from(jornadas)
+      .where(whereConditions)
+      .orderBy(desc(jornadas.ganhoBruto))
+      .limit(1);
 
-      const data = result[0];
+    if (results.length === 0) return null;
 
-      return {
-        melhor_ganho: Math.round(Number(data?.melhor_ganho || 0)),
-        maior_km: Math.round(Number(data?.maior_km || 0)),
-        melhor_tempo: Number(data?.melhor_tempo || 0),
-        data_melhor_ganho: data?.data_melhor_ganho
-      };
+    const melhorJornada = results[0];
 
-    } catch (error) {
-      console.error('Erro ao obter melhor desempenho:', error);
-      return {
-        melhor_ganho: 0,
-        maior_km: 0,
-        melhor_tempo: 0,
-        data_melhor_ganho: null
-      };
-    }
+    // Para calcular o lucro líquido, precisamos do custo de combustível e outras despesas daquela jornada
+    const custoCombustivelEstimado = await JourneyProcessor.calcularCustoCombustivelEstimado(melhorJornada);
+    const outrasDespesas = await JourneyProcessor.calcularOutrasDespesas(userId, melhorJornada.idVeiculo, new Date(melhorJornada.dataInicio), new Date(melhorJornada.dataFim));
+
+    const lucroLiquido = (melhorJornada.ganhoBruto || 0) - custoCombustivelEstimado - outrasDespesas;
+
+    return {
+      idJornada: melhorJornada.idJornada,
+      ganhoBruto: melhorJornada.ganhoBruto,
+      kmTotal: melhorJornada.kmTotal,
+      lucroLiquido,
+      data: new Date(melhorJornada.dataInicio).toISOString().split('T')[0],
+    };
   }
 }
-
-// ====================== CSV GENERATOR ======================
 
 class CSVGenerator {
   static gerarCSVJornadas(jornadas: JourneyReport[]): string {
@@ -1377,185 +1020,76 @@ class CSVGenerator {
       'ID Jornada',
       'Data Início',
       'Data Fim',
-      'Duração (min)',
-      'Veículo Marca',
-      'Veículo Modelo',
-      'Placa',
-      'Tipo Combustível',
+      'Duração (minutos)',
+      'Marca Veículo',
+      'Modelo Veículo',
+      'Placa Veículo',
+      'Tipo Combustível Veículo',
       'KM Início',
       'KM Fim',
       'KM Total',
-      'Ganho Bruto (R$)',
-      'Custo Combustível (R$)',
-      'Outras Despesas (R$)',
-      'Lucro Líquido (R$)',
+      'Ganho Bruto',
+      'Custo Combustível Estimado',
+      'Outras Despesas',
+      'Lucro Líquido Estimado',
       'Margem Lucro (%)',
-      'Observações'
-    ].join(';');
+      'Observações',
+    ];
 
     const rows = jornadas.map(j => [
-      j.id_jornada,
+      j.idJornada,
       j.dataInicio || '',
       j.dataFim || '',
-      j.duracao_minutos || 0,
+      j.duracaoMinutos || '',
       j.veiculo.marca || '',
       j.veiculo.modelo || '',
       j.veiculo.placa || '',
       j.veiculo.tipoCombustivel || '',
-      j.quilometragem.inicio || 0,
-      j.quilometragem.fim || 0,
-      j.quilometragem.total || 0,
-      (j.financeiro.ganho_bruto / 100).toFixed(2).replace('.', ','),
-      (j.financeiro.custo_combustivel_estimado / 100).toFixed(2).replace('.', ','),
-      (j.financeiro.outras_despesas / 100).toFixed(2).replace('.', ','),
-      (j.financeiro.lucro_liquido_estimado / 100).toFixed(2).replace('.', ','),
-      j.financeiro.margem_lucro.toString().replace('.', ','),
-      (j.observacoes || '').replace(/[;\n\r]/g, ' ')
-    ].join(';'));
+      j.quilometragem.inicio || '',
+      j.quilometragem.fim || '',
+      j.quilometragem.total || '',
+      (j.financeiro.ganhoBruto / 100).toFixed(2), // Converter centavos para reais
+      (j.financeiro.custoCombustivelEstimado / 100).toFixed(2),
+      (j.financeiro.outrasDespesas / 100).toFixed(2),
+      (j.financeiro.lucroLiquidoEstimado / 100).toFixed(2),
+      j.financeiro.margemLucro.toFixed(2),
+      j.observacoes || '',
+    ].map(item => `"${String(item).replace(/"/g, '""')}"`)); // Escapar aspas duplas
 
-    return [headers, ...rows].join('\n');
+    return [headers.join(';'), ...rows.map(row => row.join(';'))].join('\n');
   }
 
-  static gerarCSVDespesas(
-    despesasPorCategoria: ExpenseByCategory[], 
-    evolucaoDespesas: ExpenseEvolution[]
-  ): string {
-    const headersCategorias = ['Categoria', 'Total (R$)', 'Percentual (%)', 'Quantidade'].join(';');
-    const rowsCategorias = despesasPorCategoria.map(d => [
-      d.categoria,
-      (d.total / 100).toFixed(2).replace('.', ','),
-      d.percentual.toString().replace('.', ','),
-      d.quantidade
-    ].join(';'));
+  static gerarCSVDespesas(despesasPorCategoria: ExpenseByCategory[], evolucaoDespesas: ExpenseEvolution[]): string {
+    let csvContent = 'Despesas por Categoria\n';
+    csvContent += 'Categoria;Total;Percentual;Quantidade\n';
+    despesasPorCategoria.forEach(d => {
+      csvContent += `"${d.categoria}";"${(d.total / 100).toFixed(2)}";"${d.percentual.toFixed(2)}";"${d.quantidade}"\n`;
+    });
 
-    const csvCategorias = [
-      'DESPESAS POR CATEGORIA',
-      headersCategorias,
-      ...rowsCategorias,
-      '',
-      'EVOLUÇÃO TEMPORAL',
-      'Data;Categoria;Total (R$)'
-    ];
+    csvContent += '\nEvolução das Despesas\n';
+    csvContent += 'Data;Total;Categoria\n';
+    evolucaoDespesas.forEach(e => {
+      csvContent += `"${e.data}";"${(e.total / 100).toFixed(2)}";"${e.categoria}"\n`;
+    });
 
-    const rowsEvolucao = evolucaoDespesas.map(e => [
-      e.data,
-      e.categoria,
-      (e.total / 100).toFixed(2).replace('.', ',')
-    ].join(';'));
-
-    return [...csvCategorias, ...rowsEvolucao].join('\n');
+    return csvContent;
   }
 
   static gerarCSVCombustivel(consumoPorVeiculo: any[], evolucaoPrecos: any[]): string {
-    const headersConsumo = [
-      'Veículo',
-      'Placa',
-      'Tipo Combustível',
-      'Consumo Médio (km/l)',
-      'Total Litros',
-      'Total Valor (R$)',
-      'KM Percorridos',
-      'Abastecimentos'
-    ].join(';');
+    let csvContent = 'Consumo por Veículo\n';
+    csvContent += 'ID Veículo;Veículo;Total Litros;Total Gasto\n';
+    consumoPorVeiculo.forEach(c => {
+      csvContent += `"${c.idVeiculo}";"${c.veiculo}";"${c.totalLitros.toFixed(2)}";"${(c.totalValor / 100).toFixed(2)}"\n`;
+    });
 
-    const rowsConsumo = consumoPorVeiculo.map(c => [
-      c.veiculo || '',
-      c.placa || '',
-      c.tipoCombustivel || '',
-      c.consumo_medio.toString().replace('.', ','),
-      c.total_litros.toString().replace('.', ','),
-      (c.total_valor / 100).toFixed(2).replace('.', ','),
-      c.km_percorridos,
-      c.quantidade_abastecimentos
-    ].join(';'));
+    csvContent += '\nEvolução de Preços de Combustível\n';
+    csvContent += 'Data;Tipo Combustível;Preço Médio Litro\n';
+    evolucaoPrecos.forEach(e => {
+      csvContent += `"${e.data}";"${e.tipoCombustivel}";"${(e.precoMedio / 100).toFixed(2)}"\n`;
+    });
 
-    const csvConsumo = [
-      'CONSUMO POR VEÍCULO',
-      headersConsumo,
-      ...rowsConsumo,
-      '',
-      'EVOLUÇÃO DE PREÇOS',
-      'Data;Tipo Combustível;Preço Médio (R$);Abastecimentos'
-    ];
-
-    const rowsPrecos = evolucaoPrecos.map(p => [
-      p.data,
-      p.tipoCombustivel || '',
-      (p.preco_medio / 100).toFixed(2).replace('.', ','),
-      p.quantidade_abastecimentos
-    ].join(';'));
-
-    return [...csvConsumo, ...rowsPrecos].join('\n');
-  }
-
-  static gerarCSVCompleto(
-    jornadas: JourneyReport[],
-    despesas: ExpenseByCategory[],
-    combustivel: any[]
-  ): string {
-    const csvJornadas = this.gerarCSVJornadas(jornadas);
-    const csvDespesas = this.gerarCSVDespesas(despesas, []);
-    const csvCombustivel = this.gerarCSVCombustivel(combustivel, []);
-
-    return [
-      '=== RELATÓRIO COMPLETO ===',
-      '',
-      '=== JORNADAS ===',
-      csvJornadas,
-      '',
-      '=== DESPESAS ===',
-      csvDespesas,
-      '',
-      '=== COMBUSTÍVEL ===',
-      csvCombustivel
-    ].join('\n');
+    return csvContent;
   }
 }
 
-// ====================== UTILITY FUNCTIONS ======================
 
-/**
- * Utilitário para formatar valores monetários
- */
-export const formatCurrency = (value: number): string => {
-  return new Intl.NumberFormat('pt-BR', {
-    style: 'currency',
-    currency: 'BRL'
-  }).format(value / 100);
-};
-
-/**
- * Utilitário para formatar datas
- */
-export const formatDate = (date: string | Date): string => {
-  const d = typeof date === 'string' ? new Date(date) : date;
-  return new Intl.DateTimeFormat('pt-BR', {
-    day: '2-digit',
-    month: '2-digit',
-    year: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit'
-  }).format(d);
-};
-
-/**
- * Utilitário para validar UUID
- */
-export const isValidUUID = (uuid: string): boolean => {
-  const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
-  return uuidRegex.test(uuid);
-};
-
-/**
- * Utilitário para calcular diferença de tempo em minutos
- */
-export const calculateTimeDifference = (start: Date, end: Date): number => {
-  return Math.abs(end.getTime() - start.getTime()) / (1000 * 60);
-};
-
-/**
- * Utilitário para validar período de datas
- */
-export const validateDateRange = (startDate: Date, endDate: Date): boolean => {
-  return startDate <= endDate && startDate <= new Date();
-};
