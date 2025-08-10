@@ -44,11 +44,13 @@ Execute o script de setup do SQLite para garantir que o banco de dados esteja pr
 npm run db:migrate
 ```
 
-*   **Nota**: Se você preferir usar PostgreSQL para desenvolvimento local (mais próximo do ambiente de produção), você precisará configurar um servidor PostgreSQL e ajustar as variáveis de ambiente no arquivo `.env` (veja a próxima seção).
+*   **Nota Importante**: O comando `npm run db:migrate` pode ser interativo, solicitando confirmação para renomeação de colunas ou outras operações. Fique atento às mensagens no terminal e confirme as ações quando solicitado. Para um ambiente de CI/CD ou automação, considere a criação de um script não interativo ou a utilização de ferramentas que gerenciem migrações de forma programática.
+
+*   **PostgreSQL para Desenvolvimento Local**: Se você preferir usar PostgreSQL para desenvolvimento local (mais próximo do ambiente de produção), você precisará configurar um servidor PostgreSQL e ajustar as variáveis de ambiente no arquivo `.env`. Consulte o guia [Como Realizar Migração de Banco de Dados](docs/02_guias_como_fazer/02_como_realizar_migracao_banco_dados.md) para mais detalhes sobre a configuração do Drizzle ORM com PostgreSQL.
 
 ### 3.3. Configuração de Variáveis de Ambiente
 
-Crie um arquivo `.env` na raiz do diretório `backend` com as seguintes variáveis. Você pode copiar o `giropro.env` como base:
+Crie um arquivo `.env` na raiz do diretório `backend` com as seguintes variáveis. Você pode copiar o arquivo de exemplo `giropro.env` como base. **Certifique-se de que o arquivo `.env` seja adicionado ao seu `.gitignore` para evitar que suas credenciais sejam versionadas!**
 
 ```bash
 cp giropro.env .env
@@ -63,6 +65,7 @@ SQLITE_DB_PATH=./giropro.db
 
 # Autenticação
 JWT_SECRET=sua_chave_secreta_muito_forte_aqui # **MUDE ISSO EM PRODUÇÃO!**
+# Para gerar uma chave forte, você pode usar: node -e "console.log(require(\'crypto\').randomBytes(32).toString(\'hex\'))"
 JWT_EXPIRES_IN=7d
 
 # Cache (opcional para desenvolvimento local)
