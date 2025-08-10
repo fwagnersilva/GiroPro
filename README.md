@@ -20,7 +20,7 @@ Esta documentação está organizada de acordo com o framework Diátaxis, que ca
 
 *   **02. Guias de Como Fazer**
     *   [Como Testar os Scripts de Setup](docs/02_guias_como_fazer/01_testar_scripts_setup.md)
-
+    *   [Como Resolver Erros de Compilação](docs/02_guias_como_fazer/05_como_resolver_erros_compilacao.md)
 *   **03. Explicações**
     *   [Problemas Comuns e Lições Aprendidas](docs/03_explicacoes/00_problemas_comuns_e_licoes_aprendidas.md)
     *   [Arquitetura Geral do Sistema](docs/03_explicacoes/01_arquitetura_geral.md)

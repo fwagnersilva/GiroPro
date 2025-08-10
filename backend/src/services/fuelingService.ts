@@ -10,26 +10,26 @@ interface FuelingData {
   id: string;
   idUsuario: string;
   idVeiculo: string;
-  dataAbastecimento: Date;
+  dataAbastecimento: number; // Unix timestamp
   kmAtual: number;
   quantidadeLitros: number;
-  valorTotal: number;
-  valorLitro: number;
+  valorTotal: number; // Em centavos
+  valorLitro: number; // Em centavos
   nomePosto: string | null;
   tipoCombustivel: "gasolina" | "etanol" | "diesel" | "gnv" | "flex";
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: number; // Unix timestamp
+  updatedAt: number; // Unix timestamp
 }
 
 interface CreateFuelingData {
   id: string;
   idUsuario: string;
   idVeiculo: string;
-  dataAbastecimento: Date;
+  dataAbastecimento: number; // Unix timestamp
   kmAtual: number;
   quantidadeLitros: number;
-  valorTotal: number;
-  valorLitro: number;
+  valorTotal: number; // Em centavos
+  valorLitro: number; // Em centavos
   nomePosto: string | null;
   tipoCombustivel: "gasolina" | "etanol" | "diesel" | "gnv" | "flex";
 }
@@ -100,7 +100,7 @@ class FuelingUtils {
       id: crypto.randomUUID(),
       idUsuario: userId,
       idVeiculo: data.vehicleId,
-      dataAbastecimento: new Date(data.data),
+      dataAbastecimento: new Date(data.data).getTime(), // Convert Date to timestamp
       kmAtual: data.quilometragem,
       quantidadeLitros: data.quantidadeLitros,
       valorTotal: this.priceToCents(data.quantidadeLitros * data.precoPorLitro),
@@ -183,8 +183,8 @@ export class FuelingService {
         return await tx.insert(abastecimentos)
           .values({
             ...newFuelingData,
-            createdAt: new Date(),
-            updatedAt: new Date(),
+            createdAt: new Date().getTime(),
+            updatedAt: new Date().getTime(),
           })
           .returning();
       });
@@ -239,8 +239,8 @@ export class FuelingService {
         conditions.push(
           between(
             abastecimentos.dataAbastecimento,
-            new Date(filters.startDate),
-            new Date(filters.endDate)
+            new Date(filters.startDate).getTime(),
+            new Date(filters.endDate).getTime()
           )
         );
       }
@@ -369,7 +369,7 @@ export class FuelingService {
 
       // Preparar dados para atualização
       const updateData: Partial<FuelingData> = {
-        updatedAt: new Date()
+        updatedAt: new Date().getTime()
       };
 
       // Mapear campos com validação
@@ -378,7 +378,7 @@ export class FuelingService {
         if (isNaN(date.getTime())) {
           throw new Error('Data de abastecimento inválida');
         }
-        updateData.dataAbastecimento = date;
+        updateData.dataAbastecimento = date.getTime();
       }
 
       if (fuelingData.quilometragem !== undefined) {
@@ -517,7 +517,7 @@ export class FuelingService {
     totalSpent: number;
     totalLiters: number;
     averagePrice: number;
-    lastFueling?: Date;
+    lastFueling?: number; // Unix timestamp
   }>> {
     try {
       const cacheKey = `stats:${userId}:${vehicleId || 'all'}`;
@@ -535,7 +535,7 @@ export class FuelingService {
           totalSpent: sql<number>`COALESCE(SUM(${abastecimentos.valorTotal}), 0)`,
           totalLiters: sql<number>`COALESCE(SUM(${abastecimentos.quantidadeLitros}), 0)`,
           averagePrice: sql<number>`COALESCE(AVG(${abastecimentos.valorLitro}), 0)`,
-          lastFueling: sql<Date>`MAX(${abastecimentos.dataAbastecimento})`,
+          lastFueling: sql<number>`MAX(${abastecimentos.dataAbastecimento})`,
         })
         .from(abastecimentos)
         .where(and(...conditions));
@@ -565,3 +565,5 @@ export class FuelingService {
     }
   }
 }
+
+

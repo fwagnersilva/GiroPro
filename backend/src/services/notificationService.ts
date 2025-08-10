@@ -11,7 +11,7 @@ export interface NotificationData {
   mensagem: string;
   dados_extras?: any;
   lida?: boolean;
-  dataEnvio?: string;
+  dataEnvio?: Date; // Alterado para Date
 }
 
 export class NotificationService {
@@ -27,7 +27,7 @@ export class NotificationService {
       mensagem: data.mensagem,
       dados_extras: data.dados_extras ? JSON.stringify(data.dados_extras) : null,
       lida: false,
-      dataEnvio: new Date().getTime(),
+      dataEnvio: data.dataEnvio || new Date(), // Usar new Date() diretamente
     };
 
     await db.insert(notificacoes).values(notification);
@@ -62,7 +62,7 @@ export class NotificationService {
 
     if (tipo) {
       // Validar que o tipo é um dos valores permitidos do enum
-      const validTypes = ["Sistema", "Alerta", "Promocao", "Suporte"];
+      const validTypes = ["sistema", "alerta", "promocao", "suporte"];
       if (validTypes.includes(tipo as any)) {
         whereCondition = and(whereCondition, eq(notificacoes.tipo, tipo as any));
       } else {
@@ -80,7 +80,7 @@ export class NotificationService {
 
     return notifications.map(notification => ({
       ...notification,
-      dados_extras: notification.dados_extras ? JSON.parse(notification.dados_extras) : null,
+      dadosExtras: notification.dadosExtras ? JSON.parse(notification.dadosExtras) : null, // Corrigido para dadosExtras
     }));
   }
 
@@ -92,7 +92,7 @@ export class NotificationService {
       .update(notificacoes)
       .set({
         lida: true,
-        data_leitura: new Date().getTime(),
+        dataLeitura: new Date(), // Corrigido para dataLeitura
       })
       .where(
         and(
@@ -113,7 +113,7 @@ export class NotificationService {
       .update(notificacoes)
       .set({
         lida: true,
-        data_leitura: new Date().getTime(),
+        dataLeitura: new Date(), // Corrigido para dataLeitura
       })
       .where(
         and(
@@ -151,7 +151,7 @@ export class NotificationService {
     const result = await db
       .update(notificacoes)
       .set({
-        deletedAt: new Date().toISOString(),
+        deletedAt: new Date(),
       })
       .where(
         and(
@@ -173,11 +173,11 @@ export class NotificationService {
     const result = await db
       .update(notificacoes)
       .set({
-        deletedAt: new Date().toISOString(),
+        deletedAt: new Date(),
       })
       .where(
         and(
-          lte(notificacoes.dataEnvio, thirtyDaysAgo.getTime()),
+          lte(notificacoes.dataEnvio, thirtyDaysAgo), 
           isNull(notificacoes.deletedAt)
         )
       ).returning();
@@ -201,8 +201,8 @@ export class NotificationService {
         .where(
           and(
             eq(notificacoes.idUsuario, userId),
-            eq(notificacoes.tipo, 'Sistema'),
-            gte(notificacoes.dataEnvio, yesterday.getTime()),
+            eq(notificacoes.tipo, 'sistema'),
+            gte(notificacoes.dataEnvio, yesterday), 
             isNull(notificacoes.deletedAt)
           )
         );
@@ -253,7 +253,7 @@ export class NotificationService {
           and(
             eq(notificacoes.idUsuario, userId),
             eq(notificacoes.tipo, 'alerta'),
-            gte(notificacoes.dataEnvio, twoDaysAgo.getTime()),
+            gte(notificacoes.dataEnvio, twoDaysAgo), 
             isNull(notificacoes.deletedAt)
           )
         );
@@ -450,6 +450,5 @@ export class NotificationService {
     }
   }
 }
-
 
 

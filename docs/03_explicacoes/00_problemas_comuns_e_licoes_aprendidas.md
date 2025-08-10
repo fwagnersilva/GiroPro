@@ -103,3 +103,17 @@ Esta seção detalha as correções e ajustes realizados no backend do projeto G
 
 **Lição Aprendida:** A importância de um setup de testes robusto e isolado, garantindo que o ambiente de teste não interfira na execução dos testes e que os recursos (como conexões de banco de dados e servidores HTTP) sejam devidamente limpos após cada execução. A exportação explícita de instâncias de servidor e a gestão de conexões de banco de dados são práticas essenciais para testes de integração eficazes.
 
+
+
+## 8. A Importância da Documentação de Erros de Compilação
+
+**Problema**: Erros de compilação, especialmente em projetos TypeScript com ORMs complexos como o Drizzle, podem ser frustrantes e consumir muito tempo para desenvolvedores não familiarizados com as nuances do sistema de tipos e do ORM.
+
+**Lições Aprendidas**:
+*   **Guia Dedicado**: A criação de um guia específico para resolução de erros de compilação (`docs/02_guias_como_fazer/05_como_resolver_erros_compilacao.md`) é fundamental. Ele serve como um recurso centralizado para que desenvolvedores possam rapidamente diagnosticar e resolver problemas comuns de tipagem, inconsistência de nomenclatura e dependências.
+*   **Exemplos Práticos**: O guia deve incluir exemplos práticos dos erros e suas respectivas soluções, facilitando a identificação e aplicação das correções.
+*   **Manutenção Contínua**: Este guia deve ser atualizado continuamente à medida que novos problemas e soluções são identificados, garantindo que a base de conhecimento permaneça relevante e útil.
+
+Ao manter uma documentação robusta e específica para erros de compilação, o processo de onboarding de novos desenvolvedores é acelerado e a produtividade da equipe é aumentada, minimizando o tempo gasto na depuração de problemas recorrentes.
+
+
