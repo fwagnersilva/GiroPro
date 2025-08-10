@@ -1,7 +1,7 @@
-import { db } from "../db";
+import { eq, sql } from "drizzle-orm";
+import { db } from "../db/connection";
 import { metas, progressoMetas } from "../db/schema";
 import { CompleteGoalRequest } from "../controllers/goalsController";
-import { eq, sql } from "drizzle-orm";
 
 interface CreateGoalCompletionResponse {
   id: string;
@@ -32,7 +32,7 @@ export async function createGoalCompletion({
       valor_atual: novoValorAtual,
       percentual_concluido: novoPercentualConcluido,
       data_conclusao: novoPercentualConcluido === 100 ? new Date().toISOString() : undefined,
-      updated_at: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
     })
     .where(eq(metas.id, goalId))
     .returning();
@@ -62,7 +62,7 @@ export async function createGoalCompletion({
   return {
     id: progresso.id,
     goalId: progresso.id_meta,
-    createdAt: new Date(progresso.data_registro),
+    createdAt: new Date(progresso.dataRegistro),
   };
 }
 

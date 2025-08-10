@@ -92,7 +92,7 @@ export const jornadas = sqliteTable("jornadas", {
 }, (table) => ({
   usuarioIdx: index("jornadas_usuario_idx").on(table.idUsuario),
   veiculoIdx: index("jornadas_veiculo_idx").on(table.idVeiculo),
-  dataInicioIdx: index("jornadas_data_inicio_idx").on(table.dataInicio),
+  dataInicioIdx: index("jornadas_dataInicio_idx").on(table.dataInicio),
   periodoIdx: index("jornadas_periodo_idx").on(table.dataInicio, table.dataFim),
   usuarioDataIdx: index("jornadas_usuario_data_idx").on(table.idUsuario, table.dataInicio),
   statusIdx: index("jornadas_status_idx").on(table.dataFim), // Para identificar jornadas em andamento

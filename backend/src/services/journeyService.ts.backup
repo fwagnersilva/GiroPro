@@ -8,14 +8,14 @@ export class JourneyService {
   static async createJourney(userId: string, journeyData: CreateJourneyRequest) {
     const newJourneyData = {
       id: crypto.randomUUID(),
-      id_usuario: userId,
-      id_veiculo: journeyData.id_veiculo,
-      data_inicio: new Date(journeyData.data_inicio),
+      idUsuario: userId,
+      idVeiculo: journeyData.idVeiculo,
+      dataInicio: new Date(journeyData.dataInicio),
       km_inicio: journeyData.km_inicio,
-      data_fim: null,
+      dataFim: null,
       km_fim: null,
-      ganho_bruto: null,
-      km_total: null,
+      ganhoBruto: null,
+      kmTotal: null,
       tempo_total: null,
       observacoes: journeyData.observacoes || null,
     };
@@ -30,44 +30,44 @@ export class JourneyService {
   }
 
   static async getJourneysByUserId(userId: string, filters?: JourneyFilters) {
-    let query = db.select().from(jornadas).where(eq(jornadas.id_usuario, userId));
+    let query = db.select().from(jornadas).where(eq(jornadas.idUsuario, userId));
     
     if (filters) {
-      const conditions = [eq(jornadas.id_usuario, userId)];
+      const conditions = [eq(jornadas.idUsuario, userId)];
       
       // Filtro por status
       if (filters.status === 'em_andamento') {
-        conditions.push(eq(jornadas.data_fim, null));
+        conditions.push(eq(jornadas.dataFim, null));
       } else if (filters.status === 'concluida') {
-        conditions.push(ne(jornadas.data_fim, null));
+        conditions.push(ne(jornadas.dataFim, null));
       }
       
       // Filtro por data de início
-      if (filters.data_inicio) {
-        conditions.push(gte(jornadas.data_inicio, new Date(filters.data_inicio)));
+      if (filters.dataInicio) {
+        conditions.push(gte(jornadas.dataInicio, new Date(filters.dataInicio)));
       }
       
       // Filtro por data de fim
-      if (filters.data_fim) {
-        conditions.push(lte(jornadas.data_inicio, new Date(filters.data_fim)));
+      if (filters.dataFim) {
+        conditions.push(lte(jornadas.dataInicio, new Date(filters.dataFim)));
       }
       
       // Filtro por veículo
       if (filters.veiculo_id) {
-        conditions.push(eq(jornadas.id_veiculo, filters.veiculo_id));
+        conditions.push(eq(jornadas.idVeiculo, filters.veiculo_id));
       }
       
       return await db.select().from(jornadas).where(and(...conditions));
     }
     
-    return await db.select().from(jornadas).where(eq(jornadas.id_usuario, userId));
+    return await db.select().from(jornadas).where(eq(jornadas.idUsuario, userId));
   }
 
   static async getJourneyById(id: string, userId: string) {
     try {
       const [journey] = await db.select()
         .from(jornadas)
-        .where(and(eq(jornadas.id, id), eq(jornadas.id_usuario, userId)));
+        .where(and(eq(jornadas.id, id), eq(jornadas.idUsuario, userId)));
       
       return journey || null;
     } catch (error) {
@@ -87,20 +87,20 @@ export class JourneyService {
       const dataToUpdate: Partial<typeof jornadas.$inferInsert> = {};
       
       // Processar cada campo com validação
-      if (journeyData.data_fim !== undefined) {
-        dataToUpdate.data_fim = journeyData.data_fim ? new Date(journeyData.data_fim) : null;
+      if (journeyData.dataFim !== undefined) {
+        dataToUpdate.dataFim = journeyData.dataFim ? new Date(journeyData.dataFim) : null;
       }
       
       if (journeyData.km_fim !== undefined) {
         dataToUpdate.km_fim = journeyData.km_fim;
-        // Calcular km_total se tivermos km_inicio e km_fim
+        // Calcular kmTotal se tivermos km_inicio e km_fim
         if (journeyData.km_fim && existingJourney.km_inicio) {
-          dataToUpdate.km_total = journeyData.km_fim - existingJourney.km_inicio;
+          dataToUpdate.kmTotal = journeyData.km_fim - existingJourney.km_inicio;
         }
       }
       
-      if (journeyData.ganho_bruto !== undefined) {
-        dataToUpdate.ganho_bruto = journeyData.ganho_bruto;
+      if (journeyData.ganhoBruto !== undefined) {
+        dataToUpdate.ganhoBruto = journeyData.ganhoBruto;
       }
       
       if (journeyData.observacoes !== undefined) {
@@ -108,9 +108,9 @@ export class JourneyService {
       }
 
       // Calcular tempo total se a jornada estiver sendo finalizada
-      if (dataToUpdate.data_fim && existingJourney.data_inicio) {
-        const inicio = new Date(existingJourney.data_inicio);
-        const fim = new Date(dataToUpdate.data_fim);
+      if (dataToUpdate.dataFim && existingJourney.dataInicio) {
+        const inicio = new Date(existingJourney.dataInicio);
+        const fim = new Date(dataToUpdate.dataFim);
         const diffMs = fim.getTime() - inicio.getTime();
         const hours = Math.floor(diffMs / (1000 * 60 * 60));
         const minutes = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
@@ -119,7 +119,7 @@ export class JourneyService {
 
       const [updatedJourney] = await db.update(jornadas)
         .set(dataToUpdate)
-        .where(and(eq(jornadas.id, id), eq(jornadas.id_usuario, userId)))
+        .where(and(eq(jornadas.id, id), eq(jornadas.idUsuario, userId)))
         .returning();
       
       return updatedJourney;
@@ -132,7 +132,7 @@ export class JourneyService {
   static async deleteJourney(id: string, userId: string) {
     try {
       const result = await db.delete(jornadas)
-        .where(and(eq(jornadas.id, id), eq(jornadas.id_usuario, userId)))
+        .where(and(eq(jornadas.id, id), eq(jornadas.idUsuario, userId)))
         .returning();
       
       return result.length > 0;
@@ -147,17 +147,17 @@ export class JourneyService {
     return await db.select()
       .from(jornadas)
       .where(and(
-        eq(jornadas.id_usuario, userId),
-        eq(jornadas.data_fim, null)
+        eq(jornadas.idUsuario, userId),
+        eq(jornadas.dataFim, null)
       ));
   }
 
   // Método adicional para finalizar uma jornada
-  static async finishJourney(id: string, userId: string, km_fim: number, ganho_bruto?: number, observacoes?: string) {
+  static async finishJourney(id: string, userId: string, km_fim: number, ganhoBruto?: number, observacoes?: string) {
     return await this.updateJourney(id, userId, {
-      data_fim: new Date().toISOString(),
+      dataFim: new Date().toISOString(),
       km_fim,
-      ganho_bruto,
+      ganhoBruto,
       observacoes
     });
   }

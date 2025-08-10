@@ -1,5 +1,5 @@
 import request from 'supertest';
-import app from '../../app';
+import app from '../../app_simple';
 import { db } from '../../db/connection';
 import { usuarios, veiculos, jornadas, abastecimentos, despesas } from '../../db/schema';
 import { eq } from 'drizzle-orm';
@@ -28,10 +28,10 @@ describe('User Journey E2E Tests', () => {
   afterAll(async () => {
     // Limpar todos os dados de teste
     if (userId) {
-      await db.delete(despesas).where(eq(despesas.id_usuario, userId));
-      await db.delete(abastecimentos).where(eq(abastecimentos.id_usuario, userId));
-      await db.delete(jornadas).where(eq(jornadas.id_usuario, userId));
-      await db.delete(veiculos).where(eq(veiculos.id_usuario, userId));
+      await db.delete(despesas).where(eq(despesas.idUsuario, userId));
+      await db.delete(abastecimentos).where(eq(abastecimentos.idUsuario, userId));
+      await db.delete(jornadas).where(eq(jornadas.idUsuario, userId));
+      await db.delete(veiculos).where(eq(veiculos.idUsuario, userId));
       await db.delete(usuarios).where(eq(usuarios.id, userId));
     }
   });
@@ -108,9 +108,9 @@ describe('User Journey E2E Tests', () => {
       const fuelingData = {
         veiculoId: vehicleId,
         data: new Date().toISOString(),
-        quantidade_litros: 35,
-        valor_total: 210.00,
-        valor_litro: 6.00,
+        quantidadeLitros: 35,
+        valorTotal: 210.00,
+        valorLitro: 6.00,
         posto: 'Shell Centro',
         kmAtual: 15000,
         tanqueCheio: true
@@ -123,8 +123,8 @@ describe('User Journey E2E Tests', () => {
         .expect(201);
 
       expect(response.body).toHaveProperty('id');
-      expect(response.body.quantidade_litros).toBe(fuelingData.quantidade_litros);
-      expect(response.body.valor_total).toBe(fuelingData.valor_total);
+      expect(response.body.quantidadeLitros).toBe(fuelingData.quantidadeLitros);
+      expect(response.body.valorTotal).toBe(fuelingData.valorTotal);
       expect(response.body.posto).toBe(fuelingData.posto);
     });
 
@@ -135,7 +135,7 @@ describe('User Journey E2E Tests', () => {
         dataFim: new Date(Date.now() + 8 * 60 * 60 * 1000).toISOString(), // 8 horas depois
         kmInicial: 15000,
         kmFinal: 15200,
-        ganho_bruto: 280.50,
+        ganhoBruto: 280.50,
         plataforma: 'uber',
         observacoes: 'Dia de trabalho normal'
       };
@@ -147,7 +147,7 @@ describe('User Journey E2E Tests', () => {
         .expect(201);
 
       expect(response.body).toHaveProperty('id');
-      expect(response.body.ganho_bruto).toBe(journeyData.ganho_bruto);
+      expect(response.body.ganhoBruto).toBe(journeyData.ganhoBruto);
       expect(response.body.plataforma).toBe(journeyData.plataforma);
       expect(response.body.km_inicio).toBe(journeyData.kmInicial);
       expect(response.body.km_fim).toBe(journeyData.kmFinal);
@@ -159,7 +159,7 @@ describe('User Journey E2E Tests', () => {
         data: new Date().toISOString(),
         categoria: 'manutencao',
         descricao: 'Troca de óleo e filtros',
-        valor_despesa: 120.00,
+        valorDespesa: 120.00,
         observacoes: 'Manutenção preventiva aos 15.000 km'
       };
 
@@ -172,7 +172,7 @@ describe('User Journey E2E Tests', () => {
       expect(response.body).toHaveProperty('id');
       expect(response.body.categoria).toBe(expenseData.categoria);
       expect(response.body.descricao).toBe(expenseData.descricao);
-      expect(response.body.valor_despesa).toBe(expenseData.valor_despesa);
+      expect(response.body.valorDespesa).toBe(expenseData.valorDespesa);
     });
 
     it('9. Deve acessar o dashboard com dados calculados', async () => {
@@ -312,9 +312,9 @@ describe('User Journey E2E Tests', () => {
     it('deve validar dados obrigatórios ao criar abastecimento', async () => {
       const invalidFueling = {
         veiculoId: 'invalid-id',
-        quantidade_litros: -10,
-        valor_total: -100,
-        valor_litro: 0
+        quantidadeLitros: -10,
+        valorTotal: -100,
+        valorLitro: 0
       };
 
       const response = await request(app)

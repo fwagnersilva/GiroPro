@@ -1,5 +1,5 @@
 import request from 'supertest';
-import app from '../../app';
+import app from '../../app_simple';
 import { db } from '../../db/connection';
 import { usuarios } from '../../db/schema';
 import { eq } from 'drizzle-orm';

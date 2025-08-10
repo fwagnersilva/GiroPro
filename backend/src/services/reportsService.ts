@@ -520,7 +520,7 @@ export class ReportsService {
   static async validateReportData(userId: string, vehicleId?: string) {
     const issues = [];
 
-    // 1. Jornadas incompletas (km_fim ou data_fim ausentes)
+    // 1. Jornadas incompletas (km_fim ou dataFim ausentes)
     const incompleteJourneys = await db
       .select({
         id: jornadas.id,

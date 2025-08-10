@@ -1,5 +1,5 @@
 import request from 'supertest';
-import app from '../../app';
+import app from '../../app_simple';
 import { db, closeConnection } from '../../db/connection';
 import { usuarios, veiculos } from '../../db/schema';
 import { eq, and } from 'drizzle-orm';
@@ -45,7 +45,7 @@ describe('VehiclesController', () => {
 
   afterEach(async () => {
     // Limpar dados após cada teste
-    await db.delete(veiculos).where(eq(veiculos.id_usuario, userId));
+    await db.delete(veiculos).where(eq(veiculos.idUsuario, userId));
     await db.delete(usuarios).where(eq(usuarios.id, userId));
   });
 
@@ -61,7 +61,7 @@ describe('VehiclesController', () => {
       expect(response.body.marca).toBe(testVehicle.marca);
       expect(response.body.modelo).toBe(testVehicle.modelo);
       expect(response.body.placa).toBe(testVehicle.placa);
-      expect(response.body.id_usuario).toBe(userId);
+      expect(response.body.idUsuario).toBe(userId);
     });
 
     it('should return 400 for invalid vehicle data', async () => {
@@ -464,7 +464,7 @@ describe('VehiclesController', () => {
         .expect(200);
 
       expect(response.body).toHaveProperty('total_jornadas');
-      expect(response.body).toHaveProperty('km_total');
+      expect(response.body).toHaveProperty('kmTotal');
       expect(response.body).toHaveProperty('consumo_medio');
       expect(response.body).toHaveProperty('custo_total_combustivel');
       expect(response.body).toHaveProperty('ultima_jornada');
@@ -477,7 +477,7 @@ describe('VehiclesController', () => {
         .expect(200);
 
       expect(response.body.total_jornadas).toBe(0);
-      expect(response.body.km_total).toBe(0);
+      expect(response.body.kmTotal).toBe(0);
       expect(response.body.consumo_medio).toBe(0);
       expect(response.body.custo_total_combustivel).toBe(0);
       expect(response.body.ultima_jornada).toBeNull();

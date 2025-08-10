@@ -8,16 +8,16 @@ import { DateHelper } from '../utils/dateHelper';
 
 // Schemas de validação aprimorados
 const baseReportSchema = z.object({
-  data_inicio: z.string().datetime().optional(),
-  data_fim: z.string().datetime().optional(),
-  id_veiculo: z.string().uuid().optional(),
+  dataInicio: z.string().datetime().optional(),
+  dataFim: z.string().datetime().optional(),
+  idVeiculo: z.string().uuid().optional(),
   formato: z.enum(['json', 'csv', 'xlsx', 'pdf']).default('json'),
   incluir_detalhes: z.boolean().default(true),
   incluir_graficos: z.boolean().default(false)
 });
 
 const comparisonSchema = z.object({
-  id_veiculo: z.string().uuid().optional(),
+  idVeiculo: z.string().uuid().optional(),
   numero_periodos: z.coerce.number().int().min(1).max(24).default(4),
   incluir_tendencias: z.boolean().default(true),
   incluir_previsoes: z.boolean().default(false)
@@ -53,9 +53,9 @@ export class WeeklyMonthlyReportsController {
       
       relatorio = await ReportsService.generateWeeklyReport({
         userId,
-        startDate: params.data_inicio,
-        endDate: params.data_fim,
-        vehicleId: params.id_veiculo,
+        startDate: params.dataInicio,
+        endDate: params.dataFim,
+        vehicleId: params.idVeiculo,
         includeDetails: params.incluir_detalhes,
         includeCharts: params.incluir_graficos
       });
@@ -97,9 +97,9 @@ export class WeeklyMonthlyReportsController {
       
       relatorio = await ReportsService.generateMonthlyReport({
         userId,
-        startDate: params.data_inicio,
-        endDate: params.data_fim,
-        vehicleId: params.id_veiculo,
+        startDate: params.dataInicio,
+        endDate: params.dataFim,
+        vehicleId: params.idVeiculo,
         includeDetails: params.incluir_detalhes,
         includeCharts: params.incluir_graficos
       });
@@ -141,7 +141,7 @@ export class WeeklyMonthlyReportsController {
       comparativo = await ReportsService.generateWeeklyComparison({
         userId,
         numberOfWeeks: params.numero_periodos,
-        vehicleId: params.id_veiculo,
+        vehicleId: params.idVeiculo,
         includeTrends: params.incluir_tendencias,
         includePredictions: params.incluir_previsoes
       });
@@ -157,7 +157,7 @@ export class WeeklyMonthlyReportsController {
         tendencias: comparativo.trends,
         insights: comparativo.insights,
         filtros: {
-          id_veiculo: params.id_veiculo || null,
+          idVeiculo: params.idVeiculo || null,
           numero_semanas: params.numero_periodos
         }
       },
@@ -181,7 +181,7 @@ export class WeeklyMonthlyReportsController {
       comparativo = await ReportsService.generateMonthlyComparison({
         userId,
         numberOfMonths: params.numero_periodos,
-        vehicleId: params.id_veiculo,
+        vehicleId: params.idVeiculo,
         includeTrends: params.incluir_tendencias,
         includePredictions: params.incluir_previsoes
       });
@@ -199,7 +199,7 @@ export class WeeklyMonthlyReportsController {
         previsoes: comparativo.predictions,
         insights: comparativo.insights,
         filtros: {
-          id_veiculo: params.id_veiculo || null,
+          idVeiculo: params.idVeiculo || null,
           numero_meses: params.numero_periodos
         }
       },
@@ -213,7 +213,7 @@ export class WeeklyMonthlyReportsController {
   static getDashboard = asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
     const userId = WeeklyMonthlyReportsController.extractUserId(req);
     const params = WeeklyMonthlyReportsController.validateQuery(req.query, z.object({
-      id_veiculo: z.string().uuid().optional(),
+      idVeiculo: z.string().uuid().optional(),
       incluir_alertas: z.boolean().default(true),
       incluir_metas: z.boolean().default(true)
     }));
@@ -226,11 +226,11 @@ export class WeeklyMonthlyReportsController {
 
       // Executa consultas em paralelo para melhor performance
       const [currentWeek, currentMonth, comparison, alerts, goals] = await Promise.all([
-        ReportsService.generateWeeklyReport({ userId, vehicleId: params.id_veiculo }),
-        ReportsService.generateMonthlyReport({ userId, vehicleId: params.id_veiculo }),
-        ReportsService.generateWeeklyComparison({ userId, vehicleId: params.id_veiculo }),
-        params.incluir_alertas ? ReportsService.generateAlerts({ userId, vehicleId: params.id_veiculo }) : null,
-        params.incluir_metas ? ReportsService.getGoalsProgress(userId, params.id_veiculo) : null
+        ReportsService.generateWeeklyReport({ userId, vehicleId: params.idVeiculo }),
+        ReportsService.generateMonthlyReport({ userId, vehicleId: params.idVeiculo }),
+        ReportsService.generateWeeklyComparison({ userId, vehicleId: params.idVeiculo }),
+        params.incluir_alertas ? ReportsService.generateAlerts({ userId, vehicleId: params.idVeiculo }) : null,
+        params.incluir_metas ? ReportsService.getGoalsProgress(userId, params.idVeiculo) : null
       ]);
 
       dashboard = {
@@ -244,7 +244,7 @@ export class WeeklyMonthlyReportsController {
         resumo_visual: {
           grafico_evolucao: currentMonth.evolucao_diaria,
           distribuicao_despesas: currentMonth.detalhamento_despesas,
-          top_jornadas: await ReportsService.getTopJourneys(userId, params.id_veiculo, 5)
+          top_jornadas: await ReportsService.getTopJourneys(userId, params.idVeiculo, 5)
         }
       };
 
@@ -266,7 +266,7 @@ export class WeeklyMonthlyReportsController {
   static getPerformanceAnalysis = asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
     const userId = WeeklyMonthlyReportsController.extractUserId(req);
     const params = WeeklyMonthlyReportsController.validateQuery(req.query, z.object({
-      id_veiculo: z.string().uuid().optional(),
+      idVeiculo: z.string().uuid().optional(),
       periodo_analise: z.enum(['trimestre', 'semestre', 'ano']).default('trimestre'),
       incluir_benchmarks: z.boolean().default(true)
     }));
@@ -277,7 +277,7 @@ export class WeeklyMonthlyReportsController {
     if (!analise) {
       WeeklyMonthlyReportsController.logger.info('Gerando análise de performance', { userId, params });
 
-      analise = await ReportsService.getPerformanceMetrics(userId, dataInicio, dataFim, params.id_veiculo);
+      analise = await ReportsService.getPerformanceMetrics(userId, dataInicio, dataFim, params.idVeiculo);
 
       // Cache por 1 hora (análise de performance muda menos frequentemente)
       await CacheService.set(cacheKey, analise, 3600);
@@ -297,9 +297,9 @@ export class WeeklyMonthlyReportsController {
     const userId = WeeklyMonthlyReportsController.extractUserId(req);
     const params = WeeklyMonthlyReportsController.validateQuery(req.body, z.object({
       tipos_relatorio: z.array(z.enum(['semanal', 'mensal', 'comparativo_semanal', 'comparativo_mensal', 'dashboard'])).min(1),
-      data_inicio: z.string().datetime().optional(),
-      data_fim: z.string().datetime().optional(),
-      id_veiculo: z.string().uuid().optional(),
+      dataInicio: z.string().datetime().optional(),
+      dataFim: z.string().datetime().optional(),
+      idVeiculo: z.string().uuid().optional(),
       formato: z.enum(['xlsx', 'pdf', 'zip']).default('xlsx'),
       incluir_graficos: z.boolean().default(true)
     }));
@@ -310,9 +310,9 @@ export class WeeklyMonthlyReportsController {
     const jobId = await ReportsService.createBatchExportJob({
       userId,
       reportTypes: params.tipos_relatorio,
-      startDate: params.data_inicio,
-      endDate: params.data_fim,
-      vehicleId: params.id_veiculo,
+      startDate: params.dataInicio,
+      endDate: params.dataFim,
+      vehicleId: params.idVeiculo,
       format: params.formato,
       includeCharts: params.incluir_graficos
     });

@@ -11,12 +11,12 @@ export class JourneyService {
       idUsuario: userId,
       idVeiculo: journeyData.idVeiculo,
       dataInicio: new Date(journeyData.dataInicio),
-      km_inicio: journeyData.km_inicio,
+      kmInicio: journeyData.kmInicio,
       dataFim: null,
-      km_fim: null,
+      kmFim: null,
       ganhoBruto: null,
       kmTotal: null,
-      tempo_total: null,
+      tempoTotal: null,
       observacoes: journeyData.observacoes || null,
     };
     
@@ -91,11 +91,11 @@ export class JourneyService {
         dataToUpdate.dataFim = journeyData.dataFim ? new Date(journeyData.dataFim) : null;
       }
       
-      if (journeyData.km_fim !== undefined) {
-        dataToUpdate.km_fim = journeyData.km_fim;
+      if (journeyData.kmFim !== undefined) {
+        dataToUpdate.kmFim = journeyData.kmFim;
         // Calcular kmTotal se tivermos km_inicio e km_fim
-        if (journeyData.km_fim && existingJourney.km_inicio) {
-          dataToUpdate.kmTotal = journeyData.km_fim - existingJourney.km_inicio;
+        if (journeyData.kmFim && existingJourney.kmInicio) {
+          dataToUpdate.kmTotal = journeyData.kmFim - existingJourney.kmInicio;
         }
       }
       
@@ -114,7 +114,7 @@ export class JourneyService {
         const diffMs = fim.getTime() - inicio.getTime();
         const hours = Math.floor(diffMs / (1000 * 60 * 60));
         const minutes = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
-        dataToUpdate.tempo_total = `${hours}:${minutes.toString().padStart(2, '0')}`;
+        dataToUpdate.tempoTotal = `${hours}:${minutes.toString().padStart(2, '0')}`;
       }
 
       const [updatedJourney] = await db.update(jornadas)
@@ -153,10 +153,10 @@ export class JourneyService {
   }
 
   // Método adicional para finalizar uma jornada
-  static async finishJourney(id: string, userId: string, km_fim: number, ganhoBruto?: number, observacoes?: string) {
+  static async finishJourney(id: string, userId: string, kmFim: number, ganhoBruto?: number, observacoes?: string) {
     return await this.updateJourney(id, userId, {
       dataFim: new Date().toISOString(),
-      km_fim,
+      kmFim,
       ganhoBruto,
       observacoes
     });
