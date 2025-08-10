@@ -1,11 +1,9 @@
-// services/reportsService.ts
 import { db } from '../db';
 import { jornadas, abastecimentos, despesas } from '../db/schema';
-import { eq, and, isNull, gte, lte, sum, count, desc } from 'drizzle-orm';
-import { QueryBuilder } from '../utils/queryBuilder';
+import { eq, and, isNull, gte, lte, sum, count, desc, avg, sql, ne } from 'drizzle-orm';
 import { DateUtils } from '../utils/dateUtils';
 import { StatisticsCalculator } from '../utils/statisticsCalculator';
-import { Logger } from '../utils/logger';
+import { logger } from '../utils/logger';
 
 export interface ReportParams {
   userId: string;
@@ -25,8 +23,14 @@ export interface ComparisonParams {
   includePredictions?: boolean;
 }
 
+interface InactiveVehicle {
+  id: string;
+  marca: string;
+  modelo: string;
+}
+
 export class ReportsService {
-  private static readonly logger = Logger.getInstance('ReportsService');
+  private static readonly loggerInstance = logger;
 
   /**
    * Gera relatório semanal otimizado
@@ -36,7 +40,7 @@ export class ReportsService {
     
     const { dataInicio, dataFim } = DateUtils.calculateWeeklyPeriod(startDate, endDate);
     
-    ReportsService.logger.info('Gerando relatório semanal', { 
+    ReportsService.loggerInstance.info("Gerando relatório semanal", { 
       userId, dataInicio, dataFim, vehicleId 
     });
 
@@ -58,7 +62,7 @@ export class ReportsService {
 
     return {
       periodo: {
-        tipo: 'semanal' as const,
+        tipo: "semanal" as const,
         dataInicio: dataInicio.toISOString(),
         dataFim: dataFim.toISOString(),
         descricao: DateUtils.formatPeriod(dataInicio, dataFim)
@@ -86,7 +90,7 @@ export class ReportsService {
     
     const { dataInicio, dataFim } = DateUtils.calculateMonthlyPeriod(startDate, endDate);
     
-    ReportsService.logger.info('Gerando relatório mensal', { 
+    ReportsService.loggerInstance.info("Gerando relatório mensal", { 
       userId, dataInicio, dataFim, vehicleId 
     });
 
@@ -107,7 +111,7 @@ export class ReportsService {
 
     return {
       periodo: {
-        tipo: 'mensal' as const,
+        tipo: "mensal" as const,
         dataInicio: dataInicio.toISOString(),
         dataFim: dataFim.toISOString(),
         descricao: DateUtils.formatPeriod(dataInicio, dataFim)
@@ -223,7 +227,7 @@ export class ReportsService {
     endDate: Date, 
     vehicleId?: string
   ) {
-    const queryBuilder = new QueryBuilder(userId, startDate, endDate, vehicleId);
+
     
     // Executa todas as consultas em paralelo
     const [
@@ -233,11 +237,11 @@ export class ReportsService {
       kmResult,
       journeysResult
     ] = await Promise.all([
-      queryBuilder.getTotalRevenue(),
-      queryBuilder.getFuelExpenses(),
-      queryBuilder.getOtherExpenses(),
-      queryBuilder.getTotalKm(),
-      queryBuilder.getJourneyCount()
+      db.select({ total: sum(jornadas.ganhoBruto) }).from(jornadas).where(and(eq(jornadas.idUsuario, userId), gte(jornadas.dataFim, startDate), lte(jornadas.dataFim, endDate), isNull(jornadas.deletedAt))).then(res => res[0]?.total || 0),
+      db.select({ total: sum(abastecimentos.valorTotal) }).from(abastecimentos).where(and(eq(abastecimentos.idUsuario, userId), gte(abastecimentos.dataAbastecimento, startDate), lte(abastecimentos.dataAbastecimento, endDate), isNull(abastecimentos.deletedAt))).then(res => res[0]?.total || 0),
+      db.select({ total: sum(despesas.valorDespesa) }).from(despesas).where(and(eq(despesas.idUsuario, userId), gte(despesas.dataDespesa, startDate), lte(despesas.dataDespesa, endDate), isNull(despesas.deletedAt))).then(res => res[0]?.total || 0),
+      db.select({ total: sum(jornadas.kmTotal) }).from(jornadas).where(and(eq(jornadas.idUsuario, userId), gte(jornadas.dataFim, startDate), lte(jornadas.dataFim, endDate), isNull(jornadas.deletedAt))).then(res => res[0]?.total || 0),
+      db.select({ count: count(jornadas.id) }).from(jornadas).where(and(eq(jornadas.idUsuario, userId), gte(jornadas.dataFim, startDate), lte(jornadas.dataFim, endDate), isNull(jornadas.deletedAt))).then(res => res[0]?.count || 0)
     ]);
 
     const faturamentoBruto = Number(revenueResult || 0);
@@ -284,7 +288,7 @@ export class ReportsService {
             
             const summary = await ReportsService.getFinancialSummary(userId, day, dayEnd, vehicleId);
             return {
-              data: day.toISOString().split('T')[0],
+              data: day.toISOString().split("T")[0],
               ...summary
             };
           })
@@ -433,7 +437,7 @@ export class ReportsService {
       .select({
         totalGanhoBruto: sum(jornadas.ganhoBruto),
         totalKm: sum(jornadas.kmTotal),
-        totalTempo: sum(jornadas.tempo_total),
+        totalTempo: sum(jornadas.tempoTotal),
         countJornadas: count(jornadas.id),
       })
       .from(jornadas)
@@ -476,7 +480,7 @@ export class ReportsService {
       .select({
         avgGanhoBruto: avg(jornadas.ganhoBruto),
         avgKm: avg(jornadas.kmTotal),
-        avgTempo: avg(jornadas.tempo_total),
+        avgTempo: avg(jornadas.tempoTotal),
       })
       .from(jornadas)
       .where(and(...conditions));
@@ -497,66 +501,64 @@ export class ReportsService {
   private static async generateChartData(financialSummary: any, dailyEvolution: any) {
     // Exemplo de dados para gráfico de linha (faturamento diário)
     const dailyRevenueChart = dailyEvolution ? dailyEvolution.map((day: any) => ({
-      x: day.data,
-      y: day.faturamentoBruto,
+      data: day.data,
+      faturamento: day.faturamento_bruto,
     })) : [];
 
     // Exemplo de dados para gráfico de pizza (despesas por categoria)
-    const expenseCategoryChart = financialSummary.detalhamento_despesas ? financialSummary.detalhamento_despesas.map((exp: any) => ({
-      label: exp.categoria,
-      value: exp.total_gasto,
-    })) : [];
+    const expenseCategoryChart = financialSummary.detalhamento_despesas || [];
 
     return {
-      dailyRevenue: {
-        type: 'line',
-        title: 'Faturamento Diário',
-        data: dailyRevenueChart,
-        labels: dailyRevenueChart.map((d: any) => d.x),
-      },
-      expenseCategories: {
-        type: 'pie',
-        title: 'Despesas por Categoria',
-        data: expenseCategoryChart,
-        labels: expenseCategoryChart.map((d: any) => d.label),
-      },
+      dailyRevenue: dailyRevenueChart,
+      expenseCategories: expenseCategoryChart,
     };
   }
 
   /**
-   * Gera relatório de auditoria de dados
+   * Validações de dados e consistência para relatórios.
    */
-  static async generateDataAuditReport(userId: string) {
+  static async validateReportData(userId: string, vehicleId?: string) {
     const issues = [];
 
-    // 1. Jornadas sem KM final ou com KM final menor que inicial
+    // 1. Jornadas incompletas (km_fim ou data_fim ausentes)
     const incompleteJourneys = await db
-      .select()
+      .select({
+        id: jornadas.id,
+        dataInicio: jornadas.dataInicio,
+        kmInicio: jornadas.kmInicio,
+        dataFim: jornadas.dataFim,
+        kmFim: jornadas.kmFim,
+      })
       .from(jornadas)
       .where(and(
         eq(jornadas.idUsuario, userId),
         isNull(jornadas.deletedAt),
-        ne(jornadas.dataFim, null), // Considerar apenas jornadas finalizadas
-        sql`${jornadas.km_fim} < ${jornadas.km_inicio}`
+        (isNull(jornadas.dataFim) || isNull(jornadas.kmFim) || sql`${jornadas.kmFim} < ${jornadas.kmInicio}`)
       ));
 
     if (incompleteJourneys.length > 0) {
       issues.push({
-        type: 'Jornada Incompleta/Inválida',
-        description: 'Jornadas com KM final ausente ou menor que o KM inicial.',
+        type: "Jornada Incompleta/Inválida",
+        description: "Jornadas com KM final ausente ou menor que o KM inicial.",
         count: incompleteJourneys.length,
         details: incompleteJourneys.map(j => ({
           id: j.id,
           dataInicio: j.dataInicio,
-          km_inicio: j.km_inicio,
-          km_fim: j.km_fim,
+          kmInicio: j.kmInicio,
+          kmFim: j.kmFim,
         })),
       });
     }
 
     // 2. Abastecimentos com valor total inconsistente (valorLitro * quantidadeLitros)
     const inconsistentFuelings = await db
-      .select()
+      .select({
+        id: abastecimentos.id,
+        dataAbastecimento: abastecimentos.dataAbastecimento,
+        valorLitro: abastecimentos.valorLitro,
+        quantidadeLitros: abastecimentos.quantidadeLitros,
+        valorTotal: abastecimentos.valorTotal,
+      })
       .from(abastecimentos)
       .where(and(
         eq(abastecimentos.idUsuario, userId),
@@ -566,77 +568,76 @@ export class ReportsService {
 
     if (inconsistentFuelings.length > 0) {
       issues.push({
-        type: 'Abastecimento Inconsistente',
-        description: 'Abastecimentos com valor total que não corresponde ao cálculo de preço por litro x quantidade.',
+        type: "Abastecimento Inconsistente",
+        description: "Abastecimentos com valor total diferente do calculado (valorLitro * quantidadeLitros).",
         count: inconsistentFuelings.length,
-        details: inconsistentFuelings.map(f => ({
-          id: f.id,
-          dataAbastecimento: f.dataAbastecimento,
-          valorTotal: f.valorTotal,
-          valorLitro: f.valorLitro,
-          quantidadeLitros: f.quantidadeLitros,
+        details: inconsistentFuelings.map(a => ({
+          id: a.id,
+          data: a.dataAbastecimento,
+          valorCalculado: (Number(a.valorLitro) * Number(a.quantidadeLitros)).toFixed(2),
+          valorRegistrado: Number(a.valorTotal).toFixed(2),
         })),
       });
     }
 
-    // 3. Despesas sem categoria definida (se aplicável)
-    // Exemplo: se tipoDespesa for opcional ou puder ser nulo
-    const uncategorizedExpenses = await db
-      .select()
+    // 3. Despesas sem tipo definido (se aplicável)
+    const undefinedExpenses = await db
+      .select({
+        id: despesas.id,
+        dataDespesa: despesas.dataDespesa,
+        valorDespesa: despesas.valorDespesa,
+        tipoDespesa: despesas.tipoDespesa,
+      })
       .from(despesas)
       .where(and(
         eq(despesas.idUsuario, userId),
         isNull(despesas.deletedAt),
-        isNull(despesas.tipoDespesa) // Ou eq(despesas.tipoDespesa, 'outros') se for um default
+        isNull(despesas.tipoDespesa) // Ou eq(despesas.tipoDespesa, "outros") se for um default
       ));
 
-    if (uncategorizedExpenses.length > 0) {
+    if (undefinedExpenses.length > 0) {
       issues.push({
-        type: 'Despesa Não Categorizada',
-        description: 'Despesas sem uma categoria definida.',
-        count: uncategorizedExpenses.length,
-        details: uncategorizedExpenses.map(e => ({
-          id: e.id,
-          dataDespesa: e.dataDespesa,
-          valorDespesa: e.valorDespesa,
-          descricao: e.descricao,
+        type: "Despesa sem Tipo",
+        description: "Despesas registradas sem um tipo definido.",
+        count: undefinedExpenses.length,
+        details: undefinedExpenses.map(d => ({
+          id: d.id,
+          data: d.dataDespesa,
+          valor: Number(d.valorDespesa).toFixed(2),
         })),
       });
     }
 
-    // 4. Veículos sem jornadas ou abastecimentos registrados em um longo período
-    // Esta é mais complexa e pode exigir uma análise de datas de último registro
-    // Por exemplo, buscar veículos que não têm jornadas ou abastecimentos nos últimos 90 dias
+    // 4. Veículos inativos sem jornadas ou abastecimentos recentes
+    // Esta é uma heurística e pode precisar de ajuste fino
     const ninetyDaysAgo = new Date();
     ninetyDaysAgo.setDate(ninetyDaysAgo.getDate() - 90);
 
-    const inactiveVehicles = await db.execute(sql`
+    const inactiveVehicles: InactiveVehicle[] = await db.all(sql`
       SELECT v.id, v.marca, v.modelo
       FROM veiculos v
       WHERE v.idUsuario = ${userId}
-        AND v.deletedAt IS NULL
-        AND NOT EXISTS (
-          SELECT 1 FROM jornadas j
-          WHERE j.idVeiculo = v.id
-            AND j.idUsuario = ${userId}
-            AND j.deletedAt IS NULL
-            AND j.dataInicio >= ${ninetyDaysAgo.toISOString()}
-        )
-        AND NOT EXISTS (
-          SELECT 1 FROM abastecimentos a
-          WHERE a.idVeiculo = v.id
-            AND a.idUsuario = ${userId}
-            AND a.deletedAt IS NULL
-            AND a.dataAbastecimento >= ${ninetyDaysAgo.toISOString()}
-        );
+      AND v.deletedAt IS NULL
+      AND NOT EXISTS (
+        SELECT 1 FROM jornadas j
+        WHERE j.idVeiculo = v.id
+        AND j.deletedAt IS NULL
+        AND j.dataFim >= ${ninetyDaysAgo.getTime()}
+      )
+      AND NOT EXISTS (
+        SELECT 1 FROM abastecimentos a
+        WHERE a.idVeiculo = v.id
+        AND a.deletedAt IS NULL
+        AND a.dataAbastecimento >= ${ninetyDaysAgo.getTime()}
+      )
     `);
 
-    if (inactiveVehicles.rows.length > 0) {
+    if (inactiveVehicles.length > 0) {
       issues.push({
-        type: 'Veículo Inativo',
-        description: 'Veículos sem registros de jornadas ou abastecimentos nos últimos 90 dias.',
-        count: inactiveVehicles.rows.length,
-        details: inactiveVehicles.rows.map((v: any) => ({
+        type: "Veículo Inativo",
+        description: "Veículos sem jornadas ou abastecimentos registrados nos últimos 90 dias.",
+        count: inactiveVehicles.length,
+        details: inactiveVehicles.map(v => ({
           id: v.id,
           marca: v.marca,
           modelo: v.modelo,
@@ -644,18 +645,7 @@ export class ReportsService {
       });
     }
 
-    return {
-      userId,
-      data_geracao: new Date().toISOString(),
-      total_issues: issues.length,
-      issues,
-      recomendacoes: [
-        'Revisar jornadas com KM inconsistente e corrigir os dados.',
-        'Verificar cálculos de abastecimento e garantir a precisão dos valores.',
-        'Categorizar todas as despesas para uma análise financeira mais precisa.',
-        'Avaliar a necessidade de manter veículos inativos ou arquivá-los.',
-      ],
-    };
+    return issues;
   }
 }
 

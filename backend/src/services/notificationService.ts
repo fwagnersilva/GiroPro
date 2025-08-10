@@ -11,7 +11,7 @@ export interface NotificationData {
   mensagem: string;
   dados_extras?: any;
   lida?: boolean;
-  data_envio?: string; // Alterado de Date para string
+  dataEnvio?: string;
 }
 
 export class NotificationService {
@@ -22,12 +22,12 @@ export class NotificationService {
     const notification = {
       id: data.id || uuidv4(),
       idUsuario: data.idUsuario,
-      tipo: data.tipo as "Sistema" | "Alerta" | "Promocao" | "Suporte" || "Sistema",
+      tipo: data.tipo || "sistema",
       titulo: data.titulo,
       mensagem: data.mensagem,
       dados_extras: data.dados_extras ? JSON.stringify(data.dados_extras) : null,
       lida: false,
-      data_envio: new Date().toISOString(),
+      dataEnvio: new Date().getTime(),
     };
 
     await db.insert(notificacoes).values(notification);
@@ -74,7 +74,7 @@ export class NotificationService {
       .select()
       .from(notificacoes)
       .where(whereCondition)
-      .orderBy(desc(notificacoes.data_envio)) // Alterado de data_criacao para data_envio
+      .orderBy(desc(notificacoes.dataEnvio))
       .limit(limit)
       .offset(offset);
 
@@ -92,7 +92,7 @@ export class NotificationService {
       .update(notificacoes)
       .set({
         lida: true,
-        data_leitura: new Date().toISOString(),
+        data_leitura: new Date().getTime(),
       })
       .where(
         and(
@@ -113,7 +113,7 @@ export class NotificationService {
       .update(notificacoes)
       .set({
         lida: true,
-        data_leitura: new Date().toISOString(),
+        data_leitura: new Date().getTime(),
       })
       .where(
         and(
@@ -177,7 +177,7 @@ export class NotificationService {
       })
       .where(
         and(
-          lte(notificacoes.data_envio, thirtyDaysAgo.toISOString()), // Alterado de data_criacao para data_envio
+          lte(notificacoes.dataEnvio, thirtyDaysAgo.getTime()),
           isNull(notificacoes.deletedAt)
         )
       ).returning();
@@ -201,8 +201,8 @@ export class NotificationService {
         .where(
           and(
             eq(notificacoes.idUsuario, userId),
-            eq(notificacoes.tipo, 'Sistema'), // Usar um tipo válido do enum
-            gte(notificacoes.data_envio, yesterday.toISOString()), // Alterado de data_criacao para data_envio
+            eq(notificacoes.tipo, 'Sistema'),
+            gte(notificacoes.dataEnvio, yesterday.getTime()),
             isNull(notificacoes.deletedAt)
           )
         );
@@ -215,7 +215,7 @@ export class NotificationService {
       if (!isDuplicate) {
         await this.createNotification({
           idUsuario: userId,
-          tipo: 'Sistema', // Usar um tipo válido do enum
+          tipo: 'sistema',
           titulo: insight.titulo,
           mensagem: insight.descricao,
           dados_extras: {
@@ -252,8 +252,8 @@ export class NotificationService {
         .where(
           and(
             eq(notificacoes.idUsuario, userId),
-            eq(notificacoes.tipo, 'Alerta'), // Usar um tipo válido do enum
-            gte(notificacoes.data_envio, twoDaysAgo.toISOString()), // Alterado de data_criacao para data_envio
+            eq(notificacoes.tipo, 'alerta'),
+            gte(notificacoes.dataEnvio, twoDaysAgo.getTime()),
             isNull(notificacoes.deletedAt)
           )
         );
@@ -266,7 +266,7 @@ export class NotificationService {
       if (!isDuplicate) {
         await this.createNotification({
           idUsuario: userId,
-          tipo: 'Alerta', // Usar um tipo válido do enum
+          tipo: 'alerta',
           titulo: `🎯 ${recommendation.titulo}`,
           mensagem: recommendation.descricao,
           dados_extras: {
@@ -291,7 +291,7 @@ export class NotificationService {
     if (meta_atingida) {
       await this.createNotification({
         idUsuario: userId,
-        tipo: 'Sistema', // Usar um tipo válido do enum
+        tipo: 'sistema',
         titulo: '🎉 Meta Atingida!',
         mensagem: `Parabéns! Você atingiu sua meta de ${meta_tipo}.`,
         dados_extras: {
@@ -304,7 +304,7 @@ export class NotificationService {
     } else if (progresso_percentual >= 90) {
       await this.createNotification({
         idUsuario: userId,
-        tipo: 'Alerta', // Usar um tipo válido do enum
+        tipo: 'alerta',
         titulo: '🔥 Quase lá!',
         mensagem: `Você está a ${(100 - progresso_percentual).toFixed(1)}% de atingir sua meta de ${meta_tipo}.`,
         dados_extras: {
@@ -317,7 +317,7 @@ export class NotificationService {
     } else if (progresso_percentual >= 75) {
       await this.createNotification({
         idUsuario: userId,
-        tipo: 'Alerta', // Usar um tipo válido do enum
+        tipo: 'alerta',
         titulo: '💪 Bom progresso!',
         mensagem: `Você já completou ${progresso_percentual.toFixed(1)}% da sua meta de ${meta_tipo}.`,
         dados_extras: {
@@ -340,7 +340,7 @@ export class NotificationService {
       case 'consumo_alto':
         await this.createNotification({
           idUsuario: userId,
-          tipo: 'Alerta', // Usar um tipo válido do enum
+          tipo: 'alerta',
           titulo: '⚠️ Consumo Elevado',
           mensagem: `O veículo ${veiculo.marca} ${veiculo.modelo} está com consumo acima do normal.`,
           dados_extras: {
@@ -355,7 +355,7 @@ export class NotificationService {
       case 'manutencao_preventiva':
         await this.createNotification({
           idUsuario: userId,
-          tipo: 'Sistema', // Usar um tipo válido do enum
+          tipo: 'sistema',
           titulo: '🔧 Manutenção Preventiva',
           mensagem: `O veículo ${veiculo.marca} ${veiculo.modelo} pode precisar de manutenção em breve.`,
           dados_extras: {
@@ -370,7 +370,7 @@ export class NotificationService {
       case 'eficiencia_baixa':
         await this.createNotification({
           idUsuario: userId,
-          tipo: 'Alerta', // Usar um tipo válido do enum
+          tipo: 'alerta',
           titulo: '📉 Eficiência Baixa',
           mensagem: `A eficiência do veículo ${veiculo.marca} ${veiculo.modelo} está abaixo do esperado.`,
           dados_extras: {
@@ -385,7 +385,7 @@ export class NotificationService {
       case 'meta_diaria_risco':
         await this.createNotification({
           idUsuario: userId,
-          tipo: 'Alerta', // Usar um tipo válido do enum
+          tipo: 'alerta',
           titulo: '⏰ Meta Diária em Risco',
           mensagem: 'Você pode não atingir sua meta diária se continuar no ritmo atual.',
           dados_extras: {

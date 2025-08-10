@@ -16,8 +16,8 @@ export class VehicleService {
         modelo: vehicleData.modelo,
         ano: vehicleData.ano,
         placa: vehicleData.placa,
-        tipoCombustivel: vehicleData.tipoCombustivel as 'Gasolina' | 'Etanol' | 'Diesel' | 'GNV' | 'Flex' || 'Gasolina',
-        tipoUso: vehicleData.tipo_uso as 'Proprio' | 'Alugado' | 'Financiado' || 'Proprio',
+        tipoCombustivel: vehicleData.tipoCombustivel.toLowerCase() as 'gasolina' | 'etanol' | 'diesel' | 'gnv' | 'flex',
+        tipoUso: vehicleData.tipo_uso.toLowerCase() as 'proprio' | 'alugado' | 'financiado',
         dataCadastro: new Date(),
       };
 

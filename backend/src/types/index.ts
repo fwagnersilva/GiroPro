@@ -47,8 +47,8 @@ export interface Vehicle {
   modelo: string;
   ano: number;
   placa: string;
-  tipoCombustivel: string;
-  tipo_uso: string;
+  tipoCombustivel: 'gasolina' | 'etanol' | 'diesel' | 'gnv' | 'flex';
+  tipo_uso: 'proprio' | 'alugado' | 'financiado';
   valor_aluguel?: number;
   valor_prestacao?: number;
   media_consumo?: number;
