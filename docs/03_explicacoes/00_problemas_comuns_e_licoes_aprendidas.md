@@ -49,6 +49,16 @@ Este documento consolida os problemas mais frequentes encontrados durante o dese
 *   **Verificação de Build em CI**: Integrar o processo de build em um pipeline de Integração Contínua (CI) para detectar erros de compilação e dependências precocemente.
 *   **Arquivos de Exemplo**: Fornecer arquivos de exemplo (`.env.example`) para facilitar a configuração inicial do projeto.
 
+## 7. Problemas de Migração Interativa do Banco de Dados
+
+**Problema**: Durante a execução do comando `npm run db:migrate`, foi observado que o processo de migração pode ser interativo, exigindo confirmação manual do usuário para operações como renomeação de colunas. Isso pode causar problemas em ambientes de CI/CD ou para desenvolvedores que não estão familiarizados com o processo.
+
+**Lições Aprendidas**:
+*   **Documentação Clara**: É fundamental documentar claramente quando um comando pode ser interativo e o que esperar durante sua execução. Isso deve ser incluído nos tutoriais de setup e guias de desenvolvimento.
+*   **Scripts Não-Interativos**: Para ambientes de automação (CI/CD), considere a criação de scripts alternativos que executem migrações de forma não-interativa, ou utilize flags específicas do Drizzle ORM que permitam execução automática.
+*   **Preparação do Ambiente**: Antes de executar migrações em produção, sempre teste em um ambiente de desenvolvimento ou staging para entender quais interações podem ser necessárias.
+*   **Backup Antes de Migrações**: Sempre realize backup do banco de dados antes de executar migrações, especialmente aquelas que envolvem renomeação ou reestruturação de colunas.
+
 Ao abordar proativamente essas lições aprendidas, o projeto GiroPro pode melhorar significativamente sua estabilidade, manutenibilidade e a experiência de desenvolvimento para toda a equipe.
 
 

@@ -62,11 +62,15 @@ Execute o comando:
 npm run db:migrate
 ```
 
+**Nota Importante**: Este comando pode ser interativo, especialmente quando há operações que podem causar perda de dados (como renomeação de colunas). O Drizzle ORM pode solicitar confirmação manual para essas operações. Fique atento às mensagens no terminal e confirme as ações quando solicitado.
+
 Este comando:
 
 *   Lerá os arquivos de migração no diretório `drizzle/`.
 *   Aplicará as migrações pendentes ao banco de dados `giropro.db`.
 *   Registrará as migrações aplicadas na tabela interna do Drizzle no banco de dados.
+
+**Para Ambientes de CI/CD**: Se você precisar executar migrações em um ambiente automatizado (CI/CD), considere a criação de um script não-interativo ou a utilização de flags específicas do Drizzle ORM que permitam execução automática, se disponíveis.
 
 ## 5. Revertendo Migrações (Atenção!)
 
