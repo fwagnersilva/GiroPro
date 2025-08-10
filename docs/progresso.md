@@ -54,6 +54,7 @@
 - 🔄 **PRÓXIMO**: Finalizar build e testar aplicação localmente.
 
 ## Documentos Criados/Reorganizados
+- `docs/02_guias_como_fazer/03_como_adicionar_nova_api.md` - Guia de como adicionar uma nova API no backend.
 - `docs/02_guias_como_fazer/02_como_realizar_migracao_banco_dados.md` - Guia de como realizar migrações de banco de dados com Drizzle ORM.
 - `docs/01_tutoriais/01_setup_inicial.md` - Tutorial de setup inicial do ambiente de desenvolvimento.
 - `docs/02_guias_como_fazer/01_testar_scripts_setup.md` - Guia de como testar os scripts de setup.
