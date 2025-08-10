@@ -1,6 +1,6 @@
-import { db } from "../db";
-import { metas, progressoMetas } from "../db/schema";
 import { eq, gte, lte, sql, count } from "drizzle-orm";
+import { db } from "../db/connection";
+import { metas, progressoMetas } from "../db/schema";
 import type { GetWeekSummaryRequest } from "../controllers/goalsController";
 
 interface GoalSummary {

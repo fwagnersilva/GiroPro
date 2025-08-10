@@ -1,5 +1,5 @@
-import { db } from '../db/connection';
 import { eq, and, gte, lte, desc, asc, sql, inArray, avg, ne } from 'drizzle-orm';
+import { db } from '../db/connection';
 import { historicoPrecoCombustivel, usuarios } from '../db/schema'; 
 
 // ========== TIPOS E INTERFACES ==========

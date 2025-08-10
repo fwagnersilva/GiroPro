@@ -1,5 +1,5 @@
-import { FastifyPluginAsyncZod } from 'fastify-type-provider-zod';
 import { z } from 'zod';
+import { FastifyPluginAsyncZod } from 'fastify-type-provider-zod';
 import { AuthService } from '../services/authService';
 import { loginSchema, registerSchema, requestPasswordResetSchema, resetPasswordSchema, changePasswordSchema } from '../utils/validation';
 import { UnauthorizedError, NotFoundError, ValidationError, ConflictError } from "../utils/customErrors";

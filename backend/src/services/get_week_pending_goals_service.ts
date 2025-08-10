@@ -1,7 +1,7 @@
-import { db } from "../db";
+import { eq, gte, lte, and, sql } from "drizzle-orm";
+import { db } from "../db/connection";
 import { metas, progressoMetas } from "../db/schema";
 import { GetWeekPendingGoalsRequest } from "../controllers/goalsController";
-import { eq, gte, lte, and, sql } from "drizzle-orm";
 
 interface PendingGoal {
   id: string;

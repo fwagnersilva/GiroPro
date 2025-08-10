@@ -1,5 +1,5 @@
 import request from 'supertest';
-import app from '../../src/app_simple';
+import app from '../../app_simple';
 import { db, closeConnection } from '../../db/connection';
 import { usuarios, veiculos } from '../../db/schema';
 import { eq, and } from 'drizzle-orm';
@@ -35,7 +35,7 @@ describe('VehiclesController', () => {
 
   beforeEach(async () => {
     // Criar usuário de teste e obter token
-    const registerResponse = await request(appConfig)
+    const registerResponse = await request(app)
       .post('/api/v1/auth/register')
       .send(testUser);
     
@@ -51,7 +51,7 @@ describe('VehiclesController', () => {
 
   describe('POST /api/v1/veiculos', () => {
     it('should create a new vehicle with valid data', async () => {
-      const response = await request(appConfig)
+      const response = await request(app)
         .post('/api/v1/veiculos')
         .set('Authorization', `Bearer ${authToken}`)
         .send(testVehicle)
@@ -72,7 +72,7 @@ describe('VehiclesController', () => {
         placa: 'INVALID', // Placa inválida
       };
 
-      const response = await request(appConfig)
+      const response = await request(app)
         .post('/api/v1/veiculos')
         .set('Authorization', `Bearer ${authToken}`)
         .send(invalidVehicle)
@@ -83,7 +83,7 @@ describe('VehiclesController', () => {
     });
 
     it('should return 401 for unauthorized user', async () => {
-      const response = await request(appConfig)
+      const response = await request(app)
         .post('/api/v1/veiculos')
         .send(testVehicle)
         .expect(401);
@@ -94,14 +94,14 @@ describe('VehiclesController', () => {
 
     it('should return 409 for duplicate vehicle plate', async () => {
       // Criar primeiro veículo
-      await request(appConfig)
+      await request(app)
         .post('/api/v1/veiculos')
         .set('Authorization', `Bearer ${authToken}`)
         .send(testVehicle)
         .expect(201);
 
       // Tentar criar segundo veículo com mesma placa
-      const response = await request(appConfig)
+      const response = await request(app)
         .post('/api/v1/veiculos')
         .set('Authorization', `Bearer ${authToken}`)
         .send(testVehicle)
@@ -118,7 +118,7 @@ describe('VehiclesController', () => {
         ano: 2020,
       };
 
-      const response = await request(appConfig)
+      const response = await request(app)
         .post('/api/v1/veiculos')
         .set('Authorization', `Bearer ${authToken}`)
         .send(incompleteVehicle)
@@ -136,7 +136,7 @@ describe('VehiclesController', () => {
       ];
 
       for (const placa of invalidPlates) {
-        const response = await request(appConfig)
+        const response = await request(app)
           .post('/api/v1/veiculos')
           .set('Authorization', `Bearer ${authToken}`)
           .send({ ...testVehicle, placa })
@@ -150,7 +150,7 @@ describe('VehiclesController', () => {
       const invalidYears = [1899, 2030];
 
       for (const ano of invalidYears) {
-        const response = await request(appConfig)
+        const response = await request(app)
           .post('/api/v1/veiculos')
           .set('Authorization', `Bearer ${authToken}`)
           .send({ ...testVehicle, ano })
@@ -164,12 +164,12 @@ describe('VehiclesController', () => {
   describe('GET /api/v1/veiculos', () => {
     beforeEach(async () => {
       // Criar alguns veículos de teste
-      await request(appConfig)
+      await request(app)
         .post('/api/v1/veiculos')
         .set('Authorization', `Bearer ${authToken}`)
         .send(testVehicle);
 
-      await request(appConfig)
+      await request(app)
         .post('/api/v1/veiculos')
         .set('Authorization', `Bearer ${authToken}`)
         .send({
@@ -180,7 +180,7 @@ describe('VehiclesController', () => {
     });
 
     it('should return user veiculos', async () => {
-      const response = await request(appConfig)
+      const response = await request(app)
         .get('/api/v1/veiculos')
         .set('Authorization', `Bearer ${authToken}`)
         .expect(200);
@@ -199,11 +199,11 @@ describe('VehiclesController', () => {
         email: 'newuser@test.com',
       };
 
-      const registerResponse = await request(appConfig)
+      const registerResponse = await request(app)
         .post('/api/v1/auth/register')
         .send(newUser);
 
-      const response = await request(appConfig)
+      const response = await request(app)
         .get('/api/v1/veiculos')
         .set('Authorization', `Bearer ${registerResponse.body.token}`)
         .expect(200);
@@ -216,7 +216,7 @@ describe('VehiclesController', () => {
     });
 
     it('should return 401 for unauthorized user', async () => {
-      const response = await request(appConfig)
+      const response = await request(app)
         .get('/api/v1/veiculos')
         .expect(401);
 
@@ -224,7 +224,7 @@ describe('VehiclesController', () => {
     });
 
     it('should apply pagination correctly', async () => {
-      const response = await request(appConfig)
+      const response = await request(app)
         .get('/api/v1/veiculos?page=1&limit=1')
         .set('Authorization', `Bearer ${authToken}`)
         .expect(200);
@@ -234,7 +234,7 @@ describe('VehiclesController', () => {
     });
 
     it('should filter by active veiculos only', async () => {
-      const response = await request(appConfig)
+      const response = await request(app)
         .get('/api/v1/veiculos?ativo=true')
         .set('Authorization', `Bearer ${authToken}`)
         .expect(200);
@@ -250,7 +250,7 @@ describe('VehiclesController', () => {
     let vehicleId: string;
 
     beforeEach(async () => {
-      const createResponse = await request(appConfig)
+      const createResponse = await request(app)
         .post('/api/v1/veiculos')
         .set('Authorization', `Bearer ${authToken}`)
         .send(testVehicle);
@@ -259,7 +259,7 @@ describe('VehiclesController', () => {
     });
 
     it('should return specific vehicle', async () => {
-      const response = await request(appConfig)
+      const response = await request(app)
         .get(`/api/v1/veiculos/${vehicleId}`)
         .set('Authorization', `Bearer ${authToken}`)
         .expect(200);
@@ -272,7 +272,7 @@ describe('VehiclesController', () => {
     it('should return 404 for non-existent vehicle', async () => {
       const fakeId = '00000000-0000-0000-0000-000000000000';
       
-      const response = await request(appConfig)
+      const response = await request(app)
         .get(`/api/v1/veiculos/${fakeId}`)
         .set('Authorization', `Bearer ${authToken}`)
         .expect(404);
@@ -282,7 +282,7 @@ describe('VehiclesController', () => {
     });
 
     it('should return 401 for unauthorized user', async () => {
-      const response = await request(appConfig)
+      const response = await request(app)
         .get(`/api/v1/veiculos/${vehicleId}`)
         .expect(401);
 
@@ -296,11 +296,11 @@ describe('VehiclesController', () => {
         email: 'other@test.com',
       };
 
-      const otherUserResponse = await request(appConfig)
+      const otherUserResponse = await request(app)
         .post('/api/v1/auth/register')
         .send(otherUser);
 
-      const response = await request(appConfig)
+      const response = await request(app)
         .get(`/api/v1/veiculos/${vehicleId}`)
         .set('Authorization', `Bearer ${otherUserResponse.body.token}`)
         .expect(403);
@@ -317,7 +317,7 @@ describe('VehiclesController', () => {
     let vehicleId: string;
 
     beforeEach(async () => {
-      const createResponse = await request(appConfig)
+      const createResponse = await request(app)
         .post('/api/v1/veiculos')
         .set('Authorization', `Bearer ${authToken}`)
         .send(testVehicle);
@@ -332,7 +332,7 @@ describe('VehiclesController', () => {
         cor: 'Preto',
       };
 
-      const response = await request(appConfig)
+      const response = await request(app)
         .put(`/api/v1/veiculos/${vehicleId}`)
         .set('Authorization', `Bearer ${authToken}`)
         .send(updateData)
@@ -351,7 +351,7 @@ describe('VehiclesController', () => {
         ano: 1800, // Ano inválido
       };
 
-      const response = await request(appConfig)
+      const response = await request(app)
         .put(`/api/v1/veiculos/${vehicleId}`)
         .set('Authorization', `Bearer ${authToken}`)
         .send(invalidData)
@@ -363,7 +363,7 @@ describe('VehiclesController', () => {
     it('should return 404 for non-existent vehicle', async () => {
       const fakeId = '00000000-0000-0000-0000-000000000000';
       
-      const response = await request(appConfig)
+      const response = await request(app)
         .put(`/api/v1/veiculos/${fakeId}`)
         .set('Authorization', `Bearer ${authToken}`)
         .send({ marca: 'Honda' })
@@ -373,7 +373,7 @@ describe('VehiclesController', () => {
     });
 
     it('should return 401 for unauthorized user', async () => {
-      const response = await request(appConfig)
+      const response = await request(app)
         .put(`/api/v1/veiculos/${vehicleId}`)
         .send({ marca: 'Honda' })
         .expect(401);
@@ -386,7 +386,7 @@ describe('VehiclesController', () => {
     let vehicleId: string;
 
     beforeEach(async () => {
-      const createResponse = await request(appConfig)
+      const createResponse = await request(app)
         .post('/api/v1/veiculos')
         .set('Authorization', `Bearer ${authToken}`)
         .send(testVehicle);
@@ -395,7 +395,7 @@ describe('VehiclesController', () => {
     });
 
     it('should soft delete vehicle', async () => {
-      const response = await request(appConfig)
+      const response = await request(app)
         .delete(`/api/v1/veiculos/${vehicleId}`)
         .set('Authorization', `Bearer ${authToken}`)
         .expect(200);
@@ -404,7 +404,7 @@ describe('VehiclesController', () => {
       expect(response.body.message).toContain('removido');
 
       // Verificar se o veículo foi marcado como inativo
-      const getResponse = await request(appConfig)
+      const getResponse = await request(app)
         .get(`/api/v1/veiculos/${vehicleId}`)
         .set('Authorization', `Bearer ${authToken}`)
         .expect(200);
@@ -415,7 +415,7 @@ describe('VehiclesController', () => {
     it('should return 404 for non-existent vehicle', async () => {
       const fakeId = '00000000-0000-0000-0000-000000000000';
       
-      const response = await request(appConfig)
+      const response = await request(app)
         .delete(`/api/v1/veiculos/${fakeId}`)
         .set('Authorization', `Bearer ${authToken}`)
         .expect(404);
@@ -424,7 +424,7 @@ describe('VehiclesController', () => {
     });
 
     it('should return 401 for unauthorized user', async () => {
-      const response = await request(appConfig)
+      const response = await request(app)
         .delete(`/api/v1/veiculos/${vehicleId}`)
         .expect(401);
 
@@ -436,7 +436,7 @@ describe('VehiclesController', () => {
       // A implementação específica dependeria da regra de negócio
       
       // Por enquanto, apenas verificamos que a deleção funciona normalmente
-      const response = await request(appConfig)
+      const response = await request(app)
         .delete(`/api/v1/veiculos/${vehicleId}`)
         .set('Authorization', `Bearer ${authToken}`)
         .expect(200);
@@ -449,7 +449,7 @@ describe('VehiclesController', () => {
     let vehicleId: string;
 
     beforeEach(async () => {
-      const createResponse = await request(appConfig)
+      const createResponse = await request(app)
         .post('/api/v1/veiculos')
         .set('Authorization', `Bearer ${authToken}`)
         .send(testVehicle);
@@ -458,7 +458,7 @@ describe('VehiclesController', () => {
     });
 
     it('should return vehicle statistics', async () => {
-      const response = await request(appConfig)
+      const response = await request(app)
         .get(`/api/v1/veiculos/${vehicleId}/stats`)
         .set('Authorization', `Bearer ${authToken}`)
         .expect(200);
@@ -471,7 +471,7 @@ describe('VehiclesController', () => {
     });
 
     it('should return zero stats for new vehicle', async () => {
-      const response = await request(appConfig)
+      const response = await request(app)
         .get(`/api/v1/veiculos/${vehicleId}/stats`)
         .set('Authorization', `Bearer ${authToken}`)
         .expect(200);
@@ -496,7 +496,7 @@ describe('VehiclesController', () => {
         categoria: 'sedan'
       };
 
-      const response = await request(appConfig)
+      const response = await request(app)
         .post('/api/v1/veiculos')
         .set('Authorization', `Bearer ${authToken}`)
         .send(maliciousData)
@@ -509,7 +509,7 @@ describe('VehiclesController', () => {
     it('should validate JWT token properly', async () => {
       const invalidToken = 'invalid.jwt.token';
 
-      const response = await request(appConfig)
+      const response = await request(app)
         .get('/api/v1/veiculos')
         .set('Authorization', `Bearer ${invalidToken}`)
         .expect(401);
@@ -526,7 +526,7 @@ describe('VehiclesController', () => {
         { expiresIn: '-1h' }
       );
 
-      const response = await request(appConfig)
+      const response = await request(app)
         .get('/api/v1/veiculos')
         .set('Authorization', `Bearer ${expiredToken}`)
         .expect(401);

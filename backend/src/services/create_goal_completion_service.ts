@@ -1,7 +1,7 @@
-import { db } from "../db";
+import { eq, sql } from "drizzle-orm";
+import { db } from "../db/connection";
 import { metas, progressoMetas } from "../db/schema";
 import { CompleteGoalRequest } from "../controllers/goalsController";
-import { eq, sql } from "drizzle-orm";
 
 interface CreateGoalCompletionResponse {
   id: string;

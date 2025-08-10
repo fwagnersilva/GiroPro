@@ -66,8 +66,8 @@ describe('Dashboard Integration Tests', () => {
         id: uuidv4(),
         idUsuario: userId,
         idVeiculo: vehicleId,
-        dataInicio: yesterday.getTime(),
-        dataFim: today.getTime(),
+        dataInicio: new Date(yesterday.getTime()),
+        dataFim: new Date(today.getTime()),
         kmInicio: 1000,
         kmFim: 1100,
         ganhoBruto: 15000, // em centavos
@@ -83,7 +83,7 @@ describe('Dashboard Integration Tests', () => {
         id: uuidv4(),
         idUsuario: userId,
         idVeiculo: vehicleId,
-        dataAbastecimento: yesterday.getTime(),
+        dataAbastecimento: new Date(yesterday.getTime()),
         quantidadeLitros: 40,
         valorTotal: 24000, // em centavos
         valorLitro: 600, // em centavos
@@ -99,7 +99,7 @@ describe('Dashboard Integration Tests', () => {
         id: uuidv4(),
         idUsuario: userId,
         idVeiculo: vehicleId,
-        dataDespesa: yesterday.getTime(),
+        dataDespesa: new Date(yesterday.getTime()),
         tipoDespesa: 'manutencao' as const,
         descricao: 'Troca de óleo',
         valorDespesa: 8000 // em centavos
