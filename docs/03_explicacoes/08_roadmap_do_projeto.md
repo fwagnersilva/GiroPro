@@ -82,4 +82,3 @@ Este roadmap prioriza a estabilização e a entrega de uma funcionalidade básic
 
 *Última Atualização: 8 de Agosto de 2025*
 
-

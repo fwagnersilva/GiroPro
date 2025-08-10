@@ -51,20 +51,28 @@
 - ✅ **CONCLUÍDO**: Especificações técnicas completas criadas.
 - ✅ **CONCLUÍDO**: Unificação e organização dos documentos.
 - ✅ **CONCLUÍDO**: Roadmap atualizado para refletir o estado atual.
+- ✅ **CONCLUÍDO**: Reorganização da documentação de acordo com o padrão Diátaxis.
 - 🔄 **PRÓXIMO**: Finalizar build e testar aplicação localmente.
 
-## Documentos Criados
-- `docs/EspecificacoesTecnicasGiroPro.md` - O documento unificado com stack tecnológico completo, padrões e detalhes de API.
-- `docs/mapeamento_funcionalidades.md` - Lista completa de funcionalidades implementadas.
-- `docs/analise_problemas.md` - Problemas técnicos identificados e soluções.
-- `docs/relatorio_testes_scripts.md` - Testes e correções dos scripts de setup.
-- `docs/backend_correcoes_especificas.md` - Relatório de correções específicas do backend.
-- `docs/relatorios_e_dashboards.md` - Documento sobre relatórios e dashboards.
-- `docs/roadmap.md` - Roadmap do projeto.
-- `docs/estrategia_precificacao.md` - Estratégia de precificação.
-- `docs/detalhamento_apis_modelos_dados.md` - Detalhamento de APIs e modelos de dados.
+## Documentos Criados/Reorganizados
+- `docs/01_tutoriais/01_setup_inicial.md` - Tutorial de setup inicial do ambiente de desenvolvimento.
+- `docs/02_guias_como_fazer/01_testar_scripts_setup.md` - Guia de como testar os scripts de setup.
+- `docs/03_explicacoes/00_problemas_comuns_e_licoes_aprendidas.md` - Consolidação de problemas comuns e lições aprendidas (inclui conteúdo de `analise_problemas.md` e `backend_correcoes_especificas.md`).
+- `docs/03_explicacoes/01_arquitetura_geral.md` - Visão geral da arquitetura do sistema.
+- `docs/03_explicacoes/04_tecnologias_padroes.md` - Tecnologias e padrões utilizados (parte de `EspecificacoesTecnicasGiroPro.md`).
+- `docs/03_explicacoes/05_formulas_metricas_financeiras.md` - Fórmulas e métricas financeiras (parte de `EspecificacoesTecnicasGiroPro.md`).
+- `docs/03_explicacoes/06_estrategia_precificacao.md` - Estratégia de precificação.
+- `docs/03_explicacoes/07_relatorios_e_dashboards.md` - Relatórios e dashboards.
+- `docs/03_explicacoes/08_roadmap_do_projeto.md` - Roadmap do projeto.
+- `docs/04_referencias/01_dicionario_dados.md` - Dicionário de dados (parte de `detalhamento_apis_modelos_dados.md`).
+- `docs/04_referencias/02_api_endpoints.md` - Endpoints da API (parte de `detalhamento_apis_modelos_dados.md`).
+- `docs/04_referencias/05_funcionalidades_implementadas.md` - Funcionalidades implementadas (conteúdo de `mapeamento_funcionalidades.md`).
+- `docs/documentacao_priorizacao.md` - Proposta de priorização da documentação.
+- `docs/principios_arquiteturais.md` - Documento de princípios arquiteturais.
 - `scripts/fix_snake_case.sh` - Script de conversão automática para camelCase.
-- `README.md` - Guia rápido e índice para a documentação.
+- `README.md` - Guia rápido e índice para a documentação (atualizado).
+
+
 
 
 
