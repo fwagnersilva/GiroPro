@@ -95,24 +95,24 @@ export interface Journey {
 export interface CreateJourneyRequest {
   idVeiculo: string;
   dataInicio: string;
-  km_inicio: number;
+  kmInicio: number;
   dataFim?: string;
-  km_fim?: number;
+  kmFim?: number;
   ganhoBruto?: number;
   kmTotal?: number;
-  tempo_total?: number;
+  tempoTotal?: number;
   observacoes?: string;
 }
 
 export interface UpdateJourneyRequest {
   idVeiculo?: string;
   dataInicio?: string;
-  km_inicio?: number;
+  kmInicio?: number;
   dataFim?: string;
-  km_fim?: number;
+  kmFim?: number;
   ganhoBruto?: number;
   kmTotal?: number;
-  tempo_total?: number;
+  tempoTotal?: number;
   observacoes?: string;
 }
 

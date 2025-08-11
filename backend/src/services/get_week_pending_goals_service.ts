@@ -24,17 +24,17 @@ export async function getWeekPendingGoals({
     .select({
       id: metas.id,
       title: metas.titulo,
-      desiredWeeklyFrequency: metas.valor_objetivo,
-      currentProgress: metas.valor_atual,
+      desiredWeeklyFrequency: metas.valorObjetivo,
+      currentProgress: metas.valorAtual,
     })
     .from(metas)
     .where(
       and(
         eq(metas.periodo, "Semanal"), // Filtrar por metas semanais
-        lte(metas.dataInicio, endOfWeek.toISOString()),
-        gte(metas.dataFim, startOfWeek.toISOString()),
-        eq(metas.status, "Ativa"), // Apenas metas ativas
-        sql`${metas.valor_atual} < ${metas.valor_objetivo}` // Onde o valor atual é menor que o objetivo
+        lte(metas.dataInicio, endOfWeek),
+        gte(metas.dataFim, startOfWeek),
+        eq(metas.status, "ativa"), // Apenas metas ativas
+         sql`${metas.valorAtual} < ${metas.valorObjetivo}` // Onde o valor atual é menor que o objetivo
       )
     );
 

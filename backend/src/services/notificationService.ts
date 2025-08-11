@@ -1,12 +1,12 @@
 import { db } from '../db';
-import { notificacoes } from '../db/schema';
+import { notificacoes, tipoNotificacaoEnum } from "../db/schema";
 import { eq, and, desc, isNull, gte, lte } from 'drizzle-orm';
 import { v4 as uuidv4 } from 'uuid';
 
 export interface NotificationData {
   id?: string;
   idUsuario: string;
-  tipo?: string; // Opcional com valor padrão
+  tipo?: "sistema" | "alerta" | "promocao" | "suporte";
   titulo: string;
   mensagem: string;
   dados_extras?: any;
@@ -22,7 +22,7 @@ export class NotificationService {
     const notification = {
       id: data.id || uuidv4(),
       idUsuario: data.idUsuario,
-      tipo: data.tipo || "sistema",
+      tipo: data.tipo || "sistema" as "sistema" | "alerta" | "promocao" | "suporte",
       titulo: data.titulo,
       mensagem: data.mensagem,
       dados_extras: data.dados_extras ? JSON.stringify(data.dados_extras) : null,
@@ -62,7 +62,7 @@ export class NotificationService {
 
     if (tipo) {
       // Validar que o tipo é um dos valores permitidos do enum
-      const validTypes = ["sistema", "alerta", "promocao", "suporte"];
+      const validTypes = Object.values(tipoNotificacaoEnum);
       if (validTypes.includes(tipo as any)) {
         whereCondition = and(whereCondition, eq(notificacoes.tipo, tipo as any));
       } else {

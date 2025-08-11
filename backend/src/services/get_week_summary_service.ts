@@ -1,7 +1,7 @@
 import { eq, gte, lte, sql, count } from "drizzle-orm";
 import { db } from "../db/connection";
 import { metas, progressoMetas } from "../db/schema";
-import type { GetWeekSummaryRequest } from "../controllers/goalsController";
+import type { WeekDateQuery } from "../controllers/goalsController";
 
 interface GoalSummary {
   id: string;
@@ -17,11 +17,7 @@ interface GetWeekSummaryResponse {
     goalsPerDay: Record<string, GoalSummary[]>;
   };
 }
-
-export async function getWeekSummary({
-  weekStartsAt,
-}: GetWeekSummaryRequest = {}): Promise<GetWeekSummaryResponse> {
-  // Se não informado, usar o início da semana atual (domingo)
+export async function getWeekSummary({ weekStartsAt, }: WeekDateQuery = {}): Promise<GetWeekSummaryResponse> {
   const startOfWeek = weekStartsAt ? new Date(weekStartsAt) : getStartOfWeek(new Date());
   const endOfWeek = getEndOfWeek(startOfWeek);
 
@@ -30,28 +26,28 @@ export async function getWeekSummary({
     .select({
       id: metas.id,
       title: metas.titulo,
-      desiredWeeklyFrequency: metas.valor_objetivo,
+      desiredWeeklyFrequency: metas.valorObjetivo,
       completionCount: count(progressoMetas.id),
     })
     .from(metas)
     .leftJoin(
       progressoMetas,
-      sql`${progressoMetas.id_meta} = ${metas.id} AND ${progressoMetas.dataRegistro} >= ${startOfWeek} AND ${progressoMetas.dataRegistro} <= ${endOfWeek}`
+      sql`${progressoMetas.idMeta} = ${metas.id} AND ${progressoMetas.dataRegistro} >= ${startOfWeek.getTime()} AND ${progressoMetas.dataRegistro} <= ${endOfWeek.getTime()}`
     )
-    .groupBy(metas.id, metas.titulo, metas.valor_objetivo);
+    .groupBy(metas.id, metas.titulo, metas.valorObjetivo);
 
   // Buscar completações por dia para o goalsPerDay
   const completionsByDay = await db
     .select({
-      goalId: progressoMetas.id_meta,
+      goalId: progressoMetas.idMeta,
       day: sql<string>`DATE(${progressoMetas.dataRegistro})`.as("day"),
       goalTitle: metas.titulo,
-      desiredWeeklyFrequency: metas.valor_objetivo,
+      desiredWeeklyFrequency: metas.valorObjetivo,
     })
     .from(progressoMetas)
-    .innerJoin(metas, eq(metas.id, progressoMetas.id_meta))
+    .innerJoin(metas, eq(metas.id, progressoMetas.idMeta))
     .where(
-      sql`${progressoMetas.dataRegistro} >= ${startOfWeek} AND ${progressoMetas.dataRegistro} <= ${endOfWeek}`
+      sql`${progressoMetas.dataRegistro} >= ${startOfWeek.getTime()} AND ${progressoMetas.dataRegistro} <= ${endOfWeek.getTime()}`
     );
 
   // Calcular estatísticas

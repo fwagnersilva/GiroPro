@@ -10,22 +10,22 @@ interface FuelingData {
   id: string;
   idUsuario: string;
   idVeiculo: string;
-  dataAbastecimento: number; // Unix timestamp
+  dataAbastecimento: Date; // Date object
   kmAtual: number;
   quantidadeLitros: number;
   valorTotal: number; // Em centavos
   valorLitro: number; // Em centavos
   nomePosto: string | null;
   tipoCombustivel: "gasolina" | "etanol" | "diesel" | "gnv" | "flex";
-  createdAt: number; // Unix timestamp
-  updatedAt: number; // Unix timestamp
+  createdAt: Date; // Date object
+  updatedAt: Date; // Date object
 }
 
 interface CreateFuelingData {
   id: string;
   idUsuario: string;
   idVeiculo: string;
-  dataAbastecimento: number; // Unix timestamp
+  dataAbastecimento: Date; // Date object
   kmAtual: number;
   quantidadeLitros: number;
   valorTotal: number; // Em centavos
@@ -100,7 +100,7 @@ class FuelingUtils {
       id: crypto.randomUUID(),
       idUsuario: userId,
       idVeiculo: data.vehicleId,
-      dataAbastecimento: new Date(data.data).getTime(), // Convert Date to timestamp
+      dataAbastecimento: new Date(data.data), // Convert Date to timestamp
       kmAtual: data.quilometragem,
       quantidadeLitros: data.quantidadeLitros,
       valorTotal: this.priceToCents(data.quantidadeLitros * data.precoPorLitro),
@@ -183,8 +183,8 @@ export class FuelingService {
         return await tx.insert(abastecimentos)
           .values({
             ...newFuelingData,
-            createdAt: new Date().getTime(),
-            updatedAt: new Date().getTime(),
+            createdAt: new Date(),
+            updatedAt: new Date(),
           })
           .returning();
       });
@@ -369,7 +369,7 @@ export class FuelingService {
 
       // Preparar dados para atualização
       const updateData: Partial<FuelingData> = {
-        updatedAt: new Date().getTime()
+        updatedAt: new Date()
       };
 
       // Mapear campos com validação
@@ -378,7 +378,7 @@ export class FuelingService {
         if (isNaN(date.getTime())) {
           throw new Error('Data de abastecimento inválida');
         }
-        updateData.dataAbastecimento = date.getTime();
+        updateData.dataAbastecimento = date;
       }
 
       if (fuelingData.quilometragem !== undefined) {

@@ -1,6 +1,6 @@
 import { db } from "../db";
 import { jornadas } from "../db/schema";
-import { eq, and, gte, lte, or } from "drizzle-orm";
+import { eq, and, gte, lte, or, ne } from "drizzle-orm";
 import { CreateJourneyRequest, UpdateJourneyRequest, JourneyFilters } from "../types";
 import crypto from 'crypto';
 
@@ -53,8 +53,8 @@ export class JourneyService {
       }
       
       // Filtro por veículo
-      if (filters.veiculo_id) {
-        conditions.push(eq(jornadas.idVeiculo, filters.veiculo_id));
+      if (filters.veiculoId) {
+        conditions.push(eq(jornadas.idVeiculo, filters.veiculoId));
       }
       
       return await db.select().from(jornadas).where(and(...conditions));
@@ -114,7 +114,7 @@ export class JourneyService {
         const diffMs = fim.getTime() - inicio.getTime();
         const hours = Math.floor(diffMs / (1000 * 60 * 60));
         const minutes = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
-        dataToUpdate.tempoTotal = `${hours}:${minutes.toString().padStart(2, '0')}`;
+        dataToUpdate.tempoTotal = Math.floor(diffMs / (1000 * 60));
       }
 
       const [updatedJourney] = await db.update(jornadas)
