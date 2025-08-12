@@ -14,8 +14,9 @@
   - Correções em `get_week_pending_goals_service.ts` para importação correta de tipos
 - Identificação de 288 erros de compilação distribuídos em 29 arquivos, principalmente relacionados à migração Fastify → Express.
 - Configuração do arquivo `tsconfig.json` para incluir novos diretórios de schemas.
-- **Melhoria do script `setup_sqlite.sh`**: O script foi refatorado para ser não-interativo e agora aceita flags para automação (`--db-path`, `--skip-install`, `--skip-migrate`).
-- **Continuação da migração Fastify → Express**:
+- Melhoria do script `setup_sqlite.sh`: O script foi refatorado para ser não-interativo e agora aceita flags para automação (`--db-path`, `--skip-install`, `--skip-migrate`).
+- Atualização da documentação `docs/01_tutoriais/01_setup_inicial.md` para refletir as melhorias no script `setup_sqlite.sh`.
+- Continuação da migração Fastify → Express:
   - Migração completa do `dashboardController.ts` para Express, incluindo a criação de um novo arquivo `dashboardController_express.ts` e posterior renomeação.
   - Migração completa do `fuelPricesController.ts` para Express, incluindo a criação de um novo arquivo `fuelPricesController_express.ts` e posterior renomeação.
   - Atualização do `app.ts` para importar e usar as novas rotas do `dashboardController` e `fuelPricesController`.

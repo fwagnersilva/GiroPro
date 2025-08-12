@@ -38,13 +38,26 @@ npm install
 
 Para desenvolvimento local, o GiroPro utiliza SQLite, que é um banco de dados baseado em arquivo e não requer um servidor separado. O arquivo do banco de dados (`giropro.db`) será criado automaticamente.
 
-Execute o script de setup do SQLite para garantir que o banco de dados esteja pronto e as migrações sejam aplicadas:
+Execute o script de setup do SQLite para garantir que o banco de dados esteja pronto e as migrações sejam aplicadas. O script `setup_sqlite.sh` agora suporta automação e pode ser executado de forma não-interativa:
 
 ```bash
-npm run db:migrate
+./setup_sqlite.sh
 ```
 
-*   **Nota Importante**: O comando `npm run db:migrate` pode ser interativo, solicitando confirmação para renomeação de colunas ou outras operações. Fique atento às mensagens no terminal e confirme as ações quando solicitado. Para um ambiente de CI/CD ou automação, considere a criação de um script não interativo ou a utilização de ferramentas que gerenciem migrações de forma programática.
+**Opções de Automação para `setup_sqlite.sh`:**
+
+*   `--db-path <caminho>`: Define o caminho para o arquivo do banco de dados SQLite (padrão: `giropro.db`).
+*   `--skip-install`: Pula a instalação de dependências npm (`better-sqlite3`, `@types/better-sqlite3`).
+*   `--skip-migrate`: Pula a geração e execução de migrações do Drizzle Kit.
+
+**Exemplos:**
+
+```bash
+./setup_sqlite.sh --db-path ./data/my_giropro.db --skip-install
+./setup_sqlite.sh --skip-migrate
+```
+
+*   **Nota Importante**: Se você estiver usando o Drizzle ORM e tiver migrações interativas, o comando `npx drizzle-kit migrate` ainda pode solicitar confirmação. Para automação completa em CI/CD, considere a utilização de ferramentas que gerenciem migrações de forma programática ou certifique-se de que suas migrações não exijam interação.
 
 *   **PostgreSQL para Desenvolvimento Local**: Se você preferir usar PostgreSQL para desenvolvimento local (mais próximo do ambiente de produção), você precisará configurar um servidor PostgreSQL e ajustar as variáveis de ambiente no arquivo `.env`. Consulte o guia [Como Realizar Migração de Banco de Dados](docs/02_guias_como_fazer/02_como_realizar_migracao_banco_dados.md) para mais detalhes sobre a configuração do Drizzle ORM com PostgreSQL.
 
