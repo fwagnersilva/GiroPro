@@ -3,9 +3,58 @@
 # Script para configuração do ambiente SQLite para o GiroPro
 
 # Cores para saída do terminal
-GREEN='\033[0;32m'
-BLUE='\033[0;34m'
-NC='\033[0m'
+GREEN=\'\\033[0;32m\'
+BLUE=\'\\033[0;34m\'
+RED=\'\\033[0;31m\'
+NC=\'\\033[0m\'
+
+# Variáveis padrão
+DB_PATH="giropro.db"
+SKIP_INSTALL=false
+SKIP_MIGRATE=false
+
+# Função de ajuda
+show_help() {
+    echo "Uso: $0 [OPÇÕES]"
+    echo "Configura o ambiente SQLite para o GiroPro."
+    echo ""
+    echo "Opções:"
+    echo "  -d, --db-path <caminho>  Define o caminho para o arquivo do banco de dados SQLite (padrão: giropro.db)"
+    echo "  -s, --skip-install     Pula a instalação de dependências npm (better-sqlite3, @types/better-sqlite3)"
+    echo "  -m, --skip-migrate     Pula a geração e execução de migrações do Drizzle Kit"
+    echo "  -h, --help             Exibe esta mensagem de ajuda"
+    echo ""
+    echo "Exemplo: $0 --db-path ./data/my_giropro.db --skip-install"
+}
+
+# Parsear argumentos da linha de comando
+while [[ "$#" -gt 0 ]]; do
+    key="$1"
+    case $key in
+        -d|--db-path)
+        DB_PATH="$2"
+        shift # past argument
+        shift # past value
+        ;;
+        -s|--skip-install)
+        SKIP_INSTALL=true
+        shift # past argument
+        ;;
+        -m|--skip-migrate)
+        SKIP_MIGRATE=true
+        shift # past argument
+        ;;
+        -h|--help)
+        show_help
+        exit 0
+        ;;
+        *)
+        echo -e "${RED}Erro: Opção inválida: $1${NC}"
+        show_help
+        exit 1
+        ;;
+    esac
+done
 
 echo -e "${GREEN}Configurando ambiente SQLite para o GiroPro...${NC}"
 
@@ -15,42 +64,64 @@ cd backend || {
     exit 1
 }
 
-# 2. Instalar dependências SQLite
-echo -e "${BLUE}Instalando dependências SQLite...${NC}"
-npm install better-sqlite3 @types/better-sqlite3
+# 2. Instalar dependências SQLite (se não for para pular)
+if [ "$SKIP_INSTALL" = false ]; then
+    echo -e "${BLUE}Instalando dependências SQLite...${NC}"
+    npm install better-sqlite3 @types/better-sqlite3 || {
+        echo -e "${RED}Erro: Falha ao instalar dependências SQLite.${NC}"
+        exit 1
+    }
+else
+    echo -e "${BLUE}Pulando instalação de dependências SQLite.${NC}"
+fi
 
 # 3. Configurar variáveis de ambiente para SQLite
 echo -e "${BLUE}Configurando variáveis de ambiente...${NC}"
 
 # Criar ou atualizar arquivo .env
 if [ ! -f .env ]; then
-    cp .env.example .env
+    cp .env.example .env || {
+        echo -e "${RED}Erro: Falha ao copiar .env.example para .env.${NC}"
+        exit 1
+    }
     echo -e "${GREEN}Arquivo .env criado a partir do .env.example${NC}"
 fi
 
 # Atualizar DB_TYPE para sqlite no .env
 if grep -q "DB_TYPE=" .env; then
-    sed -i 's/DB_TYPE=.*/DB_TYPE=sqlite/' .env
+    sed -i \'s/DB_TYPE=.*/DB_TYPE=sqlite/\' .env
 else
     echo "DB_TYPE=sqlite" >> .env
 fi
 
-# Configurar caminho do SQLite se não existir
-if ! grep -q "SQLITE_DB_PATH=" .env; then
-    echo "SQLITE_DB_PATH=giropro.db" >> .env
+# Configurar caminho do SQLite
+if grep -q "SQLITE_DB_PATH=" .env; then
+    sed -i "s|SQLITE_DB_PATH=.*|SQLITE_DB_PATH=${DB_PATH}|" .env
+else
+    echo "SQLITE_DB_PATH=${DB_PATH}" >> .env
 fi
 
 echo -e "${GREEN}Variáveis de ambiente configuradas para SQLite${NC}"
 
-# 4. Gerar migrações SQLite
-echo -e "${BLUE}Gerando migrações para SQLite...${NC}"
-npx drizzle-kit generate --config=drizzle.config.sqlite.ts
+# 4. Gerar e Executar migrações (se não for para pular)
+if [ "$SKIP_MIGRATE" = false ]; then
+    echo -e "${BLUE}Gerando migrações para SQLite...${NC}"
+    npx drizzle-kit generate --config=drizzle.config.sqlite.ts || {
+        echo -e "${RED}Erro: Falha ao gerar migrações do Drizzle Kit.${NC}"
+        exit 1
+    }
 
-# 5. Executar migrações
-echo -e "${BLUE}Executando migrações SQLite...${NC}"
-npx drizzle-kit migrate --config=drizzle.config.sqlite.ts
+    echo -e "${BLUE}Executando migrações SQLite...${NC}"
+    npx drizzle-kit migrate --config=drizzle.config.sqlite.ts || {
+        echo -e "${RED}Erro: Falha ao executar migrações do Drizzle Kit.${NC}"
+        exit 1
+    }
+else
+    echo -e "${BLUE}Pulando geração e execução de migrações.${NC}"
+fi
 
 echo -e "${GREEN}Configuração SQLite concluída!${NC}"
 echo -e "${BLUE}Para usar SQLite, certifique-se de que DB_TYPE=sqlite no seu arquivo .env${NC}"
 echo -e "${BLUE}Para voltar ao PostgreSQL, altere DB_TYPE=postgresql no arquivo .env${NC}"
+
 
