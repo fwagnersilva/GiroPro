@@ -1,7 +1,7 @@
 import { eq, gte, lte, and, sql } from "drizzle-orm";
 import { db } from "../db/connection";
 import { metas, progressoMetas } from "../db/schema";
-import { GetWeekPendingGoalsRequest } from "../controllers/goalsController";
+import { WeekDateQuery } from "../controllers/goalsController";
 
 interface PendingGoal {
   id: string;
@@ -16,7 +16,7 @@ interface GetWeekPendingGoalsResponse {
 
 export async function getWeekPendingGoals({
   weekStartsAt,
-}: GetWeekPendingGoalsRequest = {}): Promise<GetWeekPendingGoalsResponse> {
+}: WeekDateQuery = {}): Promise<GetWeekPendingGoalsResponse> {
   const startOfWeek = weekStartsAt ? new Date(weekStartsAt) : getStartOfWeek(new Date());
   const endOfWeek = getEndOfWeek(startOfWeek);
 

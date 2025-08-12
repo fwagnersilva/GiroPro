@@ -222,7 +222,7 @@ export class FuelingService {
       
       // Cache key
       const cacheKey = `fuelings:${userId}:${JSON.stringify({ pagination, filters, orderBy })}`;
-      const cached = FuelingCache.get(cacheKey);
+      const cached = FuelingCache.get<{ totalFuelings: number; totalSpent: number; totalLiters: number; averagePrice: number; lastFueling?: number; }>(cacheKey);
       if (cached) return { success: true, data: cached };
 
       // Base query
@@ -388,16 +388,16 @@ export class FuelingService {
         updateData.kmAtual = fuelingData.quilometragem;
       }
 
-      if (fuelingData.quantidadeLitros !== undefined) {
-        if (!Number.isFinite(fuelingData.quantidadeLitros) || fuelingData.quantidadeLitros <= 0) {
+      if (fuelingData.litros !== undefined) {
+        if (!Number.isFinite(fuelingData.litros) || fuelingData.litros <= 0) {
           throw new Error('Quantidade de litros deve ser um número válido e positivo');
         }
-        updateData.quantidadeLitros = fuelingData.quantidadeLitros;
+        updateData.quantidadeLitros = fuelingData.litros;
         
         // Recalcular valor total se temos preço
         if (fuelingData.precoPorLitro !== undefined) {
           updateData.valorTotal = FuelingUtils.priceToCents(
-            fuelingData.quantidadeLitros * fuelingData.precoPorLitro
+            fuelingData.litros * fuelingData.precoPorLitro
           );
         }
       }
@@ -409,7 +409,7 @@ export class FuelingService {
         updateData.valorLitro = FuelingUtils.priceToCents(fuelingData.precoPorLitro);
         
         // Recalcular valor total
-        const litros = fuelingData.quantidadeLitros ?? existingFueling.data.quantidadeLitros;
+        const litros = fuelingData.litros ?? existingFueling.data.quantidadeLitros;
         updateData.valorTotal = FuelingUtils.priceToCents(litros * fuelingData.precoPorLitro);
       }
 
@@ -521,7 +521,7 @@ export class FuelingService {
   }>> {
     try {
       const cacheKey = `stats:${userId}:${vehicleId || 'all'}`;
-      const cached = FuelingCache.get(cacheKey);
+      const cached = FuelingCache.get<{ totalFuelings: number; totalSpent: number; totalLiters: number; averagePrice: number; lastFueling?: number; }>(cacheKey);
       if (cached) return { success: true, data: cached };
 
       const conditions = [eq(abastecimentos.idUsuario, userId)];

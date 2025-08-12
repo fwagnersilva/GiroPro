@@ -1,151 +1,68 @@
-import { z } from 'zod';
-import { FastifyPluginAsyncZod } from 'fastify-type-provider-zod';
+import { Request, Response, NextFunction, Router } from 'express';
 import { AuthService } from '../services/authService';
 import { loginSchema, registerSchema, requestPasswordResetSchema, resetPasswordSchema, changePasswordSchema } from '../utils/validation';
 import { UnauthorizedError, NotFoundError, ValidationError, ConflictError } from "../utils/customErrors";
 import { AuthenticatedRequest } from "../types/common";
 
-
-
-export const authRoutes: FastifyPluginAsyncZod = async (app) => {
+export const authRoutes = Router();
   // Rota de registro de usuário
-  app.post(
-    '/auth/register',
-    {
-      schema: {
-        body: registerSchema,
-        response: {
-          201: z.object({
-            success: z.boolean(),
-            message: z.string(),
-            accessToken: z.string(),
-            user: z.object({
-              id: z.string().uuid(),
-              nome: z.string(),
-              email: z.string().email(),
-            }),
-          }),
-          400: z.object({
-            success: z.boolean(),
-            error: z.string(),
-            details: z.array(z.object({ message: z.string() })).optional(),
-          }),
-          409: z.object({
-            success: z.boolean(),
-            error: z.string(),
-          }),
-          500: z.object({
-            success: z.boolean(),
-            error: z.string(),
-          }),
-        },
-      },
-    },
-    async (request, reply) => {
+authRoutes.post(
+  '/register',
+  async (req: Request, res: Response) => {
       try {
-        const { email, senha, nome } = request.body;
+        const { email, senha, nome } = req.body;
         const { token, user } = await AuthService.register({ email, senha, nome });
-        reply.status(201).send({ success: true, message: 'Usuário registrado com sucesso', accessToken: token, user });
+        res.status(201).send({ success: true, message: 'Usuário registrado com sucesso', accessToken: token, user });
       } catch (error: any) {
         if (error instanceof ValidationError) {
-          reply.status(400).send({ success: false, error: error.message, details: error.details });
+          res.status(400).send({ success: false, error: error.message, details: error.details });
         } else if (error.message === 'Email já está em uso') {
-          reply.status(409).send({ success: false, error: error.message });
+          res.status(409).send({ success: false, error: error.message });
         } else {
           console.error('Erro no registro:', error);
-          reply.status(500).send({ success: false, error: 'Erro interno do servidor' });
+          res.status(500).send({ success: false, error: 'Erro interno do servidor' });
         }
       }
     }
   );
 
   // Rota de login de usuário
-  app.post(
-    '/auth/login',
-    {
-      schema: {
-        body: loginSchema,
-        response: {
-          200: z.object({
-            success: z.boolean(),
-            message: z.string(),
-            accessToken: z.string(),
-            refreshToken: z.string(),
-          }),
-          400: z.object({
-            success: z.boolean(),
-            error: z.string(),
-            details: z.array(z.object({ message: z.string() })).optional(),
-          }),
-          401: z.object({
-            success: z.boolean(),
-            error: z.string(),
-          }),
-          500: z.object({
-            success: z.boolean(),
-            error: z.string(),
-          }),
-        },
-      },
-    },
-    async (request, reply) => {
+authRoutes.post(
+    '/login',
+    async (req: Request, res: Response) => {
       try {
-        const { email, senha } = request.body;
+        const { email, senha } = req.body;
         const { token: accessToken, refreshToken } = await AuthService.login({ email, senha });
-        reply.send({ success: true, message: 'Login bem-sucedido', accessToken, refreshToken });
+        res.send({ success: true, message: 'Login bem-sucedido', accessToken, refreshToken });
       } catch (error: any) {
         if (error instanceof ValidationError) {
-          reply.status(400).send({ success: false, error: error.message, details: error.details });
+          res.status(400).send({ success: false, error: error.message, details: error.details });
         } else if (error instanceof UnauthorizedError) {
-          reply.status(401).send({ success: false, error: error.message });
+          res.status(401).send({ success: false, error: error.message });
         } else {
           console.error('Erro no login:', error);
-          reply.status(500).send({ success: false, error: 'Erro interno do servidor' });
+          res.status(500).send({ success: false, error: 'Erro interno do servidor' });
         }
       }
     }
   );
 
   // Rota para solicitar redefinição de senha
-  app.post(
-    '/auth/request-password-reset',
-    {
-      schema: {
-        body: requestPasswordResetSchema,
-        response: {
-          200: z.object({
-            success: z.boolean(),
-            message: z.string(),
-          }),
-          400: z.object({
-            success: z.boolean(),
-            error: z.string(),
-            details: z.array(z.object({ message: z.string() })).optional(),
-          }),
-          404: z.object({
-            success: z.boolean(),
-            error: z.string(),
-          }),
-          500: z.object({
-            success: z.boolean(),
-            error: z.string(),
-          }),
-        },
-      },
-    },
-    async (request, reply) => {
+authRoutes.post(
+    '/request-password-reset',
+    async (req: Request, res: Response) => {
       try {
-        const { email } = request.body;
+        const { email } = req.body;
         await AuthService.requestPasswordReset(email);
-        reply.send({ success: true, message: 'Se o email estiver registrado, um link de redefinição de senha foi enviado.' });
+        res.send({ success: true, message: 'Se o email estiver registrado, um link de redefinição de senha foi enviado.' });
       } catch (error: any) {
         if (error instanceof ValidationError) {
-          reply.status(400).send({ success: false, error: error.message, details: error.details });
+          res.status(400).send({ success: false, error: error.message, details: error.details });
         } else if (error instanceof NotFoundError) {
-          reply.status(404).send({ success: false, error: error.message });
+          res.status(404).send({ success: false, error: error.message });
         } else {
           console.error('Erro ao solicitar redefinição de senha:', error);
-          reply.status(500).send({ success: false, error: 'Erro interno do servidor' });
+          res.status(500).send({ success: false, error: 'Erro interno do servidor' });
         }
       }
     }

@@ -32,7 +32,8 @@
     "emitDecoratorMetadata": true
   },
   "include": [
-    "src/**/*",
+    "src/**/*.ts",
+    "src/schemas/**/*",
     "src/types/**/*",
     "src/tests/setup.ts"
   ],
