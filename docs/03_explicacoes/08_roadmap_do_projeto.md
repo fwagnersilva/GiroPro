@@ -31,19 +31,19 @@ O projeto GiroPro já possui uma base de código significativa com as seguintes 
 
 ## 3. Próximas Etapas Essenciais para Funcionalidade Mínima (O que precisa ser feito para funcionar)
 
-Para que o GiroPro se torne minimamente funcional e utilizável, as seguintes etapas são cruciais e prioritárias:
+Para que o GiroPro se torne minimamente funcional e utilizável, as seguintes etapas são cruciais e prioritárias, listadas em ordem de importância:
 
-### 3.1. Estabilização e Funcionalidade do Backend
+### Prioridade 1: Estabilização e Funcionalidade do Backend
 *   **Resolver Erros de Compilação**: Eliminar todos os erros de TypeScript restantes no backend.
 *   **Garantir Inicialização**: Assegurar que o servidor backend inicie e opere sem falhas.
 *   **Validar APIs Essenciais**: Testar e confirmar o funcionamento correto das APIs de autenticação, e das operações de criação, leitura, atualização e exclusão (CRUD) para usuários, veículos, jornadas, abastecimentos e despesas.
 
-### 3.2. Integração e Testes Iniciais Frontend-Backend
+### Prioridade 2: Integração e Testes Iniciais Frontend-Backend
 *   **Conectar Camadas**: Estabelecer a comunicação funcional entre o frontend e o backend.
 *   **Testar Fluxos Básicos**: Validar os fluxos de usuário mais importantes, como login, registro, cadastro de veículo, e o registro de uma jornada completa (com abastecimento e despesa).
 *   **Exibição de Dados Básicos**: Garantir que o dashboard e os relatórios básicos (ganhos/despesas) exibam dados reais provenientes do backend.
 
-### 3.3. Refinamento do Setup e Documentação
+### Prioridade 3: Refinamento do Setup e Documentação
 *   **Otimizar Scripts de Setup**: Tornar os scripts de configuração do ambiente mais robustos e não-interativos.
 *   **Criar `.env.example`**: Fornecer um arquivo de exemplo para as variáveis de ambiente necessárias.
 *   **Atualizar `README.md`**: Assegurar que o `README.md` principal contenha instruções claras e concisas para o setup e execução do projeto.
@@ -70,7 +70,7 @@ Uma vez que o sistema esteja funcional e estável, o GiroPro poderá evoluir par
 *   **Modo Offline Avançado**: Sincronização robusta e resolução de conflitos.
 *   **Internacionalização e Temas**: Suporte a múltiplos idiomas e personalização visual.
 *   **Comunidade de Motoristas**: Fórum e troca de experiências.
-*   **Integração Bancária e Fiscal**: Importação automática de extratos e geração de relatórios fiscais.
+
 
 ## 5. Conclusão
 
@@ -80,5 +80,7 @@ Este roadmap prioriza a estabilização e a entrega de uma funcionalidade básic
 
 **Desenvolvido por Manus AI**
 
-*Última Atualização: 8 de Agosto de 2025*
+*Última Atualização*
+
+
 
