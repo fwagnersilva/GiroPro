@@ -69,7 +69,6 @@ Uma vez que o sistema esteja funcional e estável, o GiroPro poderá evoluir par
 ### 4.3. Experiência do Usuário e Comunidade
 *   **Modo Offline Avançado**: Sincronização robusta e resolução de conflitos.
 *   **Internacionalização e Temas**: Suporte a múltiplos idiomas e personalização visual.
-*   **Comunidade de Motoristas**: Fórum e troca de experiências.
 
 
 ## 5. Conclusão
