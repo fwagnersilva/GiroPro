@@ -34,7 +34,7 @@ export const usuarios = sqliteTable("usuarios", {
 });
 ```
 
-**Importante**: Mantenha a consistência na nomenclatura. O projeto GiroPro utiliza `camelCase` para os nomes das colunas no schema TypeScript, que o Drizzle ORM mapeará para `snake_case` no banco de dados (se configurado para isso, o que é o caso padrão).
+**Importante**: Mantenha a consistência na nomenclatura. O projeto GiroPro utiliza `camelCase` para os nomes das colunas no schema TypeScript, que o Drizzle ORM mapeará para `snake_case` no banco de dados (se configurado para isso, o que é o caso padrão). **É crucial que os nomes das colunas no `schema.ts` sigam o padrão `camelCase` para evitar problemas de tipagem e inconsistências com o restante do código.**
 
 ## 3. Gerando a Migração
 
@@ -62,7 +62,7 @@ Execute o comando:
 npm run db:migrate
 ```
 
-**Nota Importante**: Este comando pode ser interativo, especialmente quando há operações que podem causar perda de dados (como renomeação de colunas). O Drizzle ORM pode solicitar confirmação manual para essas operações. Fique atento às mensagens no terminal e confirme as ações quando solicitado.
+**Nota Importante sobre Interatividade**: Este comando pode ser interativo, especialmente quando há operações que podem causar perda de dados (como renomeação de colunas). O Drizzle ORM pode solicitar confirmação manual para essas operações. Fique atento às mensagens no terminal e confirme as ações quando solicitado. **Para evitar interrupções em ambientes automatizados, considere as opções abaixo.**
 
 Este comando:
 
@@ -70,7 +70,13 @@ Este comando:
 *   Aplicará as migrações pendentes ao banco de dados `giropro.db`.
 *   Registrará as migrações aplicadas na tabela interna do Drizzle no banco de dados.
 
-**Para Ambientes de CI/CD**: Se você precisar executar migrações em um ambiente automatizado (CI/CD), considere a criação de um script não-interativo ou a utilização de flags específicas do Drizzle ORM que permitam execução automática, se disponíveis.
+**Para Ambientes de CI/CD e Automação**: Se você precisar executar migrações em um ambiente automatizado (CI/CD) ou de forma não-interativa, o Drizzle ORM oferece a opção `--accept-data-loss` para o comando `migrate`. **Use esta flag com extrema cautela**, pois ela aceitará automaticamente qualquer perda de dados que possa ocorrer durante a migração. Exemplo:
+
+```bash
+npm run db:migrate -- --accept-data-loss
+```
+
+Alternativamente, para migrações que não envolvem perda de dados, o comando pode ser executado sem a flag interativa, dependendo da versão do Drizzle e da natureza da migração. Sempre teste em um ambiente de desenvolvimento antes de aplicar em produção.
 
 ## 5. Revertendo Migrações (Atenção!)
 
@@ -89,4 +95,5 @@ Reverter migrações deve ser feito com extrema cautela, especialmente em ambien
 *   **Ambiente de Desenvolvimento**: Utilize um banco de dados de desenvolvimento separado para testar suas migrações antes de aplicá-las em ambientes de staging ou produção.
 
 Ao seguir este guia, você poderá gerenciar as alterações no schema do banco de dados do GiroPro de forma eficiente e segura.
+
 
