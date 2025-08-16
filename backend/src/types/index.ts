@@ -23,10 +23,12 @@ export interface LoginRequest {
 
 export interface AuthResponse {
   token: string;
+  refreshToken: string;
   user: {
     id: string;
     nome: string;
     email: string;
+    statusConta: string; // Adicionado statusConta
   };
 }
 

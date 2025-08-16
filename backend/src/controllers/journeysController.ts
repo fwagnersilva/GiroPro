@@ -71,6 +71,8 @@ const querySchema = z.object({
   veiculoId: z.string().uuid().optional(),
 });
 
+const periodoValido = z.enum(['semana', 'mes', 'trimestre', 'ano']).optional();
+
 // ===============================
 // CACHE CONFIGURATION
 // ===============================
@@ -106,7 +108,8 @@ const createSuccessResponse = <T>(
 
 const createErrorResponse = (
   error: string, 
-  statusCode: number = 400
+  statusCode: number = 400,
+  details?: any
 ): ControllerResult => ({
   success: false,
   error,
@@ -219,7 +222,7 @@ export const getJourneys = async (req: AuthenticatedRequest, res: Response) => {
     // 2. Validação e sanitização de query parameters
     const queryValidation = querySchema.safeParse(req.query);
     if (!queryValidation.success) {
-      return res.status(400).json(createErrorResponse('Parâmetros de consulta inválidos'));
+      return res.status(400).json(createErrorResponse('Parâmetros de consulta inválidos', 400, queryValidation.error.errors));
     }
 
     const queryParams = queryValidation.data;
@@ -539,11 +542,10 @@ export const getJourneyStats = async (req: AuthenticatedRequest, res: Response) 
 
     // Validar período (opcional)
     const { periodo } = req.query;
-    const periodoValido = z.enum(['semana', 'mes', 'trimestre', 'ano']).optional();
     const validatedPeriodo = periodoValido.safeParse(periodo);
     
     if (periodo && !validatedPeriodo.success) {
-      return res.status(400).json(createErrorResponse('Período inválido'));
+      return res.status(400).json(createErrorResponse('Período inválido', 400, validatedPeriodo.error.errors));
     }
 
     // Cache para estatísticas
@@ -563,27 +565,33 @@ export const getJourneyStats = async (req: AuthenticatedRequest, res: Response) 
 
     // Buscar estatísticas
     const stats = await JourneyService.getJourneyStatistics(userId, validatedPeriodo.data);
-    
+
     const queryTime = performance.now() - startTime;
     logPerformance('stats', queryTime);
 
+    // 6. Preparar resposta
     const response = createSuccessResponse(
       stats,
-      'Estatísticas recuperadas com sucesso',
+      'Estatísticas de jornada recuperadas com sucesso',
       {
-        performance: { queryTime, cacheHit: false }
+        performance: { queryTime, cacheHit: false },
+        filters: { periodo: validatedPeriodo.data || 'all' }
       }
     );
 
-    // Cache por mais tempo (15 min) para estatísticas
-    cache.set(cacheKey, response, 15 * 60 * 1000);
+    // 7. Salvar no cache
+    cache.set(cacheKey, response);
 
     return res.status(200).json(response);
 
   } catch (error: any) {
+    const queryTime = performance.now() - startTime;
+    
     logger.error('Error in getJourneyStats', {
       error: error.message,
+      stack: error.stack,
       userId: extractUserId(req),
+      query: req.query,
     });
 
     return res.status(500).json(createErrorResponse(
@@ -592,63 +600,3 @@ export const getJourneyStats = async (req: AuthenticatedRequest, res: Response) 
   }
 };
 
-export const finishJourney = async (req: AuthenticatedRequest, res: Response) => {
-  const startTime = performance.now();
-  
-  try {
-    const userId = extractUserId(req);
-    if (!userId) {
-      return res.status(401).json(createErrorResponse('Usuário não autenticado', 401));
-    }
-
-    const { id } = req.params;
-    if (!id || !z.string().uuid().safeParse(id).success) {
-      return res.status(400).json(createErrorResponse('ID da jornada inválido'));
-    }
-
-    // Validar dados para finalizar jornada
-    const finishSchema = z.object({
-      kmFim: z.number().int().min(0),
-      ganhoBruto: z.number().int().min(0).optional(),
-      observacoes: z.string().max(500).optional(),
-    });
-
-    const validationResult = finishSchema.safeParse(req.body);
-    if (!validationResult.success) {
-      return res.status(400).json(createErrorResponse('Dados inválidos para finalizar jornada'));
-    }
-
-    logRequest('finish', userId, { id, ...validationResult.data });
-
-    const finishedJourney = await JourneyService.finishJourney(id, userId, validationResult.data);
-    
-    if (!finishedJourney) {
-      return res.status(404).json(createErrorResponse('Jornada não encontrada ou já finalizada'));
-    }
-
-    // Invalidar cache
-    cache.invalidatePattern(`journey:${userId}:`);
-
-    const queryTime = performance.now() - startTime;
-    logPerformance('finish', queryTime);
-
-    return res.status(200).json(createSuccessResponse(
-      finishedJourney,
-      'Jornada finalizada com sucesso',
-      {
-        performance: { queryTime, cacheHit: false }
-      }
-    ));
-
-  } catch (error: any) {
-    logger.error('Error in finishJourney', {
-      error: error.message,
-      userId: extractUserId(req),
-      journeyId: req.params.id,
-    });
-
-    return res.status(500).json(createErrorResponse(
-      'Erro interno do servidor. Tente novamente.'
-    ));
-  }
-};

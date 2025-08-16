@@ -37,6 +37,11 @@ export const usuarios = sqliteTable("usuarios", {
   // Auditoria
   updatedAt: integer("updatedAt", { mode: "timestamp" }).default(sql`(unixepoch())`).notNull(),
   deletedAt: integer("deletedAt", { mode: "timestamp" }),
+  
+  // Campos adicionados para controle de login
+  tentativasLogin: integer("tentativasLogin").default(0).notNull(),
+  ultimoLoginFalhado: integer("ultimoLoginFalhado", { mode: "timestamp" }),
+  ultimaAtividade: integer("ultimaAtividade", { mode: "timestamp" }).default(sql`(unixepoch())`).notNull(),
 }, (table) => ({
   emailIdx: uniqueIndex("usuarios_email_idx").on(table.email),
   statusIdx: index("usuarios_status_idx").on(table.statusConta),
@@ -301,35 +306,7 @@ export const niveisUsuario = sqliteTable("niveis_usuario", {
 }));
 
 // ===============================
-// SISTEMA DE NOTIFICAÇÕES
-// ===============================
-
-export const notificacoes = sqliteTable("notificacoes", {
-  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
-  idUsuario: text("idUsuario").notNull().references(() => usuarios.id, { onDelete: "cascade" }),
-  
-  titulo: text("titulo", { length: 100 }).notNull(),
-  mensagem: text("mensagem", { length: 500 }).notNull(),
-  tipo: tipoNotificacaoEnum.default("sistema").notNull(),
-  
-  lida: integer("lida", { mode: "boolean" }).default(false).notNull(),
-  dataEnvio: integer("dataEnvio", { mode: "timestamp" }).default(sql`(unixepoch())`).notNull(),
-  dataLeitura: integer("dataLeitura", { mode: "timestamp" }),
-  dadosExtras: text("dadosExtras"), // JSON com dados extras
-  
-  expiresAt: integer("expiresAt", { mode: "timestamp" }), // Para notificações temporárias
-  deletedAt: integer("deletedAt", { mode: "timestamp" }),
-}, (table) => ({
-  usuarioIdx: index("notificacoes_usuario_idx").on(table.idUsuario),
-  lidaIdx: index("notificacoes_lida_idx").on(table.lida),
-  tipoIdx: index("notificacoes_tipo_idx").on(table.tipo),
-  dataIdx: index("notificacoes_data_idx").on(table.dataEnvio),
-  usuarioLidaIdx: index("notificacoes_usuario_lida_idx").on(table.idUsuario, table.lida),
-  expiracaoIdx: index("notificacoes_expiracao_idx").on(table.expiresAt),
-}));
-
-// ===============================
-// RELACIONAMENTOS
+// RELAÇÕES ENTRE TABELAS
 // ===============================
 
 export const usuariosRelations = relations(usuarios, ({ many }) => ({
@@ -337,10 +314,9 @@ export const usuariosRelations = relations(usuarios, ({ many }) => ({
   jornadas: many(jornadas),
   abastecimentos: many(abastecimentos),
   despesas: many(despesas),
-  logsAtividades: many(logsAtividades),
   metas: many(metas),
+  logsAtividades: many(logsAtividades),
   usuarioConquistas: many(usuarioConquistas),
-  notificacoes: many(notificacoes),
 }));
 
 export const veiculosRelations = relations(veiculos, ({ one, many }) => ({
@@ -387,13 +363,6 @@ export const despesasRelations = relations(despesas, ({ one }) => ({
   }),
 }));
 
-export const logsAtividadesRelations = relations(logsAtividades, ({ one }) => ({
-  usuario: one(usuarios, {
-    fields: [logsAtividades.idUsuario],
-    references: [usuarios.id],
-  }),
-}));
-
 export const metasRelations = relations(metas, ({ one, many }) => ({
   usuario: one(usuarios, {
     fields: [metas.idUsuario],
@@ -403,13 +372,20 @@ export const metasRelations = relations(metas, ({ one, many }) => ({
     fields: [metas.idVeiculo],
     references: [veiculos.id],
   }),
-  progressos: many(progressoMetas),
+  progressoMetas: many(progressoMetas),
 }));
 
 export const progressoMetasRelations = relations(progressoMetas, ({ one }) => ({
   meta: one(metas, {
     fields: [progressoMetas.idMeta],
     references: [metas.id],
+  }),
+}));
+
+export const logsAtividadesRelations = relations(logsAtividades, ({ one }) => ({
+  usuario: one(usuarios, {
+    fields: [logsAtividades.idUsuario],
+    references: [usuarios.id],
   }),
 }));
 
@@ -428,34 +404,6 @@ export const usuarioConquistasRelations = relations(usuarioConquistas, ({ one })
   }),
 }));
 
-export const notificacoesRelations = relations(notificacoes, ({ one }) => ({
-  usuario: one(usuarios, {
-    fields: [notificacoes.idUsuario],
-    references: [usuarios.id],
-  }),
-}));
+export const niveisUsuarioRelations = relations(niveisUsuario, ({}) => ({}));
 
-// ===============================
-// TIPOS TYPESCRIPT EXPORTADOS
-// ===============================
 
-export type Usuario = typeof usuarios.$inferSelect;
-export type NovoUsuario = typeof usuarios.$inferInsert;
-
-export type Veiculo = typeof veiculos.$inferSelect;
-export type NovoVeiculo = typeof veiculos.$inferInsert;
-
-export type Jornada = typeof jornadas.$inferSelect;
-export type NovaJornada = typeof jornadas.$inferInsert;
-
-export type Abastecimento = typeof abastecimentos.$inferSelect;
-export type NovoAbastecimento = typeof abastecimentos.$inferInsert;
-
-export type Despesa = typeof despesas.$inferSelect;
-export type NovaDespesa = typeof despesas.$inferInsert;
-
-export type Meta = typeof metas.$inferSelect;
-export type NovaMeta = typeof metas.$inferInsert;
-
-export type Conquista = typeof conquistas.$inferSelect;
-export type NovaConquista = typeof conquistas.$inferInsert;

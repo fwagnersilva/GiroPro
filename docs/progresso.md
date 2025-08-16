@@ -1,48 +1,25 @@
 # Progresso do GiroPro
 
 **Última sessão:**
-- Data: 15/08/2025 10:30
-- Sessão: #20
+- Data: 16/08/2025 23:52
+- Sessão: #21
 
 ## O que foi feito nesta sessão
 - Clonagem do repositório GiroPro.
 - Leitura e análise de todos os arquivos do diretório `docs/`.
-- Resgate das informações de "Problemas encontrados / observações" e "Próximas tarefas" da versão anterior do `progresso.md` e restauração no arquivo atual.
+- Tentativa de execução do backend localmente, com correção de erros de tipagem e lógica nos arquivos `authController.ts`, `authService.ts`, `vehiclesController.ts` e `journeysController.ts`.
+- Criação do arquivo `cache.ts` em `src/utils` para resolver erro de importação.
+- Tentativa de execução do frontend localmente e navegação para a página de login.
 
 ## Problemas encontrados / observações
-- Nenhum problema encontrado nesta sessão.
+- O backend ainda apresenta erros de compilação relacionados a tipagem, mesmo após as correções.
+- O script `setup_sqlite.sh` é interativo, o que dificulta a automação.
+- Não foi possível testar a aplicação completa devido aos erros persistentes no backend.
 
 ## Próximas tarefas
-1. **Completar migração Fastify → Express**: 
-   - Finalizar refatoração de todos os controllers para Express
-   - Atualizar middlewares de autenticação
-   - Ajustar tipos e interfaces para Express
-2. **Resolver erros de compilação**: 
-   - Corrigir os 288 erros identificados
-   - Padronizar schemas de resposta em todos os controllers
-   - Atualizar imports e dependências
-3. **Atualizar testes**: 
-   - Corrigir referências a arquivos removidos
-   - Adaptar testes para Express
-4. **Padronizar schemas de banco**: 
-   - Verificar e corrigir inconsistências de case sensitivity
-   - Validar tipos de dados no schema
-5. **Testar compilação e execução**: 
-   - Garantir que o projeto compile sem erros
-   - Executar backend e frontend localmente
-   - Validar comunicação entre serviços
-6. **Documentar mudanças**: 
-   - Atualizar documentação técnica sobre a migração
-   - Documentar novos padrões de desenvolvimento
-7. **Restaurar e migrar `fuelingsController.ts`**: O arquivo `routes/fuelings.ts` foi removido por engano. Preciso restaurá-lo e migrá-lo corretamente para Express.
-8. **Migrar controllers restantes**: Continuar a migração dos controllers `expensesController.ts`, `journeysController.ts`, `vehiclesController.ts`, etc.
-9. **Implementar middleware de autenticação Express**: Substituir o `app.authenticate` e garantir que a autenticação funcione corretamente com Express.
-10. **Resolver erros de compilação**: Continuar a depuração e correção dos erros de compilação restantes.
-11. **Padronizar nomenclatura**: Continuar a padronização de snake_case para camelCase em todo o projeto.
-12. **Implementar funcionalidades faltantes no AuthService**: Implementar `requestPasswordReset` e `resetPassword`.
-13. **Melhorar scripts de setup**: Tornar `setup_sqlite.sh` não-interativo ou adicionar flags para automação.
-14. **Testar aplicação completa**: Garantir que o backend compile e execute sem erros, e testar frontend e comunicação com backend.
-15. **Atualizar testes**: Corrigir referências a arquivos removidos e adaptar testes para Express.
-16. **Documentar mudanças**: Atualizar documentação técnica sobre a migração Fastify → Express e novos padrões de desenvolvimento.
+1. **Resolver erros de compilação no backend**: Focar na correção dos erros de tipagem e compatibilidade entre o Zod e o Drizzle ORM, especialmente nos controllers e services.
+2. **Testar scripts de setup**: Analisar e testar os scripts de setup, buscando torná-los não-interativos ou mais robustos.
+3. **Listar funcionalidades existentes e gaps**: Uma vez que a aplicação esteja funcionando, identificar as funcionalidades implementadas e os gaps em relação aos requisitos.
+4. **Atualizar documentação de progresso**: Continuar atualizando este arquivo com o progresso das tarefas.
 
 

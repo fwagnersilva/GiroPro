@@ -1,6 +1,6 @@
 import { db } from "../db";
 import { jornadas } from "../db/schema";
-import { eq, and, gte, lte, or, ne } from "drizzle-orm";
+import { eq, and, gte, lte, or, ne, sql } from "drizzle-orm";
 import { CreateJourneyRequest, UpdateJourneyRequest, JourneyFilters } from "../types";
 import crypto from 'crypto';
 
@@ -29,38 +29,68 @@ export class JourneyService {
     }
   }
 
-  static async getJourneysByUserId(userId: string, filters?: JourneyFilters) {
-    let query = db.select().from(jornadas).where(eq(jornadas.idUsuario, userId));
-    
-    if (filters) {
-      const conditions = [eq(jornadas.idUsuario, userId)];
-      
-      // Filtro por status
-      if (filters.status === 'em_andamento') {
-        conditions.push(eq(jornadas.dataFim, null));
-      } else if (filters.status === 'concluida') {
-        conditions.push(ne(jornadas.dataFim, null));
-      }
-      
-      // Filtro por data de início
-      if (filters.dataInicio) {
-        conditions.push(gte(jornadas.dataInicio, new Date(filters.dataInicio)));
-      }
-      
-      // Filtro por data de fim
-      if (filters.dataFim) {
-        conditions.push(lte(jornadas.dataInicio, new Date(filters.dataFim)));
-      }
-      
-      // Filtro por veículo
-      if (filters.veiculoId) {
-        conditions.push(eq(jornadas.idVeiculo, filters.veiculoId));
-      }
-      
-      return await db.select().from(jornadas).where(and(...conditions));
+  static async getJourneysByUserId(userId: string, options: { page?: number; limit?: number; sortBy?: string; sortOrder?: 'asc' | 'desc'; filters?: JourneyFilters }) {
+    const { page = 1, limit = 10, sortBy = 'dataInicio', sortOrder = 'desc', filters } = options;
+
+    let whereConditions = and(
+      eq(jornadas.idUsuario, userId)
+    );
+
+    // Filtro por status
+    if (filters?.status === 'em_andamento') {
+      whereConditions = and(whereConditions, isNull(jornadas.dataFim));
+    } else if (filters?.status === 'concluida') {
+      whereConditions = and(whereConditions, ne(jornadas.dataFim, null));
     }
     
-    return await db.select().from(jornadas).where(eq(jornadas.idUsuario, userId));
+    // Filtro por data de início
+    if (filters?.dataInicio) {
+      whereConditions = and(whereConditions, gte(jornadas.dataInicio, new Date(filters.dataInicio)));
+    }
+    
+    // Filtro por data de fim
+    if (filters?.dataFim) {
+      whereConditions = and(whereConditions, lte(jornadas.dataInicio, new Date(filters.dataFim)));
+    }
+    
+    // Filtro por veículo
+    if (filters?.veiculoId) {
+      whereConditions = and(whereConditions, eq(jornadas.idVeiculo, filters.veiculoId));
+    }
+
+    try {
+      const [totalCountResult] = await db.select({ count: sql<number>`count(*)` }).from(jornadas).where(whereConditions);
+      const total = totalCountResult.count;
+      const totalPages = Math.ceil(total / limit);
+
+      const journeys = await db.select()
+        .from(jornadas)
+        .where(whereConditions)
+        .orderBy(sortOrder === 'asc' ? sql`${jornadas[sortBy]} ASC` : sql`${jornadas[sortBy]} DESC`)
+        .limit(limit)
+        .offset((page - 1) * limit);
+
+      return {
+        success: true,
+        data: journeys,
+        meta: {
+          pagination: {
+            page,
+            limit,
+            total,
+            totalPages,
+            hasNext: page < totalPages,
+            hasPrev: page > 1,
+          },
+        },
+      };
+    } catch (error) {
+      console.error('Erro ao buscar jornadas:', error);
+      return {
+        success: false,
+        error: 'Falha ao buscar jornadas',
+      };
+    }
   }
 
   static async getJourneyById(id: string, userId: string) {
@@ -148,7 +178,7 @@ export class JourneyService {
       .from(jornadas)
       .where(and(
         eq(jornadas.idUsuario, userId),
-        eq(jornadas.dataFim, null)
+        isNull(jornadas.dataFim)
       ));
   }
 
@@ -161,4 +191,49 @@ export class JourneyService {
       observacoes
     });
   }
+
+  static async getJourneyStatistics(userId: string, periodo?: 'semana' | 'mes' | 'trimestre' | 'ano') {
+    let startDate: Date;
+    const endDate = new Date();
+
+    switch (periodo) {
+      case 'semana':
+        startDate = new Date(endDate.getFullYear(), endDate.getMonth(), endDate.getDate() - 7);
+        break;
+      case 'mes':
+        startDate = new Date(endDate.getFullYear(), endDate.getMonth() - 1, endDate.getDate());
+        break;
+      case 'trimestre':
+        startDate = new Date(endDate.getFullYear(), endDate.getMonth() - 3, endDate.getDate());
+        break;
+      case 'ano':
+        startDate = new Date(endDate.getFullYear() - 1, endDate.getMonth(), endDate.getDate());
+        break;
+      default:
+        startDate = new Date(0); // Desde o início dos tempos
+        break;
+    }
+
+    try {
+      const result = await db.select({
+        totalJourneys: sql<number>`count(${jornadas.id})`,
+        totalKm: sql<number>`sum(${jornadas.kmTotal})`,
+        totalGanhoBruto: sql<number>`sum(${jornadas.ganhoBruto})`,
+      })
+      .from(jornadas)
+      .where(and(
+        eq(jornadas.idUsuario, userId),
+        gte(jornadas.dataInicio, startDate),
+        lte(jornadas.dataInicio, endDate),
+        ne(jornadas.dataFim, null) // Apenas jornadas concluídas
+      ));
+
+      return result[0];
+    } catch (error) {
+      console.error('Erro ao buscar estatísticas de jornada:', error);
+      throw new Error('Falha ao buscar estatísticas de jornada');
+    }
+  }
 }
+
+

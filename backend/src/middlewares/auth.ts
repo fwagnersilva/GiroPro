@@ -9,12 +9,16 @@ interface JWTPayload {
   exp?: number;
 }
 
-// Interface estendida do Request com dados do usuário autenticado
-export interface AuthenticatedRequest extends Request {
-  user?: {
-    id: string;
-    email: string;
-  };
+// Estende a interface Request do Express para incluir a propriedade 'user'
+declare global {
+  namespace Express {
+    interface Request {
+      user?: {
+        id: string;
+        email: string;
+      };
+    }
+  }
 }
 
 /**
@@ -23,7 +27,7 @@ export interface AuthenticatedRequest extends Request {
  * e adiciona os dados do usuário ao objeto request
  */
 const authMiddleware = (
-  req: AuthenticatedRequest, 
+  req: Request, 
   res: Response, 
   next: NextFunction
 ): void => {
@@ -107,3 +111,5 @@ const authMiddleware = (
 };
 
 export { authMiddleware };
+
+

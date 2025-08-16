@@ -1,7 +1,7 @@
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import crypto from 'crypto';
-import { eq, and } from 'drizzle-orm';
+import { eq, and, sql } from 'drizzle-orm'; // Adicionado 'sql'
 import { db } from '../db';
 import { usuarios } from '../db/schema';
 import { LoginRequest, RegisterRequest, AuthResponse } from '../types';
@@ -41,17 +41,17 @@ export class AuthService {
           id: crypto.randomUUID(),
           nome: data.nome.trim(),
           email: data.email.toLowerCase().trim(),
-          senha_hash: senhaHash,
-          status_conta: 'Ativo',
-          tentativas_login: 0,
-          data_cadastro: new Date(),
-          ultima_atividade: new Date(),
+          senhaHash: senhaHash,
+          statusConta: 'ativo',
+          tentativasLogin: 0,
+          dataCadastro: new Date(),
+          ultimaAtividade: new Date(),
         })
         .returning({
           id: usuarios.id,
           nome: usuarios.nome,
           email: usuarios.email,
-          status_conta: usuarios.status_conta,
+          statusConta: usuarios.statusConta,
         });
 
       // Gerar tokens
@@ -65,7 +65,7 @@ export class AuthService {
           id: newUser.id,
           nome: newUser.nome,
           email: newUser.email,
-          status_conta: newUser.status_conta,
+          statusConta: newUser.statusConta,
         },
       };
     } catch (error) {
@@ -93,12 +93,12 @@ export class AuthService {
       }
 
       // Verificar se a conta está ativa
-      if (user.status_conta !== 'Ativo') {
+      if (user.statusConta !== 'ativo') {
         throw new Error('Conta inativa ou suspensa');
       }
 
       // Verificar senha
-      const senhaValida = await bcrypt.compare(data.senha, user.senha_hash);
+      const senhaValida = await bcrypt.compare(data.senha, user.senhaHash);
       
       if (!senhaValida) {
         // Incrementar tentativas de login
@@ -123,7 +123,7 @@ export class AuthService {
           id: user.id,
           nome: user.nome,
           email: user.email,
-          status_conta: user.status_conta,
+          statusConta: user.statusConta,
         },
       };
     } catch (error) {
@@ -138,7 +138,7 @@ export class AuthService {
       
       // Verificar se o usuário ainda existe e está ativo
       const user = await this.getUserById(decoded.userId);
-      if (user.status_conta !== 'Ativo') {
+      if (user.statusConta !== 'ativo') {
         throw new Error('Usuário inativo');
       }
 
@@ -162,9 +162,9 @@ export class AuthService {
           id: usuarios.id,
           nome: usuarios.nome,
           email: usuarios.email,
-          status_conta: usuarios.status_conta,
-          data_cadastro: usuarios.data_cadastro,
-          ultima_atividade: usuarios.ultima_atividade,
+          statusConta: usuarios.statusConta,
+          dataCadastro: usuarios.dataCadastro,
+          ultimaAtividade: usuarios.ultimaAtividade,
         })
         .from(usuarios)
         .where(eq(usuarios.id, userId))
@@ -185,7 +185,7 @@ export class AuthService {
     try {
       // Buscar usuário
       const [user] = await db
-        .select({ senha_hash: usuarios.senha_hash })
+        .select({ senhaHash: usuarios.senhaHash })
         .from(usuarios)
         .where(eq(usuarios.id, userId))
         .limit(1);
@@ -195,7 +195,7 @@ export class AuthService {
       }
 
       // Verificar senha atual
-      const senhaValida = await bcrypt.compare(currentPassword, user.senha_hash);
+      const senhaValida = await bcrypt.compare(currentPassword, user.senhaHash);
       if (!senhaValida) {
         throw new Error('Senha atual inválida');
       }
@@ -210,8 +210,8 @@ export class AuthService {
       await db
         .update(usuarios)
         .set({ 
-          senha_hash: novaSenhaHash,
-          ultima_atividade: new Date(),
+          senhaHash: novaSenhaHash,
+          ultimaAtividade: new Date(),
         })
         .where(eq(usuarios.id, userId));
 
@@ -226,13 +226,60 @@ export class AuthService {
       await db
         .update(usuarios)
         .set({ 
-          status_conta: 'Inativo',
-          ultima_atividade: new Date(),
+          statusConta: 'inativo',
+          ultimaAtividade: new Date(),
         })
         .where(eq(usuarios.id, userId));
     } catch (error) {
       console.error('Erro ao desativar conta:', error);
       throw error;
+    }
+  }
+
+  static async requestPasswordReset(email: string): Promise<void> {
+    try {
+      const [user] = await db.select().from(usuarios).where(eq(usuarios.email, email)).limit(1);
+
+      if (!user) {
+        // Não informar se o email não existe por segurança
+        return;
+      }
+
+      // Gerar token de redefinição de senha (JWT com expiração curta)
+      const resetToken = jwt.sign({ userId: user.id }, process.env.JWT_SECRET!, { expiresIn: '1h' });
+
+      // TODO: Enviar email com o link de redefinição de senha (contendo o resetToken)
+      console.log(`Link de redefinição de senha para ${email}: http://localhost:3000/reset-password?token=${resetToken}`);
+
+    } catch (error) {
+      console.error('Erro ao solicitar redefinição de senha:', error);
+      throw error;
+    }
+  }
+
+  static async resetPassword(token: string, newPassword: string): Promise<void> {
+    try {
+      const decoded = jwt.verify(token, process.env.JWT_SECRET!) as { userId: string };
+      const userId = decoded.userId;
+
+      // Validar nova senha
+      this.validatePassword(newPassword);
+
+      // Hash da nova senha
+      const novaSenhaHash = await bcrypt.hash(newPassword, this.SALT_ROUNDS);
+
+      // Atualizar senha
+      await db
+        .update(usuarios)
+        .set({
+          senhaHash: novaSenhaHash,
+          ultimaAtividade: new Date(),
+        })
+        .where(eq(usuarios.id, userId));
+
+    } catch (error) {
+      console.error('Erro ao redefinir senha:', error);
+      throw new Error('Token de redefinição de senha inválido ou expirado.');
     }
   }
 
@@ -294,11 +341,11 @@ export class AuthService {
 
   // Métodos auxiliares privados
   private static async isAccountLocked(user: any): Promise<boolean> {
-    if (user.tentativas_login < this.MAX_LOGIN_ATTEMPTS) {
+    if (user.tentativasLogin < this.MAX_LOGIN_ATTEMPTS) {
       return false;
     }
 
-    const lockoutTime = new Date(user.ultimo_login_falhado);
+    const lockoutTime = new Date(user.ultimoLoginFalhado);
     lockoutTime.setMinutes(lockoutTime.getMinutes() + this.LOCKOUT_TIME);
     
     return new Date() < lockoutTime;
@@ -308,8 +355,8 @@ export class AuthService {
     await db
       .update(usuarios)
       .set({
-        tentativas_login: usuarios.tentativas_login + 1,
-        ultimo_login_falhado: new Date(),
+        tentativasLogin: sql`${usuarios.tentativasLogin} + 1`,
+        ultimoLoginFalhado: new Date(),
       })
       .where(eq(usuarios.id, userId));
   }
@@ -318,8 +365,8 @@ export class AuthService {
     await db
       .update(usuarios)
       .set({
-        tentativas_login: 0,
-        ultimo_login_falhado: null,
+        tentativasLogin: 0,
+        ultimoLoginFalhado: null,
       })
       .where(eq(usuarios.id, userId));
   }
@@ -327,12 +374,12 @@ export class AuthService {
   private static async updateLastActivity(userId: string): Promise<void> {
     await db
       .update(usuarios)
-      .set({ ultima_atividade: new Date() })
+      .set({ ultimaAtividade: new Date() })
       .where(eq(usuarios.id, userId));
   }
 
   private static validateEmail(email: string): void {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const emailRegex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
     if (!email || !emailRegex.test(email)) {
       throw new Error('Email inválido');
     }
@@ -362,3 +409,5 @@ export class AuthService {
     }
   }
 }
+
+
