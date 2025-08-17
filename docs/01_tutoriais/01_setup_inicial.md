@@ -9,7 +9,6 @@ Certifique-se de ter as seguintes ferramentas instaladas em seu sistema:
 *   **Node.js**: Versão LTS (Long Term Support) recomendada. [Download Node.js](https://nodejs.org/en/download/)
 *   **npm**: Gerenciador de pacotes do Node.js (geralmente vem com o Node.js).
 *   **Git**: Sistema de controle de versão. [Download Git](https://git-scm.com/downloads)
-*   **Docker e Docker Compose**: Para gerenciar o banco de dados PostgreSQL (opcional, mas recomendado para produção). [Download Docker Desktop](https://www.docker.com/products/docker-desktop/)
 *   **VS Code (ou IDE de sua preferência)**: Editor de código. [Download VS Code](https://code.visualstudio.com/)
 
 ## 2. Clonagem do Repositório
@@ -23,7 +22,7 @@ cd GiroPro
 
 ## 3. Configuração e Execução do Backend
 
-O backend do GiroPro é desenvolvido em TypeScript com Fastify e Drizzle ORM.
+O backend do GiroPro é desenvolvido em TypeScript com Express.js e Drizzle ORM.
 
 ### 3.1. Instalação de Dependências
 
@@ -38,32 +37,17 @@ npm install
 
 Para desenvolvimento local, o GiroPro utiliza SQLite, que é um banco de dados baseado em arquivo e não requer um servidor separado. O arquivo do banco de dados (`giropro.db`) será criado automaticamente.
 
-Execute o script de setup do SQLite para garantir que o banco de dados esteja pronto e as migrações sejam aplicadas. O script `setup_sqlite.sh` agora suporta automação e pode ser executado de forma não-interativa:
+Execute o script de setup do SQLite para garantir que o banco de dados esteja pronto e as migrações sejam aplicadas:
 
 ```bash
 ./setup_sqlite.sh
 ```
 
-**Opções de Automação para `setup_sqlite.sh`:**
-
-*   `--db-path <caminho>`: Define o caminho para o arquivo do banco de dados SQLite (padrão: `giropro.db`).
-*   `--skip-install`: Pula a instalação de dependências npm (`better-sqlite3`, `@types/better-sqlite3`).
-*   `--skip-migrate`: Pula a geração e execução de migrações do Drizzle Kit.
-
-**Exemplos:**
-
-```bash
-./setup_sqlite.sh --db-path ./data/my_giropro.db --skip-install
-./setup_sqlite.sh --skip-migrate
-```
-
-*   **Nota Importante**: Se você estiver usando o Drizzle ORM e tiver migrações interativas, o comando `npx drizzle-kit migrate` ainda pode solicitar confirmação. Para automação completa em CI/CD, considere a utilização de ferramentas que gerenciem migrações de forma programática ou certifique-se de que suas migrações não exijam interação.
-
-*   **PostgreSQL para Desenvolvimento Local**: Se você preferir usar PostgreSQL para desenvolvimento local (mais próximo do ambiente de produção), você precisará configurar um servidor PostgreSQL e ajustar as variáveis de ambiente no arquivo `.env`. Consulte o guia [Como Realizar Migração de Banco de Dados](docs/02_guias_como_fazer/02_como_realizar_migracao_banco_dados.md) para mais detalhes sobre a configuração do Drizzle ORM com PostgreSQL.
+**Nota sobre Interatividade**: O script `setup_sqlite.sh` pode ser interativo, especialmente durante migrações que envolvem renomeação de colunas ou alterações que podem causar perda de dados. Siga as instruções no terminal e confirme as ações quando solicitado.
 
 ### 3.3. Configuração de Variáveis de Ambiente
 
-Crie um arquivo `.env` na raiz do diretório `backend` com as seguintes variáveis. Você pode copiar o arquivo de exemplo `giropro.env` como base. **Certifique-se de que o arquivo `.env` seja adicionado ao seu `.gitignore` para evitar que suas credenciais sejam versionadas!**
+Crie um arquivo `.env` na raiz do diretório `backend` com as seguintes variáveis. Você pode copiar o arquivo de exemplo `giropro.env` como base:
 
 ```bash
 cp giropro.env .env
@@ -78,7 +62,7 @@ SQLITE_DB_PATH=./giropro.db
 
 # Autenticação
 JWT_SECRET=sua_chave_secreta_muito_forte_aqui # **MUDE ISSO EM PRODUÇÃO!**
-# Para gerar uma chave forte, você pode usar: node -e "console.log(require(\'crypto\').randomBytes(32).toString(\'hex\'))"
+# Para gerar uma chave forte, você pode usar: node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
 JWT_EXPIRES_IN=7d
 
 # Cache (opcional para desenvolvimento local)
@@ -89,10 +73,32 @@ PORT=3000
 NODE_ENV=development
 
 # CORS
-ALLOWED_ORIGINS=http://localhost:3000,http://localhost:19006
+ALLOWED_ORIGINS=http://localhost:3000,http://localhost:19006,http://localhost:8081
 ```
 
-### 3.4. Iniciando o Servidor Backend
+**Importante**: Certifique-se de que o arquivo `.env` seja adicionado ao seu `.gitignore` para evitar que suas credenciais sejam versionadas!
+
+### 3.4. Comandos de Migração do Banco de Dados
+
+O projeto utiliza Drizzle ORM para gerenciamento do banco de dados. Os comandos disponíveis são:
+
+```bash
+# Gerar arquivos de migração baseados nas mudanças no schema
+npm run db:generate
+
+# Aplicar migrações ao banco de dados (push direto do schema)
+npm run db:migrate
+
+# Verificar o status das migrações
+npm run db:check
+
+# Abrir o Drizzle Studio para visualizar/editar dados
+npm run db:studio
+```
+
+**Nota**: O comando `npm run db:migrate` utiliza `drizzle-kit push`, que aplica as mudanças do schema diretamente ao banco sem gerar arquivos de migração. Para ambientes de produção, considere usar `drizzle-kit migrate` com arquivos de migração gerados.
+
+### 3.5. Iniciando o Servidor Backend
 
 Com as dependências instaladas e o `.env` configurado, você pode iniciar o servidor backend:
 
@@ -117,9 +123,10 @@ npm install
 
 ### 4.2. Configuração de Variáveis de Ambiente
 
-Crie um arquivo `.env` na raiz do diretório `frontend`:
+Crie um arquivo `.env` na raiz do diretório `frontend` (se não existir):
 
 ```bash
+# Se houver um arquivo de exemplo, copie-o
 cp .env.example .env
 ```
 
@@ -127,21 +134,27 @@ Edite o arquivo `.env` e configure a URL da API do backend:
 
 ```dotenv
 REACT_APP_API_URL=http://localhost:3000/api/v1
+EXPO_PUBLIC_API_URL=http://localhost:3000/api/v1
 ```
 
 ### 4.3. Iniciando o Servidor Frontend
 
-Com as dependências instaladas e o `.env` configurado, você pode iniciar o servidor de desenvolvimento do Expo:
+Com as dependências instaladas e o `.env` configurado, você pode iniciar o servidor de desenvolvimento:
 
 ```bash
+# Para desenvolvimento web
+npm run web
+
+# Ou para iniciar o Expo (todas as plataformas)
 npm start
 ```
 
-Isso abrirá o Expo Dev Tools no seu navegador. Você pode então:
+**Para desenvolvimento web**: Use `npm run web` para abrir diretamente no navegador.
 
-*   **Escanear o QR Code** com o aplicativo Expo Go no seu celular (iOS ou Android) para ver a aplicação no dispositivo.
-*   Pressionar `w` no terminal para abrir a **versão web** da aplicação no seu navegador.
-*   Pressionar `a` para abrir no **emulador Android** ou `i` para abrir no **simulador iOS** (se configurados).
+**Para desenvolvimento mobile**: Use `npm start` para abrir o Expo Dev Tools, onde você pode:
+*   **Escanear o QR Code** com o aplicativo Expo Go no seu celular (iOS ou Android)
+*   Pressionar `w` no terminal para abrir a **versão web**
+*   Pressionar `a` para abrir no **emulador Android** ou `i` para abrir no **simulador iOS**
 
 ## 5. Verificação Final
 
@@ -150,23 +163,54 @@ Após iniciar ambos os servidores (backend e frontend), verifique se a aplicaç�
 1.  Acesse a aplicação frontend (via web ou dispositivo/emulador).
 2.  Tente realizar um **registro de novo usuário**.
 3.  Faça o **login** com o usuário recém-criado.
-4.  Navegue pelas telas para garantir que os dados estão sendo carregados do backend (ex: dashboard, cadastro de veículo).
+4.  Navegue pelas telas para garantir que os dados estão sendo carregados do backend.
 
 Se você encontrar algum problema, consulte a seção de Troubleshooting Básico abaixo.
 
 ## 6. Troubleshooting Básico
 
-*   **Porta já em uso**: Se o backend ou frontend não iniciar devido a uma porta já em uso, você pode tentar:
-    *   Mudar a porta no arquivo `.env` (ex: `PORT=3001` para o backend).
-    *   Identificar e encerrar o processo que está usando a porta (ex: `lsof -i :3000` no Linux/macOS, `netstat -ano | findstr :3000` no Windows).
-*   **Erros de Dependência**: Se `npm install` falhar, tente:
-    *   Limpar o cache do npm: `npm cache clean --force`
-    *   Remover `node_modules` e `package-lock.json` e tentar novamente: `rm -rf node_modules package-lock.json && npm install`
-*   **Erros de Compilação TypeScript**: Se `npm run dev` (backend) ou `npm start` (frontend) apresentar erros de TypeScript, verifique:
-    *   Se todas as dependências foram instaladas corretamente.
-    *   Se você está usando a versão correta do Node.js.
-    *   Consulte a documentação de `Lições Aprendidas` para problemas comuns de tipagem.
-*   **Backend não se comunica com Frontend**: Verifique se `REACT_APP_API_URL` no frontend `.env` aponta para a porta correta do backend (`http://localhost:3000/api/v1`).
+### 6.1. Problemas Comuns do Backend
+
+*   **Erros de Compilação TypeScript**: Se `npm run dev` apresentar erros de TypeScript:
+    *   Verifique se todas as dependências foram instaladas: `npm install`
+    *   Consulte o guia [Como Resolver Erros de Compilação](../02_guias_como_fazer/05_como_resolver_erros_compilacao.md)
+    *   Problemas comuns incluem incompatibilidade de tipos entre Drizzle ORM e Zod
+
+*   **Problemas de Migração**: Se o script `setup_sqlite.sh` falhar:
+    *   Certifique-se de que o arquivo `giropro.env` existe
+    *   Verifique se as dependências do SQLite foram instaladas: `npm install better-sqlite3`
+    *   Consulte o guia [Como Realizar Migração de Banco de Dados](../02_guias_como_fazer/02_como_realizar_migracao_banco_dados.md)
+
+### 6.2. Problemas Comuns do Frontend
+
+*   **Porta já em uso**: Se o frontend não iniciar devido a uma porta já em uso:
+    *   Tente usar uma porta diferente: `npm run web -- --port 8082`
+    *   Identifique e encerre o processo: `lsof -i :8081` (Linux/macOS) ou `netstat -ano | findstr :8081` (Windows)
+
+*   **Erro de conexão com API**: Se o frontend não conseguir se comunicar com o backend:
+    *   Verifique se o backend está rodando em `http://localhost:3000`
+    *   Confirme se `REACT_APP_API_URL` e `EXPO_PUBLIC_API_URL` estão corretos no `.env`
+    *   Verifique se o CORS está configurado corretamente no backend
+
+### 6.3. Problemas Gerais
+
+*   **Erros de Dependência**: Se `npm install` falhar:
+    *   Limpe o cache: `npm cache clean --force`
+    *   Remova e reinstale: `rm -rf node_modules package-lock.json && npm install`
+    *   Verifique se está usando a versão correta do Node.js (LTS recomendada)
+
+*   **Problemas de Permissão**: No Linux/macOS, se houver problemas de permissão:
+    *   Torne o script executável: `chmod +x setup_sqlite.sh`
+    *   Evite usar `sudo` com npm; configure o npm para usar um diretório local
+
+## 7. Próximos Passos
+
+Após configurar o ambiente com sucesso:
+
+1.  **Explore a documentação**: Leia os guias em `docs/02_guias_como_fazer/` para entender como trabalhar com o projeto
+2.  **Entenda a arquitetura**: Consulte `docs/03_explicacoes/01_arquitetura_geral.md`
+3.  **Veja as funcionalidades**: Confira `docs/04_referencias/05_funcionalidades_implementadas.md`
+4.  **Contribua**: Consulte o `docs/progresso.md` para ver o que está sendo trabalhado
 
 Parabéns! Seu ambiente de desenvolvimento GiroPro está configurado e pronto para uso.
 
