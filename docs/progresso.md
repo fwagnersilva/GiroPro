@@ -1,49 +1,38 @@
 # Progresso do GiroPro
 
 **Última sessão:**
-- Data: 18/08/2025 13:45
-- Sessão: #23
+- Data: 18/08/2025 13:50
+- Sessão: #24
 
 ## O que foi feito nesta sessão
-- Análise detalhada dos scripts de migração do Drizzle ORM para SQLite
-- Identificação do problema de migração interativa no setup_sqlite.sh
-- Pesquisa por soluções não-interativas para drizzle-kit push e migrate
-- Correção de erros de sintaxe no script setup_sqlite.sh (variáveis de cor e comandos sed)
-- Tentativas de implementação de migração automatizada usando drizzle-kit push --force
-- Análise do schema.ts para entender a estrutura das tabelas (conquistas vs notificacoes)
-- Modificação do script para usar generate + migrate ao invés de push
-- Identificação de que o problema persiste devido ao conflito de nomes de tabelas no schema
-- Documentação completa do problema de migração não-interativa do Drizzle ORM
+- Deletado o arquivo `giropro.db` para garantir um estado de banco de dados limpo.
+- Executado o script `setup_sqlite.sh` com a flag `--skip-install` para tentar uma migração limpa.
+- Verificado que o problema de migração interativa do Drizzle ORM persiste, mesmo com um banco de dados limpo.
+- Confirmado que o `drizzle-kit generate` ainda solicita confirmação para a tabela `conquistas`.
 
 ## Problemas encontrados / observações
-1. **Migração interativa persistente**: O Drizzle Kit continua perguntando se a tabela "conquistas" deve ser criada ou renomeada de "notificacoes", mesmo com flags --force
-2. **Limitações do Drizzle Kit**: Não existe uma forma verdadeiramente não-interativa para resolver conflitos de schema ambíguos
-3. **Schema complexo**: O arquivo schema.ts define apenas a tabela "conquistas", mas o Drizzle detecta uma possível renomeação de "notificacoes"
-4. **Comandos testados sem sucesso**: 
-   - drizzle-kit push --force
-   - drizzle-kit generate + migrate
-   - Diferentes configurações no drizzle.config.sqlite.ts
-5. **Problema fundamental**: O Drizzle Kit precisa de confirmação humana quando detecta mudanças ambíguas no schema
+1. **Migração interativa persistente**: Mesmo após deletar o arquivo do banco de dados e tentar uma migração limpa, o `drizzle-kit generate` (e consequentemente o `migrate`) continua solicitando confirmação interativa para a tabela `conquistas`.
+2. **Conflito de Schema**: O Drizzle ORM interpreta a criação da tabela `conquistas` como uma possível renomeação da tabela `notificacoes`, o que exige intervenção manual.
+3. **Ausência de opção não-interativa**: Não foi encontrada uma flag ou configuração para forçar o `drizzle-kit generate` ou `migrate` a aceitar automaticamente essas mudanças ambíguas em um ambiente não-interativo.
 
 ## Próximas tarefas
 
 ### Prioridade 1: Resolver Migração do Banco (Alternativas)
-1. **Investigar histórico de migrações**: Verificar se existe alguma migração anterior que criou a tabela "notificacoes"
-2. **Limpar estado do banco**: Deletar completamente o arquivo SQLite e tentar migração em banco limpo
-3. **Usar abordagem programática**: Criar script Node.js que aplica o schema diretamente via Drizzle ORM
-4. **Considerar migração manual**: Criar arquivo SQL manual para aplicar o schema sem interação
+1. **Investigar histórico de migrações**: Verificar se existe alguma migração anterior que criou a tabela "notificacoes" ou se há algum resquício de metadados do Drizzle que cause essa ambiguidade.
+2. **Usar abordagem programática**: Criar um script Node.js que utilize o Drizzle ORM para aplicar o schema diretamente, ignorando o `drizzle-kit CLI` para a migração inicial.
+3. **Considerar migração manual**: Gerar o SQL da migração manualmente e aplicá-lo via shell, se as opções programáticas falharem.
 
 ### Prioridade 2: Backend Funcional (Continuação)
-1. **Corrigir erros de compilação restantes**: Focar no fuelingsController.ts e outros controllers com problemas de exportação
-2. **Testar backend sem banco**: Verificar se o backend compila e inicia mesmo sem conexão com banco
+1. **Corrigir erros de compilação restantes**: Focar no `fuelingsController.ts` e outros controllers com problemas de exportação.
+2. **Testar backend sem banco**: Verificar se o backend compila e inicia mesmo sem conexão com banco.
 
 ### Prioridade 3: Integração e Testes
-1. **Testar integração frontend-backend**: Uma vez resolvidos os problemas de migração e compilação
-2. **Validar fluxos de autenticação**: Garantir que login/registro funcionam corretamente
+1. **Testar integração frontend-backend**: Uma vez resolvidos os problemas de migração e compilação.
+2. **Validar fluxos de autenticação**: Garantir que login/registro funcionam corretamente.
 
 ### Prioridade 4: Melhorias de Setup
-1. **Automatizar completamente o setup**: Garantir que todos os scripts funcionem sem interação humana
-2. **Documentar soluções encontradas**: Atualizar documentação com as soluções implementadas
+1. **Automatizar completamente o setup**: Garantir que todos os scripts funcionem sem interação humana.
+2. **Documentar soluções encontradas**: Atualizar documentação com as soluções implementadas.
 
 ## Erros Encontrados
 
