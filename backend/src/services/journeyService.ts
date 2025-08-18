@@ -1,6 +1,6 @@
 import { db } from "../db";
 import { jornadas } from "../db/schema";
-import { eq, and, gte, lte, or, ne, sql } from "drizzle-orm";
+import { eq, and, gte, lte, or, ne, sql, isNull } from "drizzle-orm";
 import { CreateJourneyRequest, UpdateJourneyRequest, JourneyFilters } from "../types";
 import crypto from 'crypto';
 

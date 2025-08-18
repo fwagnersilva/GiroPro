@@ -188,7 +188,7 @@ export class AdvancedAnalyticsService {
     // Análise semanal
     const weeklyTrends = await db
       .select({
-        semana: sql<string>`DATE_TRUNC('week', ${jornadas.dataInicio})`,
+        semana: sql<string>`strftime('%Y-%W', ${jornadas.dataInicio} / 1000, 'unixepoch')`,
         totalFaturamento: sum(jornadas.ganhoBruto),
         totalKm: sum(jornadas.kmTotal),
         numeroJornadas: count(jornadas.id),
@@ -210,7 +210,7 @@ export class AdvancedAnalyticsService {
     // Análise mensal
     const monthlyTrends = await db
       .select({
-        mes: sql<string>`DATE_TRUNC('month', ${jornadas.dataInicio})`,
+        mes: sql<string>`strftime("%Y-%m", ${jornadas.dataInicio} / 1000, "unixepoch")`,
         totalFaturamento: sum(jornadas.ganhoBruto),
         totalKm: sum(jornadas.kmTotal),
         numeroJornadas: count(jornadas.id),
@@ -301,7 +301,7 @@ export class AdvancedAnalyticsService {
     // Análise por dia da semana
     const dayOfWeekAnalysis = await db
       .select({
-        diaSemana: sql<number>`EXTRACT(DOW FROM ${jornadas.dataInicio})`,
+        diaSemana: sql<number>`strftime("%w", ${jornadas.dataInicio} / 1000, "unixepoch")`,
         totalFaturamento: sum(jornadas.ganhoBruto),
         totalKm: sum(jornadas.kmTotal),
         numeroJornadas: count(jornadas.id),
@@ -321,7 +321,7 @@ export class AdvancedAnalyticsService {
     // Análise por hora do dia
     const hourAnalysis = await db
       .select({
-        hora: sql<number>`EXTRACT(HOUR FROM ${jornadas.dataInicio})`,
+        hora: sql<number>`strftime("%H", ${jornadas.dataInicio} / 1000, "unixepoch")`,
         totalFaturamento: sum(jornadas.ganhoBruto),
         totalKm: sum(jornadas.kmTotal),
         numeroJornadas: count(jornadas.id),
@@ -341,7 +341,7 @@ export class AdvancedAnalyticsService {
     // Análise por mês
     const monthAnalysis = await db
       .select({
-        mes: sql<number>`EXTRACT(MONTH FROM ${jornadas.dataInicio})`,
+        mes: sql<number>`strftime("%m", ${jornadas.dataInicio} / 1000, "unixepoch")`,
         totalFaturamento: sum(jornadas.ganhoBruto),
         totalKm: sum(jornadas.kmTotal),
         numeroJornadas: count(jornadas.id),

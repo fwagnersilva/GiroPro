@@ -1,9 +1,9 @@
 import { db } from "../db";
 import { abastecimentos, veiculos } from "../db/schema";
-import { eq, and, desc, asc, count, between, sql } from "drizzle-orm";
+import { eq, and, desc, asc, count, between, sql, gte, lte } from "drizzle-orm";
 import { CreateFuelingRequest, UpdateFuelingRequest } from "../types";
 import crypto from 'crypto';
-import type { FuelingFilters, PaginationParams, ServiceResult } from '../types/common';
+import type { FuelingFilters, PaginationParams, ServiceResult } from '../types';
 
 // 🛡️ Interfaces para melhor tipagem
 interface FuelingData {
@@ -111,41 +111,6 @@ class FuelingUtils {
   }
 }
 
-// 🎯 Cache simples para consultas frequentes
-class FuelingCache {
-  private static cache = new Map<string, { data: any; timestamp: number }>();
-  private static TTL = 5 * 60 * 1000; // 5 minutos
-
-  static get<T>(key: string): T | null {
-    const cached = this.cache.get(key);
-    if (!cached) return null;
-    
-    if (Date.now() - cached.timestamp > this.TTL) {
-      this.cache.delete(key);
-      return null;
-    }
-    
-    return cached.data;
-  }
-
-  static set(key: string, data: any): void {
-    this.cache.set(key, { data, timestamp: Date.now() });
-  }
-
-  static clear(): void {
-    this.cache.clear();
-  }
-
-  static invalidateUser(userId: string): void {
-    const keys = Array.from(this.cache.keys());
-    keys.forEach(key => {
-      if (key.includes(userId)) {
-        this.cache.delete(key);
-      }
-    });
-  }
-}
-
 export class FuelingService {
   /**
    * 🚀 Criar novo abastecimento com validação completa
@@ -189,9 +154,6 @@ export class FuelingService {
           .returning();
       });
 
-      // Invalidar cache do usuário
-      FuelingCache.invalidateUser(userId);
-
       return {
         success: true,
         data: newFueling
@@ -220,11 +182,6 @@ export class FuelingService {
     try {
       const { pagination = { page: 1, limit: 50 }, filters = {}, orderBy = 'date_desc' } = options;
       
-      // Cache key
-      const cacheKey = `fuelings:${userId}:${JSON.stringify({ pagination, filters, orderBy })}`;
-      const cached = FuelingCache.get<{ totalFuelings: number; totalSpent: number; totalLiters: number; averagePrice: number; lastFueling?: number; }>(cacheKey);
-      if (cached) return { success: true, data: cached };
-
       // Base query
       let query = db.select().from(abastecimentos).where(eq(abastecimentos.idUsuario, userId));
       
@@ -239,41 +196,42 @@ export class FuelingService {
         conditions.push(
           between(
             abastecimentos.dataAbastecimento,
-            new Date(filters.startDate).getTime(),
-            new Date(filters.endDate).getTime()
+            new Date(filters.startDate),
+            new Date(filters.endDate)
           )
         );
       }
       
       if (filters.fuelType) {
-        conditions.push(eq(abastecimentos.tipoCombustivel, filters.fuelType));
+        conditions.push(eq(abastecimentos.tipoCombustivel, FuelingUtils.validateFuelType(filters.fuelType)));
       }
 
       // Aplicar filtros
       query = query.where(and(...conditions));
 
       // Ordenação
+      let orderedQuery;
       switch (orderBy) {
         case 'date_asc':
-          query = query.orderBy(asc(abastecimentos.dataAbastecimento));
+          orderedQuery = query.orderBy(asc(abastecimentos.dataAbastecimento));
           break;
         case 'date_desc':
-          query = query.orderBy(desc(abastecimentos.dataAbastecimento));
+          orderedQuery = query.orderBy(desc(abastecimentos.dataAbastecimento));
           break;
         case 'km_asc':
-          query = query.orderBy(asc(abastecimentos.kmAtual));
+          orderedQuery = query.orderBy(asc(abastecimentos.kmAtual));
           break;
         case 'km_desc':
-          query = query.orderBy(desc(abastecimentos.kmAtual));
+          orderedQuery = query.orderBy(desc(abastecimentos.kmAtual));
+          break;
+        default:
+          orderedQuery = query; // Default case to assign query to orderedQuery
           break;
       }
 
       // Paginação
       const offset = (pagination.page - 1) * pagination.limit;
-      query = query.limit(pagination.limit + 1).offset(offset); // +1 para verificar hasMore
-
-      // Executar query
-      const results = await query;
+      const results = await orderedQuery.limit(pagination.limit + 1).offset(offset);
       const hasMore = results.length > pagination.limit;
       const fuelings = hasMore ? results.slice(0, -1) : results;
 
@@ -288,9 +246,6 @@ export class FuelingService {
       }
 
       const result = { fuelings, total, hasMore };
-      
-      // Cache resultado
-      FuelingCache.set(cacheKey, result);
 
       return {
         success: true,
@@ -314,10 +269,6 @@ export class FuelingService {
     userId: string
   ): Promise<ServiceResult<FuelingData | null>> {
     try {
-      const cacheKey = `fueling:${id}:${userId}`;
-      const cached = FuelingCache.get<FuelingData>(cacheKey);
-      if (cached) return { success: true, data: cached };
-
       const [fueling] = await db
         .select()
         .from(abastecimentos)
@@ -326,10 +277,6 @@ export class FuelingService {
           eq(abastecimentos.idUsuario, userId)
         ))
         .limit(1);
-
-      if (fueling) {
-        FuelingCache.set(cacheKey, fueling);
-      }
 
       return {
         success: true,
@@ -341,130 +288,6 @@ export class FuelingService {
       return {
         success: false,
         error: 'Erro ao buscar abastecimento'
-      };
-    }
-  }
-
-  /**
-   * ✏️ Atualizar abastecimento com validação completa
-   */
-  static async updateFueling(
-    id: string,
-    userId: string,
-    fuelingData: UpdateFuelingRequest
-  ): Promise<ServiceResult<FuelingData | null>> {
-    try {
-      // Verificar se o abastecimento existe
-      const existingFueling = await this.getFuelingById(id, userId);
-      if (!existingFueling.success) {
-        return existingFueling;
-      }
-      
-      if (!existingFueling.data) {
-        return {
-          success: false,
-          error: 'Abastecimento não encontrado'
-        };
-      }
-
-      // Preparar dados para atualização
-      const updateData: Partial<FuelingData> = {
-        updatedAt: new Date()
-      };
-
-      // Mapear campos com validação
-      if (fuelingData.data !== undefined) {
-        const date = new Date(fuelingData.data);
-        if (isNaN(date.getTime())) {
-          throw new Error('Data de abastecimento inválida');
-        }
-        updateData.dataAbastecimento = date;
-      }
-
-      if (fuelingData.quilometragem !== undefined) {
-        if (!Number.isFinite(fuelingData.quilometragem) || fuelingData.quilometragem < 0) {
-          throw new Error('Quilometragem deve ser um número válido e positivo');
-        }
-        updateData.kmAtual = fuelingData.quilometragem;
-      }
-
-      if (fuelingData.litros !== undefined) {
-        if (!Number.isFinite(fuelingData.litros) || fuelingData.litros <= 0) {
-          throw new Error('Quantidade de litros deve ser um número válido e positivo');
-        }
-        updateData.quantidadeLitros = fuelingData.litros;
-        
-        // Recalcular valor total se temos preço
-        if (fuelingData.precoPorLitro !== undefined) {
-          updateData.valorTotal = FuelingUtils.priceToCents(
-            fuelingData.litros * fuelingData.precoPorLitro
-          );
-        }
-      }
-
-      if (fuelingData.precoPorLitro !== undefined) {
-        if (!Number.isFinite(fuelingData.precoPorLitro) || fuelingData.precoPorLitro <= 0) {
-          throw new Error('Preço por litro deve ser um número válido e positivo');
-        }
-        updateData.valorLitro = FuelingUtils.priceToCents(fuelingData.precoPorLitro);
-        
-        // Recalcular valor total
-        const litros = fuelingData.litros ?? existingFueling.data.quantidadeLitros;
-        updateData.valorTotal = FuelingUtils.priceToCents(litros * fuelingData.precoPorLitro);
-      }
-
-      if (fuelingData.posto !== undefined) {
-        updateData.nomePosto = fuelingData.posto?.trim() || null;
-      }
-
-      if (fuelingData.tipoCombustivel !== undefined) {
-        updateData.tipoCombustivel = FuelingUtils.validateFuelType(fuelingData.tipoCombustivel);
-      }
-
-      if (fuelingData.vehicleId !== undefined) {
-        // Verificar se o veículo existe e pertence ao usuário
-        const vehicleExists = await db
-          .select({ id: veiculos.id })
-          .from(veiculos)
-          .where(and(
-            eq(veiculos.id, fuelingData.vehicleId),
-            eq(veiculos.idUsuario, userId)
-          ))
-          .limit(1);
-
-        if (vehicleExists.length === 0) {
-          return {
-            success: false,
-            error: 'Veículo não encontrado ou não pertence ao usuário'
-          };
-        }
-        
-        updateData.idVeiculo = fuelingData.vehicleId;
-      }
-
-      // Atualizar no banco
-      const [updatedFueling] = await db
-        .update(abastecimentos)
-        .set(updateData)
-        .where(and(
-          eq(abastecimentos.id, id),
-          eq(abastecimentos.idUsuario, userId)
-        ))
-        .returning();
-
-      // Invalidar cache
-      FuelingCache.invalidateUser(userId);
-
-      return {
-        success: true,
-        data: updatedFueling || null
-      };
-
-    } catch (error) {
-      console.error('[FuelingService.updateFueling]', error);
-      return {
-        success: false,
-        error: error instanceof Error ? error.message : 'Erro ao atualizar abastecimento'
       };
     }
   }
@@ -486,11 +309,6 @@ export class FuelingService {
         .returning({ id: abastecimentos.id });
 
       const deleted = result.length > 0;
-      
-      if (deleted) {
-        // Invalidar cache
-        FuelingCache.invalidateUser(userId);
-      }
 
       return {
         success: true,
@@ -507,60 +325,64 @@ export class FuelingService {
   }
 
   /**
-   * 📊 Estatísticas de abastecimento
+   * 📊 Obter estatísticas de abastecimento para o dashboard
    */
-  static async getFuelingStats(
-    userId: string,
-    vehicleId?: string
-  ): Promise<ServiceResult<{
-    totalFuelings: number;
-    totalSpent: number;
-    totalLiters: number;
-    averagePrice: number;
-    lastFueling?: number; // Unix timestamp
-  }>> {
+  static async getFuelingStatistics(userId: string, periodo: 'day' | 'week' | 'month' | 'quarter' | 'year' | 'all'): Promise<ServiceResult<any>> {
     try {
-      const cacheKey = `stats:${userId}:${vehicleId || 'all'}`;
-      const cached = FuelingCache.get<{ totalFuelings: number; totalSpent: number; totalLiters: number; averagePrice: number; lastFueling?: number; }>(cacheKey);
-      if (cached) return { success: true, data: cached };
+      let startDate: Date;
+      const endDate = new Date();
 
-      const conditions = [eq(abastecimentos.idUsuario, userId)];
-      if (vehicleId) {
-        conditions.push(eq(abastecimentos.idVeiculo, vehicleId));
+      switch (periodo) {
+        case 'day':
+          startDate = new Date(endDate.getFullYear(), endDate.getMonth(), endDate.getDate() - 1);
+          break;
+        case 'week':
+          startDate = new Date(endDate.getFullYear(), endDate.getMonth(), endDate.getDate() - 7);
+          break;
+        case 'month':
+          startDate = new Date(endDate.getFullYear(), endDate.getMonth() - 1, endDate.getDate());
+          break;
+        case 'quarter':
+          startDate = new Date(endDate.getFullYear(), endDate.getMonth() - 3, endDate.getDate());
+          break;
+        case 'year':
+          startDate = new Date(endDate.getFullYear() - 1, endDate.getMonth(), endDate.getDate());
+          break;
+        case 'all':
+        default:
+          startDate = new Date(0); // Desde o início dos tempos
+          break;
       }
 
-      const [stats] = await db
-        .select({
-          totalFuelings: count(),
-          totalSpent: sql<number>`COALESCE(SUM(${abastecimentos.valorTotal}), 0)`,
-          totalLiters: sql<number>`COALESCE(SUM(${abastecimentos.quantidadeLitros}), 0)`,
-          averagePrice: sql<number>`COALESCE(AVG(${abastecimentos.valorLitro}), 0)`,
-          lastFueling: sql<number>`MAX(${abastecimentos.dataAbastecimento})`,
-        })
+      const fuelings = await db.select()
         .from(abastecimentos)
-        .where(and(...conditions));
+        .where(and(
+          eq(abastecimentos.idUsuario, userId),
+          gte(abastecimentos.dataAbastecimento, startDate),
+          lte(abastecimentos.dataAbastecimento, endDate)
+        ));
+
+      const totalFuelings = fuelings.length;
+      const totalSpent = fuelings.reduce((sum, f) => sum + f.valorTotal, 0);
+      const totalLiters = fuelings.reduce((sum, f) => sum + f.quantidadeLitros, 0);
+      const averagePrice = totalLiters > 0 ? totalSpent / totalLiters : 0;
+      const lastFueling = fuelings.length > 0 ? Math.max(...fuelings.map(f => f.dataAbastecimento.getTime())) : undefined;
 
       const result = {
-        totalFuelings: stats.totalFuelings,
-        totalSpent: FuelingUtils.centsToPrice(stats.totalSpent),
-        totalLiters: stats.totalLiters,
-        averagePrice: FuelingUtils.centsToPrice(stats.averagePrice),
-        lastFueling: stats.lastFueling,
+        totalFuelings,
+        totalSpent: FuelingUtils.centsToPrice(totalSpent),
+        totalLiters,
+        averagePrice: FuelingUtils.centsToPrice(averagePrice),
+        lastFueling: lastFueling ? new Date(lastFueling).toISOString() : undefined,
       };
 
-      // Cache por 10 minutos
-      FuelingCache.set(cacheKey, result);
-
-      return {
-        success: true,
-        data: result
-      };
+      return { success: true, data: result };
 
     } catch (error) {
-      console.error('[FuelingService.getFuelingStats]', error);
+      console.error('[FuelingService.getFuelingStatistics]', error);
       return {
         success: false,
-        error: 'Erro ao buscar estatísticas'
+        error: 'Erro ao obter estatísticas de abastecimento'
       };
     }
   }

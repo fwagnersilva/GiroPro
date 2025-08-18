@@ -249,3 +249,28 @@ export const progressoMetas = sqliteTable("progresso_metas", {
 
 
 
+
+
+export const notificacoes = sqliteTable("notificacoes", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  idUsuario: text("idUsuario").notNull().references(() => usuarios.id, { onDelete: "cascade" }),
+  tipo: tipoNotificacaoEnum.notNull(),
+  titulo: text("titulo", { length: 200 }).notNull(),
+  mensagem: text("mensagem", { length: 1000 }).notNull(),
+  dadosExtras: text("dadosExtras"), // JSON com dados extras
+  lida: integer("lida", { mode: "boolean" }).default(false).notNull(),
+  dataEnvio: integer("dataEnvio", { mode: "timestamp" }).default(sql`(unixepoch())`).notNull(),
+  dataLeitura: integer("dataLeitura", { mode: "timestamp" }),
+  deletedAt: integer("deletedAt", { mode: "timestamp" }),
+}, (table) => ({
+  usuarioIdx: index("notificacoes_usuario_idx").on(table.idUsuario),
+  tipoIdx: index("notificacoes_tipo_idx").on(table.tipo),
+  dataEnvioIdx: index("notificacoes_dataEnvio_idx").on(table.dataEnvio),
+  usuarioLidaIdx: index("notificacoes_usuario_lida_idx").on(table.idUsuario, table.lida),
+}));
+
+export const notificacoesRelations = relations(notificacoes, ({ one }) => ({
+  usuario: one(usuarios, { fields: [notificacoes.idUsuario], references: [usuarios.id] }),
+}));
+
+

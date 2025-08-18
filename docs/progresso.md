@@ -12,6 +12,9 @@
   - Corrigido incompatibilidade no `journeysController.ts` entre schema Zod e interface CreateJourneyRequest
   - Adicionado import da função `isNull` no `journeyService.ts`
   - Corrigido imports no arquivo de rotas `fuelings.ts` para usar funções existentes
+  - Corrigido erros de tipagem e atribuição no `fuelingService.ts`
+  - Corrigido erros de tipagem e atribuição no `fuel_prices_service.ts`
+  - Adicionadas interfaces `FuelingFilters`, `PaginationParams` e `ServiceResult` ao `index.ts` em `src/types`.
 - **Identificação de problemas restantes**: Mapeado erros críticos no `fuelingsController.ts` que ainda impedem a execução do backend.
 - **Início da configuração do frontend**: Navegado para diretório frontend e iniciado instalação de dependências.
 
@@ -26,6 +29,8 @@
    - Métodos não existentes (calculateRegionalRankings)
    - Problemas de tipagem em parâmetros de funções
 4. **fuelings.ts (rotas)**: ✅ CORRIGIDO - Imports atualizados para funções existentes
+5. **fuelingService.ts**: ✅ CORRIGIDO - Erros de tipagem e atribuição.
+6. **fuel_prices_service.ts**: ✅ CORRIGIDO - Erros de tipagem e atribuição.
 
 ### Migração do Banco de Dados
 1. **setup_sqlite.sh**: ✅ RESOLVIDO - Executado com sucesso após limpeza do banco
@@ -35,6 +40,7 @@
 1. **Instalação de dependências**: 🔄 EM ANDAMENTO - Processo interrompido
 2. **Configuração de ambiente**: ⏳ PENDENTE - Arquivo .env não configurado
 3. **Testes de execução**: ⏳ PENDENTE - Aguardando conclusão da instalação
+
 ## Próximas tarefas
 
 ### Prioridade 1: Finalizar Backend Funcional
@@ -63,4 +69,5 @@
 2. **Identificar gaps críticos**: Funcionalidades documentadas mas não implementadas
 3. **Propor melhorias de arquitetura**: Baseado nos princípios arquiteturais do projeto
 4. **Atualizar documentação**: Refletir estado real do projeto
+
 
