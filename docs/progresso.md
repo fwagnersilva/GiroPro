@@ -1,30 +1,34 @@
 # Progresso do GiroPro
 
 **Última sessão:**
-- Data: 18/08/2025 13:50
-- Sessão: #24
+- Data: 18/08/2025 14:15
+- Sessão: #25
 
 ## O que foi feito nesta sessão
-- Deletado o arquivo `giropro.db` para garantir um estado de banco de dados limpo.
-- Executado o script `setup_sqlite.sh` com a flag `--skip-install` para tentar uma migração limpa.
-- Verificado que o problema de migração interativa do Drizzle ORM persiste, mesmo com um banco de dados limpo.
-- Confirmado que o `drizzle-kit generate` ainda solicita confirmação para a tabela `conquistas`.
+- Investigado e analisado o schema do banco de dados para identificar a causa do conflito de migração interativa.
+- Removido temporariamente a tabela `conquistas` do schema para testar se isso resolveria o problema de migração.
+- Corrigido erros de sintaxe no script `setup_sqlite.sh` relacionados às variáveis de cor que estavam causando falhas.
+- Testado a migração com o schema simplificado, mas ainda encontrou problemas com tabelas já existentes.
+- Identificado que o problema não é apenas com a tabela `conquistas`, mas com o estado geral das migrações do Drizzle.
 
 ## Problemas encontrados / observações
-1. **Migração interativa persistente**: Mesmo após deletar o arquivo do banco de dados e tentar uma migração limpa, o `drizzle-kit generate` (e consequentemente o `migrate`) continua solicitando confirmação interativa para a tabela `conquistas`.
-2. **Conflito de Schema**: O Drizzle ORM interpreta a criação da tabela `conquistas` como uma possível renomeação da tabela `notificacoes`, o que exige intervenção manual.
-3. **Ausência de opção não-interativa**: Não foi encontrada uma flag ou configuração para forçar o `drizzle-kit generate` ou `migrate` a aceitar automaticamente essas mudanças ambíguas em um ambiente não-interativo.
+1. **Erro de sintaxe no setup_sqlite.sh**: As variáveis de cor estavam mal formatadas, causando erros de comando não encontrado.
+2. **Conflito de tabelas existentes**: Mesmo após remover a tabela `conquistas` do schema, o Drizzle ainda encontra conflitos com tabelas já existentes (ex: `abastecimentos`).
+3. **Estado inconsistente das migrações**: O Drizzle parece estar tentando criar tabelas que já existem, indicando um problema com o controle de estado das migrações.
+4. **Necessidade de limpeza completa**: O problema pode estar nos metadados de migração do Drizzle que não estão sendo limpos adequadamente.
 
 ## Próximas tarefas
 
-### Prioridade 1: Resolver Migração do Banco (Alternativas)
-1. **Investigar histórico de migrações**: Verificar se existe alguma migração anterior que criou a tabela "notificacoes" ou se há algum resquício de metadados do Drizzle que cause essa ambiguidade.
-2. **Usar abordagem programática**: Criar um script Node.js que utilize o Drizzle ORM para aplicar o schema diretamente, ignorando o `drizzle-kit CLI` para a migração inicial.
-3. **Considerar migração manual**: Gerar o SQL da migração manualmente e aplicá-lo via shell, se as opções programáticas falharem.
+### Prioridade 1: Resolver Migração do Banco (Novas Abordagens)
+1. **Limpar completamente metadados do Drizzle**: Remover todos os diretórios `drizzle/` e `drizzle-sqlite/` e tentar uma migração completamente nova.
+2. **Usar abordagem de push em vez de migrate**: Testar `drizzle-kit push` que aplica o schema diretamente sem gerar arquivos de migração.
+3. **Criar script de migração manual**: Desenvolver um script Node.js que use o Drizzle ORM para criar as tabelas programaticamente.
+4. **Investigar configuração do drizzle.config.sqlite.ts**: Verificar se há configurações que possam estar causando conflitos.
 
 ### Prioridade 2: Backend Funcional (Continuação)
 1. **Corrigir erros de compilação restantes**: Focar no `fuelingsController.ts` e outros controllers com problemas de exportação.
 2. **Testar backend sem banco**: Verificar se o backend compila e inicia mesmo sem conexão com banco.
+3. **Reverter alterações no schema**: Restaurar a tabela `conquistas` após resolver o problema de migração.
 
 ### Prioridade 3: Integração e Testes
 1. **Testar integração frontend-backend**: Uma vez resolvidos os problemas de migração e compilação.

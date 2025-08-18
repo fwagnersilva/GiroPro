@@ -3,10 +3,6 @@
 # Script para configuração do ambiente SQLite para o GiroPro
 
 # Cores para saída do terminal
-GREEN=\'\\033[0;32m\'
-BLUE=\'\\033[0;34m\'
-RED=\'\\033[0;31m\'
-NC=\'\\033[0m\'
 
 # Variáveis padrão
 DB_PATH="giropro.db"
@@ -56,27 +52,27 @@ while [[ "$#" -gt 0 ]]; do
     esac
 done
 
-echo -e "${GREEN}Configurando ambiente SQLite para o GiroPro...${NC}"
+echo "Configurando ambiente SQLite para o GiroPro..."
 
 # 1. Navegar para o diretório do backend
 cd backend || {
-    echo -e "${RED}Erro: Não foi possível navegar para o diretório 'backend'. Certifique-se de que o script está na raiz do projeto GiroPro.${NC}"
+  echo "Erro: Não foi possível navegar para o diretório 'backend'. Certifique-se de que o script está na raiz do projeto GiroPro."
     exit 1
 }
 
 # 2. Instalar dependências SQLite (se não for para pular)
 if [ "$SKIP_INSTALL" = false ]; then
-    echo -e "${BLUE}Instalando dependências SQLite...${NC}"
+    echo "Instalando dependências SQLite..."
     npm install better-sqlite3 @types/better-sqlite3 || {
-        echo -e "${RED}Erro: Falha ao instalar dependências SQLite.${NC}"
+        echo "Erro: Falha ao instalar dependências SQLite."
         exit 1
     }
 else
-    echo -e "${BLUE}Pulando instalação de dependências SQLite.${NC}"
+    echo "Pulando instalação de dependências SQLite."
 fi
 
 # 3. Configurar variáveis de ambiente para SQLite
-echo -e "${BLUE}Configurando variáveis de ambiente...${NC}"
+echo "Configurando variáveis de ambiente..."
 
 # Criar ou atualizar arquivo .env
 if [ ! -f .env ]; then
