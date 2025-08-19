@@ -50,6 +50,11 @@ const createJourneySchema = z.object({
   idVeiculo: z.string().uuid('ID do veículo deve ser um UUID válido'),
   dataInicio: z.string().datetime('Data de início inválida'),
   kmInicio: z.number().int().min(0, 'Quilometragem inicial deve ser maior ou igual a 0'),
+  dataFim: z.string().datetime('Data de fim inválida').optional(),
+  kmFim: z.number().int().min(0, 'Quilometragem final deve ser maior ou igual a 0').optional(),
+  ganhoBruto: z.number().int().min(0, 'Ganho bruto deve ser maior ou igual a 0').optional(),
+  kmTotal: z.number().int().min(0, 'KM total deve ser maior ou igual a 0').optional(),
+  tempoTotal: z.number().int().min(0, 'Tempo total deve ser maior ou igual a 0').optional(),
   observacoes: z.string().max(500, 'Observações muito longas').optional(),
 });
 
@@ -166,7 +171,7 @@ export const createJourney = async (req: AuthenticatedRequest, res: Response) =>
       return res.status(400).json(createErrorResponse(`Dados inválidos: ${errors}`));
     }
 
-    const journeyData: CreateJourneyRequest = validationResult.data;
+    const journeyData = validationResult.data as CreateJourneyRequest;
 
     // 3. Log da operação
     logRequest('create', userId, journeyData);

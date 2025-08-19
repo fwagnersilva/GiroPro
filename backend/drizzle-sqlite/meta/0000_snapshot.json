@@ -1,7 +1,7 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "e74c2a88-d2bd-4117-b5b7-be452da24f49",
+  "id": "ba00e89c-62d5-4b6b-91e2-da10f461d327",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "abastecimentos": {

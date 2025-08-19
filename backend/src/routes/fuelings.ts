@@ -1,13 +1,15 @@
 import { Router } from 'express';
-import { createFueling, getFuelings, getFuelingById, updateFueling, deleteFueling } from '../controllers/fuelingsController';
+import { getPrices, getPriceHistory, getRegionalComparison, reportPrice, getPriceStats, getNearbyPrices } from '../controllers/fuelingsController';
 import { authMiddleware } from '../middlewares/auth';
 
 const router = Router();
 
-router.post('/', authMiddleware, createFueling);
-router.get('/', authMiddleware, getFuelings);
-router.get('/:id', authMiddleware, getFuelingById);
-router.put('/:id', authMiddleware, updateFueling);
-router.delete('/:id', authMiddleware, deleteFueling);
+// Rotas para preços de combustível
+router.get('/prices', authMiddleware, getPrices);
+router.get('/prices/history', authMiddleware, getPriceHistory);
+router.get('/prices/comparison', authMiddleware, getRegionalComparison);
+router.post('/prices/report', authMiddleware, reportPrice);
+router.get('/prices/stats', authMiddleware, getPriceStats);
+router.get('/prices/nearby', authMiddleware, getNearbyPrices);
 
 export const fuelingRoutes = router;
