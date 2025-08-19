@@ -35,32 +35,13 @@
 1. **Instalação de dependências**: 🔄 EM ANDAMENTO - Processo interrompido
 2. **Configuração de ambiente**: ⏳ PENDENTE - Arquivo .env não configurado
 3. **Testes de execução**: ⏳ PENDENTE - Aguardando conclusão da instalação
-## Próximas tarefas
 
-### Prioridade 1: Finalizar Backend Funcional
-1. **Corrigir erros críticos no fuelingsController.ts**:
-   - Padronizar nomenclatura CacheService/cacheService
-   - Adicionar propriedades faltantes nas interfaces (incluirTendencia, latitude)
-   - Implementar ou remover métodos não existentes (calculateRegionalRankings)
-   - Corrigir tipagem de parâmetros de funções
-2. **Testar compilação e execução do backend**: Garantir que o servidor inicia sem erros
-3. **Validar endpoints básicos**: Testar rotas de autenticação e principais funcionalidades
+## Próximas tarefas (para a próxima sessão)
 
-### Prioridade 2: Completar Setup do Frontend  
-1. **Finalizar instalação de dependências**: Completar npm install no frontend
-2. **Configurar variáveis de ambiente**: Criar e configurar arquivo .env com URL da API
-3. **Testar execução do frontend**: Iniciar servidor de desenvolvimento
-4. **Verificar estrutura e componentes**: Analisar telas e navegação disponíveis
+- **Finalizar Backend Funcional**: Corrigir erros críticos no `fuelingsController.ts` e garantir que o servidor inicia sem erros.
+- **Completar Setup do Frontend**: Finalizar instalação de dependências e configurar variáveis de ambiente.
+- **Testar Integração Frontend-Backend**: Validar comunicação e fluxos básicos.
 
-### Prioridade 3: Integração e Testes Básicos
-1. **Testar comunicação frontend-backend**: Validar se as requisições funcionam
-2. **Testar fluxos de autenticação**: Login, registro e navegação entre telas
-3. **Identificar funcionalidades implementadas vs documentadas**: Mapear gaps reais
-4. **Executar scripts de verificação**: Rodar verify_setup.sh e outros testes
+---
 
-### Prioridade 4: Análise de Gaps e Melhorias
-1. **Documentar funcionalidades existentes**: Listar o que realmente funciona
-2. **Identificar gaps críticos**: Funcionalidades documentadas mas não implementadas
-3. **Propor melhorias de arquitetura**: Baseado nos princípios arquiteturais do projeto
-4. **Atualizar documentação**: Refletir estado real do projeto
-
+Para o roadmap completo do projeto, consulte: [docs/03_explicacoes/08_roadmap_do_projeto.md](docs/03_explicacoes/08_roadmap_do_projeto.md)
