@@ -83,3 +83,7 @@ Este roadmap prioriza a estabilização e a entrega de uma funcionalidade básic
 
 
 
+
+
+*   **Atualização do Dicionário de Dados**: Garantir que o `01_dicionario_dados.md` esteja totalmente alinhado com o schema do banco de dados, incluindo a padronização de nomenclatura e a documentação de novas tabelas e campos.
+

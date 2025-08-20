@@ -15,13 +15,13 @@ export const usuarios = sqliteTable("usuarios", {
   id: text("id").primaryKey(),
   nome: text("nome").notNull(),
   email: text("email").notNull(),
-  senha_hash: text("senha_hash").notNull(),
-  status_conta: text("status_conta").default("Ativo").notNull(),
-  data_cadastro: text("data_cadastro").notNull(),
-  pontos_total: integer("pontos_total").default(0).notNull(),
-  nivel_usuario: text("nivel_usuario").default("Iniciante").notNull(),
-  conquistas_desbloqueadas: integer("conquistas_desbloqueadas").default(0).notNull(),
-  deleted_at: text("deleted_at"),
+  senhaHash: text("senhaHash").notNull(),
+  statusConta: text("statusConta").default("Ativo").notNull(),
+  dataCadastro: text("dataCadastro").notNull(),
+  pontosTotal: integer("pontosTotal").default(0).notNull(),
+  nivelUsuario: text("nivelUsuario").default("Iniciante").notNull(),
+  conquistasDesbloqueadas: integer("conquistasDesbloqueadas").default(0).notNull(),
+  deletedAt: text("deletedAt"),
 });
 ```
 
@@ -46,18 +46,18 @@ export const tipoUsoEnum = ['Proprio', 'Alugado', 'Financiado'] as const;
 
 export const veiculos = sqliteTable("veiculos", {
   id: text("id").primaryKey(),
-  id_usuario: text("id_usuario").notNull().references(() => usuarios.id),
+  idUsuario: text("idUsuario").notNull().references(() => usuarios.id),
   marca: text("marca").notNull(),
   modelo: text("modelo").notNull(),
   ano: integer("ano").notNull(),
   placa: text("placa").notNull().unique(),
-  tipo_combustivel: text("tipo_combustivel", { enum: tipoCombustivelEnum }).notNull(),
-  tipo_uso: text("tipo_uso", { enum: tipoUsoEnum }).notNull(),
-  valor_aluguel: integer("valor_aluguel"),
-  valor_prestacao: integer("valor_prestacao"),
-  media_consumo: integer("media_consumo"),
-  data_cadastro: text("data_cadastro").notNull(),
-  deleted_at: text("deleted_at"),
+  tipoCombustivel: text("tipoCombustivel", { enum: tipoCombustivelEnum }).notNull(),
+  tipoUso: text("tipoUso", { enum: tipoUsoEnum }).notNull(),
+  valorAluguel: integer("valorAluguel"),
+  valorPrestacao: integer("valorPrestacao"),
+  mediaConsumo: integer("mediaConsumo"),
+  dataCadastro: text("dataCadastro").notNull(),
+  deletedAt: text("deletedAt"),
 });
 ```
 
@@ -80,17 +80,17 @@ import { veiculos } from './veiculos';
 
 export const jornadas = sqliteTable("jornadas", {
   id: text("id").primaryKey(),
-  id_usuario: text("id_usuario").notNull().references(() => usuarios.id),
-  id_veiculo: text("id_veiculo").notNull().references(() => veiculos.id),
-  data_inicio: text("data_inicio").notNull(),
-  km_inicio: integer("km_inicio").notNull(),
-  data_fim: text("data_fim"),
-  km_fim: integer("km_fim"),
-  ganho_bruto: integer("ganho_bruto"),
-  km_total: integer("km_total"),
-  tempo_total: integer("tempo_total"),
+  idUsuario: text("idUsuario").notNull().references(() => usuarios.id),
+  idVeiculo: text("idVeiculo").notNull().references(() => veiculos.id),
+  dataInicio: text("dataInicio").notNull(),
+  kmInicio: integer("kmInicio").notNull(),
+  dataFim: text("dataFim"),
+  kmFim: integer("kmFim"),
+  ganhoBruto: integer("ganhoBruto"),
+  kmTotal: integer("kmTotal"),
+  tempoTotal: integer("tempoTotal"),
   observacoes: text("observacoes"),
-  deleted_at: text("deleted_at"),
+  deletedAt: text("deletedAt"),
 });
 ```
 
@@ -111,16 +111,16 @@ import { veiculos, tipoCombustivelEnum } from './veiculos';
 
 export const abastecimentos = sqliteTable("abastecimentos", {
   id: text("id").primaryKey(),
-  id_usuario: text("id_usuario").notNull().references(() => usuarios.id),
-  id_veiculo: text("id_veiculo").notNull().references(() => veiculos.id),
-  data_abastecimento: text("data_abastecimento").notNull(),
-  tipo_combustivel: text("tipo_combustivel", { enum: tipoCombustivelEnum }).notNull(),
-  litros: integer("litros").notNull(),
-  preco_litro: integer("preco_litro").notNull(),
-  valor_total: integer("valor_total").notNull(),
-  km_atual: integer("km_atual"),
-  nome_posto: text("nome_posto"),
-  deleted_at: text("deleted_at"),
+  idUsuario: text("idUsuario").notNull().references(() => usuarios.id),
+  idVeiculo: text("idVeiculo").notNull().references(() => veiculos.id),
+  dataAbastecimento: text("dataAbastecimento").notNull(),
+  tipoCombustivel: text("tipoCombustivel", { enum: tipoCombustivelEnum }).notNull(),
+  quantidadeLitros: integer("quantidadeLitros").notNull(),
+  valorLitro: integer("valorLitro").notNull(),
+  valorTotal: integer("valorTotal").notNull(),
+  kmAtual: integer("kmAtual"),
+  nomePosto: text("nomePosto"),
+  deletedAt: text("deletedAt"),
 });
 ```
 
@@ -144,13 +144,13 @@ export const tipoDespesaEnum = ['Manutencao', 'Pneus', 'Seguro', 'Outros'] as co
 
 export const despesas = sqliteTable("despesas", {
   id: text("id").primaryKey(),
-  id_usuario: text("id_usuario").notNull().references(() => usuarios.id),
-  id_veiculo: text("id_veiculo").references(() => veiculos.id),
-  data_despesa: text("data_despesa").notNull(),
-  tipo_despesa: text("tipo_despesa", { enum: tipoDespesaEnum }).notNull(),
-  valor_despesa: integer("valor_despesa").notNull(),
+  idUsuario: text("idUsuario").notNull().references(() => usuarios.id),
+  idVeiculo: text("idVeiculo").references(() => veiculos.id),
+  dataDespesa: text("dataDespesa").notNull(),
+  tipoDespesa: text("tipoDespesa", { enum: tipoDespesaEnum }).notNull(),
+  valorDespesa: integer("valorDespesa").notNull(),
   descricao: text("descricao"),
-  deleted_at: text("deleted_at"),
+  deletedAt: text("deletedAt"),
 });
 ```
 
@@ -171,10 +171,10 @@ export const historicoPrecoCombustivel = sqliteTable("historico_preco_combustive
   id: text("id").primaryKey(),
   cidade: text("cidade").notNull(),
   estado: text("estado").notNull(),
-  tipo_combustivel: text("tipo_combustivel", { enum: tipoCombustivelEnum }).notNull(),
-  preco_medio: integer("preco_medio").notNull(),
-  data_registro: text("data_registro").notNull(),
-  deleted_at: text("deleted_at"),
+  tipoCombustivel: text("tipoCombustivel", { enum: tipoCombustivelEnum }).notNull(),
+  precoMedio: integer("precoMedio").notNull(),
+  dataRegistro: text("dataRegistro").notNull(),
+  deletedAt: text("deletedAt"),
 });
 ```
 
@@ -194,11 +194,11 @@ import { usuarios } from './usuarios';
 
 export const logsAtividades = sqliteTable("logs_atividades", {
   id: text("id").primaryKey(),
-  id_usuario: text("id_usuario").references(() => usuarios.id),
-  tipo_acao: text("tipo_acao").notNull(),
+  idUsuario: text("idUsuario").references(() => usuarios.id),
+  tipoAcao: text("tipoAcao").notNull(),
   descricao: text("descricao"),
-  data_acao: text("data_acao").notNull(),
-  deleted_at: text("deleted_at"),
+  dataAcao: text("dataAcao").notNull(),
+  deletedAt: text("deletedAt"),
 });
 ```
 
@@ -207,36 +207,160 @@ export const logsAtividades = sqliteTable("logs_atividades", {
 *   `id_usuario`: Opcional, para registrar ações do sistema ou anônimas.
 *   `tipo_acao`, `descricao`: Para categorizar e detalhar a atividade.
 
-## 8. 🎯 `metas` (Pendente para fase futura)
+## 8. 🎯 `metas`
 
 Representa as metas financeiras ou de produtividade do motorista.
 
 ```typescript
-// Modelo de dados pendente para versões futuras (v0.4.0+)
-// Exemplo de estrutura:
-/*
 import { sqliteTable, text, integer } from 'drizzle-orm/sqlite-core';
 import { usuarios } from './usuarios';
 
-export const tipoMetaEnum = ["Faturamento", "Economia", "Quilometragem"] as const;
-export const periodoMetaEnum = ["Diaria", "Semanal", "Mensal"] as const;
+export const tipoMetaEnum = ["Faturamento", "Economia", "Quilometragem", "Jornadas", "Lucro"] as const;
+export const periodoMetaEnum = ["Diaria", "Semanal", "Mensal", "Trimestral", "Anual"] as const;
+export const statusMetaEnum = ["Ativa", "Pausada", "Concluida", "Expirada"] as const;
 
 export const metas = sqliteTable("metas", {
   id: text("id").primaryKey(),
-  id_usuario: text("id_usuario").notNull().references(() => usuarios.id),
-  tipo_meta: text("tipo_meta", { enum: tipoMetaEnum }).notNull(),
-  periodo_meta: text("periodo_meta", { enum: periodoMetaEnum }).notNull(),
-  valor_alvo: integer("valor_alvo").notNull(),
-  data_inicio: text("data_inicio").notNull(),
-  data_fim: text("data_fim").notNull(),
-  progresso_atual: integer("progresso_atual").default(0).notNull(),
-  atingida: integer("atingida", { mode: "boolean" }).default(0).notNull(),
-  deleted_at: text("deleted_at"),
+  idUsuario: text("idUsuario").notNull().references(() => usuarios.id),
+  idVeiculo: text("idVeiculo").references(() => veiculos.id),
+  titulo: text("titulo").notNull(),
+  descricao: text("descricao"),
+  tipoMeta: text("tipoMeta", { enum: tipoMetaEnum }).notNull(),
+  periodo: text("periodo", { enum: periodoMetaEnum }).notNull(),
+  valorObjetivo: integer("valorObjetivo").notNull(),
+  dataInicio: text("dataInicio").notNull(),
+  dataFim: text("dataFim").notNull(),
+  status: text("status", { enum: statusMetaEnum }).default("Ativa").notNull(),
+  valorAtual: integer("valorAtual").default(0).notNull(),
+  percentualConcluido: integer("percentualConcluido").default(0).notNull(),
+  dataConclusao: text("dataConclusao"),
+  notificacaoEnviada: integer("notificacaoEnviada").default(0).notNull(),
+  createdAt: text("createdAt").notNull(),
+  updatedAt: text("updatedAt").notNull(),
+  deletedAt: text("deletedAt"),
 });
-*/
 ```
 
 **Justificativas:**
 
-*   Será implementado na v0.4.0. A estrutura proposta permite flexibilidade na definição de metas.
+*   `idUsuario`, `idVeiculo`: Chaves estrangeiras para associar a meta ao usuário e, opcionalmente, ao veículo.
+*   `titulo`, `descricao`: Informações descritivas da meta.
+*   `tipoMeta`, `periodo`: ENUMs para categorizar o tipo e o período da meta.
+*   `valorObjetivo`: O valor alvo da meta (em centavos ou unidades).
+*   `dataInicio`, `dataFim`: Período de validade da meta.
+*   `status`: Status atual da meta (ativa, pausada, concluída, expirada).
+*   `valorAtual`, `percentualConcluido`: Progresso atual da meta.
+*   `dataConclusao`: Data em que a meta foi concluída.
+*   `notificacaoEnviada`: Flag para controlar o envio de notificações relacionadas à meta.
+*   `createdAt`, `updatedAt`, `deletedAt`: Campos de auditoria.
+
+
+
+*   `updatedAt`: Timestamp da última atualização do registro.
+*   `tentativasLogin`: Contador de tentativas de login falhas.
+*   `ultimoLoginFalhado`: Timestamp da última tentativa de login falha.
+*   `ultimaAtividade`: Timestamp da última atividade do usuário no sistema.
+
+
+
+*   `updatedAt`: Timestamp da última atualização do registro.
+
+
+
+*   `createdAt`: Timestamp da criação do registro.
+*   `updatedAt`: Timestamp da última atualização do registro.
+
+
+
+*   `createdAt`: Timestamp da criação do registro.
+*   `updatedAt`: Timestamp da última atualização do registro.
+
+
+
+*   `createdAt`: Timestamp da criação do registro.
+*   `updatedAt`: Timestamp da última atualização do registro.
+
+
+
+*   `fonte`: Fonte dos dados do preço (ex: ANP, app de terceiros).
+*   `createdAt`: Timestamp da criação do registro.
+
+
+
+*   `metadados`: Campo JSON para dados extras da atividade.
+
+
+
+
+## 9. 📈 `progressoMetas`
+
+Registra o progresso de cada meta ao longo do tempo.
+
+```typescript
+import { sqliteTable, text, integer } from 'drizzle-orm/sqlite-core';
+import { metas } from './metas';
+
+export const progressoMetas = sqliteTable("progresso_metas", {
+  id: text("id").primaryKey(),
+  idMeta: text("idMeta").notNull().references(() => metas.id),
+  dataRegistro: text("dataRegistro").notNull(),
+  valorAnterior: integer("valorAnterior").notNull(),
+  valorAtual: integer("valorAtual").notNull(),
+  incremento: integer("incremento").notNull(),
+  percentualAnterior: integer("percentualAnterior").notNull(),
+  percentualAtual: integer("percentualAtual").notNull(),
+  observacoes: text("observacoes"),
+  createdAt: text("createdAt").notNull(),
+});
+```
+
+**Justificativas:**
+
+*   `idMeta`: Chave estrangeira para a meta associada.
+*   `dataRegistro`: Data do registro do progresso.
+*   `valorAnterior`, `valorAtual`: Valores da meta antes e depois do registro.
+*   `incremento`: Diferença entre o valor atual e o anterior.
+*   `percentualAnterior`, `percentualAtual`: Percentuais de conclusão antes e depois do registro.
+*   `observacoes`: Observações adicionais sobre o progresso.
+*   `createdAt`: Timestamp da criação do registro.
+
+
+
+
+
+## 10. 🔔 `notificacoes`
+
+Registra notificações enviadas aos usuários.
+
+```typescript
+import { sqliteTable, text, integer } from 'drizzle-orm/sqlite-core';
+import { usuarios } from './usuarios';
+
+export const tipoNotificacaoEnum = ["sistema", "alerta", "promocao", "suporte"] as const;
+
+export const notificacoes = sqliteTable("notificacoes", {
+  id: text("id").primaryKey(),
+  idUsuario: text("idUsuario").notNull().references(() => usuarios.id),
+  tipo: text("tipo", { enum: tipoNotificacaoEnum }).notNull(),
+  titulo: text("titulo").notNull(),
+  mensagem: text("mensagem").notNull(),
+  dadosExtras: text("dadosExtras"),
+  lida: integer("lida").default(0).notNull(),
+  dataEnvio: text("dataEnvio").notNull(),
+  dataLeitura: text("dataLeitura"),
+  deletedAt: text("deletedAt"),
+});
+```
+
+**Justificativas:**
+
+*   `idUsuario`: Chave estrangeira para o usuário que receberá a notificação.
+*   `tipo`: Tipo da notificação (sistema, alerta, promoção, suporte).
+*   `titulo`, `mensagem`: Conteúdo da notificação.
+*   `dadosExtras`: Campo JSON para dados adicionais da notificação.
+*   `lida`: Flag para indicar se a notificação foi lida (0 = não lida, 1 = lida).
+*   `dataEnvio`: Timestamp do envio da notificação.
+*   `dataLeitura`: Timestamp da leitura da notificação.
+*   `deletedAt`: Campo para soft delete.
+
 
