@@ -1,5 +1,5 @@
 import request from 'supertest';
-import app from '../../app_simple';
+import app from '../../app';
 import { db } from '../../db/connection';
 import { usuarios, veiculos, jornadas, abastecimentos, despesas } from '../../db/schema';
 import { eq } from 'drizzle-orm';

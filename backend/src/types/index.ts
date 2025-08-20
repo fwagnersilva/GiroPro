@@ -349,3 +349,24 @@ declare global {
 }
 
 
+
+
+export interface FuelingFilters {
+  vehicleId?: string;
+  startDate?: string;
+  endDate?: string;
+  fuelType?: string;
+}
+
+export interface PaginationParams {
+  page: number;
+  limit: number;
+}
+
+export interface ServiceResult<T> {
+  success: boolean;
+  data?: T;
+  error?: string;
+}
+
+

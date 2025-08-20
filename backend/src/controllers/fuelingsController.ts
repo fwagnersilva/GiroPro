@@ -53,7 +53,7 @@ const regionalComparisonSchema = z.object({
       }
       return estadosArray;
     }),
-  incluir_tendencia: z.coerce.boolean().default(false)
+  incluirTendencia: z.coerce.boolean().default(false)
 });
 
 const reportPriceSchema = z.object({
@@ -80,7 +80,9 @@ const reportPriceSchema = z.object({
     .optional(),
   fonte: z.string()
     .min(1, "Fonte é obrigatória")
-    .default("Usuário")
+    .default("Usuário"),
+  latitude: z.number().optional(),
+  longitude: z.number().optional()
 });
 
 // ========== TIPOS E INTERFACES ==========
@@ -102,7 +104,7 @@ interface PriceHistoryParams {
 interface RegionalComparisonParams {
   tipoCombustivel: string;
   estados: string[];
-  incluir_tendencia: boolean;
+  incluirTendencia: boolean;
 }
 
 // ========== UTILITÁRIOS ==========
@@ -200,19 +202,19 @@ export const getPrices = asyncHandler(async (req: Request, res: Response) => {
   
   try {
     // Tentar buscar do cache primeiro
-    let prices = await CacheService.get(cacheKey);
+    let prices = await cacheService.get(cacheKey);
     
     if (!prices) {
       // Buscar do serviço se não estiver em cache
       prices = await FuelPricesService.getPricesByRegion(filters);
       
       // Cachear por 5 minutos
-      await CacheService.set(cacheKey, prices, 300);
+      await cacheService.set(cacheKey, prices, 300);
     }
 
     const meta = {
       total_results: prices.length,
-      cached: !!await CacheService.get(cacheKey),
+      cached: !!await cacheService.get(cacheKey),
       filters_applied: Object.keys(filters).filter(key => filters[key as keyof FuelPriceFilters] !== undefined),
       ultima_atualizacao: new Date().toISOString()
     };
@@ -249,11 +251,11 @@ export const getPriceHistory = asyncHandler(async (req: Request, res: Response) 
   const cacheKey = `price-history:${JSON.stringify(params)}`;
   
   try {
-    let historyData = await CacheService.get(cacheKey);
+    let historyData = await cacheService.get(cacheKey);
     
     if (!historyData) {
       historyData = await FuelPricesService.getPriceHistory(params);
-      await CacheService.set(cacheKey, historyData, 600); // Cache por 10 minutos
+      await cacheService.set(cacheKey, historyData, 600); // Cache por 10 minutos
     }
 
     // Calcular estatísticas otimizadas
@@ -295,11 +297,11 @@ export const getRegionalComparison = asyncHandler(async (req: Request, res: Resp
   const cacheKey = `regional-comparison:${JSON.stringify(params)}`;
   
   try {
-    let comparisonData = await CacheService.get(cacheKey);
+    let comparisonData = await cacheService.get(cacheKey);
     
     if (!comparisonData) {
       comparisonData = await FuelPricesService.getRegionalComparison(params);
-      await CacheService.set(cacheKey, comparisonData, 900); // Cache por 15 minutos
+      await cacheService.set(cacheKey, comparisonData, 900); // Cache por 15 minutos
     }
 
     // Análise de ranking
@@ -313,12 +315,12 @@ export const getRegionalComparison = asyncHandler(async (req: Request, res: Resp
         comparativo: comparisonData.comparativo,
         estatisticas: comparisonData.estatisticas,
         rankings,
-        ...(params.incluir_tendencia && { tendencias: comparisonData.tendencias })
+        ...(params.incluirTendencia && { tendencias: comparisonData.tendencias })
       },
       'Comparativo regional gerado com sucesso',
       {
         estados_analisados: params.estados.length,
-        incluiu_tendencia: params.incluir_tendencia
+        incluiu_tendencia: params.incluirTendencia
       }
     );
 
@@ -340,7 +342,7 @@ export const reportPrice = asyncHandler(async (req: Request, res: Response) => {
   try {
     // Verificar rate limiting por usuário
     const rateLimitKey = `price-report:${userId}`;
-    const recentReports = await CacheService.get(rateLimitKey) || 0;
+    const recentReports = await cacheService.get(rateLimitKey) || 0;
     
     if (recentReports >= 10) { // Máximo 10 reports por hora
       throw new Error('RATE_LIMITED');
@@ -368,10 +370,10 @@ export const reportPrice = asyncHandler(async (req: Request, res: Response) => {
     const reportedPrice = await FuelPricesService.savePriceReport(userId, priceData);
     
     // Atualizar rate limiting
-    await CacheService.set(rateLimitKey, recentReports + 1, 3600);
+    await cacheService.set(rateLimitKey, recentReports + 1, 3600);
     
     // Invalidar caches relacionados
-    await CacheService.deletePattern(`fuel-prices:*${priceData.estado}*`);
+    await cacheService.deletePattern(`fuel-prices:*${priceData.estado}*`);
 
     return sendResponse(
       res,
@@ -407,11 +409,11 @@ export const getPriceStats = asyncHandler(async (req: Request, res: Response) =>
   const cacheKey = `price-stats:${JSON.stringify(statsQuery)}`;
 
   try {
-    let stats = await CacheService.get(cacheKey);
+    let stats = await cacheService.get(cacheKey);
 
     if (!stats) {
       stats = await FuelPricesService.getPriceStatistics(statsQuery);
-      await CacheService.set(cacheKey, stats, 1800); // Cache por 30 minutos
+      await cacheService.set(cacheKey, stats, 1800); // Cache por 30 minutos
     }
 
     return sendResponse(
