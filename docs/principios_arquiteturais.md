@@ -129,3 +129,19 @@ Adotar e aderir a um conjunto de princípios arquiteturais claros e um processo 
 
 
 
+
+
+
+### 2.8. Documentação Específica do Banco de Dados
+
+Complementando o princípio de Documentação Contínua, é crucial manter uma documentação detalhada e viva do banco de dados. Isso inclui:
+
+*   **Diagrama ER e Dicionário de Dados**: Um diagrama Entidade-Relacionamento visual e um dicionário de dados abrangente para todas as tabelas, campos, tipos, restrições e enums. Isso facilita a compreensão da estrutura do banco de dados e o onboarding de novos desenvolvedores.
+*   **Documentação de Migrações**: Um guia claro sobre o processo de criação, teste e aplicação de migrações, incluindo um histórico de migrações e estratégias de rollback.
+*   **Padrões de Acesso a Dados**: Diretrizes sobre convenções de nomenclatura, uso de transações, otimização de consultas, tratamento de erros e segurança no acesso a dados.
+*   **Testes de Banco de Dados**: Documentação das estratégias de teste para componentes que interagem com o banco de dados, incluindo testes unitários, de integração e gerenciamento de dados de teste.
+*   **Glossário Técnico**: Um glossário de termos específicos do domínio e da tecnologia, especialmente aqueles relacionados ao banco de dados, para padronizar a terminologia e facilitar a comunicação.
+
+Essas documentações devem ser tratadas como artefatos vivos, atualizados a cada alteração relevante no esquema ou nas interações com o banco de dados, garantindo que o conhecimento seja acessível e preciso.
+
+

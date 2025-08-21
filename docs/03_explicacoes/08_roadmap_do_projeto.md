@@ -87,3 +87,15 @@ Este roadmap prioriza a estabilização e a entrega de uma funcionalidade básic
 
 *   **Atualização do Dicionário de Dados**: Garantir que o `01_dicionario_dados.md` esteja totalmente alinhado com o schema do banco de dados, incluindo a padronização de nomenclatura e a documentação de novas tabelas e campos.
 
+
+
+### Prioridade 4: Melhorias na Documentação
+
+*   **Documentação do Esquema do Banco de Dados**: Criar um diagrama ER e um dicionário de dados detalhado para o esquema do banco de dados, explicando o propósito de cada tabela, campo e enum. Documentar as justificativas de design para escolhas arquiteturais do DB.
+*   **Documentação de Migrações**: Elaborar um guia passo a passo para o processo de migração, incluindo criação, teste e aplicação em diferentes ambientes. Documentar o histórico de migrações e estratégias de rollback.
+*   **Padrões de Acesso a Dados e Boas Práticas**: Adicionar diretrizes sobre convenções de nomenclatura, uso de transações, otimização de consultas, tratamento de erros e segurança no acesso a dados.
+*   **Documentação de Testes de Banco de Dados**: Descrever estratégias para testes unitários e de integração relacionados ao DB, incluindo uso de mocks e gerenciamento de dados de teste.
+*   **Glossário de Termos Técnicos**: Criar um glossário para termos específicos do projeto e do domínio, especialmente os relacionados ao banco de dados.
+*   **Atualização e Manutenção da Documentação**: Reforçar o processo de documentação contínua com diretrizes claras sobre responsabilidades, ferramentas e processo de revisão.
+
+
