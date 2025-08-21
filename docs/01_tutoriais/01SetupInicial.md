@@ -173,13 +173,13 @@ Se você encontrar algum problema, consulte a seção de Troubleshooting Básico
 
 *   **Erros de Compilação TypeScript**: Se `npm run dev` apresentar erros de TypeScript:
     *   Verifique se todas as dependências foram instaladas: `npm install`
-    *   Consulte o guia [Como Resolver Erros de Compilação](../02_guias_como_fazer/05_como_resolver_erros_compilacao.md)
+    *   Consulte o guia [Como Resolver Erros de Compilação](../02_guias_como_fazer/05ComoResolverErrosCompilacao.md)
     *   Problemas comuns incluem incompatibilidade de tipos entre Drizzle ORM e Zod
 
 *   **Problemas de Migração**: Se o script `setup_sqlite.sh` falhar:
     *   Certifique-se de que o arquivo `giropro.env` existe
     *   Verifique se as dependências do SQLite foram instaladas: `npm install better-sqlite3`
-    *   Consulte o guia [Como Realizar Migração de Banco de Dados](../02_guias_como_fazer/02_como_realizar_migracao_banco_dados.md)
+    *   Consulte o guia [Como Realizar Migração de Banco de Dados](../02_guias_como_fazer/02ComoRealizarMigracaoBancoDados.md)
 
 ### 6.2. Problemas Comuns do Frontend
 
@@ -208,9 +208,68 @@ Se você encontrar algum problema, consulte a seção de Troubleshooting Básico
 Após configurar o ambiente com sucesso:
 
 1.  **Explore a documentação**: Leia os guias em `docs/02_guias_como_fazer/` para entender como trabalhar com o projeto
-2.  **Entenda a arquitetura**: Consulte `docs/03_explicacoes/01_arquitetura_geral.md`
+2.  **Entenda a arquitetura**: Consulte `docs/03_explicacoes/01ArquiteturaGeral.md`
 3.  **Veja as funcionalidades**: Confira `docs/04_referencias/05_funcionalidades_implementadas.md`
 4.  **Contribua**: Consulte o `docs/progresso.md` para ver o que está sendo trabalhado
 
 Parabéns! Seu ambiente de desenvolvimento GiroPro está configurado e pronto para uso.
+
+
+
+
+## 3.3.1. Boas Práticas e Detalhes do Arquivo `.env`
+
+O arquivo `.env` é crucial para a configuração do ambiente, pois armazena variáveis de ambiente sensíveis e específicas de cada instalação (desenvolvimento, teste, produção). É fundamental que este arquivo **NUNCA seja versionado** no controle de código (Git), por isso ele deve ser listado no `.gitignore`.
+
+### Estrutura e Exemplos
+
+As variáveis no `.env` são pares chave-valor. O GiroPro utiliza as seguintes categorias de variáveis:
+
+*   **Banco de Dados**: Define o tipo de banco de dados e seu caminho/conexão.
+*   **Autenticação**: Chaves secretas para JWT (JSON Web Tokens) e tempo de expiração.
+*   **Cache**: Configurações para serviços de cache como Redis.
+*   **Servidor**: Porta de execução e ambiente (desenvolvimento, produção).
+*   **CORS**: Origens permitidas para requisições cross-origin.
+
+**Exemplo de `.env` para Desenvolvimento Local (SQLite)**:
+
+```dotenv
+# Configurações do Banco de Dados
+DB_TYPE=sqlite
+SQLITE_DB_PATH=./giropro.db
+
+# Configurações de Autenticação (JWT)
+JWT_SECRET=suaChaveSecretaMuitoForteAqui # **MUDE ISSO EM PRODUÇÃO!**
+# Dica: Para gerar uma chave segura, use: node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
+JWT_EXPIRES_IN=7d
+
+# Configurações de Cache (Opcional para Desenvolvimento)
+REDIS_URL=redis://localhost:6379
+
+# Configurações do Servidor
+PORT=3000
+NODE_ENV=development
+
+# Configurações de CORS (Cross-Origin Resource Sharing)
+ALLOWED_ORIGINS=http://localhost:3000,http://localhost:19006,http://localhost:8081
+```
+
+### Geração de Chaves Secretas
+
+Para `JWT_SECRET`, é altamente recomendável gerar uma chave aleatória e forte para cada ambiente. A documentação sugere o uso de `node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"`. Execute este comando no seu terminal e substitua `suaChaveSecretaMuitoForteAqui` pelo valor gerado.
+
+### Importância do `.gitignore`
+
+Certifique-se de que a linha `.env` esteja presente no arquivo `.gitignore` na raiz do seu projeto. Isso impede que o arquivo `.env` seja acidentalmente enviado para o repositório Git, protegendo suas credenciais e configurações sensíveis.
+
+```
+# .gitignore
+.env
+node_modules
+build
+dist
+...
+```
+
+Ao seguir estas práticas, você garante um ambiente de desenvolvimento seguro e consistente, facilitando a colaboração e a implantação em diferentes ambientes.
 
