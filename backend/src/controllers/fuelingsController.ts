@@ -16,8 +16,8 @@ const fuelPricesQuerySchema = z.object({
     .min(2, "Cidade deve ter pelo menos 2 caracteres")
     .max(100, "Nome da cidade muito longo")
     .optional(),
-  tipoCombustivel: z.enum(['Gasolina', 'Etanol', 'Diesel', 'GNV'])
-    .optional(),
+  tipoCombustivel: z.enum(["gasolina", "etanol", "diesel", "gnv", "flex"])
+    .optional(),,
   limite: z.coerce.number()
     .int()
     .min(1)

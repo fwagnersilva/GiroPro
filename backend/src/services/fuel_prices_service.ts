@@ -8,7 +8,7 @@ export interface FuelPriceData {
   id: string;
   estado: string;
   cidade: string;
-  tipoCombustivel: 'Gasolina' | 'Etanol' | 'Diesel' | 'GNV';
+  tipoCombustivel: 'gasolina' | 'etanol' | 'diesel' | 'gnv' | 'flex';
   precoMedio: number;
   precoMinimo: number;
   precoMaximo: number;
@@ -58,12 +58,12 @@ export interface FuelPriceFilters {
 export interface PriceHistoryParams {
   estado: string;
   cidade: string;
-  tipoCombustivel: string;
+  tipoCombustivel: 'gasolina' | 'etanol' | 'diesel' | 'gnv' | 'flex';
   periodoDias: number;
 }
 
 export interface RegionalComparisonParams {
-  tipoCombustivel: string;
+  tipoCombustivel: 'gasolina' | 'etanol' | 'diesel' | 'gnv' | 'flex';
   estados: string[];
   incluirTendencia: boolean;
 }
@@ -80,7 +80,7 @@ export interface PriceReport {
   userId: string;
   estado: string;
   cidade: string;
-  tipoCombustivel: string;
+  tipoCombustivel: 'gasolina' | 'etanol' | 'diesel' | 'gnv' | 'flex';
   precoMedio: number;
   nomePosto?: string;
   endereco?: string;
@@ -111,10 +111,10 @@ const ESTADO_NOMES: Record<string, string> = {
 };
 
 const PRECOS_BASE_COMBUSTIVEL: Record<string, number> = {
-  'Gasolina': 5.89,
-  'Etanol': 4.29,
-  'Diesel': 5.45,
-  'GNV': 4.15
+  'gasolina': 5.89,
+  'etanol': 4.29,
+  'diesel': 5.45,
+  'gnv': 4.15
 };
 
 const FATORES_ESTADO: Record<string, number> = {

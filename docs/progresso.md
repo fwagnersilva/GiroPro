@@ -1,8 +1,8 @@
 # Progresso do GiroPro
 
 **Última sessão:**
-- Data: 22/08/2025 19:11
-- Sessão: #34
+- Data: 22/08/2025 23:20
+- Sessão: #35
 
 ## O que foi feito nesta sessão
 - **Compreensão e Análise do Projeto**: Realizada análise completa do projeto GiroPro, incluindo estrutura de diretórios, documentação e progresso atual.
@@ -17,6 +17,10 @@
   - Identificados e corrigidos erros de inconsistência de nomenclatura (snake_case vs camelCase)
   - Corrigida interface `PriceHistoryParams` no `fuelingsController.ts` (periodo_dias → periodoDias)
   - Corrigido uso da propriedade na linha 276 do controller
+  - Corrigido o tipo de `tipoCombustivel` na interface `FuelPriceData`.
+  - Corrigido o tipo de `tipoCombustivel` na interface `RegionalComparisonParams`.
+  - Corrigido o `PRECOS_BASE_COMBUSTIVEL` para usar `lowercase`.
+  - Corrigidos os enums de `tipoCombustivel` para `lowercase` e adicionado `flex` em `fuelPricesQuerySchema`.
 - **Análise do Banco de Dados**: Identificadas 10 tabelas no schema SQLite com suas respectivas colunas, índices e foreign keys.
 
 ## Problemas encontrados / observações
@@ -67,4 +71,6 @@
 2. **Erro TS2551**: Propriedade `periodo_dias` não existe, deveria ser `periodoDias`
 
 **Erros ainda pendentes**: Pelo menos 1 erro de compilação ainda impede a inicialização do backend (não completamente diagnosticado devido ao timeout)
+
+
 
