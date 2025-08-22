@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { z } from 'zod';
+import { AuthenticatedRequest } from '../types';
 
 import { FuelPricesService } from "../services/fuel_prices_service";
 import { cacheService } from "../services/cacheService";
@@ -33,7 +34,7 @@ const priceHistoryQuerySchema = z.object({
     .min(2, "Cidade deve ter pelo menos 2 caracteres")
     .max(100, "Nome da cidade muito longo"),
   tipoCombustivel: z.enum(['Gasolina', 'Etanol', 'Diesel', 'GNV']),
-  periodo_dias: z.coerce.number()
+  periodoDias: z.coerce.number()
     .int()
     .min(1, "Período mínimo é 1 dia")
     .max(365, "Período máximo é 365 dias")
@@ -213,7 +214,7 @@ export const getPrices = asyncHandler(async (req: Request, res: Response) => {
     }
 
     const meta = {
-      total_results: prices.length,
+      total_results: Array.isArray(prices) ? prices.length : 0,
       cached: !!await cacheService.get(cacheKey),
       filters_applied: Object.keys(filters).filter(key => filters[key as keyof FuelPriceFilters] !== undefined),
       ultima_atualizacao: new Date().toISOString()
@@ -450,7 +451,15 @@ export const getNearbyPrices = asyncHandler(async (req: Request, res: Response) 
   }).parse(req.query);
 
   try {
-    const nearbyPrices = await FuelPricesService.getNearbyPrices(locationQuery);
+    // Garantir que as propriedades obrigatórias estejam presentes
+    const nearbyQuery = {
+      latitude: locationQuery.latitude,
+      longitude: locationQuery.longitude,
+      raio: locationQuery.raio,
+      tipoCombustivel: locationQuery.tipoCombustivel
+    };
+    
+    const nearbyPrices = await FuelPricesService.getNearbyPrices(nearbyQuery);
 
     return sendResponse(
       res,

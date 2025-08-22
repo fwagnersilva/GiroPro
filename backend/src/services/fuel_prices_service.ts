@@ -652,7 +652,7 @@ export class FuelPricesService {
     return trends;
   }
 
-  private static calculatePriceStatistics(prices: { preco: number }[]): PriceStatistics {
+  public static calculatePriceStatistics(prices: { preco: number }[]): PriceStatistics {
     if (prices.length === 0) {
       return {
         precoMinimo: 0,
