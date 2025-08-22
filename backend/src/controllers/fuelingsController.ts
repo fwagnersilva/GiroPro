@@ -99,7 +99,7 @@ interface PriceHistoryParams {
   estado: string;
   cidade: string;
   tipoCombustivel: string;
-  periodo_dias: number;
+  periodoDias: number;
 }
 
 interface RegionalComparisonParams {
@@ -273,7 +273,7 @@ export const getPriceHistory = asyncHandler(async (req: Request, res: Response) 
       },
       'Histórico recuperado com sucesso',
       {
-        periodo_analisado: `${params.periodo_dias} dias`,
+        periodo_analisado: `${params.periodoDias} dias`,
         pontos_dados: historyData.historico.length
       }
     );
