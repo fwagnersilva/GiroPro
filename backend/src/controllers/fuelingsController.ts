@@ -33,7 +33,7 @@ const priceHistoryQuerySchema = z.object({
   cidade: z.string()
     .min(2, "Cidade deve ter pelo menos 2 caracteres")
     .max(100, "Nome da cidade muito longo"),
-  tipoCombustivel: z.enum(['Gasolina', 'Etanol', 'Diesel', 'GNV']),
+  tipoCombustivel: z.enum(['gasolina', 'etanol', 'diesel', 'gnv', 'flex']),
   periodoDias: z.coerce.number()
     .int()
     .min(1, "Período mínimo é 1 dia")
@@ -64,7 +64,7 @@ const reportPriceSchema = z.object({
   cidade: z.string()
     .min(2, "Cidade deve ter pelo menos 2 caracteres")
     .max(100, "Nome da cidade muito longo"),
-  tipoCombustivel: z.enum(['Gasolina', 'Etanol', 'Diesel', 'GNV']),
+  tipoCombustivel: z.enum(['gasolina', 'etanol', 'diesel', 'gnv', 'flex']),
   precoMedio: z.number()
     .positive("Preço médio deve ser positivo")
     .max(50, "Preço parece muito alto, verifique")
