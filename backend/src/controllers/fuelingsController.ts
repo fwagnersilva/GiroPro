@@ -251,7 +251,7 @@ export const getPriceHistory = asyncHandler(async (req: Request, res: Response) 
   const cacheKey = `price-history:${JSON.stringify(params)}`;
   
   try {
-    let historyData = await cacheService.get(cacheKey);
+    let historyData = await cacheService.get(cacheKey) as any;
     
     if (!historyData) {
       historyData = await FuelPricesService.getPriceHistory(params);
@@ -297,7 +297,7 @@ export const getRegionalComparison = asyncHandler(async (req: Request, res: Resp
   const cacheKey = `regional-comparison:${JSON.stringify(params)}`;
   
   try {
-    let comparisonData = await cacheService.get(cacheKey);
+    let comparisonData = await cacheService.get(cacheKey) as any;
     
     if (!comparisonData) {
       comparisonData = await FuelPricesService.getRegionalComparison(params);
@@ -342,7 +342,7 @@ export const reportPrice = asyncHandler(async (req: Request, res: Response) => {
   try {
     // Verificar rate limiting por usuário
     const rateLimitKey = `price-report:${userId}`;
-    const recentReports = await cacheService.get(rateLimitKey) || 0;
+    const recentReports = (await cacheService.get(rateLimitKey) as number) || 0;
     
     if (recentReports >= 10) { // Máximo 10 reports por hora
       throw new Error('RATE_LIMITED');
@@ -373,7 +373,7 @@ export const reportPrice = asyncHandler(async (req: Request, res: Response) => {
     await cacheService.set(rateLimitKey, recentReports + 1, 3600);
     
     // Invalidar caches relacionados
-    await cacheService.deletePattern(`fuel-prices:*${priceData.estado}*`);
+    await cacheService.delPattern(`fuel-prices:*${priceData.estado}*`);
 
     return sendResponse(
       res,
