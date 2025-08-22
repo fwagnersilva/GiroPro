@@ -304,8 +304,8 @@ export const getRegionalComparison = asyncHandler(async (req: Request, res: Resp
       await cacheService.set(cacheKey, comparisonData, 900); // Cache por 15 minutos
     }
 
-    // Análise de ranking
-    const rankings = FuelPricesService.calculateRegionalRankings(comparisonData.comparativo);
+    // Análise de ranking - usando dados já calculados no comparativo
+    const rankings = comparisonData.comparativo || [];
 
     return sendResponse(
       res,
