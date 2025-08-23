@@ -42,8 +42,8 @@ const priceHistoryQuerySchema = z.object({
 });
 
 const regionalComparisonSchema = z.object({
-  tipoCombustivel: z.enum(['Gasolina', 'Etanol', 'Diesel', 'GNV'])
-    .default('Gasolina'),
+  tipoCombustivel: z.enum(['gasolina', 'etanol', 'diesel', 'gnv'])
+    .default('gasolina'),
   estados: z.string()
     .optional()
     .transform(str => {

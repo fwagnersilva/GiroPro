@@ -187,8 +187,8 @@ class DashboardUtils {
 
     let conditions = and(
       eq(table.idUsuario, userId),
-      gte(dateField, dataInicio.getTime()),
-      lte(dateField, dataFim.getTime()),
+      gte(dateField, dataInicio),
+      lte(dateField, dataFim),
       isNull(table.deletedAt)
     );
 
