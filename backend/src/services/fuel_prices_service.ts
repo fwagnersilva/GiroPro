@@ -51,7 +51,7 @@ export interface RegionalComparison {
 export interface FuelPriceFilters {
   estado?: string;
   cidade?: string;
-  tipoCombustivel?: string;
+  tipoCombustivel?: 'gasolina' | 'etanol' | 'diesel' | 'gnv' | 'flex';
   limite?: number;
 }
 
@@ -72,7 +72,7 @@ export interface NearbyPricesQuery {
   latitude: number;
   longitude: number;
   raio: number;
-  tipoCombustivel?: string;
+  tipoCombustivel?: 'gasolina' | 'etanol' | 'diesel' | 'gnv' | 'flex';
 }
 
 export interface PriceReport {

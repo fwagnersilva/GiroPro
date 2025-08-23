@@ -43,10 +43,8 @@ const priceHistoryQuerySchema = z.object({
 
 const regionalComparisonSchema = z.object({
   tipoCombustivel: z.enum(['gasolina', 'etanol', 'diesel', 'gnv'])
-    .default('gasolina'),
-  estados: z.string()
-    .optional()
-    .transform(str => {
+    .default('gasoli  tipoCombustivel: z.enum(["gasolina", "etanol", "diesel", "gnv", "flex"])
+    .optional(),  .transform(str => {
       if (!str) return ['SP', 'RJ', 'MG', 'RS', 'PR'];
       const estadosArray = str.split(',').map(e => e.trim().toUpperCase());
       if (estadosArray.length > 10) {
@@ -91,19 +89,19 @@ const reportPriceSchema = z.object({
 interface FuelPriceFilters {
   estado?: string;
   cidade?: string;
-  tipoCombustivel?: string;
+  tipoCombustivel?: "gasolina" | "etanol" | "diesel" | "gnv" | "flex";
   limite?: number;
 }
 
 interface PriceHistoryParams {
   estado: string;
   cidade: string;
-  tipoCombustivel: string;
+  tipoCombustivel: 'gasolina' | 'etanol' | 'diesel' | 'gnv' | 'flex';
   periodoDias: number;
 }
 
 interface RegionalComparisonParams {
-  tipoCombustivel: string;
+  tipoCombustivel: 'gasolina' | 'etanol' | 'diesel' | 'gnv' | 'flex';
   estados: string[];
   incluirTendencia: boolean;
 }
