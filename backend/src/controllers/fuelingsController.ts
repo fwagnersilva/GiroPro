@@ -42,9 +42,11 @@ const priceHistoryQuerySchema = z.object({
 });
 
 const regionalComparisonSchema = z.object({
-  tipoCombustivel: z.enum(['gasolina', 'etanol', 'diesel', 'gnv'])
-    .default('gasoli  tipoCombustivel: z.enum(["gasolina", "etanol", "diesel", "gnv", "flex"])
-    .optional(),  .transform(str => {
+  tipoCombustivel: z.enum(['gasolina', 'etanol', 'diesel', 'gnv', 'flex'])
+    .default('gasolina'),
+  estados: z.string()
+    .optional()
+    .transform(str => {
       if (!str) return ['SP', 'RJ', 'MG', 'RS', 'PR'];
       const estadosArray = str.split(',').map(e => e.trim().toUpperCase());
       if (estadosArray.length > 10) {
@@ -445,7 +447,7 @@ export const getNearbyPrices = asyncHandler(async (req: Request, res: Response) 
     latitude: z.coerce.number().min(-90).max(90),
     longitude: z.coerce.number().min(-180).max(180),
     raio: z.coerce.number().min(1).max(50).default(10),
-    tipoCombustivel: z.enum(['Gasolina', 'Etanol', 'Diesel', 'GNV']).optional()
+    tipoCombustivel: z.enum(['gasolina', 'etanol', 'diesel', 'gnv']).optional()
   }).parse(req.query);
 
   try {
