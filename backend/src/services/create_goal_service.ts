@@ -32,7 +32,7 @@ export async function createGoal({
     id: goal.id,
     title: goal.titulo,
     desiredWeeklyFrequency: goal.valorObjetivo, // Retornar valorObjetivo como desiredWeeklyFrequency
-    createdAt: new Date(goal.createdAt * 1000), // Converter timestamp Unix para Date
+    createdAt: new Date(Number(goal.createdAt) * 1000), // Converter timestamp Unix para Date com Number()
   };
 }
 

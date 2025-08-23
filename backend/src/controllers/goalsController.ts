@@ -101,11 +101,12 @@ export const goalsRoutes: FastifyPluginAsyncZod = async app => {
     })
 
     // 🚀 Response padronizado
-    if (!result.success) {
-      return reply.status(400).send(createErrorResponse(result.error || 'Erro ao criar meta'))
-    }
-
-    return createSuccessResponse(result.data)
+    return createSuccessResponse({
+      goalId: result.id,
+      title: result.title,
+      desiredWeeklyFrequency: result.desiredWeeklyFrequency,
+      createdAt: result.createdAt,
+    })
   }))
 
   // POST /completions - Completar uma meta
@@ -140,12 +141,9 @@ export const goalsRoutes: FastifyPluginAsyncZod = async app => {
     })
 
     // 🚀 Response com status codes apropriados
-    if (!result.success) {
-      const statusCode = result.error?.includes('não encontrada') ? 404 : 400
-      return reply.status(statusCode).send(createErrorResponse(result.error || 'Erro ao completar meta'))
-    }
-
-    return createSuccessResponse(result.data)
+    return createSuccessResponse({
+      completionId: result.id,
+    })
   }))
 
   // GET /pending-goals - Obter metas pendentes da semana

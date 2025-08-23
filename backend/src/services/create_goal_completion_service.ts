@@ -62,7 +62,7 @@ export async function createGoalCompletion({
   return {
     id: progresso.id,
     goalId: progresso.idMeta,
-    createdAt: new Date(progresso.dataRegistro * 1000), // Converter timestamp Unix para Date
+    createdAt: new Date(Number(progresso.dataRegistro) * 1000), // Converter timestamp Unix para Date com Number()
   };
 }
 

@@ -20,6 +20,8 @@ const idParamSchema = z.object({
 });
 
 // Tipos para melhor type safety
+type CreateExpenseRequest = z.infer<typeof createExpenseSchema>;
+type UpdateExpenseRequest = z.infer<typeof updateExpenseSchema>;
 
 
 // Middleware para extrair e validar userId

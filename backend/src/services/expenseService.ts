@@ -137,6 +137,50 @@ export class ExpenseService {
   }
 
   /**
+   * Obtém estatísticas das despesas de um usuário
+   */
+  static async getExpenseStats(userId: string): Promise<any> {
+    try {
+      const result = await db
+        .select()
+        .from(despesas)
+        .where(and(eq(despesas.idUsuario, userId), isNull(despesas.deletedAt)));
+
+      const total = result.reduce((sum, expense) => sum + expense.valorDespesa, 0) / 100;
+      const count = result.length;
+      const average = count > 0 ? total / count : 0;
+
+      return {
+        total,
+        count,
+        average,
+      };
+    } catch (error) {
+      throw new Error(`Erro ao obter estatísticas: ${error instanceof Error ? error.message : 'Erro desconhecido'}`);
+    }
+  }
+
+  /**
+   * Busca despesas por categoria
+   */
+  static async getExpensesByCategory(userId: string, category: string): Promise<Expense[]> {
+    try {
+      const result = await db
+        .select()
+        .from(despesas)
+        .where(and(
+          eq(despesas.idUsuario, userId),
+          eq(despesas.tipoDespesa, category as any),
+          isNull(despesas.deletedAt)
+        ));
+
+      return result.map(this.mapToExpense);
+    } catch (error) {
+      throw new Error(`Erro ao buscar despesas por categoria: ${error instanceof Error ? error.message : 'Erro desconhecido'}`);
+    }
+  }
+
+  /**
    * Mapeia dados do banco para o tipo Expense
    */
   private static mapToExpense(dbExpense: any): Expense {

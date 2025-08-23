@@ -6,6 +6,21 @@ import { jornadas, abastecimentos, despesas, veiculos } from '../db/schema';
 import { eq, and, isNull, isNotNull, sql, gte, lte, sum, count, inArray } from 'drizzle-orm';
 import type { ServiceResult, CacheConfig } from '../types/common';
 
+// Classes de erro
+class UnauthorizedError extends Error {
+  constructor(message: string = 'Não autorizado') {
+    super(message);
+    this.name = 'UnauthorizedError';
+  }
+}
+
+class NotFoundError extends Error {
+  constructor(message: string = 'Não encontrado') {
+    super(message);
+    this.name = 'NotFoundError';
+  }
+}
+
 // Schemas de validação otimizados
 const dashboardQuerySchema = z.object({
   periodo: z.enum(['hoje', 'semana', 'mes', 'ano', 'personalizado']).default('mes'),

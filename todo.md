@@ -8,6 +8,11 @@
 - [x] Instalação das dependências do backend (npm install)
 - [x] Configuração do arquivo .env (copiado de giropro.env)
 - [x] Correção inicial do erro de sintaxe no gamificationController.ts (falta de fechamento de chaves)
+- [x] Correção do create_goal_service.ts (conversão de timestamp com Number())
+- [x] Correção do create_goal_completion_service.ts (conversão de timestamp com Number())
+- [x] Adição de tipos ausentes no expensesController.ts (CreateExpenseRequest, UpdateExpenseRequest)
+- [x] Adição de métodos ausentes no ExpenseService (getExpenseStats, getExpensesByCategory)
+- [x] Correção do goalsController.ts (remoção de propriedades success/error inexistentes)
 
 ### 🔄 Em Progresso
 - [ ] Correção dos 186 erros de compilação TypeScript restantes
