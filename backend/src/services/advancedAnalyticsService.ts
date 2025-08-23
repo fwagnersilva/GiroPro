@@ -56,8 +56,8 @@ export class AdvancedAnalyticsService {
           and(
             eq(jornadas.idVeiculo, vehicle.id),
             eq(jornadas.idUsuario, userId),
-            gte(jornadas.dataInicio, thirtyDaysAgo.getTime()),
-            lte(jornadas.dataInicio, today.getTime()),
+            gte(jornadas.dataInicio, thirtyDaysAgo),
+            lte(jornadas.dataInicio, today),
             isNull(jornadas.deletedAt)
           )
         );
@@ -75,8 +75,8 @@ export class AdvancedAnalyticsService {
           and(
             eq(abastecimentos.idVeiculo, vehicle.id),
             eq(abastecimentos.idUsuario, userId),
-            gte(abastecimentos.dataAbastecimento, thirtyDaysAgo.getTime()),
-            lte(abastecimentos.dataAbastecimento, today.getTime()),
+            gte(abastecimentos.dataAbastecimento, thirtyDaysAgo),
+            lte(abastecimentos.dataAbastecimento, today),
             isNull(abastecimentos.deletedAt)
           )
         );
@@ -93,8 +93,8 @@ export class AdvancedAnalyticsService {
           and(
             eq(despesas.idVeiculo, vehicle.id),
             eq(despesas.idUsuario, userId),
-            gte(despesas.dataDespesa, thirtyDaysAgo.getTime()),
-            lte(despesas.dataDespesa, today.getTime()),
+            gte(despesas.dataDespesa, thirtyDaysAgo),
+            lte(despesas.dataDespesa, today),
             isNull(despesas.deletedAt)
           )
         );
