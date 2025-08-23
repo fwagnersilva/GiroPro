@@ -182,10 +182,7 @@ export class FuelingService {
     try {
       const { pagination = { page: 1, limit: 50 }, filters = {}, orderBy = 'date_desc' } = options;
       
-      // Base query
-      let query = db.select().from(abastecimentos).where(eq(abastecimentos.idUsuario, userId));
-      
-      // Filtros
+      // Base query com filtros
       const conditions = [eq(abastecimentos.idUsuario, userId)];
       
       if (filters.vehicleId) {
@@ -206,8 +203,9 @@ export class FuelingService {
         conditions.push(eq(abastecimentos.tipoCombustivel, FuelingUtils.validateFuelType(filters.fuelType)));
       }
 
-      // Aplicar filtros
-      query = query.where(and(...conditions));
+      // Construir query com condições aplicadas
+      const query = db.select().from(abastecimentos)
+        .where(and(...conditions));
 
       // Ordenação
       let orderedQuery;

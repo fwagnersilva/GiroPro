@@ -135,8 +135,6 @@ export class FuelPricesService {
    */
   static async getPricesByRegion(filters: FuelPriceFilters): Promise<FuelPriceData[]> {
     try {
-      let query = db.select().from(historicoPrecoCombustivel);
-      
       // Aplicar filtros dinâmicos
       const conditions: any[] = [];
       
@@ -151,8 +149,10 @@ export class FuelPricesService {
       if (filters.tipoCombustivel) {
         conditions.push(eq(historicoPrecoCombustivel.tipoCombustivel, filters.tipoCombustivel));
       }
-            
-      query = query.where(and(...conditions));
+      
+      // Construir query com condições aplicadas
+      const query = db.select().from(historicoPrecoCombustivel)
+        .where(conditions.length > 0 ? and(...conditions) : undefined);
             
       // Ordenar por data mais recente e aplicar limite
       const results = await query
@@ -473,12 +473,15 @@ export class FuelPricesService {
           break;
       }
       
-      let query = db.select().from(historicoPrecoCombustivel)
-        .where(gte(historicoPrecoCombustivel.dataRegistro, startDate));
-
+      // Construir query com condições aplicadas
+      const conditions: any[] = [gte(historicoPrecoCombustivel.dataRegistro, startDate)];
+      
       if (tipoCombustivel) {
-        query = query.where(eq(historicoPrecoCombustivel.tipoCombustivel, tipoCombustivel));
+        conditions.push(eq(historicoPrecoCombustivel.tipoCombustivel, tipoCombustivel));
       }
+      
+      const query = db.select().from(historicoPrecoCombustivel)
+        .where(and(...conditions));
       
       const results = await query.orderBy(desc(historicoPrecoCombustivel.dataRegistro));
 

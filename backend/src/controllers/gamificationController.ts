@@ -2,9 +2,6 @@ import { Request, Response } from 'express';
 import { z } from 'zod';
 import { db } from '../db';
 import {
-  conquistas,
-  usuarioConquistas,
-  niveisUsuario,
   usuarios,
   jornadas,
   abastecimentos,
@@ -246,79 +243,52 @@ export class GamificationController {
         return res.status(404).json({
           success: false,
           error: { message: 'Usuário não encontrado' }
-        });
       }
 
+      // TODO: Implementar sistema de níveis e conquistas quando as tabelas forem criadas
       // Buscar informações do nível atual
-      const [nivelAtual] = await db
-        .select()
-        .from(nivelUsuario)
-        .where(eq(nivelUsuario.nivel, usuario.nivelUsuario || 'Iniciante'));
+      // const [nivelAtual] = await db.select()
+      //   .from(nivelUsuario)
+      //   .where(eq(nivelUsuario.nivel, usuario.nivelUsuario || 'Iniciante'));
 
-      // Buscar próximo nível
-      const [proximoNivel] = await db
-        .select()
-        .from(nivelUsuario)
-        .where(gte(nivelUsuario.pontos_necessarios, usuario.pontosTotal || 0))
-        .orderBy(asc(nivelUsuario.pontos_necessarios))
-        .limit(1);
+      // const proximoNivel = await db.select()
+      //   .from(nivelUsuario)
+      //   .where(gte(nivelUsuario.pontos_necessarios, usuario.pontosTotal || 0))
+      //   .orderBy(asc(nivelUsuario.pontos_necessarios))
+      //   .limit(1);
 
       // Estatísticas de conquistas por tipo
-      const conquistasPorTipo = await db
-        .select({
-          tipoConquista: conquistas.tipoConquista,
-          total: count(),
-          desbloqueadas: sql<number>`COUNT(CASE WHEN ${usuarioConquistas.id} IS NOT NULL THEN 1 END)`
-        })
-        .from(conquistas)
-        .leftJoin(
-          usuarioConquistas,
-          and(
-            eq(usuarioConquistas.id_conquista, conquistas.id),
-            eq(usuarioConquistas.idUsuario, req.user?.id)
-          )
-        )
-        .where(eq(conquistas.ativa, true))
-        .groupBy(conquistas.tipo_conquista);
+      // const conquistasPorTipo = await db
+      //   .select({
+      //     tipoConquista: conquistas.tipoConquista,
+      //     total: count(),
+      //     desbloqueadas: sql<number>`COUNT(CASE WHEN ${usuarioConquistas.id} IS NOT NULL THEN 1 END)`
+      //   })
+      //   .from(conquistas)
+      //   .leftJoin(
+      //     usuarioConquistas,
+      //     and(
+      //       eq(usuarioConquistas.idConquista, conquistas.id),
+      //       eq(usuarioConquistas.idUsuario, userId)
+      //     )
+      //   )
+      //   .groupBy(conquistas.tipoConquista);
 
-      // Conquistas recentes (últimas 5)
-      const conquistasRecentes = await db
-        .select({
-          conquista: {
-            nome: conquistas.nome,
-            icone: conquistas.icone,
-            cor: conquistas.cor,
-            pontosRecompensa: conquistas.pontosRecompensa
-          },
-          data_desbloqueio: usuarioConquistas.data_desbloqueio
-        })
-        .from(usuarioConquistas)
-        .innerJoin(conquistas, eq(conquistas.id, usuarioConquistas.id_conquista))
-        .where(eq(usuarioConquistas.idUsuario, req.user?.id))
-        .orderBy(desc(usuarioConquistas.data_desbloqueio))
-        .limit(5);
-
-      // Calcular progresso para o próximo nível
-      const pontosParaProximoNivel = proximoNivel 
-        ? proximoNivel.pontos_necessarios - (usuario.pontosTotal || 0)
-        : 0;
-
-      const progressoNivel = proximoNivel && nivelAtual
-        ? Math.round(((usuario.pontosTotal || 0) - nivelAtual.pontos_necessarios) / 
-          (proximoNivel.pontos_necessarios - nivelAtual.pontos_necessarios) * 100)
-        : 100;
-
+      // Retornar dados básicos do usuário por enquanto
       return res.json({
         success: true,
         data: {
-          pontosTotal: usuario.pontosTotal || 0,
-          nivel_atual: nivelAtual,
-          proximo_nivel: proximoNivel,
-          pontos_para_proximo_nivel: pontosParaProximoNivel,
-          progresso_nivel: Math.max(0, Math.min(100, progressoNivel)),
-          total_conquistasDesbloqueadas: usuario.conquistasDesbloqueadas || 0,
-          conquistas_por_tipo: conquistasPorTipo,
-          conquistas_recentes: conquistasRecentes
+          usuario: {
+            id: usuario.id,
+            nome: usuario.nome,
+            pontosTotal: usuario.pontosTotal || 0,
+            nivelUsuario: usuario.nivelUsuario || 'iniciante',
+            conquistasDesbloqueadas: usuario.conquistasDesbloqueadas || 0
+          },
+          // TODO: Implementar quando as tabelas de conquistas estiverem disponíveis
+          conquistasPorTipo: [],
+          conquistasRecentes: [],
+          proximoNivel: null
         }
       });
 
@@ -577,7 +547,7 @@ export class GamificationController {
       .where(
         and(
           eq(metas.idUsuario, userId),
-          eq(metas.status, 'Concluida'),
+          eq(metas.statusMeta, 'concluida'),
           isNull(metas.deletedAt)
         )
       );
