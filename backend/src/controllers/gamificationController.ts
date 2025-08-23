@@ -243,6 +243,7 @@ export class GamificationController {
         return res.status(404).json({
           success: false,
           error: { message: 'Usuário não encontrado' }
+        });
       }
 
       // TODO: Implementar sistema de níveis e conquistas quando as tabelas forem criadas
