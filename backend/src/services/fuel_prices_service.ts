@@ -474,7 +474,7 @@ export class FuelPricesService {
       }
       
       let query = db.select().from(historicoPrecoCombustivel)
-        .where(gte(historicoPrecoCombustivel.dataRegistro, startDate.getTime()));
+        .where(gte(historicoPrecoCombustivel.dataRegistro, startDate));
 
       if (tipoCombustivel) {
         query = query.where(eq(historicoPrecoCombustivel.tipoCombustivel, tipoCombustivel));
