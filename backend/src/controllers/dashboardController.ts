@@ -115,7 +115,7 @@ class DashboardCache {
   }
 
   static set(key: string, data: any, type: keyof typeof DashboardCache.TTL_CONFIG = 'summaryMonth'): void {
-    const ttl = this.TTL_CONFIG[type] || this.TTL_CONFIG.summaryMonth;
+    const ttl = DashboardCache.TTL_CONFIG[type] || DashboardCache.TTL_CONFIG.summaryMonth;
     this.cache.set(key, { data, timestamp: Date.now(), ttl });
   }
 
