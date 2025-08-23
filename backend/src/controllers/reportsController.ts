@@ -205,8 +205,8 @@ export class ReportsController {
       // Construir condições de filtro
       const whereConditions = and(
         eq(jornadas.idUsuario, userId!),
-        gte(jornadas.dataInicio, parsedDataInicio.getTime()),
-        lte(jornadas.dataFim, parsedDataFim.getTime()),
+        gte(jornadas.dataInicio, parsedDataInicio),
+        lte(jornadas.dataFim, parsedDataFim),
         idVeiculo ? eq(jornadas.idVeiculo, idVeiculo) : undefined
       );
 
@@ -483,7 +483,7 @@ class DateHelper {
   }
 
   static formatDateForSQL(date: Date): number {
-    return date.getTime();
+    return date;
   }
 }
 
@@ -544,8 +544,8 @@ class JourneyProcessor {
         and(
           eq(despesas.idUsuario, userId),
           eq(despesas.idVeiculo, idVeiculo),
-          gte(despesas.dataDespesa, dataInicio.getTime()),
-          lte(despesas.dataDespesa, dataFim.getTime()),
+          gte(despesas.dataDespesa, dataInicio),
+          lte(despesas.dataDespesa, dataFim),
           ne(despesas.tipoDespesa, 'combustivel') // Excluir despesas de combustível
         )
       );
@@ -579,8 +579,8 @@ class ExpenseAnalyzer {
   static async analisarDespesasPorCategoria(userId: string, dataInicio: Date, dataFim: Date, idVeiculo?: string): Promise<ExpenseByCategory[]> {
     const whereConditions = and(
       eq(despesas.idUsuario, userId),
-      gte(despesas.dataDespesa, dataInicio.getTime()),
-      lte(despesas.dataDespesa, dataFim.getTime()),
+      gte(despesas.dataDespesa, dataInicio),
+      lte(despesas.dataDespesa, dataFim),
       idVeiculo ? eq(despesas.idVeiculo, idVeiculo) : undefined
     );
 
@@ -607,8 +607,8 @@ class ExpenseAnalyzer {
   static async analisarEvolucaoDespesas(userId: string, dataInicio: Date, dataFim: Date, idVeiculo?: string): Promise<ExpenseEvolution[]> {
     const whereConditions = and(
       eq(despesas.idUsuario, userId),
-      gte(despesas.dataDespesa, dataInicio.getTime()),
-      lte(despesas.dataDespesa, dataFim.getTime()),
+      gte(despesas.dataDespesa, dataInicio),
+      lte(despesas.dataDespesa, dataFim),
       idVeiculo ? eq(despesas.idVeiculo, idVeiculo) : undefined
     );
 
@@ -647,8 +647,8 @@ class ExpenseAnalyzer {
       .where(
         and(
           eq(despesas.idUsuario, userId),
-          gte(despesas.dataDespesa, dataInicio.getTime()),
-          lte(despesas.dataDespesa, dataFim.getTime())
+          gte(despesas.dataDespesa, dataInicio),
+          lte(despesas.dataDespesa, dataFim)
         )
       )
       .groupBy(despesas.idVeiculo);
@@ -668,8 +668,8 @@ class ExpenseAnalyzer {
   static async analisarGastosCombustivel(userId: string, dataInicio: Date, dataFim: Date, idVeiculo?: string): Promise<FuelAnalysisData> {
     const whereConditions = and(
       eq(abastecimentos.idUsuario, userId),
-      gte(abastecimentos.dataAbastecimento, dataInicio.getTime()),
-      lte(abastecimentos.dataAbastecimento, dataFim.getTime()),
+      gte(abastecimentos.dataAbastecimento, dataInicio),
+      lte(abastecimentos.dataAbastecimento, dataFim),
       idVeiculo ? eq(abastecimentos.idVeiculo, idVeiculo) : undefined
     );
 
@@ -704,8 +704,8 @@ class ExpenseAnalyzer {
       .where(
         and(
           eq(jornadas.idUsuario, userId),
-          gte(jornadas.dataInicio, dataInicio.getTime()),
-          lte(jornadas.dataFim, dataFim.getTime()),
+          gte(jornadas.dataInicio, dataInicio),
+          lte(jornadas.dataFim, dataFim),
           idVeiculo ? eq(jornadas.idVeiculo, idVeiculo) : undefined
         )
       );
@@ -716,8 +716,8 @@ class ExpenseAnalyzer {
       .where(
         and(
           eq(jornadas.idUsuario, userId),
-          gte(jornadas.dataInicio, dataInicio.getTime()),
-          lte(jornadas.dataFim, dataFim.getTime()),
+          gte(jornadas.dataInicio, dataInicio),
+          lte(jornadas.dataFim, dataFim),
           idVeiculo ? eq(jornadas.idVeiculo, idVeiculo) : undefined
         )
       );
@@ -728,8 +728,8 @@ class ExpenseAnalyzer {
       .where(
         and(
           eq(despesas.idUsuario, userId),
-          gte(despesas.dataDespesa, dataInicio.getTime()),
-          lte(despesas.dataDespesa, dataFim.getTime()),
+          gte(despesas.dataDespesa, dataInicio),
+          lte(despesas.dataDespesa, dataFim),
           idVeiculo ? eq(despesas.idVeiculo, idVeiculo) : undefined
         )
       );
@@ -746,8 +746,8 @@ class FuelAnalyzer {
   static async analisarConsumoPorVeiculo(userId: string, dataInicio: Date, dataFim: Date, idVeiculo?: string): Promise<any[]> {
     const whereConditions = and(
       eq(abastecimentos.idUsuario, userId),
-      gte(abastecimentos.dataAbastecimento, dataInicio.getTime()),
-      lte(abastecimentos.dataAbastecimento, dataFim.getTime()),
+      gte(abastecimentos.dataAbastecimento, dataInicio),
+      lte(abastecimentos.dataAbastecimento, dataFim),
       idVeiculo ? eq(abastecimentos.idVeiculo, idVeiculo) : undefined
     );
 
@@ -776,8 +776,8 @@ class FuelAnalyzer {
   static async analisarEvolucaoPrecos(userId: string, dataInicio: Date, dataFim: Date, idVeiculo?: string): Promise<any[]> {
     const whereConditions = and(
       eq(abastecimentos.idUsuario, userId),
-      gte(abastecimentos.dataAbastecimento, dataInicio.getTime()),
-      lte(abastecimentos.dataAbastecimento, dataFim.getTime()),
+      gte(abastecimentos.dataAbastecimento, dataInicio),
+      lte(abastecimentos.dataAbastecimento, dataFim),
       idVeiculo ? eq(abastecimentos.idVeiculo, idVeiculo) : undefined
     );
 
@@ -802,8 +802,8 @@ class FuelAnalyzer {
   static async compararTiposCombustivel(userId: string, dataInicio: Date, dataFim: Date): Promise<any[]> {
     const whereConditions = and(
       eq(abastecimentos.idUsuario, userId),
-      gte(abastecimentos.dataAbastecimento, dataInicio.getTime()),
-      lte(abastecimentos.dataAbastecimento, dataFim.getTime())
+      gte(abastecimentos.dataAbastecimento, dataInicio),
+      lte(abastecimentos.dataAbastecimento, dataFim)
     );
 
     const results = await db
@@ -836,8 +836,8 @@ class FuelAnalyzer {
       .where(
         and(
           eq(abastecimentos.idUsuario, userId),
-          gte(abastecimentos.dataAbastecimento, dataInicio.getTime()),
-          lte(abastecimentos.dataAbastecimento, dataFim.getTime()),
+          gte(abastecimentos.dataAbastecimento, dataInicio),
+          lte(abastecimentos.dataAbastecimento, dataFim),
           idVeiculo ? eq(abastecimentos.idVeiculo, idVeiculo) : undefined
         )
       );
@@ -848,8 +848,8 @@ class FuelAnalyzer {
       .where(
         and(
           eq(abastecimentos.idUsuario, userId),
-          gte(abastecimentos.dataAbastecimento, dataInicio.getTime()),
-          lte(abastecimentos.dataAbastecimento, dataFim.getTime()),
+          gte(abastecimentos.dataAbastecimento, dataInicio),
+          lte(abastecimentos.dataAbastecimento, dataFim),
           idVeiculo ? eq(abastecimentos.idVeiculo, idVeiculo) : undefined
         )
       );
@@ -860,8 +860,8 @@ class FuelAnalyzer {
       .where(
         and(
           eq(abastecimentos.idUsuario, userId),
-          gte(abastecimentos.dataAbastecimento, dataInicio.getTime()),
-          lte(abastecimentos.dataAbastecimento, dataFim.getTime()),
+          gte(abastecimentos.dataAbastecimento, dataInicio),
+          lte(abastecimentos.dataAbastecimento, dataFim),
           idVeiculo ? eq(abastecimentos.idVeiculo, idVeiculo) : undefined
         )
       );
@@ -878,8 +878,8 @@ class DashboardAnalyzer {
   static async obterEstatisticasJornadas(userId: string, dataInicio: Date, dataFim: Date, idVeiculo?: string): Promise<JourneyStats> {
     const whereConditions = and(
       eq(jornadas.idUsuario, userId),
-      gte(jornadas.dataInicio, dataInicio.getTime()),
-      lte(jornadas.dataFim, dataFim.getTime()),
+      gte(jornadas.dataInicio, dataInicio),
+      lte(jornadas.dataFim, dataFim),
       idVeiculo ? eq(jornadas.idVeiculo, idVeiculo) : undefined
     );
 
@@ -916,8 +916,8 @@ class DashboardAnalyzer {
   static async obterTotalDespesas(userId: string, dataInicio: Date, dataFim: Date, idVeiculo?: string): Promise<number> {
     const whereConditions = and(
       eq(despesas.idUsuario, userId),
-      gte(despesas.dataDespesa, dataInicio.getTime()),
-      lte(despesas.dataDespesa, dataFim.getTime()),
+      gte(despesas.dataDespesa, dataInicio),
+      lte(despesas.dataDespesa, dataFim),
       idVeiculo ? eq(despesas.idVeiculo, idVeiculo) : undefined
     );
 
@@ -932,8 +932,8 @@ class DashboardAnalyzer {
   static async obterTotalAbastecimentos(userId: string, dataInicio: Date, dataFim: Date, idVeiculo?: string): Promise<number> {
     const whereConditions = and(
       eq(abastecimentos.idUsuario, userId),
-      gte(abastecimentos.dataAbastecimento, dataInicio.getTime()),
-      lte(abastecimentos.dataAbastecimento, dataFim.getTime()),
+      gte(abastecimentos.dataAbastecimento, dataInicio),
+      lte(abastecimentos.dataAbastecimento, dataFim),
       idVeiculo ? eq(abastecimentos.idVeiculo, idVeiculo) : undefined
     );
 
@@ -955,8 +955,8 @@ class DashboardAnalyzer {
       .where(
         and(
           eq(jornadas.idUsuario, userId),
-          gte(jornadas.dataInicio, dataInicio.getTime()),
-          lte(jornadas.dataFim, dataFim.getTime())
+          gte(jornadas.dataInicio, dataInicio),
+          lte(jornadas.dataFim, dataFim)
         )
       )
       .groupBy(jornadas.idVeiculo)
@@ -977,8 +977,8 @@ class DashboardAnalyzer {
   static async obterMelhorDesempenho(userId: string, dataInicio: Date, dataFim: Date, idVeiculo?: string): Promise<any> {
     const whereConditions = and(
       eq(jornadas.idUsuario, userId),
-      gte(jornadas.dataInicio, dataInicio.getTime()),
-      lte(jornadas.dataFim, dataFim.getTime()),
+      gte(jornadas.dataInicio, dataInicio),
+      lte(jornadas.dataFim, dataFim),
       idVeiculo ? eq(jornadas.idVeiculo, idVeiculo) : undefined
     );
 

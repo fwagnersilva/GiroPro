@@ -622,13 +622,13 @@ export class ReportsService {
         SELECT 1 FROM jornadas j
         WHERE j.idVeiculo = v.id
         AND j.deletedAt IS NULL
-        AND j.dataFim >= ${ninetyDaysAgo.getTime()}
+        AND j.dataFim >= ${Math.floor(ninetyDaysAgo.getTime() / 1000)}
       )
       AND NOT EXISTS (
         SELECT 1 FROM abastecimentos a
         WHERE a.idVeiculo = v.id
         AND a.deletedAt IS NULL
-        AND a.dataAbastecimento >= ${ninetyDaysAgo.getTime()}
+        AND a.dataAbastecimento >= ${Math.floor(ninetyDaysAgo.getTime() / 1000)}
       )
     `);
 

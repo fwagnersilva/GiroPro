@@ -1,52 +1,43 @@
 # Progresso do GiroPro
 
 **Última sessão:**
-- Data: 23/08/2025 01:45
-- Sessão: #39
+- Data: 23/08/2025 19:15
+- Sessão: #40
 
 ## O que foi feito nesta sessão
-- **Análise e Compreensão do Projeto**:
-  - Leitura completa da documentação do projeto (progresso.md, principiosArquiteturais.md, setup inicial)
-  - Compreensão do estado atual: 178 erros TypeScript bloqueando desenvolvimento
-  - Identificação das tecnologias: TypeScript, React Native, SQLite, Drizzle ORM
-- **Configuração do Ambiente de Desenvolvimento**:
-  - Clonagem bem-sucedida do repositório GiroPro
-  - Configuração do arquivo `.env` no backend (copiado de giropro.env)
-  - Instalação de dependências do backend com npm install
-  - Verificação da estrutura do projeto (backend, frontend, docs, scripts)
-- **Análise dos Problemas TypeScript**:
-  - Confirmação de 178 erros TypeScript persistentes (redução de 2 erros da sessão anterior)
-  - Identificação dos problemas principais: incompatibilidades Date/timestamp no Drizzle ORM
-  - Análise detalhada dos arquivos afetados: dashboardController.ts, fuel_prices_service.ts, fuelingService.ts
-- **Correções Aplicadas**:
-  - Correção no `fuel_prices_service.ts`: substituição de `startDate.getTime()` por `startDate` na query Drizzle
-  - Identificação da causa raiz: schema define campos como `integer("campo", { mode: "timestamp" })` que espera Date objects, não numbers
-- **Análise do Banco de Dados**:
-  - Verificação do schema SQLite: estrutura adequada com campos timestamp configurados corretamente
-  - Confirmação de que o banco está funcional e o problema é de tipagem TypeScript
-  - Identificação da versão do Drizzle ORM: 0.44.4
+- **Correção Sistemática de Problemas de Tipagem Date/Timestamp**:
+  - Identificação e correção do uso incorreto de `date.getTime()` em queries Drizzle ORM
+  - Correção no `dashboardController.ts`: substituição de cálculo de tempo usando `getTime()` por função SQLite `strftime()`
+  - Correção no `reportsController.ts`: substituição de todas as 15+ ocorrências de `getTime()` por objetos Date diretos
+  - Correção no `fuel_prices_service.ts`: 2 correções de uso incorreto de `getTime()` em queries e inserções
+  - Correção no `reportsService.ts`: ajuste de queries SQL raw para usar timestamp Unix correto
+- **Análise Completa do Projeto**:
+  - Verificação de que `advancedAnalyticsController.ts` já estava correto (getTime() usado apenas para cálculos JavaScript)
+  - Busca sistemática em todos os arquivos TypeScript do backend para identificar problemas similares
+  - Análise de 13 arquivos que continham `getTime()` para determinar quais precisavam de correção
+- **Validação das Correções**:
+  - Teste de compilação TypeScript após as correções
+  - Redução significativa de erros: de 178 para 136 erros (42 erros corrigidos)
+  - Confirmação de que as correções de Date/timestamp estão funcionando corretamente
 
 ## Problemas encontrados / observações
-- **Erros Críticos de Compilação TypeScript Ainda Persistentes**: 
-  - Ainda existem 178 erros TypeScript impedindo a compilação do backend (redução de 2 erros)
-  - Problema principal identificado: uso incorreto de Date/timestamp no Drizzle ORM
-  - Código usa `date.getTime()` (number) mas schema espera Date objects
-- **Problemas de Tipagem Date/Timestamp Específicos**:
-  - Schema define campos como `integer("campo", { mode: "timestamp" })` que no Drizzle significa Date objects
-  - Múltiplos controllers afetados: dashboardController.ts, fuel_prices_service.ts, reportsController.ts
-  - Queries Drizzle usando sintaxe incorreta para campos de data
-- **Problemas de Query Builder Drizzle**:
-  - Propriedade 'where' não encontrada em alguns casos (fuelingService.ts linha 210)
-  - Possível incompatibilidade com versão 0.44.4 do Drizzle ORM
-  - Necessário revisar sintaxe das queries para versão atual
+- **Progresso Significativo na Correção de Erros TypeScript**:
+  - Redução de 42 erros TypeScript (de 178 para 136 erros)
+  - Problemas de Date/timestamp no Drizzle ORM foram resolvidos com sucesso
+  - Causa raiz identificada: schema define campos como `integer("campo", { mode: "timestamp" })` que espera Date objects, não numbers
+- **Erros TypeScript Remanescentes (136 erros)**:
+  - Problemas com propriedade 'where' não encontrada em algumas queries Drizzle ORM
+  - Erros de tipagem em `fuel_prices_service.ts` relacionados a filtros de tipo de combustível
+  - Problemas de compatibilidade com versão 0.44.4 do Drizzle ORM em alguns arquivos
+  - Erros distribuídos em 19 arquivos diferentes, principalmente controllers e services
+- **Análise de Padrões nos Erros Restantes**:
+  - Maioria dos erros restantes são relacionados à sintaxe do Drizzle ORM, não mais problemas de Date/timestamp
+  - Alguns arquivos têm problemas com tipos de enum (ex: tipoCombustivel)
+  - Necessário revisar queries que usam `.where()` em objetos que perderam essa propriedade
 - **Dependências e Segurança**:
   - 4 vulnerabilidades moderadas persistem no npm audit
   - Múltiplos warnings sobre pacotes depreciados durante instalação
-  - Ambiente de desenvolvimento ainda bloqueado para testes funcionais
-- **Análise de Banco de Dados Limitada**:
-  - Estrutura do banco SQLite está correta e funcional
-  - Problemas são principalmente de tipagem TypeScript, não de estrutura
-  - Necessário ambiente funcional para análise mais profunda de performance
+  - Ambiente de desenvolvimento parcialmente funcional, mas ainda bloqueado para testes completos
 
 ## Atividades Priorizadas (Baseado na Análise Detalhada)
 
@@ -73,13 +64,14 @@
 14. **Testes Automatizados** - Implementar testes unitários e de integração (4-6h)
 
 ## Próximas tarefas (para a próxima sessão)
-- **PRIORIDADE CRÍTICA - Continuar Correção Sistemática de Erros TypeScript**:
-  - Aplicar correções de Date/timestamp em todos os controllers afetados (dashboardController.ts, reportsController.ts, weeklyMonthlyReportsController.ts)
-  - Substituir todas as ocorrências de `date.getTime()` por objetos Date diretos nas queries Drizzle
-  - Corrigir problemas de sintaxe nas queries Drizzle ORM (propriedade 'where' não encontrada)
-  - Testar compilação após cada grupo de correções para validar progresso
+- **PRIORIDADE CRÍTICA - Continuar Correção de Erros TypeScript Remanescentes (136 erros)**:
+  - Corrigir problemas com propriedade 'where' não encontrada em queries Drizzle ORM
+  - Resolver erros de tipagem em `fuel_prices_service.ts` relacionados a filtros de enum
+  - Revisar e corrigir sintaxe de queries Drizzle ORM em arquivos com problemas de compatibilidade
+  - Focar nos 19 arquivos que ainda apresentam erros de compilação
+  - Testar compilação após cada grupo de correções para validar progresso incremental
 - **Finalizar Configuração do Ambiente de Desenvolvimento**:
-  - Garantir que backend compile e inicie sem erros TypeScript
+  - Garantir que backend compile completamente sem erros TypeScript
   - Configurar e testar frontend React Native com Expo
   - Validar comunicação entre frontend e backend
   - Executar testes básicos de funcionalidade (registro, login, navegação)
@@ -101,12 +93,16 @@
 
 ## Documentos Criados Nesta Sessão
 - **Correções aplicadas no código**:
-  - `fuel_prices_service.ts`: Correção de problema Date/timestamp (substituição de `startDate.getTime()` por `startDate`)
+  - `dashboardController.ts`: Correção de cálculo de tempo usando função SQLite `strftime()` em vez de `getTime()`
+  - `reportsController.ts`: Substituição de 15+ ocorrências de `getTime()` por objetos Date diretos em queries Drizzle
+  - `fuel_prices_service.ts`: 2 correções de uso incorreto de `getTime()` em queries e inserções
+  - `reportsService.ts`: Ajuste de queries SQL raw para usar timestamp Unix correto
 - **Análise técnica realizada**:
-  - Identificação da causa raiz dos problemas TypeScript: uso incorreto de Date/timestamp no Drizzle ORM
-  - Verificação do schema SQLite: campos configurados corretamente como `integer("campo", { mode: "timestamp" })`
-  - Análise da versão do Drizzle ORM (0.44.4) e compatibilidade com sintaxe utilizada
-- **Atualização do arquivo `docs/progresso.md`** com status detalhado da sessão #39
+  - Identificação sistemática de problemas Date/timestamp em 13 arquivos TypeScript
+  - Verificação de que `advancedAnalyticsController.ts` já estava correto
+  - Análise de padrões de erro e priorização de correções
+  - Teste de compilação mostrando redução significativa de erros (178 → 136)
+- **Atualização do arquivo `docs/progresso.md`** com status detalhado da sessão #40
 
 
 

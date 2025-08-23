@@ -267,7 +267,7 @@ class DashboardCalculations {
             SUM(
               CASE 
                 WHEN ${jornadas.dataFim} IS NOT NULL AND ${jornadas.dataInicio} IS NOT NULL
-                THEN ((${jornadas.dataFim} - ${jornadas.dataInicio}) / 1000 / 60)
+                THEN (CAST(strftime('%s', ${jornadas.dataFim}) AS INTEGER) - CAST(strftime('%s', ${jornadas.dataInicio}) AS INTEGER)) / 60
                 ELSE 0 
               END
             ), 

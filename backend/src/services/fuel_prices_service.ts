@@ -193,7 +193,7 @@ export class FuelPricesService {
             eq(historicoPrecoCombustivel.estado, params.estado),
             sql`LOWER(${historicoPrecoCombustivel.cidade}) = LOWER(${params.cidade})`,
             eq(historicoPrecoCombustivel.tipoCombustivel, params.tipoCombustivel),
-            gte(historicoPrecoCombustivel.dataRegistro, startDate.getTime())
+            gte(historicoPrecoCombustivel.dataRegistro, startDate)
           )
         )
         .orderBy(asc(historicoPrecoCombustivel.dataRegistro));
@@ -411,7 +411,7 @@ export class FuelPricesService {
         cidade: newReport.cidade,
         tipoCombustivel: newReport.tipoCombustivel,
         precoMedio: newReport.precoMedio,
-        dataRegistro: new Date(newReport.dataRegistro).getTime(),
+        dataRegistro: new Date(newReport.dataRegistro),
         fonte: newReport.fonte,
       });
 
