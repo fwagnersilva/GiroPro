@@ -17,11 +17,11 @@ export async function createGoal({
     .insert(metas)
     .values({
       titulo: title,
-      valor_objetivo: desiredWeeklyFrequency, // Usando desiredWeeklyFrequency como valor_objetivo inicial
-      tipo_meta: "Quilometragem", // Exemplo: definir um tipo de meta padrão
-      periodo: "Semanal", // Exemplo: definir um período padrão
-      dataInicio: new Date().toISOString(),
-      dataFim: new Date().toISOString(), // Definir uma data de fim razoável
+      valorObjetivo: desiredWeeklyFrequency, // Usando desiredWeeklyFrequency como valorObjetivo inicial
+      tipoMeta: "quilometragem", // Exemplo: definir um tipo de meta padrão
+      periodo: "semanal", // Exemplo: definir um período padrão
+      dataInicio: Math.floor(Date.now() / 1000),
+      dataFim: Math.floor(Date.now() / 1000) + (7 * 24 * 60 * 60), // Uma semana a partir de agora
       idUsuario: "some-user-id", // TODO: Substituir por ID de usuário real
     })
     .returning();
@@ -31,7 +31,7 @@ export async function createGoal({
   return {
     id: goal.id,
     title: goal.titulo,
-    desiredWeeklyFrequency: goal.valor_objetivo, // Retornar valor_objetivo como desiredWeeklyFrequency
+    desiredWeeklyFrequency: goal.valorObjetivo, // Retornar valorObjetivo como desiredWeeklyFrequency
     createdAt: new Date(goal.createdAt),
   };
 }

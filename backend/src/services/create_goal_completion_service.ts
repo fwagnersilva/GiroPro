@@ -20,19 +20,19 @@ export async function createGoalCompletion({
   }
 
   // Atualizar o valor atual da meta e o percentual concluído
-  const novoValorAtual = goal.valor_atual + 1; // Exemplo: incrementa em 1 para cada conclusão
+  const novoValorAtual = goal.valorAtual + 1; // Exemplo: incrementa em 1 para cada conclusão
   const novoPercentualConcluido = Math.min(
     100,
-    (novoValorAtual / goal.valor_objetivo) * 100
+    (novoValorAtual / goal.valorObjetivo) * 100
   );
 
   const [updatedGoal] = await db
     .update(metas)
     .set({
-      valor_atual: novoValorAtual,
-      percentual_concluido: novoPercentualConcluido,
-      data_conclusao: novoPercentualConcluido === 100 ? new Date().toISOString() : undefined,
-      updatedAt: new Date().toISOString(),
+      valorAtual: novoValorAtual,
+      percentualConcluido: novoPercentualConcluido,
+      dataConclusao: novoPercentualConcluido === 100 ? Math.floor(Date.now() / 1000) : undefined,
+      updatedAt: Math.floor(Date.now() / 1000),
     })
     .where(eq(metas.id, goalId))
     .returning();
@@ -45,12 +45,12 @@ export async function createGoalCompletion({
   const [progresso] = await db
     .insert(progressoMetas)
     .values({
-      id_meta: goalId,
-      valor_anterior: goal.valor_atual,
-      valor_atual: novoValorAtual,
+      idMeta: goalId,
+      valorAnterior: goal.valorAtual,
+      valorAtual: novoValorAtual,
       incremento: 1,
-      percentual_anterior: goal.percentual_concluido,
-      percentual_atual: novoPercentualConcluido,
+      percentualAnterior: goal.percentualConcluido,
+      percentualAtual: novoPercentualConcluido,
       observacoes: "Conclusão de meta registrada",
     })
     .returning();
@@ -61,7 +61,7 @@ export async function createGoalCompletion({
 
   return {
     id: progresso.id,
-    goalId: progresso.id_meta,
+    goalId: progresso.idMeta,
     createdAt: new Date(progresso.dataRegistro),
   };
 }
