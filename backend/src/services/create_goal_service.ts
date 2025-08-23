@@ -15,7 +15,8 @@ export async function createGoal({
 }: CreateGoalRequest): Promise<CreateGoalResponse> {
   const result = await db
     .insert(metas)
-    .values({       title: title,
+    .values({
+      title: title,
       valorObjetivo: desiredWeeklyFrequency, // Usando desiredWeeklyFrequency como valorObjetivo inicial
       tipoMeta: "quilometragem", // Exemplo: definir um tipo de meta padrão
       periodo: "semanal", // Exemplo: definir um período padrão

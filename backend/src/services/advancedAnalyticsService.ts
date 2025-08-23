@@ -208,8 +208,8 @@ export class AdvancedAnalyticsService {
       .where(
         and(
           vehicleFilter,
-          gte(jornadas.dataInicio, startDate.getTime()),
-          lte(jornadas.dataInicio, endDate.getTime()),
+          gte(jornadas.dataInicio, startDate),
+          lte(jornadas.dataInicio, endDate),
           isNull(jornadas.deletedAt)
         )
       )
@@ -230,8 +230,8 @@ export class AdvancedAnalyticsService {
       .where(
         and(
           vehicleFilter,
-          gte(jornadas.dataInicio, startDate.getTime()),
-          lte(jornadas.dataInicio, endDate.getTime()),
+          gte(jornadas.dataInicio, startDate),
+          lte(jornadas.dataInicio, endDate),
           isNull(jornadas.deletedAt)
         )
       )
@@ -540,7 +540,7 @@ export class AdvancedAnalyticsService {
           and(
             eq(despesas.idVeiculo, journey.idVeiculo),
             gte(despesas.dataDespesa, journey.dataInicio),
-            lte(despesas.dataDespesa, journey.dataInicio + (journey.kmTotal || 0) * 1000 * 60 * 60 / 60), // Estimativa de duração
+            lte(despesas.dataDespesa, new Date(journey.dataInicio.getTime() + (journey.kmTotal || 0) * 1000 * 60 * 60 / 60)), // Estimativa de duração
             isNull(despesas.deletedAt)
           )
         );

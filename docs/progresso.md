@@ -1,51 +1,51 @@
 # Progresso do GiroPro
 
 **Última sessão:**
-- Data: 23/08/2025 12:45
-- Sessão: #50
+- Data: 23/08/2025 00:46
+- Sessão: #51
 
 ## O que foi feito nesta sessão
-- **Preparação e Entendimento do Projeto**:
-  - Clonagem do repositório GiroPro do GitHub.
-  - Leitura do arquivo `docs/progresso.md` para entender o estado atual do projeto e identificar as próximas tarefas.
-  - Criação do arquivo `todo.md` para rastreamento de tarefas.
-- **Configuração e Execução do Ambiente Local**:
-  - Instalação das dependências do backend (`npm install`) no diretório `backend/`.
-  - Copiado o arquivo `giropro.env` para `.env` no diretório `backend/`.
-  - Tentativas de compilação do backend (`npm run build`) que resultaram em múltiplos erros de TypeScript.
+- **Configuração Inicial do Ambiente**:
+  - Clonagem do repositório GiroPro do GitHub
+  - Leitura e análise do arquivo `docs/progresso.md` para entender o estado atual do projeto
+  - Criação do arquivo `todo.md` para rastreamento de tarefas da sessão
+- **Configuração do Backend**:
+  - Instalação das dependências do backend (`npm install`) no diretório `backend/`
+  - Configuração do arquivo de ambiente (`.env`) copiando de `giropro.env`
+  - Instalação do SQLite3 para análise do banco de dados
 - **Correções de Erros TypeScript**:
-  - Corrigida inconsistência de nomenclatura entre `titulo` e `title` em:
-    - `src/services/create_goal_service.ts`
-    - `src/services/get_week_pending_goals_service.ts` 
-    - `src/services/get_week_summary_service.ts`
-  - Corrigidos problemas de tipos de data no `src/services/advancedAnalyticsService.ts`:
-    - Removido uso de `.getTime()` em comparações de data com campos timestamp do Drizzle ORM
-    - Adicionada definição da constante `FUEL_PRICES` que estava faltando
-    - Corrigida importação duplicada do `db`
+  - Corrigido problema de formatação no arquivo `src/services/create_goal_service.ts` (espaçamento na linha do title)
+  - Corrigidos problemas de tipagem de data no `src/services/advancedAnalyticsService.ts`:
+    - Removido uso de `.getTime()` em comparações de data com campos timestamp do Drizzle ORM (linhas 233-234)
+    - Corrigida operação inválida de soma `Date + number` na linha 543 usando `new Date(journey.dataInicio.getTime() + ...)`
+- **Análise de Erros de Compilação**:
+  - Executadas múltiplas tentativas de compilação (`npm run build`) para mapear os erros restantes
+  - Redução de 86 erros para 81 erros de TypeScript após as correções aplicadas
 
 ## Problemas encontrados / observações
-- **Erros de Compilação TypeScript Persistem**: Ainda existem 89 erros de compilação em 11 arquivos, indicando problemas mais profundos de tipagem e compatibilidade com o Drizzle ORM.
-- **Inconsistência de Schema**: O schema define o campo como `title` mas alguns serviços ainda tentam usar `titulo`, sugerindo uma migração incompleta.
-- **Problemas de Tipagem de Data**: O Drizzle ORM com SQLite está esperando objetos `Date` mas o código estava tentando usar `.getTime()` (números).
-- **Arquivos Problemáticos Identificados**: 
+- **Erros de Compilação TypeScript Persistem**: Ainda existem 81 erros de compilação em 11 arquivos, indicando problemas profundos de tipagem e compatibilidade com o Drizzle ORM
+- **Problema Crítico com Campo 'title'**: O erro em `create_goal_service.ts` indica que o campo `title` não está sendo reconhecido pelo TypeScript, mesmo existindo no schema, sugerindo problema de sincronização entre schema e tipos gerados
+- **Problemas de Tipagem de Data Generalizados**: Múltiplos arquivos ainda apresentam problemas com comparações de data usando `.getTime()` vs objetos Date diretos
+- **Arquivos Mais Problemáticos Identificados**:
+  - `weeklyMonthlyReportsController.ts` (31 erros) - maior concentração de problemas
+  - `multiVehicleController.ts` (11 erros)
   - `dashboardController.ts` (10 erros)
-  - `weeklyMonthlyReportsController.ts` (31 erros)
-  - `advancedAnalyticsService.ts` (14 erros restantes)
-  - Múltiplos controllers com 2-11 erros cada
-- **Operação de Data Inválida**: Ainda há uma operação matemática inválida tentando somar `Date + number` no `advancedAnalyticsService.ts`
+  - `reportsController.ts` (7 erros)
+  - `expensesController.ts` (6 erros)
+  - `advancedAnalyticsService.ts` (6 erros restantes)
+- **Banco de Dados**: Arquivo `giropro.db` existe e parece funcional, mas não foi possível validar completamente a estrutura
 
 ## Próximas tarefas (para a próxima sessão)
 - **Correção Urgente dos Erros TypeScript Restantes**:
-  - Corrigir a operação de data inválida em `advancedAnalyticsService.ts` linha 543
-  - Resolver os 31 erros em `weeklyMonthlyReportsController.ts`
-  - Corrigir os 10 erros em `dashboardController.ts`
-  - Padronizar todos os controllers restantes
-- **Estratégia de Correção Rápida**:
-  - Considerar desabilitar temporariamente arquivos mais problemáticos (`.disabled`) para conseguir compilar o básico
-  - Focar primeiro nos controllers essenciais para funcionalidade mínima
-  - Implementar correções incrementais arquivo por arquivo
+  - Investigar e corrigir o problema de reconhecimento do campo `title` na tabela `metas`
+  - Corrigir todos os problemas de tipagem de data usando objetos Date ao invés de `.getTime()`
+  - Focar nos arquivos com maior número de erros: `weeklyMonthlyReportsController.ts`, `multiVehicleController.ts`, `dashboardController.ts`
+- **Estratégia de Correção Sistemática**:
+  - Verificar se os tipos do Drizzle ORM estão sendo gerados corretamente
+  - Considerar regenerar os tipos do schema se necessário
+  - Implementar correções arquivo por arquivo, priorizando por impacto
 - **Execução do Backend**:
-  - Após resolver erros críticos, tentar iniciar o backend (`npm run dev` ou `npm start`)
+  - Após resolver erros críticos de compilação, tentar iniciar o backend (`npm run dev` ou `npm start`)
   - Testar conexão com banco de dados SQLite
   - Validar rotas básicas da API
 - **Configuração do Frontend**:
@@ -54,7 +54,7 @@
   - Testar integração frontend-backend
 - **Validação do Sistema**:
   - Testar funcionalidades básicas end-to-end
-  - Documentar funcionalidades que estão operacionais vs quebradas
+  - Documentar funcionalidades operacionais vs quebradas
 
 ## Documentos Criados/Modificados Nesta Sessão
 - **Correções aplicadas no código**:
