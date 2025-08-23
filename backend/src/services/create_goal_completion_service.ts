@@ -31,8 +31,8 @@ export async function createGoalCompletion({
     .set({
       valorAtual: novoValorAtual,
       percentualConcluido: novoPercentualConcluido,
-      dataConclusao: novoPercentualConcluido === 100 ? Math.floor(Date.now() / 1000) : undefined,
-      updatedAt: Math.floor(Date.now() / 1000),
+      dataConclusao: novoPercentualConcluido === 100 ? sql`${Math.floor(Date.now() / 1000)}` : undefined,
+      updatedAt: sql`${Math.floor(Date.now() / 1000)}`,
     })
     .where(eq(metas.id, goalId))
     .returning();
@@ -62,7 +62,7 @@ export async function createGoalCompletion({
   return {
     id: progresso.id,
     goalId: progresso.idMeta,
-    createdAt: new Date(progresso.dataRegistro),
+    createdAt: new Date(progresso.dataRegistro * 1000), // Converter timestamp Unix para Date
   };
 }
 
