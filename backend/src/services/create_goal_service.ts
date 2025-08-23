@@ -15,7 +15,7 @@ export async function createGoal({
 }: CreateGoalRequest): Promise<CreateGoalResponse> {
   const result = await db
     .insert(metas)
-    .values({       titulo: title,
+    .values({       title: title,
       valorObjetivo: desiredWeeklyFrequency, // Usando desiredWeeklyFrequency como valorObjetivo inicial
       tipoMeta: "quilometragem", // Exemplo: definir um tipo de meta padrão
       periodo: "semanal", // Exemplo: definir um período padrão
@@ -29,7 +29,7 @@ export async function createGoal({
 
   return {
     id: goal.id,
-    title: goal.titulo,
+    title: goal.title,
     desiredWeeklyFrequency: goal.valorObjetivo, // Retornar valorObjetivo como desiredWeeklyFrequency
     createdAt: new Date(Number(goal.createdAt) * 1000), // Converter timestamp Unix para Date com Number()
   };

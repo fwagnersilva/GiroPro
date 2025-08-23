@@ -25,7 +25,7 @@ export async function getWeekSummary({ weekStartsAt, }: WeekDateQuery = {}): Pro
   const goalsWithCompletions = await db
     .select({
       id: metas.id,
-      title: metas.titulo,
+      title: metas.title,
       desiredWeeklyFrequency: metas.valorObjetivo,
       completionCount: count(progressoMetas.id),
     })
@@ -34,14 +34,14 @@ export async function getWeekSummary({ weekStartsAt, }: WeekDateQuery = {}): Pro
       progressoMetas,
       sql`${progressoMetas.idMeta} = ${metas.id} AND ${progressoMetas.dataRegistro} >= ${startOfWeek.getTime()} AND ${progressoMetas.dataRegistro} <= ${endOfWeek.getTime()}`
     )
-    .groupBy(metas.id, metas.titulo, metas.valorObjetivo);
+    .groupBy(metas.id, metas.title, metas.valorObjetivo);
 
   // Buscar completações por dia para o goalsPerDay
   const completionsByDay = await db
     .select({
       goalId: progressoMetas.idMeta,
       day: sql<string>`DATE(${progressoMetas.dataRegistro})`.as("day"),
-      goalTitle: metas.titulo,
+      goalTitle: metas.title,
       desiredWeeklyFrequency: metas.valorObjetivo,
     })
     .from(progressoMetas)

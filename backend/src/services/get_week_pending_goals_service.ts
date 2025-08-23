@@ -23,7 +23,7 @@ export async function getWeekPendingGoals({
   const pendingGoals = await db
     .select({
       id: metas.id,
-      title: metas.titulo,
+      title: metas.title,
       desiredWeeklyFrequency: metas.valorObjetivo,
       currentProgress: metas.valorAtual,
     })

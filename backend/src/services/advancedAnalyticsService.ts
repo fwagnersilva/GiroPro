@@ -1,6 +1,15 @@
-import { db } from '../db';
+import { db } from '../db/connection';
 import { veiculos, jornadas, abastecimentos, despesas } from '../db/schema';
 import { eq, and, sql, desc, asc, isNull, gte, lte, sum, avg, count } from 'drizzle-orm';
+
+// Preços médios de combustível (em centavos)
+const FUEL_PRICES = {
+  gasolina: 550, // R$ 5,50
+  etanol: 400,   // R$ 4,00
+  diesel: 520,   // R$ 5,20
+  gnv: 350,      // R$ 3,50
+  flex: 550      // R$ 5,50 (padrão gasolina)
+};
 
 export class AdvancedAnalyticsService {
   /**
@@ -458,8 +467,8 @@ export class AdvancedAnalyticsService {
       .where(
         and(
           vehicleFilter,
-          gte(despesas.dataDespesa, thirtyDaysAgo.getTime()),
-          lte(despesas.dataDespesa, today.getTime()),
+          gte(despesas.dataDespesa, thirtyDaysAgo),
+          lte(despesas.dataDespesa, today),
           isNull(despesas.deletedAt)
         )
       )
@@ -494,8 +503,8 @@ export class AdvancedAnalyticsService {
     let journeyFilter = and(
       eq(jornadas.idUsuario, userId),
       isNull(jornadas.deletedAt),
-      gte(jornadas.dataInicio, thirtyDaysAgo.getTime()),
-      lte(jornadas.dataInicio, today.getTime()),
+      gte(jornadas.dataInicio, thirtyDaysAgo),
+      lte(jornadas.dataInicio, today),
     );
 
     if (vehicleId) {
@@ -569,8 +578,8 @@ export class AdvancedAnalyticsService {
     let journeyFilter = and(
       eq(jornadas.idUsuario, userId),
       isNull(jornadas.deletedAt),
-      gte(jornadas.dataInicio, thirtyDaysAgo.getTime()),
-      lte(jornadas.dataInicio, today.getTime()),
+      gte(jornadas.dataInicio, thirtyDaysAgo),
+      lte(jornadas.dataInicio, today),
     );
 
     if (vehicleId) {
