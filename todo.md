@@ -1,49 +1,44 @@
-# TODO - Análise e Correção do GiroPro
+# Próximas Tarefas - GiroPro
 
-## Fase Atual: Configuração e execução do ambiente local
+## PRIORIDADE CRÍTICA - Reabilitação e Correção dos Arquivos Desabilitados
+- [ ] Corrigir e reabilitar o `expensesController.ts`: resolver problemas de mapeamento de dados entre formatos de API.
+- [ ] Corrigir e reabilitar o `insightsController.ts`: implementar método `generateInsights` no `AdvancedAnalyticsService`.
+- [ ] Corrigir e reabilitar o `multiVehicleController.ts`: resolver problemas de conversão de timestamp em queries Drizzle.
 
-### ✅ Concluído
-- [x] Clonagem do repositório GiroPro
-- [x] Leitura da documentação (progresso.md, principiosArquiteturais.md, 01SetupInicial.md)
+## Correção dos Erros TypeScript Remanescentes no DashboardController
+- [ ] Resolver problemas de cache e propriedades `cacheInfo` não definidas.
+- [ ] Corrigir funções que não retornam valores em todos os caminhos de código.
+- [ ] Resolver problemas de acesso a propriedades privadas (`TTL_CONFIG`).
+
+## Padronização e Consistência de Dados
+- [ ] Criar camada de mapeamento consistente entre formatos de API e estrutura do banco.
+- [ ] Resolver inconsistências de nomenclatura (snake_case vs camelCase) de forma sistemática.
+- [ ] Implementar conversões de timestamp padronizadas para todo o projeto.
+
+## Teste e Validação do Backend
 - [x] Instalação das dependências do backend (npm install)
-- [x] Configuração do arquivo .env (copiado de giropro.env)
-- [x] Correção inicial do erro de sintaxe no gamificationController.ts (falta de fechamento de chaves)
-- [x] Correção do create_goal_service.ts (conversão de timestamp com Number())
-- [x] Correção do create_goal_completion_service.ts (conversão de timestamp com Number())
-- [x] Adição de tipos ausentes no expensesController.ts (CreateExpenseRequest, UpdateExpenseRequest)
-- [x] Adição de métodos ausentes no ExpenseService (getExpenseStats, getExpensesByCategory)
-- [x] Correção do goalsController.ts (remoção de propriedades success/error inexistentes)
+- [ ] Garantir que o backend compile completamente sem erros TypeScript (`npm run build` bem-sucedido).
+- [ ] Iniciar o backend com sucesso (`npm run dev`) e verificar se não há erros de runtime.
+- [ ] Testar endpoints básicos da API para verificar funcionalidade das correções implementadas.
 
-### 🔄 Em Progresso
-- [ ] Correção dos 186 erros de compilação TypeScript restantes
-- [ ] Análise e correção dos problemas de nomenclatura (snake_case vs camelCase)
-- [ ] Resolução de problemas de tipagem do Drizzle ORM
+## Configuração e Teste do Frontend
+- [ ] Configurar e testar o frontend React Native com Expo (após backend funcional).
+- [ ] Validar comunicação entre frontend e backend.
 
-### 📋 Próximas Tarefas
-- [ ] Finalizar correção de todos os erros TypeScript
-- [ ] Executar o backend com sucesso (npm run dev)
-- [ ] Configurar e executar o frontend
-- [ ] Análise detalhada do banco de dados SQLite
-- [ ] Identificação de melhorias no banco de dados
-- [ ] Validação de funcionalidades
-- [ ] Documentação do progresso
+## Análise Avançada do Banco de Dados
+- [ ] Usar Drizzle Studio (`npm run db:studio`) para análise visual do banco de dados.
+- [ ] Revisar performance de queries complexas e identificar necessidade de novos índices.
 
-### 🐛 Problemas Identificados
-- **186 erros de compilação TypeScript** distribuídos em 16 arquivos
-- **Inconsistências de nomenclatura**: Mistura entre snake_case e camelCase
-- **Problemas de tipagem Drizzle ORM**: Campos não reconhecidos
-- **4 vulnerabilidades moderadas** no npm audit
-- **Dependências depreciadas** com warnings
-
-### 📊 Estatísticas dos Erros
-- gamificationController.ts: 69 erros
-- weeklyMonthlyReportsController.ts: 31 erros  
-- advancedAnalyticsService.ts: 18 erros
-- dashboardController.ts: 14 erros
-- multiVehicleController.ts: 11 erros
-- expensesController.ts: 9 erros
-- goalsController.ts: 7 erros
-- create_goal_completion_service.ts: 7 erros
-- reportsController.ts: 7 erros
-- Outros arquivos: 13 erros
+## Erros de Compilação TypeScript (Identificados)
+- `src/controllers/dashboardController.ts`: 10 erros
+- `src/controllers/expensesController.ts`: 6 erros
+- `src/controllers/notificationsController.ts`: 3 erros
+- `src/controllers/reportsController.ts`: 7 erros
+- `src/controllers/weeklyMonthlyReportsController.ts`: 31 erros
+- `src/routes/analytics.ts`: 3 erros
+- `src/routes/dashboard.ts`: 1 erro
+- `src/routes/insights.ts`: 1 erro
+- `src/routes/multi-vehicle.ts`: 1 erro
+- `src/services/advancedAnalyticsService.ts`: 18 erros
+- `src/services/create_goal_service.ts`: 1 erro
 
