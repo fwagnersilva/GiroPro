@@ -103,7 +103,7 @@ export class MultiVehicleController {
             and(
               eq(jornadas.idVeiculo, vehicle.id),
               eq(jornadas.idUsuario, req.user?.id),
-              gte(jornadas.dataInicio, thirtyDaysAgo.toISOString()),
+              gte(jornadas.dataInicio, new Date(thirtyDaysAgo.getTime())),
               isNull(jornadas.deletedAt)
             )
           );
@@ -121,7 +121,7 @@ export class MultiVehicleController {
             and(
               eq(abastecimentos.idVeiculo, vehicle.id),
               eq(abastecimentos.idUsuario, req.user?.id),
-              gte(abastecimentos.dataAbastecimento, thirtyDaysAgo.getTime()),
+              gte(abastecimentos.dataAbastecimento, new Date(thirtyDaysAgo.getTime())),
               isNull(abastecimentos.deletedAt)
             )
           );
@@ -436,14 +436,14 @@ export class MultiVehicleController {
           data: jornadas.dataInicio,
           faturamento: jornadas.ganhoBruto,
           km: jornadas.kmTotal,
-          tempo: jornadas.tempo_total,
+          tempo: jornadas.tempoTotal,
         })
         .from(jornadas)
         .where(
           and(
             eq(jornadas.idVeiculo, idVeiculo),
             eq(jornadas.idUsuario, req.user?.id),
-            gte(jornadas.dataInicio, thirtyDaysAgo.toISOString()),
+            gte(jornadas.dataInicio, new Date(thirtyDaysAgo.getTime())),
             isNull(jornadas.deletedAt)
           )
         )
@@ -461,7 +461,7 @@ export class MultiVehicleController {
           and(
             eq(abastecimentos.idVeiculo, idVeiculo),
             eq(abastecimentos.idUsuario, req.user?.id),
-            gte(abastecimentos.dataAbastecimento, thirtyDaysAgo.getTime()),
+            gte(abastecimentos.dataAbastecimento, new Date(thirtyDaysAgo.getTime())),
             isNull(abastecimentos.deletedAt)
           )
         )
