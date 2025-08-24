@@ -38,3 +38,25 @@
 - [ ] Adicionar comentários claros no código
 - [ ] Entregar os resultados ao usuário
 
+
+
+- [ ] Finalizar a correção dos erros TypeScript restantes no `ReportsService.ts`.
+- [ ] Garantir que todos os métodos estejam corretamente declarados e implementados.
+- [ ] Realizar uma nova compilação completa do backend para verificar a ausência de erros TypeScript.
+- [ ] Testar novamente as funcionalidades de relatórios e dashboard após as correções.
+- [ ] Revisar e otimizar o código onde as correções foram aplicadas, adicionando comentários explicativos.
+- [ ] Implementar métodos faltantes no `AdvancedAnalyticsController`: `getProductivityAnalysis`, `getTemporalPatterns`, `getVehicleComparison`
+- [ ] Corrigir propriedades inexistentes nos controllers (idVeiculo, dataFim, evolucao_diaria)
+- [ ] Resolver erro de propriedade 'title' no `create_goal_service.ts`
+- [ ] Corrigir tipos de argumentos em validações Zod
+- [ ] Teste de todas as rotas da API
+- [ ] Validação da conexão com banco de dados SQLite
+- [ ] Teste de funcionalidades CRUD básicas
+- [ ] Instalação das dependências do frontend React Native/Expo
+- [ ] Configuração e teste da comunicação frontend-backend
+- [ ] Validação da interface de usuário
+- [ ] Criação de usuário via API
+- [ ] Login e autenticação
+- [ ] Operações básicas em todas as entidades
+- [ ] Geração de relatórios e dashboard
+

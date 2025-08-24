@@ -988,6 +988,8 @@ class DashboardAnalyzer {
         ganhoBruto: jornadas.ganhoBruto,
         kmTotal: jornadas.kmTotal,
         dataInicio: jornadas.dataInicio,
+        dataFim: jornadas.dataFim,
+        idVeiculo: jornadas.idVeiculo,
       })
       .from(jornadas)
       .where(whereConditions)

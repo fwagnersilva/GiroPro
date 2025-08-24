@@ -454,6 +454,287 @@ export class AdvancedAnalyticsController {
       }
     };
   }
+
+  /**
+   * Análise de produtividade - NOVO MÉTODO
+   */
+  static async getProductivityAnalysis(req: AuthenticatedRequest, res: Response) {
+    try {
+      if (!req.user?.id) {
+        throw new UnauthorizedError('Usuário não autenticado');
+      }
+
+      const validation = analyticsQuerySchema.safeParse(req.query);
+      if (!validation.success) {
+        throw new ValidationError('Parâmetros inválidos', validation.error.errors);
+      }
+
+      const { dataInicio, dataFim, idVeiculo, periodo, timezone } = validation.data;
+      const { startDate, endDate } = this.calculatePeriod(periodo, dataInicio, dataFim, timezone);
+
+      // Buscar dados de produtividade
+      const vehicleConditions = [
+        eq(veiculos.idUsuario, req.user.id),
+        isNull(veiculos.deletedAt)
+      ];
+
+      if (idVeiculo) {
+        vehicleConditions.push(eq(veiculos.id, idVeiculo));
+      }
+
+      const productivityData = await db
+        .select({
+          vehicleId: veiculos.id,
+          marca: veiculos.marca,
+          modelo: veiculos.modelo,
+          totalJornadas: count(jornadas.id),
+          totalKm: sum(jornadas.kmTotal),
+          totalFaturamento: sum(jornadas.ganhoBruto),
+          mediaKmPorJornada: avg(jornadas.kmTotal),
+          mediaFaturamentoPorJornada: avg(jornadas.ganhoBruto)
+        })
+        .from(veiculos)
+        .leftJoin(jornadas, and(
+          eq(jornadas.idVeiculo, veiculos.id),
+          gte(jornadas.dataInicio, startDate),
+          lte(jornadas.dataInicio, endDate),
+          isNull(jornadas.deletedAt)
+        ))
+        .where(and(...vehicleConditions))
+        .groupBy(veiculos.id);
+
+      return res.json({
+        success: true,
+        data: {
+          produtividade: productivityData,
+          periodo: {
+            dataInicio: startDate.toISOString(),
+            dataFim: endDate.toISOString(),
+            descricao: this.getPeriodDescription(startDate, endDate)
+          }
+        }
+      });
+
+    } catch (error: any) {
+      console.error('Erro ao gerar análise de produtividade:', error);
+      
+      if (error instanceof ValidationError || error instanceof UnauthorizedError || error instanceof NotFoundError) {
+        throw error;
+      }
+      
+      throw new Error('Erro interno do servidor ao processar análise de produtividade');
+    }
+  }
+
+  /**
+   * Análise de padrões temporais - NOVO MÉTODO
+   */
+  static async getTemporalPatterns(req: AuthenticatedRequest, res: Response) {
+    try {
+      if (!req.user?.id) {
+        throw new UnauthorizedError('Usuário não autenticado');
+      }
+
+      const validation = analyticsQuerySchema.safeParse(req.query);
+      if (!validation.success) {
+        throw new ValidationError('Parâmetros inválidos', validation.error.errors);
+      }
+
+      const { dataInicio, dataFim, idVeiculo, periodo, timezone } = validation.data;
+      const { startDate, endDate } = this.calculatePeriod(periodo, dataInicio, dataFim, timezone);
+
+      // Buscar padrões por dia da semana
+      const journeyConditions = [
+        eq(jornadas.idUsuario, req.user.id),
+        gte(jornadas.dataInicio, startDate),
+        lte(jornadas.dataInicio, endDate),
+        isNull(jornadas.deletedAt)
+      ];
+
+      if (idVeiculo) {
+        journeyConditions.push(eq(jornadas.idVeiculo, idVeiculo));
+      }
+
+      const temporalData = await db
+        .select({
+          dataInicio: jornadas.dataInicio,
+          kmTotal: jornadas.kmTotal,
+          ganhoBruto: jornadas.ganhoBruto,
+          duracaoMinutos: jornadas.duracaoMinutos
+        })
+        .from(jornadas)
+        .where(and(...journeyConditions));
+
+      // Agrupar por dia da semana
+      const dayPatterns = Array.from({ length: 7 }, (_, i) => ({
+        diaSemana: this.getDayOfWeekName(i),
+        totalJornadas: 0,
+        totalKm: 0,
+        totalFaturamento: 0,
+        mediaDuracao: 0
+      }));
+
+      temporalData.forEach(journey => {
+        const dayOfWeek = new Date(journey.dataInicio).getDay();
+        dayPatterns[dayOfWeek].totalJornadas++;
+        dayPatterns[dayOfWeek].totalKm += Number(journey.kmTotal) || 0;
+        dayPatterns[dayOfWeek].totalFaturamento += Number(journey.ganhoBruto) || 0;
+        dayPatterns[dayOfWeek].mediaDuracao += Number(journey.duracaoMinutos) || 0;
+      });
+
+      // Calcular médias
+      dayPatterns.forEach(pattern => {
+        if (pattern.totalJornadas > 0) {
+          pattern.mediaDuracao = Math.round(pattern.mediaDuracao / pattern.totalJornadas);
+        }
+      });
+
+      return res.json({
+        success: true,
+        data: {
+          padroesDiarios: dayPatterns,
+          periodo: {
+            dataInicio: startDate.toISOString(),
+            dataFim: endDate.toISOString(),
+            descricao: this.getPeriodDescription(startDate, endDate)
+          }
+        }
+      });
+
+    } catch (error: any) {
+      console.error('Erro ao gerar análise de padrões temporais:', error);
+      
+      if (error instanceof ValidationError || error instanceof UnauthorizedError || error instanceof NotFoundError) {
+        throw error;
+      }
+      
+      throw new Error('Erro interno do servidor ao processar análise de padrões temporais');
+    }
+  }
+
+  /**
+   * Comparação entre veículos - NOVO MÉTODO
+   */
+  static async getVehicleComparison(req: AuthenticatedRequest, res: Response) {
+    try {
+      if (!req.user?.id) {
+        throw new UnauthorizedError('Usuário não autenticado');
+      }
+
+      const validation = vehicleIdsSchema.safeParse(req.body);
+      if (!validation.success) {
+        throw new ValidationError('IDs de veículos inválidos', validation.error.errors);
+      }
+
+      const { vehicleIds } = validation.data;
+      const queryValidation = analyticsQuerySchema.safeParse(req.query);
+      if (!queryValidation.success) {
+        throw new ValidationError('Parâmetros de período inválidos', queryValidation.error.errors);
+      }
+
+      const { dataInicio, dataFim, periodo, timezone } = queryValidation.data;
+      const { startDate, endDate } = this.calculatePeriod(periodo, dataInicio, dataFim, timezone);
+
+      // Validar acesso aos veículos
+      for (const vehicleId of vehicleIds) {
+        if (!(await this.validateVehicleAccess(req.user.id, vehicleId))) {
+          throw new NotFoundError(`Veículo ${vehicleId} não encontrado ou sem acesso`);
+        }
+      }
+
+      const comparisonData = [];
+
+      for (const vehicleId of vehicleIds) {
+        // Buscar dados do veículo
+        const [vehicle] = await db
+          .select({
+            id: veiculos.id,
+            marca: veiculos.marca,
+            modelo: veiculos.modelo,
+            ano: veiculos.ano,
+            placa: veiculos.placa
+          })
+          .from(veiculos)
+          .where(eq(veiculos.id, vehicleId))
+          .limit(1);
+
+        // Buscar métricas do período
+        const [journeyMetrics] = await db
+          .select({
+            totalJornadas: count(jornadas.id),
+            totalKm: sum(jornadas.kmTotal),
+            totalFaturamento: sum(jornadas.ganhoBruto),
+            mediaKmPorJornada: avg(jornadas.kmTotal)
+          })
+          .from(jornadas)
+          .where(and(
+            eq(jornadas.idVeiculo, vehicleId),
+            eq(jornadas.idUsuario, req.user.id),
+            gte(jornadas.dataInicio, startDate),
+            lte(jornadas.dataInicio, endDate),
+            isNull(jornadas.deletedAt)
+          ));
+
+        const [fuelMetrics] = await db
+          .select({
+            totalAbastecimentos: count(abastecimentos.id),
+            totalLitros: sum(abastecimentos.quantidadeLitros),
+            totalGastoCombustivel: sum(abastecimentos.valorTotal)
+          })
+          .from(abastecimentos)
+          .where(and(
+            eq(abastecimentos.idVeiculo, vehicleId),
+            eq(abastecimentos.idUsuario, req.user.id),
+            gte(abastecimentos.dataAbastecimento, startDate),
+            lte(abastecimentos.dataAbastecimento, endDate),
+            isNull(abastecimentos.deletedAt)
+          ));
+
+        const totalKm = Number(journeyMetrics?.totalKm) || 0;
+        const totalLitros = Number(fuelMetrics?.totalLitros) || 0;
+        const totalFaturamento = Number(journeyMetrics?.totalFaturamento) || 0;
+        const totalGastoCombustivel = Number(fuelMetrics?.totalGastoCombustivel) || 0;
+
+        comparisonData.push({
+          veiculo: vehicle,
+          metricas: {
+            totalJornadas: Number(journeyMetrics?.totalJornadas) || 0,
+            totalKm: totalKm,
+            totalFaturamento: totalFaturamento,
+            totalAbastecimentos: Number(fuelMetrics?.totalAbastecimentos) || 0,
+            totalLitros: totalLitros,
+            totalGastoCombustivel: totalGastoCombustivel,
+            consumoMedio: totalKm > 0 && totalLitros > 0 ? totalKm / totalLitros : 0,
+            custoMedioPorKm: totalKm > 0 ? totalGastoCombustivel / totalKm : 0,
+            lucroLiquido: totalFaturamento - totalGastoCombustivel,
+            roiCombustivel: totalGastoCombustivel > 0 ? 
+              ((totalFaturamento - totalGastoCombustivel) / totalGastoCombustivel) * 100 : 0
+          }
+        });
+      }
+
+      return res.json({
+        success: true,
+        data: {
+          comparacao: comparisonData,
+          periodo: {
+            dataInicio: startDate.toISOString(),
+            dataFim: endDate.toISOString(),
+            descricao: this.getPeriodDescription(startDate, endDate)
+          }
+        }
+      });
+
+    } catch (error: any) {
+      console.error('Erro ao gerar comparação de veículos:', error);
+      
+      if (error instanceof ValidationError || error instanceof UnauthorizedError || error instanceof NotFoundError) {
+        throw error;
+      }
+      
+      throw new Error('Erro interno do servidor ao processar comparação de veículos');
+    }
+  }
 }
 
 

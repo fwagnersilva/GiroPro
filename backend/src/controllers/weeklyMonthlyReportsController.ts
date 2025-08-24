@@ -244,8 +244,8 @@ export class WeeklyMonthlyReportsController {
         alertas: alerts,
         metas: goals,
         resumo_visual: {
-          grafico_evolucao: currentMonth.evolucao_diaria,
-          distribuicao_despesas: currentMonth.detalhamento_despesas,
+          grafico_evolucao: currentMonth.graficos?.dailyRevenue || null,
+          distribuicao_despesas: currentMonth.detalhamento_despesas || currentMonth.graficos?.expenseCategories || null,
           top_jornadas: await ReportsService.getTopJourneys(userId, params.idVeiculo, 5)
         }
       };
@@ -422,6 +422,7 @@ export class WeeklyMonthlyReportsController {
       throw new AppError(
         'Parâmetros inválidos',
         400,
+        'VALIDATION_ERROR',
         result.error.errors.map(err => ({
           field: err.path.join('.'),
           message: err.message

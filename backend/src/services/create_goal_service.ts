@@ -20,8 +20,8 @@ export async function createGoal({
       valorObjetivo: desiredWeeklyFrequency, // Usando desiredWeeklyFrequency como valorObjetivo inicial
       tipoMeta: "quilometragem", // Exemplo: definir um tipo de meta padrão
       periodo: "semanal", // Exemplo: definir um período padrão
-      dataInicio: Math.floor(Date.now() / 1000),
-      dataFim: Math.floor(Date.now() / 1000) + (7 * 24 * 60 * 60), // Uma semana a partir de agora
+      dataInicio: new Date(),
+      dataFim: new Date(Date.now() + (7 * 24 * 60 * 60 * 1000)), // Uma semana a partir de agora
       idUsuario: "some-user-id", // TODO: Substituir por ID de usuário real
     })
     .returning();
@@ -32,7 +32,7 @@ export async function createGoal({
     id: goal.id,
     title: goal.title,
     desiredWeeklyFrequency: goal.valorObjetivo, // Retornar valorObjetivo como desiredWeeklyFrequency
-    createdAt: new Date(Number(goal.createdAt) * 1000), // Converter timestamp Unix para Date com Number()
+    createdAt: new Date(goal.createdAt), // Converter timestamp para Date
   };
 }
 
