@@ -121,7 +121,7 @@ export class MultiVehicleController {
             and(
               eq(abastecimentos.idVeiculo, vehicle.id),
               eq(abastecimentos.idUsuario, req.user?.id),
-              gte(abastecimentos.dataAbastecimento, thirtyDaysAgo.toISOString()),
+              gte(abastecimentos.dataAbastecimento, thirtyDaysAgo.getTime()),
               isNull(abastecimentos.deletedAt)
             )
           );
@@ -461,7 +461,7 @@ export class MultiVehicleController {
           and(
             eq(abastecimentos.idVeiculo, idVeiculo),
             eq(abastecimentos.idUsuario, req.user?.id),
-            gte(abastecimentos.dataAbastecimento, thirtyDaysAgo.toISOString()),
+            gte(abastecimentos.dataAbastecimento, thirtyDaysAgo.getTime()),
             isNull(abastecimentos.deletedAt)
           )
         )
@@ -471,7 +471,7 @@ export class MultiVehicleController {
       const dailyUsage: { [key: string]: DailyUsageData } = {};
 
 journeyHistory.forEach(journey => {
-        const date = journey.data.split("T")[0];
+        const date = new Date(journey.data).toISOString().split("T")[0];
         if (!dailyUsage[date]) {
           dailyUsage[date] = {
             data: date,
@@ -491,7 +491,7 @@ journeyHistory.forEach(journey => {
       });
 
 fuelingHistory.forEach(fueling => {
-        const date = fueling.data.split("T")[0];
+        const date = new Date(fueling.data).toISOString().split("T")[0];
         if (!dailyUsage[date]) {
           dailyUsage[date] = {
             data: date,

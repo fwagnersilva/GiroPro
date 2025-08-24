@@ -504,10 +504,17 @@ export const dashboardRoutes: FastifyPluginAsyncZod = async (app) => {
 
       if (includeCache) {
         const cachedData = DashboardCache.get(cacheKey);
-        if (cachedData) {
+        if (cachedData && typeof cachedData === 'object' && cachedData !== null) {
+          const cacheInfo = (cachedData as any).cacheInfo;
           return reply.send({
             success: true,
-            data: { ...cachedData, cacheInfo: { hit: true, generatedAt: new Date(cachedData.cacheInfo.generatedAt).toISOString() } }
+            data: { 
+              ...(cachedData as any), 
+              cacheInfo: { 
+                hit: true, 
+                generatedAt: cacheInfo ? new Date(cacheInfo.generatedAt).toISOString() : new Date().toISOString() 
+              } 
+            }
           });
         }
       }
@@ -603,10 +610,17 @@ export const dashboardRoutes: FastifyPluginAsyncZod = async (app) => {
       const cacheKey = `evolution:${userId}:${periodo}:${granularidade || 'null'}:${idVeiculo || 'null'}`;
 
       const cachedData = DashboardCache.get(cacheKey);
-      if (cachedData) {
+      if (cachedData && typeof cachedData === 'object' && cachedData !== null) {
+        const cacheInfo = (cachedData as any).cacheInfo;
         return reply.send({
           success: true,
-          data: { ...cachedData, cacheInfo: { hit: true, generatedAt: new Date(cachedData.cacheInfo.generatedAt).toISOString() } }
+          data: { 
+            ...(cachedData as any), 
+            cacheInfo: { 
+              hit: true, 
+              generatedAt: cacheInfo ? new Date(cacheInfo.generatedAt).toISOString() : new Date().toISOString() 
+            } 
+          }
         });
       }
 
@@ -717,10 +731,17 @@ export const dashboardRoutes: FastifyPluginAsyncZod = async (app) => {
       const cacheKey = `comparison:${userId}:${periodo}:${dataInicio || 'null'}:${dataFim || 'null'}:${incluirInativos}`;
 
       const cachedData = DashboardCache.get(cacheKey);
-      if (cachedData) {
+      if (cachedData && typeof cachedData === 'object' && cachedData !== null) {
+        const cacheInfo = (cachedData as any).cacheInfo;
         return reply.send({
           success: true,
-          data: { ...cachedData, cacheInfo: { hit: true, generatedAt: new Date(cachedData.cacheInfo.generatedAt).toISOString() } }
+          data: { 
+            ...(cachedData as any), 
+            cacheInfo: { 
+              hit: true, 
+              generatedAt: cacheInfo ? new Date(cacheInfo.generatedAt).toISOString() : new Date().toISOString() 
+            } 
+          }
         });
       }
 
