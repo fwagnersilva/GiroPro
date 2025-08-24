@@ -5,6 +5,9 @@
 - [x] Identificar as tarefas críticas em `docs/progresso.md`
 
 ## Execução e Correção Imediata
+- [x] Instalar dependências do backend
+- [x] Configurar arquivo .env do backend
+- [x] Regenerar tipos do Drizzle ORM
 - [ ] Corrigir erros TypeScript restantes (campo `title`, tipagem de data, arquivos problemáticos)
 - [ ] Iniciar o backend (`npm run dev` ou `npm start`)
 - [ ] Testar conexão com banco de dados SQLite

@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
+import { AuthenticatedRequest } from '../types/index';
 import { ExpenseService } from '../services/expenseService';
-import { AuthenticatedRequest } from "../types/common";
 import { z } from 'zod';
 
 // Schemas de validação com Zod
