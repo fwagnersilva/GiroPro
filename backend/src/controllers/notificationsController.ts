@@ -1,13 +1,9 @@
 import { Request, Response } from 'express';
 import { NotificationService, NotificationData } from '../services/notificationService';
 import { z } from 'zod';
+import { AuthenticatedRequest } from '../types/auth';
 
 // Interfaces
-interface AuthenticatedRequest extends Request {
-  user?: {
-    id: string;
-  };
-}
 
 interface ApiResponse<T = any> {
   success: boolean;
@@ -21,7 +17,7 @@ interface ApiResponse<T = any> {
 
 // Schemas de validação
 const createNotificationSchema = z.object({
-  tipo: z.string().default('Sistema'),
+  tipo: z.string().default('sistema'),
   titulo: z.string()
     .min(1, 'Título é obrigatório')
     .max(100, 'Título deve ter no máximo 100 caracteres'),
@@ -316,7 +312,7 @@ export class NotificationsController {
 
       const testNotificationData: NotificationData = {
         idUsuario: userId,
-        tipo: 'Sistema',
+        tipo: 'sistema',
         titulo: '🧪 Notificação de Teste',
         mensagem: 'Esta é uma notificação de teste para verificar o funcionamento do sistema.',
         dados_extras: {

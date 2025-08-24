@@ -2,8 +2,8 @@ import { Request, Response } from 'express';
 import { z } from 'zod';
 import { db } from '../db';
 import { jornadas, abastecimentos, despesas, veiculos } from '../db/schema';
-import { eq, and, isNull, isNotNull, sql, gte, lte, sum, count, avg, desc } from 'drizzle-orm';
-import { AuthenticatedRequest } from '../middlewares/auth';
+import { eq, and, isNull, isNotNull, sql, gte, lte, sum, count, avg, desc, ne } from 'drizzle-orm';
+import { AuthenticatedRequest } from '../types/auth';
 
 // ====================== INTERFACES ======================
 
@@ -483,7 +483,7 @@ class DateHelper {
   }
 
   static formatDateForSQL(date: Date): number {
-    return date;
+    return date.getTime();
   }
 }
 
@@ -528,7 +528,7 @@ class JourneyProcessor {
     return relatorioJornadas;
   }
 
-  private static async calcularCustoCombustivelEstimado(jornada: any): Promise<number> {
+  static async calcularCustoCombustivelEstimado(jornada: any): Promise<number> {
     if (!jornada.kmTotal || !jornada.veiculoTipoCombustivel) return 0;
 
     const consumoEstimadoLitros = jornada.kmTotal / DEFAULT_CONSUMPTION;
@@ -536,7 +536,7 @@ class JourneyProcessor {
     return consumoEstimadoLitros * precoLitro;
   }
 
-  private static async calcularOutrasDespesas(userId: string, idVeiculo: string, dataInicio: Date, dataFim: Date): Promise<number> {
+  static async calcularOutrasDespesas(userId: string, idVeiculo: string, dataInicio: Date, dataFim: Date): Promise<number> {
     const despesasRelacionadas = await db
       .select({ valorDespesa: sum(despesas.valorDespesa) })
       .from(despesas)
