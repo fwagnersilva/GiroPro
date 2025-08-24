@@ -1,10 +1,10 @@
-import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod';
-import { FastifyRequest } from 'fastify';
+import { Request, Response } from 'express';
 import { z } from 'zod';
 import { db } from '../db';
 import { jornadas, abastecimentos, despesas, veiculos } from '../db/schema';
 import { eq, and, isNull, isNotNull, sql, gte, lte, sum, count, inArray } from 'drizzle-orm';
 import type { ServiceResult, CacheConfig } from '../types/common';
+import { AuthenticatedRequest } from '../types/auth';
 
 // Classes de erro
 class UnauthorizedError extends Error {

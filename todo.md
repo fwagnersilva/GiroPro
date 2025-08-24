@@ -85,3 +85,34 @@
   - Geração de relatórios e dashboard
   - Validação de funcionalidades de analytics avançadas
 
+
+
+
+## Próximas Tarefas (Sessão Atual)
+- **Finalização das Correções TypeScript Restantes**:
+  - Resolver inconsistência entre Fastify e Express (padronizar para Express)
+  - Corrigir problemas de overload nos arquivos de rotas (`routes/notifications.ts` e `routes/reports.ts`)
+  - Resolver erros restantes no `dashboardController.ts`, `insightsController.ts` e `multiVehicleController.ts`
+  - Implementar métodos faltantes nos controllers
+  - Corrigir problemas de tipagem de data e propriedades inexistentes
+- **Execução e Testes do Backend**:
+  - Compilação completa sem erros TypeScript
+  - Inicialização do servidor backend na porta 3000
+  - Teste de conexão com banco de dados SQLite
+  - Validação das rotas básicas da API
+- **Configuração do Frontend**:
+  - Instalação das dependências do frontend React Native/Expo
+  - Configuração e teste da comunicação frontend-backend
+  - Validação da interface de usuário
+- **Testes End-to-End**:
+  - Criação de usuário via API
+  - Login e autenticação
+  - Operações CRUD básicas em todas as entidades
+  - Geração de relatórios e dashboard
+  - Validação de funcionalidades de analytics avançadas
+- **Otimizações e Melhorias**:
+  - Resolver vulnerabilidades de segurança identificadas
+  - Atualizar pacotes deprecated quando possível
+  - Documentar APIs funcionais vs não funcionais
+  - Implementar dados de teste para validação das funcionalidades
+
