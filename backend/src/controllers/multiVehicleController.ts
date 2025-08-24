@@ -137,7 +137,7 @@ export class MultiVehicleController {
             and(
               eq(despesas.idVeiculo, vehicle.id),
               eq(despesas.idUsuario, req.user?.id),
-              gte(despesas.dataDespesa, thirtyDaysAgo.toISOString()),
+              gte(despesas.dataDespesa, thirtyDaysAgo),
               isNull(despesas.deletedAt)
             )
           );
@@ -183,8 +183,8 @@ export class MultiVehicleController {
             ano: vehicle.ano,
             placa: vehicle.placa,
             tipoCombustivel: vehicle.tipoCombustivel,
-            tipo_uso: vehicle.tipo_uso,
-            data_cadastro: vehicle.data_cadastro,
+            tipo_uso: vehicle.tipoUso,
+            data_cadastro: vehicle.dataCadastro,
             status: statusVeiculo,
           },
           estatisticas_30_dias: {

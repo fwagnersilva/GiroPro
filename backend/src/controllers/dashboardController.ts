@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { z } from 'zod';
+import { FastifyRequest, FastifyPluginAsyncZod } from 'fastify';
 import { db } from '../db';
 import { jornadas, abastecimentos, despesas, veiculos } from '../db/schema';
 import { eq, and, isNull, isNotNull, sql, gte, lte, sum, count, inArray } from 'drizzle-orm';

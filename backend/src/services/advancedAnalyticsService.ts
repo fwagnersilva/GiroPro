@@ -604,6 +604,77 @@ export class AdvancedAnalyticsService {
       faturamentoPrevisto: Math.round(predictedRevenue),
     };
   }
+
+  /**
+   * Gerar insights e recomendações baseados nos dados fornecidos
+   */
+  static generateInsights(
+    efficiencyMetrics: any,
+    trends: any,
+    seasonality: any,
+    costs: any
+  ) {
+    const insights = [];
+    const recommendations = [];
+
+    // Análise de eficiência
+    if (efficiencyMetrics && efficiencyMetrics.length > 0) {
+      const avgEfficiency = efficiencyMetrics.reduce((sum: number, metric: any) => 
+        sum + (metric.eficienciaOperacional || 0), 0) / efficiencyMetrics.length;
+      
+      if (avgEfficiency < 70) {
+        insights.push({
+          type: 'warning',
+          title: 'Eficiência Operacional Baixa',
+          description: `Sua eficiência operacional média está em ${avgEfficiency.toFixed(1)}%`
+        });
+        recommendations.push({
+          priority: 'high',
+          action: 'Revisar rotas e horários para otimizar a eficiência operacional'
+        });
+      }
+    }
+
+    // Análise de tendências
+    if (trends && trends.faturamento) {
+      if (trends.faturamento.tendencia === 'decrescente') {
+        insights.push({
+          type: 'alert',
+          title: 'Tendência de Queda no Faturamento',
+          description: 'Faturamento apresenta tendência de queda nos últimos períodos'
+        });
+        recommendations.push({
+          priority: 'high',
+          action: 'Implementar estratégias para aumentar o faturamento'
+        });
+      }
+    }
+
+    // Análise de custos
+    if (costs && costs.custoTotal) {
+      const margem = ((costs.faturamentoTotal - costs.custoTotal) / costs.faturamentoTotal) * 100;
+      if (margem < 20) {
+        insights.push({
+          type: 'warning',
+          title: 'Margem de Lucro Baixa',
+          description: `Margem de lucro atual: ${margem.toFixed(1)}%`
+        });
+        recommendations.push({
+          priority: 'medium',
+          action: 'Revisar custos operacionais para melhorar a margem de lucro'
+        });
+      }
+    }
+
+    return {
+      insights,
+      recommendations,
+      summary: {
+        totalInsights: insights.length,
+        highPriorityRecommendations: recommendations.filter(r => r.priority === 'high').length
+      }
+    };
+  }
 }
 
 
