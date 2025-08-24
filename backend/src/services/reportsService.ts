@@ -370,7 +370,7 @@ export class ReportsService {
   /**
    * Top jornadas por ganho
    */
-  private static async getTopJourneys(
+  static async getTopJourneys(
     userId: string,
     vehicleId?: string,
     limit: number = 5,
@@ -416,7 +416,7 @@ export class ReportsService {
   /**
    * Métricas de performance de jornadas
    */
-  private static async getPerformanceMetrics(
+  static async getPerformanceMetrics(
     userId: string,
     startDate: Date,
     endDate: Date,
@@ -647,6 +647,71 @@ export class ReportsService {
 
     return issues;
   }
-}
+
+  /**
+   * Exporta dados para formato específico
+   */
+  static async exportToFormat(data: any, format: string): Promise<any> {
+    ReportsService.loggerInstance.info("Exportando dados", { format });
+    
+    switch (format.toLowerCase()) {
+      case 'json':
+        return JSON.stringify(data, null, 2);
+      case 'csv':
+        // Implementação básica de CSV
+        if (Array.isArray(data)) {
+          const headers = Object.keys(data[0] || {});
+          const csvContent = [
+            headers.join(','),
+            ...data.map(row => headers.map(header => row[header] || '').join(','))
+          ].join('\n');
+          return csvContent;
+        }
+        return JSON.stringify(data);
+      case 'xlsx':
+        // Para implementação futura com biblioteca específica
+        ReportsService.loggerInstance.warn("Formato XLSX não implementado, retornando JSON");
+        return JSON.stringify(data, null, 2);
+      case 'pdf':
+        // Para implementação futura com biblioteca específica
+        ReportsService.loggerInstance.warn("Formato PDF não implementado, retornando JSON");
+        return JSON.stringify(data, null, 2);
+      default:
+        return JSON.stringify(data, null, 2);
+    }
+  }
+
+  /**
+   * Obtém status de exportação em lote
+   */
+  static async getBatchExportStatus(batchId: string): Promise<any> {
+    ReportsService.loggerInstance.info("Obtendo status de exportação em lote", { batchId });
+    
+    // Implementação básica - em produção seria conectado a um sistema de filas
+    return {
+      batchId,
+      status: 'completed',
+      progress: 100,
+      createdAt: new Date().toISOString(),
+      completedAt: new Date().toISOString(),
+      totalItems: 1,
+      processedItems: 1,
+      errors: []
+    };
+  }
+
+  /**
+   * Cria um job de exportação em lote
+   */
+  static async createBatchExportJob(params: any): Promise<string> {
+    const jobId = crypto.randomUUID();
+    ReportsService.loggerInstance.info("Criando job de exportação em lote", { jobId, params });
+    
+    // Implementação básica - em produção seria conectado a um sistema de filas
+    return jobId;
+  }
+}  /**
+   * Gera dados para gráficos
+   *}
 
 

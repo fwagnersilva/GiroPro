@@ -108,12 +108,41 @@ export class DateUtils {
    * @returns Array de objetos de semana com número da semana, data de início e fim.
    */
   static getWeeksBetween(startDate: Date, endDate: Date) {
-    const weeks = eachWeekOfInterval({ start: startDate, end: endDate }, { locale: ptBR });
-    return weeks.map((weekStart, index) => ({
+    const weeks = eachWeekOfInterval({ start: startDate, end: endDate }, { locale: ptBR });    return weeks.map((weekStart, index) => ({
       weekNumber: index + 1,
       startDate: weekStart,
       endDate: endOfWeek(weekStart, { locale: ptBR }),
     }));
+  }
+
+  /**
+   * Calcula o período de análise (trimestre, semestre, ano).
+   * @param periodType - Tipo de período de análise.
+   * @returns Objeto com data de início e fim do período.
+   */
+  static calculatePeriod(periodType: 'trimestre' | 'semestre' | 'ano') {
+    const now = new Date();
+    let startDate: Date;
+    let endDate: Date;
+
+    switch (periodType) {
+      case 'trimestre':
+        startDate = startOfMonth(subMonths(now, 2));
+        endDate = endOfMonth(now);
+        break;
+      case 'semestre':
+        startDate = startOfMonth(subMonths(now, 5));
+        endDate = endOfMonth(now);
+        break;
+      case 'ano':
+        startDate = startOfMonth(subMonths(now, 11));
+        endDate = endOfMonth(now);
+        break;
+      default:
+        startDate = startOfMonth(subMonths(now, 2));
+        endDate = endOfMonth(now);
+    }
+    return { dataInicio: startDate, dataFim: endDate };
   }
 }
 

@@ -6,7 +6,7 @@ import { cacheService } from '../utils/cache';
 import { AppError } from '../utils/customErrors';
 import { asyncHandler } from '../utils/asyncHandler';
 import { ReportsService } from '../services/reportsService';
-import { DateHelper } from '../utils/dateHelper';
+import { DateUtils } from '../utils/dateUtils';
 
 // Schemas de validação aprimorados
 const baseReportSchema = z.object({
@@ -34,6 +34,7 @@ const monthlyReportSchema = baseReportSchema.extend({
 });
 
 export class WeeklyMonthlyReportsController {
+  private static logger = logger;
   private static readonly CACHE_TTL = 300; // 5 minutos
 
   /**
@@ -273,7 +274,8 @@ export class WeeklyMonthlyReportsController {
     }));
 
     const cacheKey = `performance:${userId}:${JSON.stringify(params)}`;
-    const { dataInicio, dataFim } = DateHelper.calcularPeriodo(params.periodo_analise);
+    const { dataInicio, dataFim } = DateUtils.calculatePeriod(params.periodo_analise);
+    let analise: any; // Declarar 'analise' aqui
 
     if (!analise) {
       WeeklyMonthlyReportsController.logger.info('Gerando análise de performance', { userId, params });
@@ -281,7 +283,7 @@ export class WeeklyMonthlyReportsController {
       analise = await ReportsService.getPerformanceMetrics(userId, dataInicio, dataFim, params.idVeiculo);
 
       // Cache por 1 hora (análise de performance muda menos frequentemente)
-      await CacheService.set(cacheKey, analise, 3600);
+      await cacheService.set(cacheKey, analise, 3600);
     }
 
     res.json({
@@ -340,7 +342,7 @@ export class WeeklyMonthlyReportsController {
       throw new AppError('Job ID é obrigatório', 400);
     }
 
-    const status = await ReportsService.getBatchExportStatus(jobId, userId);
+    const status = await ReportsService.getBatchExportStatus(jobId);
 
     if (!status) {
       throw new AppError('Job não encontrado', 404);
@@ -387,7 +389,7 @@ export class WeeklyMonthlyReportsController {
 
     let clearedCount = 0;
     for (const pattern of patterns) {
-      const count = await CacheService.clearByPattern(pattern);
+      const count = await cacheService.clearByPattern(pattern);
       clearedCount += count;
     }
 
@@ -422,8 +424,7 @@ export class WeeklyMonthlyReportsController {
         400,
         result.error.errors.map(err => ({
           field: err.path.join('.'),
-          message: err.message,
-          received: err.received
+          message: err.message
         }))
       );
     }
