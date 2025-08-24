@@ -710,8 +710,34 @@ export class ReportsService {
     // Implementação básica - em produção seria conectado a um sistema de filas
     return jobId;
   }
-}  /**
-   * Gera dados para gráficos
-   *}
+
+  /**
+   * Gera alertas para o usuário
+   */
+  static async generateAlerts(params: { userId: string; vehicleId?: string }) {
+    const { userId, vehicleId } = params;
+    
+    ReportsService.loggerInstance.info("Gerando alertas", { userId, vehicleId });
+    
+    // Implementação básica de alertas
+    return {
+      alerts: [],
+      count: 0
+    };
+  }
+
+  /**
+   * Obtém progresso das metas
+   */
+  static async getGoalsProgress(userId: string, vehicleId?: string) {
+    ReportsService.loggerInstance.info("Obtendo progresso das metas", { userId, vehicleId });
+    
+    // Implementação básica de progresso de metas
+    return {
+      goals: [],
+      progress: 0
+    };
+  }
+}
 
 

@@ -48,6 +48,17 @@ export class Cache {
     }
   }
 
+  public clearByPattern(pattern: string): Promise<number> {
+    let count = 0;
+    for (const key of this.cache.keys()) {
+      if (key.startsWith(pattern)) {
+        this.cache.delete(key);
+        count++;
+      }
+    }
+    return Promise.resolve(count);
+  }
+
   public clear(): void {
     this.cache.clear();
   }
