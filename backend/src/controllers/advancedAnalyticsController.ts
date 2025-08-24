@@ -560,7 +560,7 @@ export class AdvancedAnalyticsController {
           dataInicio: jornadas.dataInicio,
           kmTotal: jornadas.kmTotal,
           ganhoBruto: jornadas.ganhoBruto,
-          duracaoMinutos: jornadas.duracaoMinutos
+          tempoTotal: jornadas.tempoTotal
         })
         .from(jornadas)
         .where(and(...journeyConditions));
@@ -579,7 +579,7 @@ export class AdvancedAnalyticsController {
         dayPatterns[dayOfWeek].totalJornadas++;
         dayPatterns[dayOfWeek].totalKm += Number(journey.kmTotal) || 0;
         dayPatterns[dayOfWeek].totalFaturamento += Number(journey.ganhoBruto) || 0;
-        dayPatterns[dayOfWeek].mediaDuracao += Number(journey.duracaoMinutos) || 0;
+        dayPatterns[dayOfWeek].mediaDuracao += Number(journey.tempoTotal) || 0;
       });
 
       // Calcular médias
