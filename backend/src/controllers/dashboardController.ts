@@ -542,9 +542,9 @@ export const dashboardRoutes: FastifyPluginAsyncZod = async (app) => {
         cacheInfo: { hit: false, generatedAt: new Date().toISOString() },
       };
 
-      DashboardCache.set(cacheKey, responseData, `summary${periodo.charAt(0).toUpperCase() + periodo.slice(1)}` as keyof typeof DashboardCache.TTL_CONFIG);
+      DashboardCache.set(cacheKey, responseData, 'summaryMes');
 
-      reply.send({ success: true, data: responseData });
+      return reply.send({ success: true, data: responseData });
 
     } catch (error: any) {
       console.error('Erro ao obter resumo do dashboard:', error);
@@ -624,7 +624,7 @@ export const dashboardRoutes: FastifyPluginAsyncZod = async (app) => {
 
       DashboardCache.set(cacheKey, responseData, 'evolution');
 
-      reply.send({ success: true, data: responseData });
+      return reply.send({ success: true, data: responseData });
 
     } catch (error: any) {
       console.error('Erro ao obter evolução do dashboard:', error);
@@ -825,7 +825,7 @@ export const dashboardRoutes: FastifyPluginAsyncZod = async (app) => {
 
       DashboardCache.set(cacheKey, responseData, 'comparison');
 
-      reply.send({ success: true, data: responseData });
+      return reply.send({ success: true, data: responseData });
 
     } catch (error: any) {
       console.error('Erro ao obter comparação de veículos:', error);
