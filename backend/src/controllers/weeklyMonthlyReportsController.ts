@@ -1,7 +1,9 @@
 import { Response } from 'express';
 import { z } from 'zod';
 import { AuthenticatedRequest } from '../types/auth';
-import { AppError } from '../utils/AppError';
+import { logger } from '../utils/logger';
+import { cacheService } from '../utils/cache';
+import { AppError } from '../utils/customErrors';
 import { asyncHandler } from '../utils/asyncHandler';
 import { ReportsService } from '../services/reportsService';
 import { DateHelper } from '../utils/dateHelper';
@@ -33,7 +35,6 @@ const monthlyReportSchema = baseReportSchema.extend({
 
 export class WeeklyMonthlyReportsController {
   private static readonly CACHE_TTL = 300; // 5 minutos
-  private static readonly logger = logger;
 
   /**
    * Relatório Semanal com cache e otimizações

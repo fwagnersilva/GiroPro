@@ -1,5 +1,5 @@
-import { Request, Response, NextFunction } from 'express';
-import { AuthenticatedRequest } from '../types/index';
+import { Response, Request, NextFunction } from 'express';
+import { AuthenticatedRequest, CreateExpenseRequest, UpdateExpenseRequest } from '../types/index';
 import { ExpenseService } from '../services/expenseService';
 import { z } from 'zod';
 
@@ -18,10 +18,6 @@ const updateExpenseSchema = createExpenseSchema.partial();
 const idParamSchema = z.object({
   id: z.string().uuid('ID deve ser um UUID válido')
 });
-
-// Tipos para melhor type safety
-type CreateExpenseRequest = z.infer<typeof createExpenseSchema>;
-type UpdateExpenseRequest = z.infer<typeof updateExpenseSchema>;
 
 
 // Middleware para extrair e validar userId
@@ -110,9 +106,9 @@ export const createExpense = asyncHandler(async (req: Request, res: Response) =>
     const expenseData: CreateExpenseRequest = {
       vehicleId: validatedData.vehicleId || '',
       data: validatedData.date ? new Date(validatedData.date).toISOString() : new Date().toISOString(),
-      valor: validatedData.amount,
-      descricao: validatedData.description,
-      categoria: validatedData.category
+      valor: validatedData.amount || 0,
+      descricao: validatedData.description || '',
+      categoria: validatedData.category || ''
     };
     
     const newExpense = await ExpenseService.createExpense(userId, expenseData);
@@ -271,29 +267,32 @@ export const getExpensesByCategory = asyncHandler(async (req: Request, res: Resp
 });
 
 // Middleware de validação que pode ser usado nas rotas
-export const validateCreateExpense = (req: Request, res: Response, next: NextFunction) => {
+export const validateCreateExpense = (req: Request, res: Response, next: NextFunction): void => {
   try {
     validateRequestData(createExpenseSchema, req.body);
     next();
   } catch (error: any) {
-    return handleError(res, error);
+    handleError(res, error);
+    return;
   }
 };
 
-export const validateUpdateExpense = (req: Request, res: Response, next: NextFunction) => {
+export const validateUpdateExpense = (req: Request, res: Response, next: NextFunction): void => {
   try {
     validateRequestData(updateExpenseSchema, req.body);
     next();
   } catch (error: any) {
-    return handleError(res, error);
+    handleError(res, error);
+    return;
   }
 };
 
-export const validateExpenseId = (req: Request, res: Response, next: NextFunction) => {
+export const validateExpenseId = (req: Request, res: Response, next: NextFunction): void => {
   try {
     validateRequestData(idParamSchema, req.params);
     next();
   } catch (error: any) {
-    return handleError(res, error);
+    handleError(res, error);
+    return;
   }
 };

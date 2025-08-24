@@ -70,3 +70,7 @@ export class Cache {
 }
 
 
+
+// Instância global do cache
+export const cacheService = new Cache();
+

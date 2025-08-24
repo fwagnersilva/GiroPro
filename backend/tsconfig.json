@@ -3,10 +3,12 @@
     "target": "ES2020",
     "module": "commonjs",
     "lib": ["ES2020", "dom", "esnext"],
+    "downlevelIteration": true,
     "outDir": "./dist",
     "rootDir": "./src",
     "strict": false, // Alterado para false
     "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "resolveJsonModule": true,

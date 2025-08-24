@@ -56,3 +56,7 @@ export class PayloadTooLargeError extends CustomError {
 }
 
 
+
+// Alias para compatibilidade
+export const AppError = CustomError;
+

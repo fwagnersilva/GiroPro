@@ -2,7 +2,7 @@ import { db } from '../db';
 import { despesas } from '../db/schema';
 import { CreateExpenseRequest, UpdateExpenseRequest, Expense } from '../types';
 import { eq, and, isNull } from 'drizzle-orm';
-import crypto from 'crypto';
+import * as crypto from 'crypto';
 
 export class ExpenseService {
   /**
