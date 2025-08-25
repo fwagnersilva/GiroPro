@@ -67,18 +67,7 @@ else
 fi
 
 # 3. Configurar variáveis de ambiente para SQLite
-echo "Configurando variáveis de ambiente..."
-
-# Criar ou atualizar arquivo .env
-if [ ! -f .env ]; then
-    # cp .env.example .env || {
-    #     echo -e "${RED}Erro: Falha ao copiar .env.example para .env.${NC}"
-    #     exit 1
-    # }
-    # echo -e "${GREEN}Arquivo .env criado a partir do .env.example${NC}"
-fi
-
-# Atualizar DB_TYPE para sqlite no .env
+echo "Configurando variáveis de ambiente..."# Atualizar DB_TYPE para sqlite no .env
 if grep -q "DB_TYPE=" .env; then
     sed -i "s/^DB_TYPE=.*/DB_TYPE=sqlite/" .env
 else
@@ -92,25 +81,25 @@ else
     echo "SQLITE_DB_PATH=${DB_PATH}" >> .env
 fi
 
-echo -e "${GREEN}Variáveis de ambiente configuradas para SQLite${NC}"
+echo "Variáveis de ambiente configuradas para SQLite"
 
 # 4. Gerar e Executar migrações (se não for para pular)
 if [ "$SKIP_MIGRATE" = false ]; then
-    echo -e "${BLUE}Gerando migrações para SQLite...${NC}"
+    echo "Gerando migrações para SQLite..."
     npx drizzle-kit generate --config=drizzle.config.sqlite.ts || {
-        echo -e "${RED}Erro: Falha ao gerar migrações do Drizzle Kit.${NC}"
+        echo "Erro: Falha ao gerar migrações do Drizzle Kit."
         exit 1
     }
 
-    echo -e "${BLUE}Executando migrações SQLite...${NC}"
+    echo "Executando migrações SQLite..."
     npx drizzle-kit migrate --config=drizzle.config.sqlite.ts || {
-        echo -e "${RED}Erro: Falha ao executar migrações do Drizzle Kit.${NC}"
+        echo "Erro: Falha ao executar migrações do Drizzle Kit."
         exit 1
     }
 else
-    echo -e "${BLUE}Pulando geração e execução de migrações.${NC}"
+    echo "Pulando geração e execução de migrações."
 fi
 
-echo -e "${GREEN}Configuração SQLite concluída!${NC}"
-echo -e "${BLUE}Para usar SQLite, certifique-se de que DB_TYPE=sqlite no seu arquivo .env${NC}"
-echo -e "${BLUE}Para voltar ao PostgreSQL, altere DB_TYPE=postgresql no arquivo .env${NC}"
+echo "Configuração SQLite concluída!"
+echo "Para usar SQLite, certifique-se de que DB_TYPE=sqlite no seu arquivo .env"
+echo "Para voltar ao PostgreSQL, altere DB_TYPE=postgresql no arquivo .env"
