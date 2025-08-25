@@ -1,4 +1,4 @@
-import { Router } from "express";
+import { Router } from 'express';
 import { authMiddleware } from "../middlewares/auth";
 import { ReportsController } from "../controllers/reportsController";
 import { WeeklyMonthlyReportsController } from "../controllers/weeklyMonthlyReportsController";
