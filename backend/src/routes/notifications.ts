@@ -59,7 +59,7 @@ const getUnreadCountWrapper = async (req: Request, res: Response, next: NextFunc
 
 const generateInsightNotificationWrapper = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    await NotificationsController.generateInsightNotification(req as AuthenticatedRequest, res);
+    await NotificationsController.generateTestNotification(req as AuthenticatedRequest, res);
   } catch (error) {
     next(error);
   }
