@@ -9,7 +9,7 @@ O GiroPro é uma aplicação full-stack composta por um backend robusto e um fro
 ```mermaid
 graph TD
     A[Usuário] --> B(Frontend - React Native/Expo)
-    B --> C(Backend - Fastify/Node.js)
+    B --> C(Backend - Express.js/Node.js)
     C --> D(Banco de Dados - SQLite/PostgreSQL)
     C --> E(Redis - Cache)
     C --> F(Serviços Externos - Opcional)
@@ -32,7 +32,7 @@ graph TD
 ### 1.1. Componentes Principais
 
 *   **Frontend (React Native/Expo)**: A interface do usuário que permite aos motoristas interagir com a aplicação. Desenvolvido para ser multiplataforma (iOS e Android), com foco em usabilidade e experiência do usuário.
-*   **Backend (Fastify/Node.js)**: O coração da lógica de negócio do GiroPro. Responsável por processar requisições, interagir com o banco de dados, gerenciar a autenticação e autorização, e fornecer dados para o frontend via API RESTful.
+*   **Backend (Express.js/Node.js)**: O coração da lógica de negócio do GiroPro. Responsável por processar requisições, interagir com o banco de dados, gerenciar a autenticação e autorização, e fornecer dados para o frontend via API RESTful.
 *   **Banco de Dados (SQLite/PostgreSQL)**: Onde todos os dados da aplicação são persistidos. SQLite é usado para desenvolvimento local e testes, enquanto PostgreSQL é a escolha para ambientes de produção devido à sua robustez e escalabilidade.
 *   **Redis (Cache)**: Utilizado para armazenar dados frequentemente acessados, como informações de dashboard e analytics, para melhorar o desempenho e reduzir a carga sobre o banco de dados.
 *   **Serviços Externos (Opcional)**: Integrações futuras com serviços de terceiros, como APIs de mapas, serviços de pagamento ou plataformas de notificação.
@@ -66,11 +66,11 @@ sequenceDiagram
 ## 3. Decisões Arquiteturais Chave
 
 *   **TypeScript em todo o Stack**: A escolha do TypeScript tanto no frontend quanto no backend garante tipagem forte, o que melhora a manutenibilidade, a detecção de erros em tempo de desenvolvimento e a colaboração entre equipes.
-*   **Fastify no Backend**: Selecionado pela sua alta performance e baixo overhead, ideal para construir APIs eficientes e escaláveis. Sua arquitetura baseada em plugins facilita a modularização e a extensão.
+*   **Express.js no Backend**: Selecionado pela sua maturidade, flexibilidade e vasto ecossistema de middlewares, ideal para construir APIs robustas e escaláveis. Sua arquitetura baseada em middlewares facilita a modularização e a extensão.
 *   **Drizzle ORM**: Um ORM leve e type-safe para TypeScript, que oferece uma excelente experiência de desenvolvimento para interações com o banco de dados, aproveitando ao máximo os recursos do TypeScript.
 *   **React Native com Expo**: Permite o desenvolvimento ágil de aplicações móveis para iOS e Android a partir de uma única base de código, acelerando o tempo de lançamento e reduzindo a complexidade de manutenção.
 *   **Padrões de Projeto**: A aplicação segue padrões de projeto bem estabelecidos (como MVC lógico no backend e componentes no frontend) para garantir a organização, a separação de responsabilidades e a facilidade de teste.
-*   **Foco em Performance**: A utilização de Redis para cache e a escolha de frameworks de alta performance (Fastify, React Query) demonstram um compromisso com a entrega de uma experiência de usuário rápida e responsiva.
+*   **Foco em Performance**: A utilização de Redis para cache e a escolha de frameworks consolidados (Express.js, React Query) demonstram um compromisso com a entrega de uma experiência de usuário confiável e responsiva.
 
 Esta arquitetura foi projetada para ser modular, escalável e de fácil manutenção, permitindo que o GiroPro evolua e se adapte às futuras necessidades do negócio e demandas.
 

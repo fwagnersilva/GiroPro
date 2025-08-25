@@ -4,7 +4,7 @@ Este guia detalha os passos para criar um novo endpoint (API) no backend do proj
 
 ## 1. Entendendo a Estrutura do Backend
 
-O backend do GiroPro é construído com Node.js, Fastify (como framework web), TypeScript e Drizzle ORM para interação com o banco de dados SQLite. A estrutura segue um padrão de camadas:
+O backend do GiroPro é construído com Node.js, Express.js (como framework web), TypeScript e Drizzle ORM para interação com o banco de dados SQLite. A estrutura segue um padrão de camadas:
 
 *   **`src/routes/`**: Define as rotas da API e mapeia para os controladores.
 *   **`src/controllers/`**: Contém a lógica de tratamento das requisições HTTP, validação de entrada e orquestração dos serviços.
@@ -117,7 +117,7 @@ Crie um novo arquivo de controlador (ex: `src/controllers/productController.ts`)
 
 **Boas Práticas no Controlador:**
 
-*   **Validação de Entrada**: Utilize `FastifyRequest` e `FastifyReply` para acessar os dados da requisição e enviar a resposta. Use schemas de validação (ex: `Joi` ou `Zod` se configurado) para garantir que os dados de entrada estejam no formato correto.
+*   **Validação de Entrada**: Utilize `Request` e `Response` do Express para acessar os dados da requisição e enviar a resposta. Use schemas de validação (ex: `Joi` ou `Zod` se configurado) para garantir que os dados de entrada estejam no formato correto.
 *   **Tratamento de Erros**: Capture erros dos serviços e retorne respostas HTTP apropriadas (ex: 400 Bad Request, 404 Not Found, 500 Internal Server Error).
 *   **Autenticação/Autorização**: Se a rota exigir, adicione middlewares de autenticação/autorização.
 
@@ -125,42 +125,42 @@ Exemplo de estrutura de controlador:
 
 ```typescript
 // src/controllers/productController.ts
-import { FastifyRequest, FastifyReply } from 'fastify';
+import { Request, Response } from 'express';
 import { ProductService } from '../services/productService';
 import { CreateProductRequest } from '../types';
 
 export class ProductController {
-  static async createProduct(request: FastifyRequest<{ Body: CreateProductRequest }>, reply: FastifyReply) {
+  static async createProduct(req: Request<{}, {}, CreateProductRequest>, res: Response) {
     try {
-      const productData = request.body;
+      const productData = req.body;
       const result = await ProductService.createProduct(productData);
 
       if (result.success && result.data) {
-        return reply.status(201).send(result.data);
+        return res.status(201).json(result.data);
       } else {
-        return reply.status(400).send({ error: result.error });
+        return res.status(400).json({ error: result.error });
       }
     } catch (error) {
       console.error("[ProductController.createProduct]", error);
-      return reply.status(500).send({ error: "Erro interno do servidor." });
+      return res.status(500).json({ error: "Erro interno do servidor." });
     }
   }
 
-  static async getProduct(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply) {
+  static async getProduct(req: Request<{ id: string }>, res: Response) {
     try {
-      const { id } = request.params;
+      const { id } = req.params;
       const result = await ProductService.getProductById(id);
 
       if (result.success && result.data) {
-        return reply.status(200).send(result.data);
+        return res.status(200).json(result.data);
       } else if (result.success && !result.data) {
-        return reply.status(404).send({ error: "Produto não encontrado." });
+        return res.status(404).json({ error: "Produto não encontrado." });
       } else {
-        return reply.status(500).send({ error: result.error });
+        return res.status(500).json({ error: result.error });
       }
     } catch (error) {
       console.error("[ProductController.getProduct]", error);
-      return reply.status(500).send({ error: "Erro interno do servidor." });
+      return res.status(500).json({ error: "Erro interno do servidor." });
     }
   }
   // ... outros métodos (update, delete, list)
@@ -185,25 +185,27 @@ Exemplo de estrutura de rota:
 
 ```typescript
 // src/routes/products.ts
-import { FastifyInstance } from 'fastify';
+import { Router } from 'express';
 import { ProductController } from '../controllers/productController';
 import { authenticate } from '../middlewares/auth'; // Supondo um middleware de autenticação
 
-export async function productRoutes(fastify: FastifyInstance) {
-  fastify.post('/products', { preHandler: [authenticate] }, ProductController.createProduct);
-  fastify.get('/products/:id', { preHandler: [authenticate] }, ProductController.getProduct);
-  // ... outras rotas (PUT, DELETE, GET all)
-}
+const router = Router();
+
+router.post('/products', authenticate, ProductController.createProduct);
+router.get('/products/:id', authenticate, ProductController.getProduct);
+// ... outras rotas (PUT, DELETE, GET all)
+
+export default router;
 ```
 
 Não se esqueça de registrar a nova rota no arquivo principal de rotas (geralmente `src/app.ts` ou `src/server.ts`):
 
 ```typescript
 // src/app.ts (ou similar)
-import { productRoutes } from './routes/products';
+import productRoutes from './routes/products';
 
-// ... dentro da função principal de inicialização do Fastify
-fastify.register(productRoutes, { prefix: '/api/v1' });
+// ... dentro da configuração do Express
+app.use('/api/v1', productRoutes);
 ```
 
 ## 7. Testando a Nova API
@@ -218,34 +220,30 @@ Exemplo de teste básico:
 ```typescript
 // src/tests/product.test.ts
 import { test, expect, beforeAll, afterAll } from 'vitest';
-import { build } from '../app'; // Função para inicializar a aplicação Fastify
-
-let app: any;
+import request from 'supertest';
+import { app } from '../app'; // Aplicação Express
 
 beforeAll(async () => {
-  app = await build();
-  await app.ready();
+  // Configurações de setup se necessário
 });
 
 afterAll(async () => {
-  await app.close();
+  // Limpeza se necessário
 });
 
 test('should create a new product', async () => {
-  const response = await app.inject({
-    method: 'POST',
-    url: '/api/v1/products',
-    headers: { authorization: 'Bearer YOUR_AUTH_TOKEN' }, // Substitua pelo token real
-    payload: {
+  const response = await request(app)
+    .post('/api/v1/products')
+    .set('Authorization', 'Bearer YOUR_AUTH_TOKEN') // Substitua pelo token real
+    .send({
       nome: 'Test Product',
       preco: 1000,
       estoque: 10,
-    },
-  });
+    });
 
-  expect(response.statusCode).toBe(201);
-  expect(response.json()).toHaveProperty('id');
-  expect(response.json().nome).toBe('Test Product');
+  expect(response.status).toBe(201);
+  expect(response.body).toHaveProperty('id');
+  expect(response.body.nome).toBe('Test Product');
 });
 
 // ... outros testes (GET, PUT, DELETE, validações)
