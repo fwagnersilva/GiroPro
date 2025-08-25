@@ -33,3 +33,57 @@
   - Resolver as vulnerabilidades de segurança moderadas.
   - Manter o `progresso.md` como um diário de bordo atualizado e estruturado.
 
+
+
+
+---
+
+**Última sessão:**
+- Data: 25/08/2025 15:30
+- Sessão: #71
+
+## O que foi feito nesta sessão
+- Clonagem do repositório GitHub `https://github.com/fwagnersilva/GiroPro.git`.
+- Identificação e leitura do arquivo `docs/tododocs.md`.
+- Criação do arquivo `todo.md` na raiz do ambiente com um checklist detalhado das tarefas do `tododocs.md`.
+- Criação do arquivo `docs/GUIA_DE_SETUP_COMPLETO.md`.
+- Migração do conteúdo de `docs/GUIA_SETUP_DESENVOLVEDOR.md` para `docs/GUIA_DE_SETUP_COMPLETO.md`.
+- Migração do conteúdo de `docs/01_tutoriais/01SetupInicial.md` para `docs/GUIA_DE_SETUP_COMPLETO.md`.
+- Integração de alertas de interatividade (`setup_sqlite.sh` e `npm run db:migrate`) no `GUIA_DE_SETUP_COMPLETO.md`.
+- Início da revisão e ajuste das seções de "Troubleshooting Básico" e "Checklist de Setup Rápido" no `GUIA_DE_SETUP_COMPLETO.md`.
+
+## Problemas encontrados / observações
+- O arquivo `tododocs.md` estava em `docs/tododocs.md` e não na raiz do repositório, o que foi corrigido.
+- A migração de conteúdo de múltiplos arquivos para um único `GUIA_DE_SETUP_COMPLETO.md` foi realizada com sucesso, mas ainda requer revisão para garantir a fluidez e a remoção de redundâncias.
+- As referências internas nos documentos precisam ser atualizadas para apontar para o novo `GUIA_DE_SETUP_COMPLETO.md`.
+
+## Próximas tarefas
+- **Documentação de Setup e Onboarding**:
+  - [Pendente] Revisar e ajustar o "Troubleshooting Básico" e "Checklist de Setup Rápido" no `GUIA_DE_SETUP_COMPLETO.md`.
+  - [Pendente] Atualizar referências nos documentos para o novo `GUIA_DE_SETUP_COMPLETO.md`.
+  - [Pendente] Remover arquivos antigos (`docs/GUIA_SETUP_DESENVOLVEDOR.md` e `docs/01_tutoriais/01SetupInicial.md`).
+  - [Pendente] Atualizar `docs/README.md` (se existir) para apontar para o novo `GUIA_DE_SETUP_COMPLETO.md`.
+- **Consistência de Nomenclatura e Framework Backend**:
+  - [Pendente] Padronizar Nomenclatura para `camelCase` em `src/db/schema.ts` e refatorar código backend e frontend.
+  - [Pendente] Atualizar migrações se necessário.
+  - [Pendente] Atualizar documentação para refletir `camelCase`.
+  - [Pendente] Corrigir Inconsistência do Framework Backend (alterar "Fastify" para "Express.js" em documentos).
+- **Aprofundamento e Expansão da Documentação**:
+  - [Pendente] Criar `docs/04_referencias/01_documentacao_banco_dados.md` e gerar Diagrama ER.
+  - [Pendente] Criar Dicionário de Dados e documentar Migrações e Padrões de Acesso a Dados.
+  - [Pendente] Criar `docs/04_referencias/02_documentacao_testes.md` e detalhar a estratégia de testes.
+  - [Pendente] Criar `docs/04_referencias/03_guia_deploy.md` e fornecer um guia detalhado para o deploy.
+  - [Pendente] Criar `docs/04_referencias/04_documentacao_seguranca.md` e detalhar as práticas de segurança.
+  - [Pendente] Criar `docs/04_referencias/05_design_system.md` e criar um guia para o design system do frontend.
+- **Melhorias de Formato e Usabilidade**:
+  - [Pendente] Inserir Diagramas e Visualizações (atualizar `docs/03_explicacoes/01ArquiteturaGeral.md`).
+  - [Pendente] Utilizar Tabelas para organizar informações (Endpoints da API, Variáveis de Ambiente, Scripts).
+  - [Pendente] Garantir Referências Cruzadas Clicáveis em todos os documentos.
+  - [Pendente] Criar Glossário (`docs/04_referencias/06_glossario.md`).
+- **Resolução de Problemas e Vulnerabilidades**:
+  - [Pendente] Resolver Erros TypeScript Restantes.
+  - [Pendente] Resolver Vulnerabilidades de Segurança Moderadas.
+- **Atualização do `progresso.md`**:
+  - [Pendente] Manter o `progresso.md` como um diário de bordo atualizado e estruturado.
+
+
