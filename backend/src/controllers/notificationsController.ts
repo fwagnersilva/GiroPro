@@ -17,7 +17,7 @@ interface ApiResponse<T = any> {
 
 // Schemas de validação
 const createNotificationSchema = z.object({
-  tipo: z.string().default('sistema'),
+  tipo: z.enum(['sistema', 'alerta', 'promocao', 'suporte']).default('sistema'),
   titulo: z.string()
     .min(1, 'Título é obrigatório')
     .max(100, 'Título deve ter no máximo 100 caracteres'),

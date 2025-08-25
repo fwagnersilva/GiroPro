@@ -157,7 +157,7 @@ export class InsightsController {
         data: {
           insights: insightsData.insights,
           recommendations: insightsData.recommendations,
-          resumo_geral: insightsData.resumo_geral,
+          summary: insightsData.summary,
           periodo: {
             dataInicio: startDate.toISOString(),
             dataFim: endDate.toISOString(),

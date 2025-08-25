@@ -545,8 +545,8 @@ class JourneyProcessor {
           eq(despesas.idUsuario, userId),
           eq(despesas.idVeiculo, idVeiculo),
           gte(despesas.dataDespesa, dataInicio),
-          lte(despesas.dataDespesa, dataFim),
-          ne(despesas.tipoDespesa, 'combustivel') // Excluir despesas de combustível
+          lte(despesas.dataDespesa, dataFim)
+          // Removido filtro de combustível pois não existe no enum tipoDespesa
         )
       );
     return Number(despesasRelacionadas[0]?.valorDespesa) || 0;

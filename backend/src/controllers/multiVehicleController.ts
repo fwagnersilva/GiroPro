@@ -359,7 +359,7 @@ export class MultiVehicleController {
         .where(
           and(
             eq(veiculos.idUsuario, req.user?.id),
-            gte(jornadas.dataInicio, hoje.toISOString()),
+            gte(jornadas.dataInicio, hoje),
             sql`${jornadas.dataInicio} < ${amanha}`,
             isNull(jornadas.deletedAt),
             isNull(veiculos.deletedAt)
