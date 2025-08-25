@@ -137,3 +137,43 @@
   - [Pendente] Resolver Erros TypeScript Restantes.
   - [Pendente] Resolver Vulnerabilidades de Segurança Moderadas.
 
+
+
+---
+
+**Última sessão:**
+- Data: 25/08/2025 16:00
+- Sessão: #73
+
+## O que foi feito nesta sessão
+- Padronização da nomenclatura de `title` para `titulo` na tabela `metas` no arquivo `backend/src/db/schema.ts`.
+- Criação do arquivo `docs/04_referencias/01_documentacao_banco_dados.md` com a documentação detalhada do esquema do banco de dados, incluindo tabelas, colunas, tipos de dados, restrições e índices.
+- Pesquisa por ferramentas para geração de Diagrama ER a partir do Drizzle ORM/SQLite.
+
+## Problemas encontrados / observações
+- O `drizzle-kit-dbml-generator` não foi encontrado via npm, indicando que talvez não seja uma ferramenta oficial ou esteja descontinuada/renomeada.
+- A geração de Diagrama ER a partir do Drizzle ORM requer ferramentas externas ou a conversão para formatos como DBML.
+
+## Próximas tarefas
+- **Documentação de Setup e Onboarding**:
+  - [Pendente] Atualizar referências nos documentos para o novo `GUIA_DE_SETUP_COMPLETO.md`.
+- **Consistência de Nomenclatura e Framework Backend**:
+  - [Pendente] Atualizar migrações se necessário (após padronização de nomenclatura).
+  - [Pendente] Atualizar documentação para refletir `camelCase`.
+- **Aprofundamento e Expansão da Documentação**:
+  - [Pendente] Criar Dicionário de Dados e documentar Migrações e Padrões de Acesso a Dados.
+  - [Pendente] Criar `docs/04_referencias/02_documentacao_testes.md` e detalhar a estratégia de testes.
+  - [Pendente] Criar `docs/04_referencias/03_guia_deploy.md` e fornecer um guia detalhado para o deploy.
+  - [Pendente] Criar `docs/04_referencias/04_documentacao_seguranca.md` e detalhar as práticas de segurança.
+  - [Pendente] Criar `docs/04_referencias/05_design_system.md` e criar um guia para o design system do frontend.
+- **Melhorias de Formato e Usabilidade**:
+  - [Pendente] Inserir Diagramas e Visualizações (atualizar `docs/03_explicacoes/01ArquiteturaGeral.md`).
+  - [Pendente] Utilizar Tabelas para organizar informações (Endpoints da API, Variáveis de Ambiente, Scripts).
+  - [Pendente] Garantir Referências Cruzadas Clicáveis em todos os documentos.
+  - [Pendente] Criar Glossário (`docs/04_referencias/06_glossario.md`).
+- **Resolução de Problemas e Vulnerabilidades**:
+  - [Pendente] Resolver Erros TypeScript Restantes.
+  - [Pendente] Resolver Vulnerabilidades de Segurança Moderadas.
+- **Atualização do `progresso.md`**:
+  - [Pendente] Manter o `progresso.md` como um diário de bordo atualizado e estruturado.
+

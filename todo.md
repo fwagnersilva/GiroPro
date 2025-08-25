@@ -7,13 +7,13 @@
 - [x] Atualizar `docs/README.md` (se existir) para apontar para o novo `GUIA_DE_SETUP_COMPLETO.md` - N/A (arquivo não existe)
 
 ## Consistência de Nomenclatura e Framework Backend
-- [ ] Padronizar Nomenclatura para `camelCase` em `src/db/schema.ts` e refatorar código backend e frontend
+- [x] Padronizar Nomenclatura para `camelCase` em `src/db/schema.ts` e refatorar código backend e frontend
 - [ ] Atualizar migrações se necessário
 - [ ] Atualizar documentação para refletir `camelCase`
 - [x] Corrigir Inconsistência do Framework Backend (alterar "Fastify" para "Express.js" em documentos)
 
 ## Aprofundamento e Expansão da Documentação
-- [ ] Criar `docs/04_referencias/01_documentacao_banco_dados.md` e gerar Diagrama ER
+- [x] Criar `docs/04_referencias/01_documentacao_banco_dados.md` e gerar Diagrama ER
 - [ ] Criar Dicionário de Dados e documentar Migrações e Padrões de Acesso a Dados
 - [ ] Criar `docs/04_referencias/02_documentacao_testes.md` e detalhar a estratégia de testes
 - [ ] Criar `docs/04_referencias/03_guia_deploy.md` e fornecer um guia detalhado para o deploy

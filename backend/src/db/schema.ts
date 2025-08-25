@@ -195,7 +195,7 @@ export const metas = sqliteTable("metas", {
   idUsuario: text("idUsuario").notNull().references(() => usuarios.id, { onDelete: "cascade" }),
   idVeiculo: text("idVeiculo").references(() => veiculos.id, { onDelete: "cascade" }),
   
-  title: text("title", { length: 100 }).notNull(),
+  titulo: text("titulo", { length: 100 }).notNull(),
   descricao: text("descricao", { length: 500 }),
   tipoMeta: tipoMetaEnum.notNull(),
   periodo: periodoMetaEnum.notNull(),
