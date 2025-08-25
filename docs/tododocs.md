@@ -11,12 +11,12 @@ Este documento detalha as ações necessárias para aprimorar a documentação e
 **Ações:**
 
 1.  **Criar `docs/GUIA_DE_SETUP_COMPLETO.md`:** Crie um novo arquivo com este nome.
-2.  **Migrar conteúdo de `docs/GUIA_SETUP_DESENVOLVEDOR.md`:** Copie a seção de "Visão Geral" e "Estrutura do Projeto" para o novo guia.
-3.  **Migrar conteúdo de `docs/01_tutoriais/01SetupInicial.md`:** Copie as seções de "Pré-requisitos", "Clonagem do Repositório", "Configuração e Execução do Backend" (incluindo detalhes de `.env` e geração de chaves secretas), "Configuração e Execução do Frontend" e "Verificação Final" para o novo guia.
+2.  **Migrar conteúdo de `docs/GUIA_DE_SETUP_COMPLETO.md`:** Copie a seção de "Visão Geral" e "Estrutura do Projeto" para o novo guia.
+3.  **Migrar conteúdo de `docs/01_tutoriais/GUIA_DE_SETUP_COMPLETO.md`:** Copie as seções de "Pré-requisitos", "Clonagem do Repositório", "Configuração e Execução do Backend" (incluindo detalhes de `.env` e geração de chaves secretas), "Configuração e Execução do Frontend" e "Verificação Final" para o novo guia.
 4.  **Integrar alertas de interatividade:** Inclua os alertas sobre a interatividade do `setup_sqlite.sh` e `npm run db:migrate` (mencionados em `docs/02_guias_como_fazer/01TestarScriptsSetup.md`) diretamente na seção de setup do backend.
 5.  **Revisar e ajustar o "Troubleshooting Básico" e "Checklist de Setup Rápido":** Consolide e aprimore essas seções no novo guia, utilizando as informações de ambos os documentos originais.
-6.  **Atualizar referências:** No novo guia, substitua as referências a `GUIA_SETUP_DESENVOLVEDOR.md` e `01_tutoriais/01SetupInicial.md` por referências internas ao próprio `GUIA_DE_SETUP_COMPLETO.md` ou a outros guias específicos (ex: `02_guias_como_fazer/05ComoResolverErrosCompilacao.md`).
-7.  **Remover arquivos antigos:** Após a consolidação e validação do novo guia, remova `docs/GUIA_SETUP_DESENVOLVEDOR.md` e `docs/01_tutoriais/01SetupInicial.md`.
+6.  **Atualizar referências:** No novo guia, substitua as referências a `GUIA_DE_SETUP_COMPLETO.md` e `01_tutoriais/GUIA_DE_SETUP_COMPLETO.md` por referências internas ao próprio `GUIA_DE_SETUP_COMPLETO.md` ou a outros guias específicos (ex: `02_guias_como_fazer/05ComoResolverErrosCompilacao.md`).
+7.  **Remover arquivos antigos:** Após a consolidação e validação do novo guia, remova `docs/GUIA_DE_SETUP_COMPLETO.md` e `docs/01_tutoriais/GUIA_DE_SETUP_COMPLETO.md`.
 8.  **Atualizar `docs/README.md` (se existir):** Garanta que o `README.md` principal do diretório `docs` aponte para o novo `GUIA_DE_SETUP_COMPLETO.md`.
 
 ## 2. Consistência de Nomenclatura e Framework Backend

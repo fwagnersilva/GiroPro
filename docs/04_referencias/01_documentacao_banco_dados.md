@@ -288,3 +288,39 @@ Armazena as notificações enviadas aos usuários.
 
 
 
+
+
+## Migrações e Padrões de Acesso a Dados
+
+### Migrações
+
+As migrações do banco de dados são gerenciadas pelo Drizzle ORM. Elas permitem que o esquema do banco de dados seja versionado e atualizado de forma controlada. Os arquivos de migração SQL são gerados automaticamente pelo Drizzle Kit e aplicados ao banco de dados.
+
+-   **Localização dos arquivos de migração:** `backend/drizzle`
+-   **Comando para gerar migrações:** `npx drizzle-kit generate`
+-   **Comando para aplicar migrações:** `npm run db:migrate` (definido no `package.json` do backend)
+
+### Padrões de Acesso a Dados
+
+O acesso aos dados é realizado através do Drizzle ORM, que fornece uma interface type-safe para interagir com o banco de dados. Os serviços (localizados em `backend/src/services`) são responsáveis por encapsular a lógica de acesso e manipulação de dados, garantindo a separação de responsabilidades e a reutilização de código.
+
+**Exemplo de acesso a dados (Drizzle ORM):**
+
+```typescript
+import { db } from "../db/connection";
+import { users } from "../db/schema";
+import { eq } from "drizzle-orm";
+
+export async function getUserByEmail(email: string) {
+  const result = await db.select().from(users).where(eq(users.email, email));
+  return result[0];
+}
+
+export async function createUser(userData: typeof users.$inferInsert) {
+  const result = await db.insert(users).values(userData).returning();
+  return result[0];
+}
+```
+
+Este padrão garante que as operações de banco de dados sejam consistentes, seguras (prevenindo injeção de SQL) e fáceis de manter.
+

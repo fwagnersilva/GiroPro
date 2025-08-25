@@ -15,9 +15,9 @@ O GiroPro é uma aplicação de gestão financeira para motoristas de aplicativo
 
 ## 2. Análise da Documentação de Setup e Onboarding
 
-A documentação de setup é a porta de entrada para qualquer novo desenvolvedor em um projeto. No repositório GiroPro, dois documentos principais abordam este tópico: `GUIA_SETUP_DESENVOLVEDOR.md` [1] e `01_tutoriais/01SetupInicial.md` [2]. Ambos são bem estruturados e fornecem um roteiro claro para a configuração do ambiente de desenvolvimento, mas apresentam algumas sobreposições e oportunidades de aprimoramento.
+A documentação de setup é a porta de entrada para qualquer novo desenvolvedor em um projeto. No repositório GiroPro, dois documentos principais abordam este tópico: `GUIA_DE_SETUP_COMPLETO.md` [1] e `01_tutoriais/GUIA_DE_SETUP_COMPLETO.md` [2]. Ambos são bem estruturados e fornecem um roteiro claro para a configuração do ambiente de desenvolvimento, mas apresentam algumas sobreposições e oportunidades de aprimoramento.
 
-### 2.1. `GUIA_SETUP_DESENVOLVEDOR.md`
+### 2.1. `GUIA_DE_SETUP_COMPLETO.md`
 
 Este guia oferece uma visão geral concisa do projeto, seus componentes (Backend, Frontend, Banco de Dados) e os pré-requisitos de ferramentas (Node.js, npm, Git, VS Code). A seção de configuração do ambiente é detalhada, cobrindo a clonagem do repositório, instalação de dependências para backend e frontend, configuração de variáveis de ambiente (`.env`), compilação e execução. A estrutura de diretórios de ambos os módulos é apresentada de forma clara, o que é extremamente útil para a navegação inicial no projeto. Além disso, o documento lista scripts disponíveis, informações sobre o banco de dados (SQLite com Drizzle ORM), endpoints da API e uma seção de solução de problemas comuns. Recursos adicionais e informações de contato também são fornecidos.
 
@@ -30,11 +30,11 @@ Este guia oferece uma visão geral concisa do projeto, seus componentes (Backend
 
 **Oportunidades de Melhoria e Pendências:**
 
-*   **Consistência com `01SetupInicial.md`:** Há uma sobreposição considerável de informações com o `01_tutoriais/01SetupInicial.md`. Seria benéfico consolidar ou referenciar um ao outro de forma mais explícita para evitar redundância e possível desatualização de um em relação ao outro. Idealmente, um seria o guia principal e o outro um complemento ou um tutorial mais aprofundado para casos específicos.
-*   **Variáveis de Ambiente:** Embora mencione a cópia do `giropro.env` para `.env`, poderia aprofundar a explicação sobre a importância de não versionar o `.env` e a geração de chaves secretas, como é feito no `01SetupInicial.md`.
+*   **Consistência com `GUIA_DE_SETUP_COMPLETO.md`:** Há uma sobreposição considerável de informações com o `01_tutoriais/GUIA_DE_SETUP_COMPLETO.md`. Seria benéfico consolidar ou referenciar um ao outro de forma mais explícita para evitar redundância e possível desatualização de um em relação ao outro. Idealmente, um seria o guia principal e o outro um complemento ou um tutorial mais aprofundado para casos específicos.
+*   **Variáveis de Ambiente:** Embora mencione a cópia do `giropro.env` para `.env`, poderia aprofundar a explicação sobre a importância de não versionar o `.env` e a geração de chaves secretas, como é feito no `GUIA_DE_SETUP_COMPLETO.md`.
 *   **Interatividade dos Scripts:** O guia menciona `npm run db:migrate` mas não alerta sobre a interatividade que pode ocorrer, um ponto crucial destacado em `02_guias_como_fazer/01TestarScriptsSetup.md` [3].
 
-### 2.2. `01_tutoriais/01SetupInicial.md`
+### 2.2. `01_tutoriais/GUIA_DE_SETUP_COMPLETO.md`
 
 Este tutorial é mais detalhado em algumas seções, especialmente na configuração do banco de dados SQLite e nas variáveis de ambiente. Ele introduz o script `./setup_sqlite.sh` e alerta sobre sua interatividade. A seção de variáveis de ambiente (`.env`) é particularmente robusta, explicando a importância do `.gitignore` e como gerar chaves secretas. O guia também oferece um checklist de setup rápido e uma seção de troubleshooting mais aprofundada, com referências a outros documentos da pasta `02_guias_como_fazer/`.
 
@@ -47,7 +47,7 @@ Este tutorial é mais detalhado em algumas seções, especialmente na configura�
 
 **Oportunidades de Melhoria e Pendências:**
 
-*   **Visão Geral Inicial:** Poderia se beneficiar de uma visão geral mais concisa do projeto e sua arquitetura no início, similar ao `GUIA_SETUP_DESENVOLVEDOR.md`, para contextualizar o novo desenvolvedor antes de mergulhar nos detalhes técnicos.
+*   **Visão Geral Inicial:** Poderia se beneficiar de uma visão geral mais concisa do projeto e sua arquitetura no início, similar ao `GUIA_DE_SETUP_COMPLETO.md`, para contextualizar o novo desenvolvedor antes de mergulhar nos detalhes técnicos.
 *   **Atualização de Ferramentas:** Menciona Fastify no diagrama de arquitetura, mas o `app.ts` [4] do backend utiliza Express. É importante alinhar essa informação para evitar confusão.
 
 ### 2.3. Consolidação e Recomendações para Documentação de Setup
@@ -55,13 +55,13 @@ Este tutorial é mais detalhado em algumas seções, especialmente na configura�
 Ambos os documentos são valiosos, mas a existência de dois guias de setup com informações sobrepostas pode levar à confusão e à desatualização. Recomenda-se a consolidação ou uma clara distinção de propósito:
 
 *   **Proposta de Consolidação:** Criar um único `GUIA_DE_SETUP.md` abrangente que incorpore os melhores aspectos de ambos os documentos. Este guia seria o ponto de partida oficial para novos desenvolvedores.
-    *   Manteria a visão geral do projeto e a estrutura de diretórios do `GUIA_SETUP_DESENVOLVEDOR.md`.
-    *   Incorporaria os detalhes aprofundados sobre `.env`, geração de chaves secretas e o alerta de interatividade dos scripts do `01SetupInicial.md`.
+    *   Manteria a visão geral do projeto e a estrutura de diretórios do `GUIA_DE_SETUP_COMPLETO.md`.
+    *   Incorporaria os detalhes aprofundados sobre `.env`, geração de chaves secretas e o alerta de interatividade dos scripts do `GUIA_DE_SETUP_COMPLETO.md`.
     *   Manteria o checklist de setup rápido e a seção de troubleshooting aprofundada, com referências a guias específicos para problemas mais complexos.
-*   **Alternativa (Distinção de Propósito):** Se a intenção for manter dois documentos, o `GUIA_SETUP_DESENVOLVEDOR.md` poderia ser um 
+*   **Alternativa (Distinção de Propósito):** Se a intenção for manter dois documentos, o `GUIA_DE_SETUP_COMPLETO.md` poderia ser um 
 
 
-documento de alto nível, um "roadmap" para o desenvolvedor, enquanto o `01_tutoriais/01SetupInicial.md` seria o tutorial prático e detalhado. Neste caso, o `GUIA_SETUP_DESENVOLVEDOR.md` deveria referenciar explicitamente o `01_tutoriais/01SetupInicial.md` como o guia passo a passo para a execução do setup.
+documento de alto nível, um "roadmap" para o desenvolvedor, enquanto o `01_tutoriais/GUIA_DE_SETUP_COMPLETO.md` seria o tutorial prático e detalhado. Neste caso, o `GUIA_DE_SETUP_COMPLETO.md` deveria referenciar explicitamente o `01_tutoriais/GUIA_DE_SETUP_COMPLETO.md` como o guia passo a passo para a execução do setup.
 
 Independentemente da abordagem, é crucial garantir que as informações sobre as ferramentas e tecnologias utilizadas (como a escolha entre Express e Fastify no backend) estejam alinhadas em toda a documentação para evitar confusão.
 
@@ -139,7 +139,7 @@ Este guia é uma análise aprofundada dos scripts de setup, identificando proble
 
 **Oportunidades de Melhoria e Pendências:**
 
-*   **Integração:** Muitas das informações e recomendações deste guia deveriam ser integradas diretamente nos guias de setup (`GUIA_SETUP_DESENVOLVEDOR.md` e `01SetupInicial.md`) para que o desenvolvedor não precise consultar múltiplos documentos para o setup inicial.
+*   **Integração:** Muitas das informações e recomendações deste guia deveriam ser integradas diretamente nos guias de setup (`GUIA_DE_SETUP_COMPLETO.md` e `GUIA_DE_SETUP_COMPLETO.md`) para que o desenvolvedor não precise consultar múltiplos documentos para o setup inicial.
 *   **Status do `setup.sh`:** O status "Não Testado Completamente" para `setup.sh` é uma pendência crítica, especialmente se o PostgreSQL for o banco de dados de produção. A validação e documentação completa deste script são essenciais.
 
 ### 6.2. `02ComoRealizarMigracaoBancoDados.md`
@@ -215,7 +215,7 @@ Com base na análise dos documentos existentes e do código-fonte, as seguintes 
 
 ### 8.1. Consolidação e Alinhamento
 
-*   **Unificar Guias de Setup:** Consolidar `GUIA_SETUP_DESENVOLVEDOR.md` e `01_tutoriais/01SetupInicial.md` em um único guia abrangente, ou definir claramente o propósito de cada um e garantir referências cruzadas adequadas.
+*   **Unificar Guias de Setup:** Consolidar `GUIA_DE_SETUP_COMPLETO.md` e `01_tutoriais/GUIA_DE_SETUP_COMPLETO.md` em um único guia abrangente, ou definir claramente o propósito de cada um e garantir referências cruzadas adequadas.
 *   **Corrigir Inconsistência de Framework Backend:** Atualizar `01ArquiteturaGeral.md` e `03ComoAdicionarNovaApi.md` para refletir o uso de Express.js no backend, ou indicar claramente se há planos de migração para Fastify.
 *   **Padronização de Nomenclatura:** Reforçar a padronização para `camelCase` em toda a documentação e no código, com um guia claro sobre como lidar com isso em migrações de banco de dados.
 
@@ -224,7 +224,7 @@ Com base na análise dos documentos existentes e do código-fonte, as seguintes 
 *   **Documentação de Design System:** Criar um documento dedicado ao design system do frontend, detalhando paleta de cores, tipografia, componentes base e diretrizes de UI/UX.
 *   **Documentação de Testes:** Expandir a documentação sobre a estratégia de testes, incluindo tipos de testes (unitários, integração, E2E), ferramentas utilizadas, cobertura de código e como executar os testes.
 *   **Documentação de Segurança:** Criar um documento que detalhe as práticas de segurança implementadas, as vulnerabilidades conhecidas e o plano de mitigação. Isso pode incluir informações sobre OWASP Top 10, validação de entrada, proteção contra ataques comuns, etc.
-*   **Documentação de Deploy:** Embora o `GUIA_SETUP_DESENVOLVEDOR.md` e `progresso.md` mencionem a preparação para deploy, um guia detalhado de deploy para ambientes de produção (incluindo CI/CD, variáveis de ambiente de produção, monitoramento, etc.) seria muito valioso.
+*   **Documentação de Deploy:** Embora o `GUIA_DE_SETUP_COMPLETO.md` e `progresso.md` mencionem a preparação para deploy, um guia detalhado de deploy para ambientes de produção (incluindo CI/CD, variáveis de ambiente de produção, monitoramento, etc.) seria muito valioso.
 *   **Documentação de Erros Comuns (Centralizada):** Embora existam documentos sobre problemas comuns, uma seção centralizada ou um índice de problemas comuns com suas soluções e referências cruzadas seria útil.
 *   **Documentação de Banco de Dados (Detalhada):** A seção 2.8 de `principiosArquiteturais.md` [5] já aponta a necessidade de Diagrama ER, Dicionário de Dados e documentação de migrações. Esta é uma pendência crucial para a compreensão e manutenção do banco de dados.
 *   **Documentação de APIs (OpenAPI/Swagger):** Gerar e manter uma documentação de API interativa (OpenAPI/Swagger) para o backend. Isso facilita o consumo da API por outros desenvolvedores e ferramentas.
@@ -252,8 +252,8 @@ Ao abordar essas recomendações, o projeto GiroPro pode elevar significativamen
 
 ## 10. Referências
 
-[1] `GUIA_SETUP_DESENVOLVEDOR.md`
-[2] `01_tutoriais/01SetupInicial.md`
+[1] `GUIA_DE_SETUP_COMPLETO.md`
+[2] `01_tutoriais/GUIA_DE_SETUP_COMPLETO.md`
 [3] `02_guias_como_fazer/01TestarScriptsSetup.md`
 [4] `GiroPro/backend/src/app.ts`
 [5] `principiosArquiteturais.md`

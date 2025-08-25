@@ -16,7 +16,7 @@
 
 ## Próximas tarefas
 - **Documentação Final**:
-  - Criar guia de setup detalhado para novos desenvolvedores (consolidando `GUIA_SETUP_DESENVOLVEDOR.md` e `01_tutoriais/01SetupInicial.md`).
+  - Criar guia de setup detalhado para novos desenvolvedores (consolidando `GUIA_DE_SETUP_COMPLETO.md` e `01_tutoriais/GUIA_DE_SETUP_COMPLETO.md`).
   - Documentar configurações de ambiente e dependências de forma unificada.
   - Corrigir inconsistência na documentação sobre o framework backend (Express.js).
   - Padronizar nomenclatura para `camelCase` em todo o projeto (código e documentação).
@@ -47,8 +47,8 @@
 - Identificação e leitura do arquivo `docs/tododocs.md`.
 - Criação do arquivo `todo.md` na raiz do ambiente com um checklist detalhado das tarefas do `tododocs.md`.
 - Criação do arquivo `docs/GUIA_DE_SETUP_COMPLETO.md`.
-- Migração do conteúdo de `docs/GUIA_SETUP_DESENVOLVEDOR.md` para `docs/GUIA_DE_SETUP_COMPLETO.md`.
-- Migração do conteúdo de `docs/01_tutoriais/01SetupInicial.md` para `docs/GUIA_DE_SETUP_COMPLETO.md`.
+- Migração do conteúdo de `docs/GUIA_DE_SETUP_COMPLETO.md` para `docs/GUIA_DE_SETUP_COMPLETO.md`.
+- Migração do conteúdo de `docs/01_tutoriais/GUIA_DE_SETUP_COMPLETO.md` para `docs/GUIA_DE_SETUP_COMPLETO.md`.
 - Integração de alertas de interatividade (`setup_sqlite.sh` e `npm run db:migrate`) no `GUIA_DE_SETUP_COMPLETO.md`.
 - Início da revisão e ajuste das seções de "Troubleshooting Básico" e "Checklist de Setup Rápido" no `GUIA_DE_SETUP_COMPLETO.md`.
 
@@ -61,7 +61,7 @@
 - **Documentação de Setup e Onboarding**:
   - [Pendente] Revisar e ajustar o "Troubleshooting Básico" e "Checklist de Setup Rápido" no `GUIA_DE_SETUP_COMPLETO.md`.
   - [Pendente] Atualizar referências nos documentos para o novo `GUIA_DE_SETUP_COMPLETO.md`.
-  - [Pendente] Remover arquivos antigos (`docs/GUIA_SETUP_DESENVOLVEDOR.md` e `docs/01_tutoriais/01SetupInicial.md`).
+  - [Pendente] Remover arquivos antigos (`docs/GUIA_DE_SETUP_COMPLETO.md` e `docs/01_tutoriais/GUIA_DE_SETUP_COMPLETO.md`).
   - [Pendente] Atualizar `docs/README.md` (se existir) para apontar para o novo `GUIA_DE_SETUP_COMPLETO.md`.
 - **Consistência de Nomenclatura e Framework Backend**:
   - [Pendente] Padronizar Nomenclatura para `camelCase` em `src/db/schema.ts` e refatorar código backend e frontend.
@@ -99,7 +99,7 @@
 - Clonagem do repositório GiroPro e análise das tarefas pendentes no arquivo `docs/progresso.md`.
 - Criação do arquivo `todo.md` na raiz do projeto com checklist detalhado das tarefas organizadas por categoria.
 - Reorganização completa e limpeza do arquivo `docs/GUIA_DE_SETUP_COMPLETO.md`, removendo duplicações e criando estrutura mais clara e coesa.
-- Remoção dos arquivos antigos `docs/GUIA_SETUP_DESENVOLVEDOR.md` e `docs/01_tutoriais/01SetupInicial.md` conforme solicitado.
+- Remoção dos arquivos antigos `docs/GUIA_DE_SETUP_COMPLETO.md` e `docs/01_tutoriais/GUIA_DE_SETUP_COMPLETO.md` conforme solicitado.
 - Correção de todas as inconsistências sobre o framework backend, alterando referências de "Fastify" para "Express.js" nos arquivos:
   - `docs/03_explicacoes/01ArquiteturaGeral.md` (diagrama, componentes e decisões arquiteturais)
   - `docs/02_guias_como_fazer/03ComoAdicionarNovaApi.md` (exemplos de código, controladores, rotas e testes)
@@ -176,4 +176,40 @@
   - [Pendente] Resolver Vulnerabilidades de Segurança Moderadas.
 - **Atualização do `progresso.md`**:
   - [Pendente] Manter o `progresso.md` como um diário de bordo atualizado e estruturado.
+
+
+---
+
+**Última sessão:**
+- Data: 25/08/2025 16:30
+- Sessão: #74
+
+## O que foi feito nesta sessão
+- Continuei as ações especificadas no `progresso.md` que não dependiam da interação manual do `drizzle-kit`.
+- Criei o arquivo `docs/04_referencias/02_documentacao_testes.md` detalhando a estratégia de testes.
+- Criei o arquivo `docs/04_referencias/03_guia_deploy.md` com um guia detalhado para o deploy.
+- Criei o arquivo `docs/04_referencias/04_documentacao_seguranca.md` detalhando as práticas de segurança.
+- Criei o arquivo `docs/04_referencias/05_design_system.md` com um guia para o design system do frontend.
+- Criei o arquivo `docs/04_referencias/06_glossario.md` com um glossário de termos técnicos.
+- Atualizei o arquivo `docs/04_referencias/01_documentacao_banco_dados.md` com informações sobre migrações e padrões de acesso a dados.
+
+## Problemas encontrados / observações
+- A geração de migrações do Drizzle ORM (`npx drizzle-kit generate`) requer interação manual para confirmar a renomeação de colunas, o que não é possível automatizar no ambiente atual. Isso impediu a atualização das migrações e a geração automática do Diagrama ER.
+- A tarefa de atualização de referências nos documentos para o `GUIA_DE_SETUP_COMPLETO.md` foi realizada na sessão anterior, mas não foi possível verificar todas as referências devido à interatividade da ferramenta `drizzle-kit`.
+
+## Próximas tarefas
+- **Consistência de Nomenclatura e Framework Backend**:
+  - [Pendente] Padronizar Nomenclatura para `camelCase` em `src/db/schema.ts` (pequenos ajustes necessários).
+  - [Pendente] Atualizar migrações se necessário (após padronização de nomenclatura).
+  - [Pendente] Atualizar documentação para refletir `camelCase`.
+- **Melhorias de Formato e Usabilidade**:
+  - [Pendente] Inserir Diagramas e Visualizações (atualizar `docs/03_explicacoes/01ArquiteturaGeral.md`).
+  - [Pendente] Utilizar Tabelas para organizar informações (Endpoints da API, Variáveis de Ambiente, Scripts).
+  - [Pendente] Garantir Referências Cruzadas Clicáveis em todos os documentos.
+- **Resolução de Problemas e Vulnerabilidades**:
+  - [Pendente] Resolver Erros TypeScript Restantes.
+  - [Pendente] Resolver Vulnerabilidades de Segurança Moderadas.
+- **Atualização do `progresso.md`**:
+  - [Pendente] Manter o `progresso.md` como um diário de bordo atualizado e estruturado.
+
 
