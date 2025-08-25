@@ -24,33 +24,28 @@ show_help() {
 }
 
 # Parsear argumentos da linha de comando
-while [[ "$#" -gt 0 ]]; do
-    key="$1"
-    case $key in
-        -d|--db-path)
-        DB_PATH="$2"
-        shift # past argument
-        shift # past value
+while getopts ":d:smh" opt; do
+    case ${opt} in
+        d ) DB_PATH=$OPTARG
         ;;
-        -s|--skip-install)
-        SKIP_INSTALL=true
-        shift # past argument
+        s ) SKIP_INSTALL=true
         ;;
-        -m|--skip-migrate)
-        SKIP_MIGRATE=true
-        shift # past argument
+        m ) SKIP_MIGRATE=true
         ;;
-        -h|--help)
-        show_help
-        exit 0
+        h ) show_help
+            exit 0
         ;;
-        *)
-        echo -e "${RED}Erro: Opção inválida: $1${NC}"
-        show_help
-        exit 1
+        \? ) echo "Erro: Opção inválida: -$OPTARG" >&2
+            show_help
+            exit 1
+        ;;
+        : ) echo "Erro: A opção -$OPTARG requer um argumento." >&2
+            show_help
+            exit 1
         ;;
     esac
 done
+shift $((OPTIND -1))
 
 echo "Configurando ambiente SQLite para o GiroPro..."
 
@@ -76,23 +71,23 @@ echo "Configurando variáveis de ambiente..."
 
 # Criar ou atualizar arquivo .env
 if [ ! -f .env ]; then
-    cp .env.example .env || {
-        echo -e "${RED}Erro: Falha ao copiar .env.example para .env.${NC}"
-        exit 1
-    }
-    echo -e "${GREEN}Arquivo .env criado a partir do .env.example${NC}"
+    # cp .env.example .env || {
+    #     echo -e "${RED}Erro: Falha ao copiar .env.example para .env.${NC}"
+    #     exit 1
+    # }
+    # echo -e "${GREEN}Arquivo .env criado a partir do .env.example${NC}"
 fi
 
 # Atualizar DB_TYPE para sqlite no .env
 if grep -q "DB_TYPE=" .env; then
-    sed -i \'s/DB_TYPE=.*/DB_TYPE=sqlite/\' .env
+    sed -i "s/^DB_TYPE=.*/DB_TYPE=sqlite/" .env
 else
     echo "DB_TYPE=sqlite" >> .env
 fi
 
 # Configurar caminho do SQLite
 if grep -q "SQLITE_DB_PATH=" .env; then
-    sed -i "s|SQLITE_DB_PATH=.*|SQLITE_DB_PATH=${DB_PATH}|" .env
+    sed -i "s|^SQLITE_DB_PATH=.*|SQLITE_DB_PATH=${DB_PATH}|" .env
 else
     echo "SQLITE_DB_PATH=${DB_PATH}" >> .env
 fi
@@ -119,5 +114,3 @@ fi
 echo -e "${GREEN}Configuração SQLite concluída!${NC}"
 echo -e "${BLUE}Para usar SQLite, certifique-se de que DB_TYPE=sqlite no seu arquivo .env${NC}"
 echo -e "${BLUE}Para voltar ao PostgreSQL, altere DB_TYPE=postgresql no arquivo .env${NC}"
-
-
