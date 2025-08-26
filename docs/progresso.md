@@ -271,3 +271,35 @@
 - **Atualização do `progresso.md`**:
   - [Pendente] Manter o `progresso.md` como um diário de bordo atualizado e estruturado.
 
+
+
+
+---
+
+**Última sessão:**
+- Data: 25/08/2025 23:20
+- Sessão: #77
+
+## O que foi feito nesta sessão
+- Explicação das principais decisões de design do GiroPro com base no arquivo de arquitetura.
+- Criação de um diagrama Mermaid para as decisões arquiteturais e renderização para PNG.
+- Atualização do arquivo `docs/03_explicacoes/01ArquiteturaGeral.md` com o novo diagrama de decisões arquiteturais.
+
+## Problemas encontrados / observações
+- Os diagramas existentes no documento de arquitetura (`01ArquiteturaGeral.md`) já eram adequados para as seções que representavam, portanto, não foi necessário criar novos diagramas ou modificar os existentes para essas seções.
+
+## Próximas tarefas
+- **Consistência de Nomenclatura e Framework Backend**:
+  - [Pendente] Padronizar Nomenclatura para `camelCase` em `src/db/schema.ts` (pequenos ajustes necessários).
+  - [Pendente] Atualizar migrações se necessário (após padronização de nomenclatura).
+  - [Em Andamento] Atualizar documentação para refletir `camelCase`.
+- **Melhorias de Formato e Usabilidade**:
+  - [Pendente] Utilizar Tabelas para organizar informações (Endpoints da API, Variáveis de Ambiente, Scripts).
+  - [Pendente] Garantir Referências Cruzadas Clicáveis em todos os documentos.
+- **Resolução de Problemas e Vulnerabilidades**:
+  - [Pendente] Resolver Erros TypeScript Restantes.
+  - [Pendente] Resolver Vulnerabilidades de Segurança Moderadas.
+- **Atualização do `progresso.md`**:
+  - [Pendente] Manter o `progresso.md` como um diário de bordo atualizado e estruturado.
+
+

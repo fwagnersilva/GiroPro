@@ -74,3 +74,12 @@ sequenceDiagram
 
 Esta arquitetura foi projetada para ser modular, escalável e de fácil manutenção, permitindo que o GiroPro evolua e se adapte às futuras necessidades do negócio e demandas.
 
+
+
+## 4. Diagrama de Decisões Arquiteturais
+
+Este diagrama visualiza as principais decisões arquiteturais tomadas no projeto GiroPro e suas ramificações.
+
+![Diagrama de Decisões Arquiteturais](diagrama_decisoes.png)
+
+
