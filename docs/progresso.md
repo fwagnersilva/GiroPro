@@ -627,3 +627,39 @@
 - **Atualização do `progresso.md`**:
   - Manter o `progresso.md` como um diário de bordo atualizado e estruturado.
 
+
+
+
+---
+
+**Última sessão:**
+- Data: 26/08/2025 00:22
+- Sessão: #77
+
+## O que foi feito nesta sessão
+- Clonagem do repositório GiroPro.
+- Instalação das dependências do backend (npm install).
+- Tentativa de geração e aplicação de migrações do Drizzle ORM. Foi necessário matar o processo interativo e tentar novamente, mas a geração de migrações ainda requer interação manual para confirmação de renomeação de colunas, o que impede a automação completa.
+- Aplicação das migrações do Drizzle ORM (npx drizzle-kit push).
+- Renderização do diagrama ER (`giropro_schema.mmd`) para PNG (`giropro_er_diagram.png`) utilizando `manus-render-diagram`.
+- Substituição do diagrama ER antigo pelo recém-gerado.
+- Criação de uma documentação detalhada (`documentation.md`) abordando a estrutura do banco de dados, migrações e a integração do diagrama ER.
+
+## Problemas encontrados / observações
+- A geração de migrações do Drizzle ORM (`npx drizzle-kit generate`) ainda requer interação manual para confirmação de renomeação de colunas, o que impede a automação completa da geração de migrações e do diagrama ER.
+
+## Próximas tarefas
+- **Consistência de Nomenclatura e Framework Backend**:
+  - [Pendente] Padronizar Nomenclatura para `camelCase` em `src/db/schema.ts` (pequenos ajustes necessários).
+  - [Pendente] Atualizar migrações se necessário (após padronização de nomenclatura).
+- **Melhorias de Formato e Usabilidade**:
+  - [Pendente] Inserir Diagramas e Visualizações (atualizar `docs/03_explicacoes/01ArquiteturaGeral.md`).
+  - [Pendente] Utilizar Tabelas para organizar informações (Endpoints da API, Variáveis de Ambiente, Scripts).
+  - [Pendente] Garantir Referências Cruzadas Clicáveis em todos os documentos.
+- **Resolução de Problemas e Vulnerabilidades**:
+  - [Pendente] Resolver Erros TypeScript Restantes.
+  - [Pendente] Resolver Vulnerabilidades de Segurança Moderadas.
+- **Atualização do `progresso.md`**:
+  - [Pendente] Manter o `progresso.md` como um diário de bordo atualizado e estruturado.
+
+
