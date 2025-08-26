@@ -375,3 +375,35 @@
   - [Pendente] Manter o `progresso.md` como um diário de bordo atualizado e estruturado.
 
 
+
+
+
+---
+
+**Última sessão:**
+- Data: 26/08/2025 10:00
+- Sessão: #77
+
+## O que foi feito nesta sessão
+- Clonagem do repositório GiroPro.
+- Análise da estrutura do projeto.
+- Início da padronização da nomenclatura para `camelCase` no arquivo `backend/src/db/schema.ts`.
+- Campos padronizados: `statusConta`, `tipoCombustivel`, `tipoUso`, `tipoDespesa`, `tipoMeta`, `periodoMeta`, `statusMeta`, `tipoConquista`, `raridade`, `nivelUsuario`, `tipoNotificacao`, `senhaHash`, `dataCadastro`, `pontosTotal`, `nivelUsuario`, `conquistasDesbloqueadas`, `updatedAt`, `deletedAt`.
+
+## Problemas encontrados / observações
+- Alguns campos como `dataCadastro`, `updatedAt` e `deletedAt` aparecem múltiplas vezes no arquivo `schema.ts`, exigindo o uso de `replace_all=True` para padronização.
+
+## Próximas tarefas
+- Continuar a padronização da nomenclatura para `camelCase` em `src/db/schema.ts` para os campos restantes.
+- Refatorar o código backend para usar a nomenclatura `camelCase`.
+- Refatorar o código frontend para usar a nomenclatura `camelCase`.
+- Testar e validar as alterações.
+- Atualizar migrações se necessário (após padronização de nomenclatura).
+- Atualizar documentação para refletir `camelCase`.
+- Inserir Diagramas e Visualizações (atualizar `docs/03_explicacoes/01ArquiteturaGeral.md`).
+- Utilizar Tabelas para organizar informações (Endpoints da API, Variáveis de Ambiente, Scripts).
+- Garantir Referências Cruzadas Clicáveis em todos os documentos.
+- Resolver Erros TypeScript Restantes.
+- Resolver Vulnerabilidades de Segurança Moderadas.
+- Manter o `progresso.md` como um diário de bordo atualizado e estruturado.
+
