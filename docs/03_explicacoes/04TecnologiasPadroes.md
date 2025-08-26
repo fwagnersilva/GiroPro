@@ -10,7 +10,7 @@ O GiroPro é construído com um conjunto de tecnologias modernas e robustas, sel
 
 *   **Runtime**: Node.js (versão LTS)
 *   **Linguagem**: TypeScript 5.8.3+
-*   **Framework Web**: Express 4.18.2 + Fastify 5.4.0 (híbrido) - *A escolha híbrida visa aproveitar a flexibilidade do Express com a performance do Fastify para rotas críticas.*
+*   **Framework Web**: Express 4.18.2 - *A escolha do Express visa a flexibilidade e vasta comunidade.*
 *   **ORM**: Drizzle ORM 0.44.3+ - *Selecionado por sua tipagem forte e leveza, oferecendo uma experiência de desenvolvimento segura e eficiente para interações com o banco de dados.*
 *   **Validação**: Zod 3.22.4+ - *Utilizado para validação de schemas de dados, garantindo a integridade das informações que entram e saem da API.*
 *   **Autenticação**: JWT (jsonwebtoken 9.0.0+) - *Padrão da indústria para autenticação stateless, proporcionando segurança e escalabilidade.*

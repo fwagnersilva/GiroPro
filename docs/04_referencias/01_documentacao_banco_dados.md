@@ -321,3 +321,180 @@ export async function createUser(userData: typeof users.$inferInsert) {
 
 Este padrão garante que as operações de banco de dados sejam consistentes, seguras (prevenindo injeção de SQL) e fáceis de manter.
 
+
+
+
+```mermaid
+erDiagram
+    USUARIOS ||--o{ VEICULOS : "tem"
+    USUARIOS ||--o{ JORNADAS : "realiza"
+    USUARIOS ||--o{ ABASTECIMENTOS : "registra"
+    USUARIOS ||--o{ DESPESAS : "registra"
+    USUARIOS ||--o{ LOGS_ATIVIDADES : "gera"
+    USUARIOS ||--o{ METAS : "define"
+    USUARIOS ||--o{ NOTIFICACOES : "recebe"
+    VEICULOS ||--o{ JORNADAS : "utilizado_em"
+    VEICULOS ||--o{ ABASTECIMENTOS : "abastecido"
+    VEICULOS ||--o{ DESPESAS : "associado_a"
+    METAS ||--o{ PROGRESSO_METAS : "acompanha"
+
+    USUARIOS {
+        TEXT id PK
+        TEXT nome
+        TEXT email
+        TEXT senhaHash
+        TEXT statusConta
+        INTEGER dataCadastro
+        INTEGER pontosTotal
+        TEXT nivelUsuario
+        INTEGER conquistasDesbloqueadas
+        INTEGER updatedAt
+        INTEGER deletedAt
+        INTEGER tentativasLogin
+        INTEGER ultimoLoginFalhado
+        INTEGER ultimaAtividade
+    }
+
+    VEICULOS {
+        TEXT id PK
+        TEXT idUsuario FK
+        TEXT marca
+        TEXT modelo
+        INTEGER ano
+        TEXT placa
+        TEXT tipoCombustivel
+        TEXT tipoUso
+        INTEGER valorAluguel
+        INTEGER valorPrestacao
+        REAL mediaConsumo
+        INTEGER dataCadastro
+        INTEGER updatedAt
+        INTEGER deletedAt
+    }
+
+    JORNADAS {
+        TEXT id PK
+        TEXT idUsuario FK
+        TEXT idVeiculo FK
+        INTEGER dataInicio
+        INTEGER kmInicio
+        INTEGER dataFim
+        INTEGER kmFim
+        INTEGER ganhoBruto
+        INTEGER kmTotal
+        INTEGER tempoTotal
+        TEXT observacoes
+        INTEGER createdAt
+        INTEGER updatedAt
+        INTEGER deletedAt
+    }
+
+    ABASTECIMENTOS {
+        TEXT id PK
+        TEXT idUsuario FK
+        TEXT idVeiculo FK
+        INTEGER dataAbastecimento
+        TEXT tipoCombustivel
+        REAL quantidadeLitros
+        INTEGER valorLitro
+        INTEGER valorTotal
+        INTEGER kmAtual
+        TEXT nomePosto
+        INTEGER createdAt
+        INTEGER updatedAt
+        INTEGER deletedAt
+    }
+
+    DESPESAS {
+        TEXT id PK
+        TEXT idUsuario FK
+        TEXT idVeiculo FK
+        INTEGER dataDespesa
+        TEXT tipoDespesa
+        INTEGER valorDespesa
+        TEXT descricao
+        INTEGER createdAt
+        INTEGER updatedAt
+        INTEGER deletedAt
+    }
+
+    HISTORICO_PRECO_COMBUSTIVEL {
+        TEXT id PK
+        TEXT cidade
+        TEXT estado
+        TEXT tipoCombustivel
+        INTEGER precoMedio
+        INTEGER dataRegistro
+        TEXT fonte
+        INTEGER createdAt
+        INTEGER deletedAt
+    }
+
+    LOGS_ATIVIDADES {
+        TEXT id PK
+        TEXT idUsuario FK
+        TEXT tipoAcao
+        TEXT descricao
+        TEXT metadados
+        INTEGER dataAcao
+        INTEGER deletedAt
+    }
+
+    METAS {
+        TEXT id PK
+        TEXT idUsuario FK
+        TEXT idVeiculo FK
+        TEXT titulo
+        TEXT descricao
+        TEXT tipoMeta
+        TEXT periodoMeta
+        INTEGER valorObjetivo
+        INTEGER dataInicio
+        INTEGER dataFim
+        TEXT statusMeta
+        INTEGER valorAtual
+        INTEGER percentualConcluido
+        INTEGER dataConclusao
+        INTEGER notificacaoEnviada
+        INTEGER createdAt
+        INTEGER updatedAt
+        INTEGER deletedAt
+    }
+
+    PROGRESSO_METAS {
+        TEXT id PK
+        TEXT idMeta FK
+        INTEGER dataRegistro
+        INTEGER valorAnterior
+        INTEGER valorAtual
+        INTEGER incremento
+        INTEGER percentualAnterior
+        INTEGER percentualAtual
+        TEXT observacoes
+        INTEGER createdAt
+    }
+
+    NOTIFICACOES {
+        TEXT id PK
+        TEXT idUsuario FK
+        TEXT tipo
+        TEXT titulo
+        TEXT mensagem
+        TEXT dadosExtras
+        INTEGER lida
+        INTEGER dataEnvio
+        INTEGER dataLeitura
+        INTEGER deletedAt
+    }
+```
+```
+
+## 2. Dicionário de Dados
+
+(A ser preenchido com detalhes de cada tabela e coluna)
+
+## 3. Migrações e Padrões de Acesso a Dados
+
+(A ser preenchido com informações sobre migrações e padrões de acesso a dados)
+
+

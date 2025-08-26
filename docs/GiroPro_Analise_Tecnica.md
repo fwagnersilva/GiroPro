@@ -48,7 +48,7 @@ Este tutorial é mais detalhado em algumas seções, especialmente na configura�
 **Oportunidades de Melhoria e Pendências:**
 
 *   **Visão Geral Inicial:** Poderia se beneficiar de uma visão geral mais concisa do projeto e sua arquitetura no início, similar ao `GUIA_DE_SETUP_COMPLETO.md`, para contextualizar o novo desenvolvedor antes de mergulhar nos detalhes técnicos.
-*   **Atualização de Ferramentas:** Menciona Fastify no diagrama de arquitetura, mas o `app.ts` [4] do backend utiliza Express. É importante alinhar essa informação para evitar confusão.
+*   **Atualização de Ferramentas:** Menciona Express.js no diagrama de arquitetura, mas o `app.ts` [4] do backend utiliza Express. É importante alinhar essa informação para evitar confusão.
 
 ### 2.3. Consolidação e Recomendações para Documentação de Setup
 
@@ -63,7 +63,7 @@ Ambos os documentos são valiosos, mas a existência de dois guias de setup com 
 
 documento de alto nível, um "roadmap" para o desenvolvedor, enquanto o `01_tutoriais/GUIA_DE_SETUP_COMPLETO.md` seria o tutorial prático e detalhado. Neste caso, o `GUIA_DE_SETUP_COMPLETO.md` deveria referenciar explicitamente o `01_tutoriais/GUIA_DE_SETUP_COMPLETO.md` como o guia passo a passo para a execução do setup.
 
-Independentemente da abordagem, é crucial garantir que as informações sobre as ferramentas e tecnologias utilizadas (como a escolha entre Express e Fastify no backend) estejam alinhadas em toda a documentação para evitar confusão.
+Independentemente da abordagem, é crucial garantir que as informações sobre as ferramentas e tecnologias utilizadas (como a escolha entre Express e Express.js no backend) estejam alinhadas em toda a documentação para evitar confusão.
 
 ## 3. Análise dos Princípios Arquiteturais
 
@@ -171,8 +171,8 @@ Este guia é um excelente recurso para adicionar novos endpoints no backend, cob
 
 **Oportunidades de Melhoria e Pendências:**
 
-*   **Fastify vs Express:** O guia menciona Fastify no backend, mas o código-fonte (`app.ts`) utiliza Express. Esta inconsistência deve ser corrigida para evitar confusão. Se a intenção é migrar para Fastify, isso deve ser claramente indicado.
-*   **Validação de Esquema:** O guia menciona o uso de schemas de validação (Joi ou Zod) no controlador, mas não mostra exemplos concretos de como integrá-los com o Fastify/Express. Seria útil adicionar um exemplo de validação de payload com Zod, por exemplo.
+*   **Express.js vs Express:** O guia menciona Express.js no backend, mas o código-fonte (`app.ts`) utiliza Express. Esta inconsistência deve ser corrigida para evitar confusão. Se a intenção é migrar para Express.js, isso deve ser claramente indicado.
+*   **Validação de Esquema:** O guia menciona o uso de schemas de validação (Joi ou Zod) no controlador, mas não mostra exemplos concretos de como integrá-los com o Express.js/Express. Seria útil adicionar um exemplo de validação de payload com Zod, por exemplo.
 *   **Autenticação/Autorização:** Embora mencione o middleware `authenticate`, poderia aprofundar um pouco mais sobre como a autorização (baseada em roles, por exemplo) seria implementada em um novo endpoint.
 
 ### 6.4. `04ComoCriarNovoComponenteFrontend.md`
@@ -194,13 +194,13 @@ Este guia fornece diretrizes para desenvolver componentes reutilizáveis no fron
 
 ## 7. Análise do Código-Fonte (Contextualização)
 
-Uma breve inspeção do código-fonte do backend, especificamente o arquivo `app.ts` [4], revela que o projeto utiliza Express.js como framework web, e não Fastify, como sugerido em `01ArquiteturaGeral.md` [11] e `03ComoAdicionarNovaApi.md` [9]. Esta é uma inconsistência importante que precisa ser resolvida na documentação.
+Uma breve inspeção do código-fonte do backend, especificamente o arquivo `app.ts` [4], revela que o projeto utiliza Express.js como framework web, e não Express.js, como sugerido em `01ArquiteturaGeral.md` [11] e `03ComoAdicionarNovaApi.md` [9]. Esta é uma inconsistência importante que precisa ser resolvida na documentação.
 
 O `app.ts` configura middlewares como `cors` e `express.json()`, e define rotas para autenticação, usuários, veículos, jornadas, abastecimentos e despesas. Também inclui endpoints básicos como `/health` e `/api/test`. A estrutura de rotas e a organização dos módulos (`controllers`, `services`, `db`, `middlewares`) são consistentes com as boas práticas de uma aplicação Express/Node.js.
 
 ### 7.1. Inconsistências Identificadas
 
-*   **Framework Backend:** A documentação (`01ArquiteturaGeral.md`, `03ComoAdicionarNovaApi.md`) menciona Fastify, enquanto o código-fonte utiliza Express.js. Esta é a inconsistência mais significativa e deve ser corrigida na documentação para refletir a tecnologia real em uso.
+*   **Framework Backend:** A documentação (`01ArquiteturaGeral.md`, `03ComoAdicionarNovaApi.md`) menciona Express.js, enquanto o código-fonte utiliza Express.js. Esta é a inconsistência mais significativa e deve ser corrigida na documentação para refletir a tecnologia real em uso.
 
 ### 7.2. Pontos de Melhoria no Código (com base na documentação)
 
@@ -216,7 +216,7 @@ Com base na análise dos documentos existentes e do código-fonte, as seguintes 
 ### 8.1. Consolidação e Alinhamento
 
 *   **Unificar Guias de Setup:** Consolidar `GUIA_DE_SETUP_COMPLETO.md` e `01_tutoriais/GUIA_DE_SETUP_COMPLETO.md` em um único guia abrangente, ou definir claramente o propósito de cada um e garantir referências cruzadas adequadas.
-*   **Corrigir Inconsistência de Framework Backend:** Atualizar `01ArquiteturaGeral.md` e `03ComoAdicionarNovaApi.md` para refletir o uso de Express.js no backend, ou indicar claramente se há planos de migração para Fastify.
+*   **Corrigir Inconsistência de Framework Backend:** Atualizar `01ArquiteturaGeral.md` e `03ComoAdicionarNovaApi.md` para refletir o uso de Express.js no backend, ou indicar claramente se há planos de migração para Express.js.
 *   **Padronização de Nomenclatura:** Reforçar a padronização para `camelCase` em toda a documentação e no código, com um guia claro sobre como lidar com isso em migrações de banco de dados.
 
 ### 8.2. Aprofundamento e Expansão
@@ -242,7 +242,7 @@ O repositório GiroPro possui uma base de documentação sólida e bem-intencion
 
 **Recomendações Prioritárias:**
 
-1.  **Corrigir Inconsistência Express/Fastify:** Esta é a inconsistência mais flagrante e deve ser resolvida imediatamente na documentação de arquitetura e API.
+1.  **Corrigir Inconsistência Express/Express.js:** Esta é a inconsistência mais flagrante e deve ser resolvida imediatamente na documentação de arquitetura e API.
 2.  **Consolidar Guias de Setup:** Unificar ou claramente distinguir os propósitos dos guias de setup para evitar redundância e confusão.
 3.  **Documentar Banco de Dados:** Priorizar a criação de um Diagrama ER e Dicionário de Dados, conforme sugerido nos princípios arquiteturais.
 4.  **Resolver Erros TypeScript e Vulnerabilidades:** Embora não sejam estritamente documentação, a resolução desses problemas no código é fundamental para a saúde do projeto e deve ser refletida na documentação de qualidade de código e segurança.
