@@ -407,3 +407,39 @@
 - Resolver Vulnerabilidades de Segurança Moderadas.
 - Manter o `progresso.md` como um diário de bordo atualizado e estruturado.
 
+
+
+
+---
+
+**Última sessão:**
+- Data: 26/08/2025 10:00
+- Sessão: #78
+
+## O que foi feito nesta sessão
+- Clonagem do repositório GiroPro.
+- Criação do arquivo `todo.md` com as subtarefas detalhadas para a padronização da nomenclatura.
+- Análise do arquivo `src/db/schema.ts` para identificar tabelas e índices que não seguem o padrão camelCase.
+- Identificação dos arquivos backend impactados pelas mudanças de nomenclatura (`historico_preco_combustivel` e `logs_atividades`).
+- Identificação dos arquivos frontend que podem ser impactados pelas mudanças de nomenclatura.
+- Renomeação das tabelas `historico_preco_combustivel` para `historicoPrecoCombustivel` e `logs_atividades` para `logsAtividades` no arquivo `src/db/schema.ts`.
+- Renomeação dos índices associados a essas tabelas para o padrão camelCase no arquivo `src/db/schema.ts`.
+
+## Problemas encontrados / observações
+- O comando `git clone` falhou inicialmente devido a um erro no caminho, mas foi corrigido.
+- O arquivo `todo.md` já existia, então o conteúdo foi anexado em vez de sobrescrito.
+- A instalação das dependências do backend (`npm install`) foi interrompida, será retomada na próxima sessão.
+
+## Próximas tarefas
+- **Fase 3: Atualização do schema do banco de dados**
+  - [ ] Gerar e aplicar a migração do banco de dados para refletir as mudanças do schema.
+- **Fase 4: Refatoração do código backend**
+  - [ ] Atualizar o código do backend (services, controllers, queries, etc.) para usar a nova nomenclatura definida no schema.
+  - [ ] Executar os testes do backend para garantir que nenhuma funcionalidade foi quebrada. Se não houver testes, este seria um bom momento para adicioná-los.
+- **Fase 5: Refatoração do código frontend**
+  - [ ] Atualizar o código do frontend (componentes, services, hooks, etc.) para corresponder à nova nomenclatura da API.
+  - [ ] Testar manualmente as interfaces de usuário afetadas para garantir que os dados estão sendo exibidos e enviados corretamente.
+- **Fase 6: Revisão, validação e entrega dos resultados**
+  - [ ] Fazer uma revisão completa (code review) das mudanças no backend e no frontend.
+  - [ ] Realizar um teste de ponta a ponta (end-to-end) para validar o fluxo completo da aplicação com a nova padronização.
+

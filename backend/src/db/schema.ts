@@ -152,7 +152,7 @@ export const despesas = sqliteTable("despesas", {
 // TABELAS DE REFERÊNCIA E HISTÓRICO
 // ===============================
 
-export const historicoPrecoCombustivel = sqliteTable("historico_preco_combustivel", {
+export const historicoPrecoCombustivel = sqliteTable("historicoPrecoCombustivel", {
   id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
   cidade: text("cidade", { length: 100 }).notNull(),
   estado: text("estado", { length: 2 }).notNull(), // Sigla do estado
@@ -164,13 +164,13 @@ export const historicoPrecoCombustivel = sqliteTable("historico_preco_combustive
   createdAt: integer("createdAt", { mode: "timestamp" }).default(sql`(unixepoch())`).notNull(),
   deletedAt: integer("deletedAt", { mode: "timestamp" }),
 }, (table) => ({
-  localIdx: index("historico_local_idx").on(table.cidade, table.estado),
-  combustivelIdx: index("historico_combustivel_idx").on(table.tipoCombustivel),
-  dataIdx: index("historico_data_idx").on(table.dataRegistro),
-  localDataIdx: index("historico_local_data_idx").on(table.cidade, table.estado, table.dataRegistro),
+  historicoLocalIdx: index("historicoLocalIdx").on(table.cidade, table.estado),
+  historicoCombustivelIdx: index("historicoCombustivelIdx").on(table.tipoCombustivel),
+  historicoDataIdx: index("historicoDataIdx").on(table.dataRegistro),
+  historicoLocalDataIdx: index("historicoLocalDataIdx").on(table.cidade, table.estado, table.dataRegistro),
 }));
 
-export const logsAtividades = sqliteTable("logs_atividades", {
+export const logsAtividades = sqliteTable("logsAtividades", {
   id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
   idUsuario: text("idUsuario").references(() => usuarios.id, { onDelete: "set null" }),
   tipoAcao: text("tipoAcao", { length: 50 }).notNull(),
@@ -180,10 +180,10 @@ export const logsAtividades = sqliteTable("logs_atividades", {
   
   deletedAt: integer("deletedAt", { mode: "timestamp" }),
 }, (table) => ({
-  usuarioIdx: index("logs_usuario_idx").on(table.idUsuario),
-  tipoIdx: index("logs_tipo_idx").on(table.tipoAcao),
-  dataIdx: index("logs_data_idx").on(table.dataAcao),
-  usuarioDataIdx: index("logs_usuario_data_idx").on(table.idUsuario, table.dataAcao),
+  logsUsuarioIdx: index("logsUsuarioIdx").on(table.idUsuario),
+  logsTipoIdx: index("logsTipoIdx").on(table.tipoAcao),
+  logsDataIdx: index("logsDataIdx").on(table.dataAcao),
+  logsUsuarioDataIdx: index("logsUsuarioDataIdx").on(table.idUsuario, table.dataAcao),
 }));
 
 // ===============================

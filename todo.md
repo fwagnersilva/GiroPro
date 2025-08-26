@@ -33,3 +33,32 @@
 ## Atualização do progresso.md
 - [ ] Manter o `progresso.md` como um diário de bordo atualizado e estruturado
 
+
+
+
+## Tarefas para Padronização de Nomenclatura (camelCase)
+
+### Fase 1: Clonar repositório e análise inicial
+- [x] Clonar o repositório GiroPro do GitHub.
+
+### Fase 2: Análise e mapeamento completo do schema e código
+- [x] Revisar completamente o arquivo `src/db/schema.ts` e listar todas as colunas e tabelas que não seguem o padrão camelCase.
+- [x] Identificar todos os arquivos no backend que serão impactados pela mudança no schema (ex: services, controllers, repositories).
+- [x] Identificar todos os arquivos no frontend que consomem ou enviam dados para as colunas que serão renomeadas.
+
+### Fase 3: Atualização do schema do banco de dados
+- [ ] Renomear todas as colunas e tabelas identificadas no passo 1.1 para o padrão camelCase no arquivo `src/db/schema.ts`.
+- [ ] Gerar e aplicar a migração do banco de dados para refletir as mudanças do schema.
+
+### Fase 4: Refatoração do código backend
+- [ ] Atualizar o código do backend (services, controllers, queries, etc.) para usar a nova nomenclatura definida no schema.
+- [ ] Executar os testes do backend para garantir que nenhuma funcionalidade foi quebrada. Se não houver testes, este seria um bom momento para adicioná-los.
+
+### Fase 5: Refatoração do código frontend
+- [ ] Atualizar o código do frontend (componentes, services, hooks, etc.) para corresponder à nova nomenclatura da API.
+- [ ] Testar manualmente as interfaces de usuário afetadas para garantir que os dados estão sendo exibidos e enviados corretamente.
+
+### Fase 6: Revisão, validação e entrega dos resultados
+- [ ] Fazer uma revisão completa (code review) das mudanças no backend e no frontend.
+- [ ] Realizar um teste de ponta a ponta (end-to-end) para validar o fluxo completo da aplicação com a nova padronização.
+
