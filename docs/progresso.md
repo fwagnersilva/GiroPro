@@ -242,3 +242,32 @@
   - [Pendente] Manter o `progresso.md` como um diário de bordo atualizado e estruturado.
 
 
+
+
+---
+
+**Última sessão:**
+- Data: 26/08/2025 10:00
+- Sessão: #76
+
+## O que foi feito nesta sessão
+- Foi criado um guia detalhado para o deploy da aplicação GiroPro em ambientes de produção, cobrindo backend, frontend (web), banco de dados (PostgreSQL), Redis, segurança, monitoramento e logging.
+- O guia foi formatado em Markdown e convertido para PDF.
+
+## Problemas encontrados / observações
+- A questão da interação manual com `drizzle-kit generate` para migrações de banco de dados ainda persiste, o que pode impactar futuras atualizações de esquema.
+
+## Próximas tarefas
+- **Consistência de Nomenclatura e Framework Backend**:
+  - [Pendente] Padronizar Nomenclatura para `camelCase` em `src/db/schema.ts` (pequenos ajustes necessários).
+  - [Pendente] Atualizar migrações se necessário (após padronização de nomenclatura).
+- **Melhorias de Formato e Usabilidade**:
+  - [Pendente] Inserir Diagramas e Visualizações (atualizar `docs/03_explicacoes/01ArquiteturaGeral.md`).
+  - [Pendente] Utilizar Tabelas para organizar informações (Endpoints da API, Variáveis de Ambiente, Scripts).
+  - [Pendente] Garantir Referências Cruzadas Clicáveis em todos os documentos.
+- **Resolução de Problemas e Vulnerabilidades**:
+  - [Pendente] Resolver Erros TypeScript Restantes.
+  - [Pendente] Resolver Vulnerabilidades de Segurança Moderadas.
+- **Atualização do `progresso.md`**:
+  - [Pendente] Manter o `progresso.md` como um diário de bordo atualizado e estruturado.
+
