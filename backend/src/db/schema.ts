@@ -5,17 +5,17 @@ import { relations, sql } from 'drizzle-orm';
 // ENUMS TIPADOS E OTIMIZADOS
 // ===============================
 
-export const statusContaEnum = text("statusConta").$type<"ativo" | "inativo" | "suspenso">().notNull();
-export const tipoCombustivelEnum = text("tipoCombustivel").$type<"gasolina" | "etanol" | "diesel" | "gnv" | "flex">().notNull();
-export const tipoUsoEnum = text("tipoUso").$type<"proprio" | "alugado" | "financiado">().notNull();
-export const tipoDespesaEnum = text("tipoDespesa").$type<"manutencao" | "pneus" | "seguro" | "outros">().notNull();
-export const tipoMetaEnum = text("tipoMeta").$type<"faturamento" | "quilometragem" | "jornadas" | "economia" | "lucro">().notNull();
-export const periodoMetaEnum = text("periodoMeta").$type<"semanal" | "mensal" | "trimestral" | "anual">().notNull();
-export const statusMetaEnum = text("statusMeta").$type<"ativa" | "pausada" | "concluida" | "expirada">().notNull();
-export const tipoConquistaEnum = text("tipoConquista").$type<"faturamento" | "quilometragem" | "jornadas" | "eficiencia" | "consistencia" | "metas" | "especial">().notNull();
-export const raridadeEnum = text("raridade").$type<"comum" | "raro" | "epico" | "lendario">().notNull();
-export const nivelUsuarioEnum = text("nivelUsuario").$type<"iniciante" | "novato" | "experiente" | "motorista" | "profissional" | "especialista" | "mestre" | "lenda">().notNull();
-export const tipoNotificacaoEnum = text("tipoNotificacao").$type<"sistema" | "alerta" | "promocao" | "suporte">().notNull();
+export const statusConta = text("statusConta").$type<"ativo" | "inativo" | "suspenso">().notNull();
+export const tipoCombustivel = text("tipoCombustivel").$type<"gasolina" | "etanol" | "diesel" | "gnv" | "flex">().notNull();
+export const tipoUso = text("tipoUso").$type<"proprio" | "alugado" | "financiado">().notNull();
+export const tipoDespesa = text("tipoDespesa").$type<"manutencao" | "pneus" | "seguro" | "outros">().notNull();
+export const tipoMeta = text("tipoMeta").$type<"faturamento" | "quilometragem" | "jornadas" | "economia" | "lucro">().notNull();
+export const periodoMeta = text("periodoMeta").$type<"semanal" | "mensal" | "trimestral" | "anual">().notNull();
+export const statusMeta = text("statusMeta").$type<"ativa" | "pausada" | "concluida" | "expirada">().notNull();
+export const tipoConquista = text("tipoConquista").$type<"faturamento" | "quilometragem" | "jornadas" | "eficiencia" | "consistencia" | "metas" | "especial">().notNull();
+export const raridade = text("raridade").$type<"comum" | "raro" | "epico" | "lendario">().notNull();
+export const nivelUsuario = text("nivelUsuario").$type<"iniciante" | "novato" | "experiente" | "motorista" | "profissional" | "especialista" | "mestre" | "lenda">().notNull();
+export const tipoNotificacao = text("tipoNotificacao").$type<"sistema" | "alerta" | "promocao" | "suporte">().notNull();
 
 // ===============================
 // TABELAS PRINCIPAIS
@@ -26,12 +26,12 @@ export const usuarios = sqliteTable("usuarios", {
   nome: text("nome", { length: 100 }).notNull(),
   email: text("email", { length: 255 }).notNull(),
   senhaHash: text("senhaHash", { length: 255 }).notNull(),
-  statusConta: statusContaEnum.default("ativo").notNull(),
+  statusConta: statusConta.default("ativo").notNull(),
   dataCadastro: integer("dataCadastro", { mode: "timestamp" }).default(sql`(unixepoch())`).notNull(),
   
   // Gamificação
   pontosTotal: integer("pontosTotal").default(0).notNull(),
-  nivelUsuario: nivelUsuarioEnum.default("iniciante").notNull(),
+  nivelUsuario: nivelUsuario.default("iniciante").notNull(),
   conquistasDesbloqueadas: integer("conquistasDesbloqueadas").default(0).notNull(),
   
   // Auditoria
@@ -56,8 +56,8 @@ export const veiculos = sqliteTable("veiculos", {
   modelo: text("modelo", { length: 100 }).notNull(),
   ano: integer("ano").notNull(),
   placa: text("placa", { length: 8 }).notNull(),
-  tipoCombustivel: tipoCombustivelEnum.notNull(),
-  tipoUso: tipoUsoEnum.notNull(),
+  tipoCombustivel: tipoCombustivel.notNull(),
+  tipoUso: tipoUso.notNull(),
   
   // Valores em centavos para precisão
   valorAluguel: integer("valorAluguel"), // Para tipo_uso = "alugado"
@@ -109,7 +109,7 @@ export const abastecimentos = sqliteTable("abastecimentos", {
   idVeiculo: text("idVeiculo").notNull().references(() => veiculos.id, { onDelete: "cascade" }),
   
   dataAbastecimento: integer("dataAbastecimento", { mode: "timestamp" }).notNull(),
-  tipoCombustivel: tipoCombustivelEnum.notNull(),
+  tipoCombustivel: tipoCombustivel.notNull(),
   quantidadeLitros: real("quantidadeLitros").notNull(), // REAL para precisão
   valorLitro: integer("valorLitro").notNull(), // Em centavos
   valorTotal: integer("valorTotal").notNull(), // Em centavos
@@ -133,7 +133,7 @@ export const despesas = sqliteTable("despesas", {
   idVeiculo: text("idVeiculo").references(() => veiculos.id, { onDelete: "cascade" }),
   
   dataDespesa: integer("dataDespesa", { mode: "timestamp" }).notNull(),
-  tipoDespesa: tipoDespesaEnum.notNull(),
+  tipoDespesa: tipoDespesa.notNull(),
   valorDespesa: integer("valorDespesa").notNull(), // Em centavos
   descricao: text("descricao", { length: 300 }),
   
@@ -156,7 +156,7 @@ export const historicoPrecoCombustivel = sqliteTable("historico_preco_combustive
   id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
   cidade: text("cidade", { length: 100 }).notNull(),
   estado: text("estado", { length: 2 }).notNull(), // Sigla do estado
-  tipoCombustivel: tipoCombustivelEnum.notNull(),
+  tipoCombustivel: tipoCombustivel.notNull(),
   precoMedio: integer("precoMedio").notNull(), // Em centavos
   dataRegistro: integer("dataRegistro", { mode: "timestamp" }).default(sql`(unixepoch())`).notNull(),
   fonte: text("fonte", { length: 100 }), // Fonte dos dados
@@ -197,13 +197,13 @@ export const metas = sqliteTable("metas", {
   
   titulo: text("titulo", { length: 100 }).notNull(),
   descricao: text("descricao", { length: 500 }),
-  tipoMeta: tipoMetaEnum.notNull(),
-  periodo: periodoMetaEnum.notNull(),
+  tipoMeta: tipoMeta.notNull(),
+  periodo: periodoMeta.notNull(),
   
   valorObjetivo: integer("valorObjetivo").notNull(), // Valor em centavos ou unidades
   dataInicio: integer("dataInicio", { mode: "timestamp" }).notNull(),
   dataFim: integer("dataFim", { mode: "timestamp" }).notNull(),
-  status: statusMetaEnum.default("ativa").notNull(),
+  status: statusMeta.default("ativa").notNull(),
   
   valorAtual: integer("valorAtual").default(0).notNull(),
   percentualConcluido: integer("percentualConcluido").default(0).notNull(), // 0-100
@@ -254,7 +254,7 @@ export const progressoMetas = sqliteTable("progresso_metas", {
 export const notificacoes = sqliteTable("notificacoes", {
   id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
   idUsuario: text("idUsuario").notNull().references(() => usuarios.id, { onDelete: "cascade" }),
-  tipo: tipoNotificacaoEnum.notNull(),
+  tipo: tipoNotificacao.notNull(),
   titulo: text("titulo", { length: 200 }).notNull(),
   mensagem: text("mensagem", { length: 1000 }).notNull(),
   dadosExtras: text("dadosExtras"), // JSON com dados extras

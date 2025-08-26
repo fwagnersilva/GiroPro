@@ -303,3 +303,44 @@
   - [Pendente] Manter o `progresso.md` como um diário de bordo atualizado e estruturado.
 
 
+
+
+
+---
+
+**Última sessão:**
+- Data: 26/08/2025 10:00
+- Sessão: #77
+
+## O que foi feito nesta sessão
+- Padronização da nomenclatura para `camelCase` no arquivo `backend/src/db/schema.ts`.
+  - `statusContaEnum` para `statusConta`
+  - `tipoCombustivelEnum` para `tipoCombustivel`
+  - `tipoUsoEnum` para `tipoUso`
+  - `tipoDespesaEnum` para `tipoDespesa`
+  - `tipoMetaEnum` para `tipoMeta`
+  - `periodoMetaEnum` para `periodoMeta`
+  - `statusMetaEnum` para `statusMeta`
+  - `tipoConquistaEnum` para `tipoConquista`
+  - `raridadeEnum` para `raridade`
+  - `nivelUsuarioEnum` para `nivelUsuario`
+  - `tipoNotificacaoEnum` para `tipoNotificacao`
+
+## Problemas encontrados / observações
+- O caminho inicial para `schema.ts` estava incorreto, foi necessário listar o diretório para encontrar o caminho certo (`backend/src/db/schema.ts`).
+- A ferramenta `file_replace_text` exigiu `replace_all=True` para substituir todas as ocorrências das enums.
+
+## Próximas tarefas
+- **Consistência de Nomenclatura e Framework Backend**:
+  - [Pendente] Atualizar migrações se necessário (após padronização de nomenclatura).
+  - [Em Andamento] Atualizar documentação para refletir `camelCase`.
+- **Melhorias de Formato e Usabilidade**:
+  - [Pendente] Inserir Diagramas e Visualizações (atualizar `docs/03_explicacoes/01ArquiteturaGeral.md`).
+  - [Pendente] Utilizar Tabelas para organizar informações (Endpoints da API, Variáveis de Ambiente, Scripts).
+  - [Pendente] Garantir Referências Cruzadas Clicáveis em todos os documentos.
+- **Resolução de Problemas e Vulnerabilidades**:
+  - [Pendente] Resolver Erros TypeScript Restantes.
+  - [Pendente] Resolver Vulnerabilidades de Segurança Moderadas.
+- **Atualização do `progresso.md`**:
+  - [Pendente] Manter o `progresso.md` como um diário de bordo atualizado e estruturado.
+
