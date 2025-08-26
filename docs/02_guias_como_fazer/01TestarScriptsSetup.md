@@ -24,8 +24,7 @@ Implementar um wrapper que simule a interação ou que execute as migrações de
 •
 Dependência do Arquivo .env: O script espera que o arquivo .env já esteja configurado no diretório backend/. É crucial que o desenvolvedor crie e configure o .env ANTES de executar este script. Consulte 01_tutoriais/01_setup_inicial.md para as instruções detalhadas de configuração do .env.
 
-•
-Padronização de Nomenclatura (camelCase): A inconsistência entre snake_case e camelCase no schema e no código foi uma fonte significativa de erros. É mandatório que a nomenclatura camelCase seja utilizada consistentemente em todo o projeto (código e banco de dados). As migrações do Drizzle ORM dependem dessa padronização para funcionar corretamente. Para mais detalhes sobre a padronização, consulte 03_explicacoes/00_problemas_comuns_e_licoes_aprendidas.md e 03_explicacoes/04_tecnologias_padroes.md.
+• Inconsistência de Nomenclatura (camelCase): A inconsistência entre snake_case e camelCase no schema e no código foi uma fonte significativa de erros. É mandatório que a nomenclatura camelCase seja utilizada consistentemente em todo o projeto (código e banco de dados). As migrações do Drizzle ORM dependem dessa padronização para funcionar corretamente. Para mais detalhes sobre a padronização, consulte 03_explicacoes/00ProblemasComunsELicoesAprendidas.md e 03_explicacoes/04TecnologiasPadroes.md.
 
 •
 Verificação Pré-execução: Antes de rodar setup_sqlite.sh, o desenvolvedor deve:

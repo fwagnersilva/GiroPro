@@ -165,7 +165,7 @@ Armazena as despesas gerais dos veículos ou usuários.
 - `tipoIdx`: Índice em `tipoDespesa`.
 - `usuarioDataIdx`: Índice em `idUsuario` e `dataDespesa`.
 
-### 3.6. Tabela `historicoPrecoCombustivel`
+### Tabela: `historicoPrecoCombustivel`l`
 
 Mantém um histórico dos preços de combustível por localidade.
 
@@ -187,7 +187,7 @@ Mantém um histórico dos preços de combustível por localidade.
 - `dataIdx`: Índice em `dataRegistro`.
 - `localDataIdx`: Índice em `cidade`, `estado` e `dataRegistro`.
 
-### 3.7. Tabela `logsAtividades`
+#### Tabela: `logsAtividades`s`
 
 Registra as atividades dos usuários e do sistema.
 
@@ -219,11 +219,11 @@ Gerencia as metas financeiras e de desempenho dos usuários.
 | `titulo` | `TEXT` | Título da meta | Não Nulo, Max 100 caracteres |
 | `descricao` | `TEXT` | Descrição detalhada da meta | Max 500 caracteres |
 | `tipoMeta` | `TEXT` | Tipo de meta (faturamento, quilometragem, jornadas, economia, lucro) | Não Nulo |
-| `periodo` | `TEXT` | Período da meta (semanal, mensal, trimestral, anual) | Não Nulo |
+| `periodoMeta` | `TEXT` | Período da meta (semanal, mensal, trimestral, anual) | Não Nulo |
 | `valorObjetivo` | `INTEGER` | Valor objetivo da meta (em centavos ou unidades) | Não Nulo |
 | `dataInicio` | `INTEGER` | Timestamp de início da meta | Não Nulo |
 | `dataFim` | `INTEGER` | Timestamp de fim da meta | Não Nulo |
-| `status` | `TEXT` | Status da meta (ativa, pausada, concluida, expirada) | Não Nulo, Padrão: "ativa" |
+| `statusMeta` | `TEXT` | Status atual da meta (ativa, concluída, etc.). | `NOT NULL`, `DEFAULT 'ativa'` |
 | `valorAtual` | `INTEGER` | Valor atual da meta | Não Nulo, Padrão: 0 |
 | `percentualConcluido` | `INTEGER` | Percentual de conclusão da meta (0-100) | Não Nulo, Padrão: 0 |
 | `dataConclusao` | `INTEGER` | Timestamp de conclusão da meta | Nulo |
@@ -237,12 +237,9 @@ Gerencia as metas financeiras e de desempenho dos usuários.
 - `veiculoIdx`: Índice em `idVeiculo`.
 - `statusIdx`: Índice em `status`.
 - `tipoIdx`: Índice em `tipoMeta`.
-- `periodoIdx`: Índice em `dataInicio` e `dataFim`.
-- `usuarioStatusIdx`: Índice em `idUsuario` e `status`.
-- `ativasIdx`: Índice em `status` e `dataFim`.
-
-### 3.9. Tabela `progressoMetas`
-
+- `periodoIdx`: Índice em- `statusIdx`: Índice em `statusMeta`.
+- `usuarioStatusIdx`: Índice em `idUsuario` e `statusMeta`.
+- `ativasIdx`: Índice em `statusMeta` e `dataFim### Tabela: `progressoMetas`
 Acompanha o progresso das metas ao longo do tempo.
 
 | Coluna | Tipo de Dado | Descrição | Restrições |

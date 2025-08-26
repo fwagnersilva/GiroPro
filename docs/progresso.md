@@ -66,7 +66,7 @@
 - **Consistência de Nomenclatura e Framework Backend**:
   - [Pendente] Padronizar Nomenclatura para `camelCase` em `src/db/schema.ts` e refatorar código backend e frontend.
   - [Pendente] Atualizar migrações se necessário.
-  - [Pendente] Atualizar documentação para refletir `camelCase`.
+  - [Em Andamento] Atualizar documentação para refletir `camelCase`.
   - [Pendente] Corrigir Inconsistência do Framework Backend (alterar "Fastify" para "Express.js" em documentos).
 - **Aprofundamento e Expansão da Documentação**:
   - [Pendente] Criar `docs/04_referencias/01_documentacao_banco_dados.md` e gerar Diagrama ER.
@@ -119,7 +119,7 @@
 - **Consistência de Nomenclatura e Framework Backend**:
   - [Pendente] Padronizar Nomenclatura para `camelCase` em `src/db/schema.ts` (pequenos ajustes necessários).
   - [Pendente] Atualizar migrações se necessário.
-  - [Pendente] Atualizar documentação para refletir `camelCase`.
+  - [Em Andamento] Atualizar documentação para refletir `camelCase`.
   - [Concluído] Corrigir Inconsistência do Framework Backend (alterar "Fastify" para "Express.js" em documentos).
 - **Aprofundamento e Expansão da Documentação**:
   - [Pendente] Criar `docs/04_referencias/01_documentacao_banco_dados.md` e gerar Diagrama ER.
@@ -159,7 +159,7 @@
   - [Pendente] Atualizar referências nos documentos para o novo `GUIA_DE_SETUP_COMPLETO.md`.
 - **Consistência de Nomenclatura e Framework Backend**:
   - [Pendente] Atualizar migrações se necessário (após padronização de nomenclatura).
-  - [Pendente] Atualizar documentação para refletir `camelCase`.
+  - [Em Andamento] Atualizar documentação para refletir `camelCase`.
 - **Aprofundamento e Expansão da Documentação**:
   - [Pendente] Criar Dicionário de Dados e documentar Migrações e Padrões de Acesso a Dados.
   - [Pendente] Criar `docs/04_referencias/02_documentacao_testes.md` e detalhar a estratégia de testes.
@@ -174,8 +174,6 @@
 - **Resolução de Problemas e Vulnerabilidades**:
   - [Pendente] Resolver Erros TypeScript Restantes.
   - [Pendente] Resolver Vulnerabilidades de Segurança Moderadas.
-- **Atualização do `progresso.md`**:
-  - [Pendente] Manter o `progresso.md` como um diário de bordo atualizado e estruturado.
 
 
 ---
@@ -201,7 +199,38 @@
 - **Consistência de Nomenclatura e Framework Backend**:
   - [Pendente] Padronizar Nomenclatura para `camelCase` em `src/db/schema.ts` (pequenos ajustes necessários).
   - [Pendente] Atualizar migrações se necessário (após padronização de nomenclatura).
-  - [Pendente] Atualizar documentação para refletir `camelCase`.
+  - [Em Andamento] Atualizar documentação para refletir `camelCase`.
+- **Melhorias de Formato e Usabilidade**:
+  - [Pendente] Inserir Diagramas e Visualizações (atualizar `docs/03_explicacoes/01ArquiteturaGeral.md`).
+  - [Pendente] Utilizar Tabelas para organizar informações (Endpoints da API, Variáveis de Ambiente, Scripts).
+  - [Pendente] Garantir Referências Cruzadas Clicáveis em todos os documentos.
+- **Resolução de Problemas e Vulnerabilidades**:
+  - [Pendente] Resolver Erros TypeScript Restantes.
+  - [Pendente] Resolver Vulnerabilidades de Segurança Moderadas.
+- **Atualização do `progresso.md`**:
+  - [Pendente] Manter o `progresso.md` como um diário de bordo atualizado e estruturado.
+
+
+---
+
+**Última sessão:**
+- Data: 25/08/2025 23:01
+- Sessão: #75
+
+## O que foi feito nesta sessão
+- Continuei a padronização da nomenclatura para `camelCase` nos arquivos de documentação.
+- Atualizei `docs/04_referencias/01_documentacao_banco_dados.md` para refletir `camelCase` em nomes de tabelas (`historicoPrecoCombustivel`, `logsAtividades`, `progressoMetas`) e colunas (`periodoMeta`, `statusMeta`).
+- Atualizei `docs/02_guias_como_fazer/01TestarScriptsSetup.md` para refletir `camelCase` em referências de arquivos.
+- Atualizei `docs/02_guias_como_fazer/02ComoRealizarMigracaoBancoDados.md` para refletir `camelCase` em referências de arquivos.
+- Atualizei `docs/02_guias_como_fazer/03ComoAdicionarNovaApi.md` para refletir `camelCase` em referências de arquivos.
+
+## Problemas encontrados / observações
+- A geração de migrações do Drizzle ORM (`npx drizzle-kit generate`) ainda requer interação manual para confirmação de renomeação de colunas, o que impede a automação completa da geração de migrações e do diagrama ER.
+
+## Próximas tarefas
+- **Consistência de Nomenclatura e Framework Backend**:
+  - [Pendente] Padronizar Nomenclatura para `camelCase` em `src/db/schema.ts` (pequenos ajustes necessários).
+  - [Pendente] Atualizar migrações se necessário (após padronização de nomenclatura).
 - **Melhorias de Formato e Usabilidade**:
   - [Pendente] Inserir Diagramas e Visualizações (atualizar `docs/03_explicacoes/01ArquiteturaGeral.md`).
   - [Pendente] Utilizar Tabelas para organizar informações (Endpoints da API, Variáveis de Ambiente, Scripts).

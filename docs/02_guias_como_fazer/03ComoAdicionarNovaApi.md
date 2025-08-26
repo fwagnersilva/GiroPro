@@ -14,7 +14,7 @@ O backend do GiroPro é construído com Node.js, Express.js (como framework web)
 
 ## 2. Definindo o Schema do Banco de Dados (se necessário)
 
-Se a nova API envolver dados que ainda não estão no banco de dados, você precisará atualizar o schema. Siga o guia "Como Realizar uma Migração de Banco de Dados" (`docs/02_guias_como_fazer/02_como_realizar_migracao_banco_dados.md`) para adicionar ou modificar tabelas e colunas em `src/db/schema.ts`.
+Se a nova API envolver dados que ainda não estão no banco de dados, você precisará atualizar o schema. Siga o guia "Como Realizar uma Migração de Banco de Dados" (`docs/02_guias_como_fazer/02ComoRealizarMigracaoBancoDados.md`) para adicionar ou modificar tabelas e colunas em `src/db/schema.ts`.
 
 ## 3. Definindo os Tipos TypeScript (`src/types/index.ts`)
 
