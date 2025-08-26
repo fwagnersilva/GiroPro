@@ -59,6 +59,6 @@
 - [ ] Testar manualmente as interfaces de usuário afetadas para garantir que os dados estão sendo exibidos e enviados corretamente.
 
 ### Fase 6: Revisão, validação e entrega dos resultados
-- [ ] Fazer uma revisão completa (code review) das mudanças no backend e no frontend.
+- [ ] Fazer uma revisão completa (code review) das mudanças no backend e no frontend. (Falha: Erros de TypeScript no schema)
 - [ ] Realizar um teste de ponta a ponta (end-to-end) para validar o fluxo completo da aplicação com a nova padronização.
 

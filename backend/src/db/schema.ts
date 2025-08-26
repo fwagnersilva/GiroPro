@@ -44,7 +44,7 @@ export const usuarios = sqliteTable("usuarios", {
   ultimaAtividade: integer("ultimaAtividade", { mode: "timestamp" }).default(sql`(unixepoch())`).notNull(),
 }, (table) => ({
   emailIdx: uniqueIndex("usuarios_email_idx").on(table.email),
-  statusIdx: index("usuarios_status_idx").on(table.statusConta),
+  statusIdx: index("usuarios_status_idx").on(table.accountStatus),
   pontosIdx: index("usuarios_pontos_idx").on(table.pontosTotal),
   nivelIdx: index("usuarios_nivel_idx").on(table.nivelUsuario),
 }));
@@ -68,11 +68,11 @@ export const veiculos = sqliteTable("veiculos", {
   updatedAt: integer("updatedAt", { mode: "timestamp" }).default(sql`(unixepoch())`).notNull(),
   deletedAt: integer("deletedAt", { mode: "timestamp" }),
 }, (table) => ({
-  usuarioIdx: index("veiculos_usuario_idx").on(table.idUsuario),
+  usuarioIdx: index("veiculos_usuario_idx").on(table.userId),
   placaIdx: uniqueIndex("veiculos_placa_idx").on(table.placa),
   anoIdx: index("veiculos_ano_idx").on(table.ano),
-  combustivelIdx: index("veiculos_combustivel_idx").on(table.tipoCombustivel),
-  usuarioAtivoIdx: index("veiculos_usuario_ativo_idx").on(table.idUsuario, table.deletedAt),
+  combustivelIdx: index("veiculos_combustivel_idx").on(table.fuelType),
+  usuarioAtivoIdx: index("veiculos_usuario_ativo_idx").on(table.userId, table.deletedAt),
 }));
 
 export const jornadas = sqliteTable("jornadas", {
@@ -95,11 +95,11 @@ export const jornadas = sqliteTable("jornadas", {
   updatedAt: integer("updatedAt", { mode: "timestamp" }).default(sql`(unixepoch())`).notNull(),
   deletedAt: integer("deletedAt", { mode: "timestamp" }),
 }, (table) => ({
-  usuarioIdx: index("jornadas_usuario_idx").on(table.idUsuario),
+  usuarioIdx: index("jornadas_usuario_idx").on(table.userId),
   veiculoIdx: index("jornadas_veiculo_idx").on(table.idVeiculo),
   dataInicioIdx: index("jornadas_dataInicio_idx").on(table.dataInicio),
   periodoIdx: index("jornadas_periodo_idx").on(table.dataInicio, table.dataFim),
-  usuarioDataIdx: index("jornadas_usuario_data_idx").on(table.idUsuario, table.dataInicio),
+  usuarioDataIdx: index("jornadas_usuario_data_idx").on(table.userId, table.dataInicio),
   statusIdx: index("jornadas_status_idx").on(table.dataFim), // Para identificar jornadas em andamento
 }));
 
@@ -120,11 +120,11 @@ export const abastecimentos = sqliteTable("abastecimentos", {
   updatedAt: integer("updatedAt", { mode: "timestamp" }).default(sql`(unixepoch())`).notNull(),
   deletedAt: integer("deletedAt", { mode: "timestamp" }),
 }, (table) => ({
-  usuarioIdx: index("abastecimentos_usuario_idx").on(table.idUsuario),
+  usuarioIdx: index("abastecimentos_usuario_idx").on(table.userId),
   veiculoIdx: index("abastecimentos_veiculo_idx").on(table.idVeiculo),
   dataIdx: index("abastecimentos_data_idx").on(table.dataAbastecimento),
   veiculoDataIdx: index("abastecimentos_veiculo_data_idx").on(table.idVeiculo, table.dataAbastecimento),
-  combustivelIdx: index("abastecimentos_combustivel_idx").on(table.tipoCombustivel),
+  combustivelIdx: index("abastecimentos_combustivel_idx").on(table.fuelType),
 }));
 
 export const despesas = sqliteTable("despesas", {
@@ -141,11 +141,11 @@ export const despesas = sqliteTable("despesas", {
   updatedAt: integer("updatedAt", { mode: "timestamp" }).default(sql`(unixepoch())`).notNull(),
   deletedAt: integer("deletedAt", { mode: "timestamp" }),
 }, (table) => ({
-  usuarioIdx: index("despesas_usuario_idx").on(table.idUsuario),
+  usuarioIdx: index("despesas_usuario_idx").on(table.userId),
   veiculoIdx: index("despesas_veiculo_idx").on(table.idVeiculo),
   dataIdx: index("despesas_data_idx").on(table.dataDespesa),
-  tipoIdx: index("despesas_tipo_idx").on(table.tipoDespesa),
-  usuarioDataIdx: index("despesas_usuario_data_idx").on(table.idUsuario, table.dataDespesa),
+  tipoIdx: index("despesas_tipo_idx").on(table.expenseType),
+  usuarioDataIdx: index("despesas_usuario_data_idx").on(table.userId, table.dataDespesa),
 }));
 
 // ===============================
@@ -165,7 +165,7 @@ export const historicoPrecoCombustivel = sqliteTable("historicoPrecoCombustivel"
   deletedAt: integer("deletedAt", { mode: "timestamp" }),
 }, (table) => ({
   historicoLocalIdx: index("historicoLocalIdx").on(table.cidade, table.estado),
-  historicoCombustivelIdx: index("historicoCombustivelIdx").on(table.tipoCombustivel),
+  historicoCombustivelIdx: index("historicoCombustivelIdx").on(table.fuelType),
   historicoDataIdx: index("historicoDataIdx").on(table.dataRegistro),
   historicoLocalDataIdx: index("historicoLocalDataIdx").on(table.cidade, table.estado, table.dataRegistro),
 }));
@@ -214,12 +214,12 @@ export const metas = sqliteTable("metas", {
   updatedAt: integer("updatedAt", { mode: "timestamp" }).default(sql`(unixepoch())`).notNull(),
   deletedAt: integer("deletedAt", { mode: "timestamp" }),
 }, (table) => ({
-  usuarioIdx: index("metas_usuario_idx").on(table.idUsuario),
+  usuarioIdx: index("metas_usuario_idx").on(table.userId),
   veiculoIdx: index("metas_veiculo_idx").on(table.idVeiculo),
   statusIdx: index("metas_status_idx").on(table.status),
-  tipoIdx: index("metas_tipo_idx").on(table.tipoMeta),
+  tipoIdx: index("metas_tipo_idx").on(table.goalType),
   periodoIdx: index("metas_periodo_idx").on(table.dataInicio, table.dataFim),
-  usuarioStatusIdx: index("metas_usuario_status_idx").on(table.idUsuario, table.status),
+  usuarioStatusIdx: index("metas_usuario_status_idx").on(table.userId, table.status),
   ativasIdx: index("metas_ativas_idx").on(table.status, table.dataFim), // Para metas expiradas
 }));
 
@@ -263,14 +263,14 @@ export const notificacoes = sqliteTable("notificacoes", {
   dataLeitura: integer("dataLeitura", { mode: "timestamp" }),
   deletedAt: integer("deletedAt", { mode: "timestamp" }),
 }, (table) => ({
-  usuarioIdx: index("notificacoes_usuario_idx").on(table.idUsuario),
+  usuarioIdx: index("notificacoes_usuario_idx").on(table.userId),
   tipoIdx: index("notificacoes_tipo_idx").on(table.tipo),
   dataEnvioIdx: index("notificacoes_dataEnvio_idx").on(table.dataEnvio),
-  usuarioLidaIdx: index("notificacoes_usuario_lida_idx").on(table.idUsuario, table.lida),
+  usuarioLidaIdx: index("notificacoes_usuario_lida_idx").on(table.userId, table.lida),
 }));
 
 export const notificacoesRelations = relations(notificacoes, ({ one }) => ({
-  usuario: one(usuarios, { fields: [notificacoes.idUsuario], references: [usuarios.id] }),
+  usuario: one(usuarios, { fields: [notificacoes.userId], references: [usuarios.id] }),
 }));
 
 
