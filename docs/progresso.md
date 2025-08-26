@@ -529,3 +529,37 @@
   - Resolver Vulnerabilidades de Segurança Moderadas - Requer intervenção manual.
 
 
+
+
+
+---
+
+**Última sessão:**
+- Data: 26/08/2025 10:00
+- Sessão: #77
+
+## O que foi feito nesta sessão
+- Análise do arquivo `src/db/schema.ts` para identificar inconsistências de nomenclatura.
+- Renomeação de `statusConta` para `accountStatus` no enum e na tabela `usuarios`.
+- Renomeação de `tipoCombustivel` para `fuelType` no enum e na tabela `veiculos` e `abastecimentos`.
+- Renomeação de `tipoUso` para `usageType` no enum e na tabela `veiculos`.
+- Renomeação de `tipoDespesa` para `expenseType` no enum e na tabela `despesas`.
+- Renomeação de `tipoMeta` para `goalType` no enum e na tabela `metas`.
+- Renomeação de `periodoMeta` para `goalPeriod` no enum e na tabela `metas`.
+- Tentativa de gerar migrações do banco de dados (`npm run db:generate`), mas falhou devido à ausência do `drizzle-kit`.
+- Instalação das dependências npm (`npm install`) para resolver o problema do `drizzle-kit`.
+
+## Problemas encontrados / observações
+- A geração de migrações do Drizzle ORM (`npx drizzle-kit generate`) ainda requer interação manual para confirmação de renomeação de colunas, o que impede a automação completa da geração de migrações e do diagrama ER.
+- O `drizzle-kit` não estava instalado inicialmente, o que causou a falha na geração das migrações. Foi necessário instalar as dependências npm.
+
+## Próximas tarefas
+- **Consistência de Nomenclatura e Framework Backend**:
+  - [Pendente] Gerar e aplicar a migração do banco de dados para refletir as mudanças do schema (requer intervenção manual).
+  - [Pendente] Atualizar o código do backend (services, controllers, queries, etc.) para usar a nova nomenclatura definida no schema.
+  - [Pendente] Executar os testes do backend para garantir que nenhuma funcionalidade foi quebrada.
+- **Resolução de Problemas e Vulnerabilidades**:
+  - [Pendente] Resolver Erros TypeScript Restantes.
+  - [Pendente] Resolver Vulnerabilidades de Segurança Moderadas.
+
+

@@ -5,12 +5,12 @@ import { relations, sql } from 'drizzle-orm';
 // ENUMS TIPADOS E OTIMIZADOS
 // ===============================
 
-export const statusConta = text("statusConta").$type<"ativo" | "inativo" | "suspenso">().notNull();
-export const tipoCombustivel = text("tipoCombustivel").$type<"gasolina" | "etanol" | "diesel" | "gnv" | "flex">().notNull();
-export const tipoUso = text("tipoUso").$type<"proprio" | "alugado" | "financiado">().notNull();
-export const tipoDespesa = text("tipoDespesa").$type<"manutencao" | "pneus" | "seguro" | "outros">().notNull();
-export const tipoMeta = text("tipoMeta").$type<"faturamento" | "quilometragem" | "jornadas" | "economia" | "lucro">().notNull();
-export const periodoMeta = text("periodoMeta").$type<"semanal" | "mensal" | "trimestral" | "anual">().notNull();
+export const accountStatus = text("accountStatus").$type<"ativo" | "inativo" | "suspenso">().notNull();
+export const fuelType = text("fuelType").$type<"gasolina" | "etanol" | "diesel" | "gnv" | "flex">().notNull();
+export const usageType = text("usageType").$type<"proprio" | "alugado" | "financiado">().notNull();
+export const expenseType = text("expenseType").$type<"manutencao" | "pneus" | "seguro" | "outros">().notNull();
+export const goalType = text("goalType").$type<"faturamento" | "quilometragem" | "jornadas" | "economia" | "lucro">().notNull();
+export const goalPeriod = text("goalPeriod").$type<"semanal" | "mensal" | "trimestral" | "anual">().notNull();
 export const statusMeta = text("statusMeta").$type<"ativa" | "pausada" | "concluida" | "expirada">().notNull();
 export const tipoConquista = text("tipoConquista").$type<"faturamento" | "quilometragem" | "jornadas" | "eficiencia" | "consistencia" | "metas" | "especial">().notNull();
 export const raridade = text("raridade").$type<"comum" | "raro" | "epico" | "lendario">().notNull();
@@ -26,7 +26,7 @@ export const usuarios = sqliteTable("usuarios", {
   nome: text("nome", { length: 100 }).notNull(),
   email: text("email", { length: 255 }).notNull(),
   senhaHash: text("senhaHash", { length: 255 }).notNull(),
-  statusConta: statusConta.default("ativo").notNull(),
+  accountStatus: accountStatus.default("ativo").notNull(),
   dataCadastro: integer("dataCadastro", { mode: "timestamp" }).default(sql`(unixepoch())`).notNull(),
   
   // Gamificação
@@ -51,13 +51,13 @@ export const usuarios = sqliteTable("usuarios", {
 
 export const veiculos = sqliteTable("veiculos", {
   id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
-  idUsuario: text("idUsuario").notNull().references(() => usuarios.id, { onDelete: "cascade" }),
+  userId: text("userId").notNull().references(() => usuarios.id, { onDelete: "cascade" }),
   marca: text("marca", { length: 50 }).notNull(),
   modelo: text("modelo", { length: 100 }).notNull(),
   ano: integer("ano").notNull(),
   placa: text("placa", { length: 8 }).notNull(),
-  tipoCombustivel: tipoCombustivel.notNull(),
-  tipoUso: tipoUso.notNull(),
+  fuelType: fuelType.notNull(),
+  usageType: usageType.notNull(),
   
   // Valores em centavos para precisão
   valorAluguel: integer("valorAluguel"), // Para tipo_uso = "alugado"
@@ -77,7 +77,7 @@ export const veiculos = sqliteTable("veiculos", {
 
 export const jornadas = sqliteTable("jornadas", {
   id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
-  idUsuario: text("idUsuario").notNull().references(() => usuarios.id, { onDelete: "cascade" }),
+  userId: text("userId").notNull().references(() => usuarios.id, { onDelete: "cascade" }),
   idVeiculo: text("idVeiculo").notNull().references(() => veiculos.id, { onDelete: "cascade" }),
   
   dataInicio: integer("dataInicio", { mode: "timestamp" }).notNull(),
@@ -105,11 +105,11 @@ export const jornadas = sqliteTable("jornadas", {
 
 export const abastecimentos = sqliteTable("abastecimentos", {
   id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
-  idUsuario: text("idUsuario").notNull().references(() => usuarios.id, { onDelete: "cascade" }),
+  userId: text("userId").notNull().references(() => usuarios.id, { onDelete: "cascade" }),
   idVeiculo: text("idVeiculo").notNull().references(() => veiculos.id, { onDelete: "cascade" }),
   
   dataAbastecimento: integer("dataAbastecimento", { mode: "timestamp" }).notNull(),
-  tipoCombustivel: tipoCombustivel.notNull(),
+  fuelType: fuelType.notNull(),
   quantidadeLitros: real("quantidadeLitros").notNull(), // REAL para precisão
   valorLitro: integer("valorLitro").notNull(), // Em centavos
   valorTotal: integer("valorTotal").notNull(), // Em centavos
@@ -129,11 +129,11 @@ export const abastecimentos = sqliteTable("abastecimentos", {
 
 export const despesas = sqliteTable("despesas", {
   id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
-  idUsuario: text("idUsuario").notNull().references(() => usuarios.id, { onDelete: "cascade" }),
+  userId: text("userId").notNull().references(() => usuarios.id, { onDelete: "cascade" }),
   idVeiculo: text("idVeiculo").references(() => veiculos.id, { onDelete: "cascade" }),
   
   dataDespesa: integer("dataDespesa", { mode: "timestamp" }).notNull(),
-  tipoDespesa: tipoDespesa.notNull(),
+  expenseType: expenseType.notNull(),
   valorDespesa: integer("valorDespesa").notNull(), // Em centavos
   descricao: text("descricao", { length: 300 }),
   
@@ -156,7 +156,7 @@ export const historicoPrecoCombustivel = sqliteTable("historicoPrecoCombustivel"
   id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
   cidade: text("cidade", { length: 100 }).notNull(),
   estado: text("estado", { length: 2 }).notNull(), // Sigla do estado
-  tipoCombustivel: tipoCombustivel.notNull(),
+  fuelType: fuelType.notNull(),
   precoMedio: integer("precoMedio").notNull(), // Em centavos
   dataRegistro: integer("dataRegistro", { mode: "timestamp" }).default(sql`(unixepoch())`).notNull(),
   fonte: text("fonte", { length: 100 }), // Fonte dos dados
@@ -192,13 +192,13 @@ export const logsAtividades = sqliteTable("logsAtividades", {
 
 export const metas = sqliteTable("metas", {
   id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
-  idUsuario: text("idUsuario").notNull().references(() => usuarios.id, { onDelete: "cascade" }),
+  userId: text("userId").notNull().references(() => usuarios.id, { onDelete: "cascade" }),
   idVeiculo: text("idVeiculo").references(() => veiculos.id, { onDelete: "cascade" }),
   
   titulo: text("titulo", { length: 100 }).notNull(),
   descricao: text("descricao", { length: 500 }),
-  tipoMeta: tipoMeta.notNull(),
-  periodo: periodoMeta.notNull(),
+  goalType: goalType.notNull(),
+  period: goalPeriod.notNull(),
   
   valorObjetivo: integer("valorObjetivo").notNull(), // Valor em centavos ou unidades
   dataInicio: integer("dataInicio", { mode: "timestamp" }).notNull(),
@@ -253,7 +253,7 @@ export const progressoMetas = sqliteTable("progresso_metas", {
 
 export const notificacoes = sqliteTable("notificacoes", {
   id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
-  idUsuario: text("idUsuario").notNull().references(() => usuarios.id, { onDelete: "cascade" }),
+  userId: text("userId").notNull().references(() => usuarios.id, { onDelete: "cascade" }),
   tipo: tipoNotificacao.notNull(),
   titulo: text("titulo", { length: 200 }).notNull(),
   mensagem: text("mensagem", { length: 1000 }).notNull(),
