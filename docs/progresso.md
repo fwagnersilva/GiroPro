@@ -6,25 +6,13 @@ Este documento detalha as oportunidades de melhoria identificadas no projeto Gir
 
 ### Complexidade Baixa
 
-*   **Consistência da Documentação de Setup:**
-    *   **Justificativa**: Há sobreposição de informações entre `GUIA_DE_SETUP_COMPLETO.md` e `01_tutoriais/GUIA_DE_SETUP_COMPLETO.md`, o que pode causar confusão e desatualização.
-    *   **Impacto**: Melhorar a clareza e a manutenção da documentação de setup, evitando redundância e garantindo que novos desenvolvedores tenham um ponto de partida único e consistente.
-
 *   **Variáveis de Ambiente (`.env`) na Documentação de Setup:**
-    *   **Justificativa**: O `GUIA_DE_SETUP_COMPLETO.md` poderia aprofundar a explicação sobre a importância de não versionar o `.env` e a geração de chaves secretas, como é feito no `01_tutoriais/GUIA_DE_SETUP_COMPLETO.md`.
+    *   **Justificativa**: O `GUIA_DE_SETUP_COMPLETO.md` poderia aprofundar a explicação sobre a importância de não versionar o `.env` e a geração de chaves secretas.
     *   **Impacto**: Melhora a segurança e a clareza na configuração do ambiente, educando os desenvolvedores sobre as melhores práticas de gerenciamento de variáveis de ambiente.
 
 *   **Interatividade dos Scripts na Documentação de Setup:**
-    *   **Justificativa**: O `GUIA_DE_SETUP_COMPLETO.md` menciona `npm run db:migrate` mas não alerta sobre a interatividade que pode ocorrer, um ponto crucial destacado em `02_guias_como_fazer/01TestarScriptsSetup.md`.
+    *   **Justificativa**: O `GUIA_DE_SETUP_COMPLETO.md` menciona `npm run db:migrate` mas não alerta sobre a interatividade que pode ocorrer, um ponto crucial que pode ser melhor detalhado.
     *   **Impacto**: Evita surpresas e erros durante o setup inicial, fornecendo informações completas sobre a execução dos scripts.
-
-*   **Visão Geral Inicial (`01_tutoriais/GUIA_DE_SETUP_COMPLETO.md`):**
-    *   **Justificativa**: Poderia se beneficiar de uma visão geral mais concisa do projeto e sua arquitetura no início, similar ao `GUIA_DE_SETUP_COMPLETO.md`, para contextualizar o novo desenvolvedor antes de mergulhar nos detalhes técnicos.
-    *   **Impacto**: Facilita o entendimento inicial do projeto para novos desenvolvedores.
-
-*   **Atualização de Ferramentas na Documentação de Setup:**
-    *   **Justificativa**: O `01_tutoriais/GUIA_DE_SETUP_COMPLETO.md` menciona Express.js no diagrama de arquitetura, mas o `app.ts` do backend utiliza Express. Essa inconsistência pode gerar confusão.
-    *   **Impacto**: Garante que a documentação reflita com precisão as tecnologias utilizadas, evitando mal-entendidos e facilitando o onboarding de novos desenvolvedores.
 
 *   **Ferramentas de Governança (Princípios Arquiteturais):**
     *   **Justificativa**: O documento de princípios arquiteturais menciona um "Comitê de Arquitetura (ou Função Similar)", mas não detalha como essa governança é ou será implementada no contexto do GiroPro.
@@ -57,7 +45,7 @@ Este documento detalha as oportunidades de melhoria identificadas no projeto Gir
 ### Complexidade Média
 
 *   **Proposta de Consolidação da Documentação de Setup:**
-    *   **Justificativa**: Criar um único `GUIA_DE_SETUP.md` abrangente que incorpore os melhores aspectos de ambos os documentos existentes, tornando-o o ponto de partida oficial para novos desenvolvedores.
+    *   **Justificativa**: Criar um único `GUIA_DE_SETUP.md` abrangente que incorpore os melhores aspectos dos documentos existentes, tornando-o o ponto de partida oficial para novos desenvolvedores.
     *   **Impacto**: Reduz a redundância, melhora a clareza e a manutenibilidade da documentação de setup.
 
 *   **Integração com a Realidade do Projeto (Princípios Arquiteturais):**
@@ -81,7 +69,7 @@ Este documento detalha as oportunidades de melhoria identificadas no projeto Gir
     *   **Impacto**: Garante uma visão completa e centralizada de todos os problemas e vulnerabilidades conhecidas.
 
 *   **Integração de Informações de `01TestarScriptsSetup.md` nos Guias de Setup:**
-    *   **Justificativa**: Muitas das informações e recomendações de `01TestarScriptsSetup.md` (análise aprofundada dos scripts de setup, identificação de problemas e soluções) deveriam ser integradas diretamente nos guias de setup (`GUIA_DE_SETUP_COMPLETO.md` e `01_tutoriais/GUIA_DE_SETUP_COMPLETO.md`).
+    *   **Justificativa**: Muitas das informações e recomendações de `01TestarScriptsSetup.md` (análise aprofundada dos scripts de setup, identificação de problemas e soluções) deveriam ser integradas diretamente nos guias de setup.
     *   **Impacto**: Centraliza informações cruciais para o setup inicial, evitando que o desenvolvedor precise consultar múltiplos documentos e garantindo que as melhores práticas e soluções para problemas comuns sejam imediatamente acessíveis.
 
 *   **Rollback (Migração de Banco de Dados):**
@@ -165,48 +153,3 @@ Este documento detalha as oportunidades de melhoria identificadas no projeto Gir
 *   **Inconsistência de Nomenclatura (snake_case vs camelCase):**
     *   **Justificativa**: Schema do banco usa snake_case, código TypeScript espera camelCase, migrações do Drizzle ORM falham.
     *   **Impacto**: Migrações não funcionam, tipagem quebrada.
-
-## Sessão #1
-
-*   **Data e hora atual**: 27/08/2025 00:08
-*   **Número da Sessão**: #1
-*   **O que foi feito nesta sessão**: Análise do arquivo `GiroPro_Analise_Tecnica.md` e categorização das oportunidades de melhoria em `progresso.md` nas seções de complexidade Baixa e Média.
-*   **Problemas encontrados / observações**: O arquivo `progresso.md` foi limpo antes de adicionar as novas informações para evitar duplicação. O arquivo de análise técnica fornecido (`GiroPro_Analise_Tecnica.md`) é uma análise da documentação, e não do código-fonte diretamente. As melhorias foram extraídas e categorizadas com base nas informações contidas neste documento.
-*   **Próximas tarefas**: 
-    *   Revisar as melhorias categorizadas para garantir precisão e completude.
-    *   Identificar oportunidades de melhoria de complexidade Alta, se houver, com base na análise da documentação.
-    *   Considerar uma análise mais aprofundada do código-fonte para identificar melhorias técnicas não abordadas na documentação.
-
-
-## Sessão #2
-
-*   **Data e hora atual**: 27/08/2025 00:08
-*   **Número da Sessão**: #2
-*   **O que foi feito nesta sessão**: As oportunidades de melhoria do `GiroPro_Analise_Tecnica.md` foram categorizadas e inseridas no `progresso.md` nas seções de complexidade Baixa, Média e Alta.
-*   **Problemas encontrados / observações**: A categorização foi baseada na interpretação da complexidade de implementação de cada melhoria, considerando o esforço e o impacto potencial.
-*   **Próximas tarefas**: 
-    *   Entregar o arquivo `progresso.md` atualizado ao usuário.
-
-
-## Sessão #3
-
-*   **Data e hora atual**: 27/08/2025 00:08
-*   **Número da Sessão**: #3
-*   **O que foi feito nesta sessão**: As tarefas do arquivo `GiroPro/analise_atividades_priorizadas.md` foram extraídas, categorizadas e inseridas no `progresso.md`.
-*   **Problemas encontrados / observações**: A categorização foi feita da seguinte forma: CRÍTICAS -> Complexidade Alta; ALTAS -> Complexidade Média; MÉDIAS -> Complexidade Média; BAIXAS -> Complexidade Baixa.
-*   **Próximas tarefas**: 
-    *   Deletar o arquivo `GiroPro/analise_atividades_priorizadas.md`.
-    *   Entregar o arquivo `progresso.md` atualizado ao usuário.
-
-
-
-
-## Sessão #4
-
-*   **Data e hora atual**: 27/08/2025 00:08
-*   **Número da Sessão**: #4
-*   **O que foi feito nesta sessão**: Finalização da sessão, incluindo a atualização do `progresso.md` com as tarefas do `analise_atividades_priorizadas.md` e a exclusão do arquivo `analise_atividades_priorizadas.md`.
-*   **Problemas encontrados / observações**: N/A
-*   **Próximas tarefas**: N/A
-
-
