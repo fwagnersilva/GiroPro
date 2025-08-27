@@ -6,115 +6,9 @@ Este documento detalha as oportunidades de melhoria identificadas no projeto Gir
 
 ### Complexidade Baixa
 
-*   **Variáveis de Ambiente (`.env`) na Documentação de Setup:**
-    *   **Justificativa**: O `GUIA_DE_SETUP_COMPLETO.md` poderia aprofundar a explicação sobre a importância de não versionar o `.env` e a geração de chaves secretas.
-    *   **Impacto**: Melhora a segurança e a clareza na configuração do ambiente, educando os desenvolvedores sobre as melhores práticas de gerenciamento de variáveis de ambiente.
-
-*   **Interatividade dos Scripts na Documentação de Setup:**
-    *   **Justificativa**: O `GUIA_DE_SETUP_COMPLETO.md` menciona `npm run db:migrate` mas não alerta sobre a interatividade que pode ocorrer, um ponto crucial que pode ser melhor detalhado.
-    *   **Impacto**: Evita surpresas e erros durante o setup inicial, fornecendo informações completas sobre a execução dos scripts.
-
-*   **Ferramentas de Governança (Princípios Arquiteturais):**
-    *   **Justificativa**: O documento de princípios arquiteturais menciona um "Comitê de Arquitetura (ou Função Similar)", mas não detalha como essa governança é ou será implementada no contexto do GiroPro.
-    *   **Impacto**: Esclarece o processo de tomada de decisão e responsabilidades, promovendo uma governança mais eficaz e transparente.
-
-*   **Generalização do Relatório de Configuração e Validação:**
-    *   **Justificativa**: Embora seja um relatório de uma sessão específica, o formato poderia ser generalizado para ser usado como um template para futuras validações de ambiente (ex: staging, produção).
-    *   **Impacto**: Garante consistência nos relatórios de validação de ambiente.
-
-*   **Organização de Referências (`04_referencias/`):**
-    *   **Justificativa**: O `04_referencias/` poderia ser mais estruturado, talvez com categorias (ex: "Documentação Oficial", "Artigos Relevantes", "Ferramentas").
-    *   **Impacto**: Facilita a localização e o uso de recursos externos.
-
-*   **Revisão de Nomenclatura:**
-    *   **Justificativa**: Abordar a inconsistência de nomenclatura (`camelCase` vs `snake_case`) em toda a documentação e, se possível, no código.
-    *   **Impacto**: Melhora a legibilidade e a consistência do código e da documentação.
-
-*   **Documentação de Melhorias do BD:**
-    *   **Justificativa**: Criar documento com recomendações, documentar padrões de acesso a dados e glossário técnico atualizado.
-    *   **Impacto**: Conhecimento da equipe, futuras melhorias.
-
-*   **Testes Automatizados:**
-    *   **Justificativa**: Implementar testes unitários para services, testes de integração para controllers e testes end-to-end.
-    *   **Impacto**: Qualidade do código, confiabilidade.
-
-*   **Otimizações de Performance:**
-    *   **Justificativa**: Possíveis melhorias como cache Redis otimizado, queries do banco otimizadas e compressão de respostas.
-    *   **Impacto**: Performance da aplicação.
+Não há tarefas de baixa complexidade pendentes.
 
 ### Complexidade Média
-
-*   **Proposta de Consolidação da Documentação de Setup:**
-    *   **Justificativa**: Criar um único `GUIA_DE_SETUP.md` abrangente que incorpore os melhores aspectos dos documentos existentes, tornando-o o ponto de partida oficial para novos desenvolvedores.
-    *   **Impacto**: Reduz a redundância, melhora a clareza e a manutenibilidade da documentação de setup.
-
-*   **Integração com a Realidade do Projeto (Princípios Arquiteturais):**
-    *   **Justificativa**: Embora os princípios sejam excelentes, o documento poderia se beneficiar de exemplos concretos de como esses princípios são aplicados ou foram violados (e corrigidos) no próprio código do GiroPro.
-    *   **Impacto**: Torna os princípios mais tangíveis e educativos para os desenvolvedores, facilitando a compreensão e aplicação no dia a dia.
-
-*   **Métricas de Qualidade (Princípios Arquiteturais):**
-    *   **Justificativa**: Para reforçar a manutenibilidade e testabilidade, o documento poderia sugerir métricas de qualidade de código (cobertura de testes, complexidade ciclomática) e como elas são monitoradas no projeto.
-    *   **Impacto**: Incentiva a adoção de boas práticas de codificação e garante a qualidade contínua do código base.
-
-*   **Formato e Consistência (`progresso.md`):**
-    *   **Justificativa**: Embora útil, o formato é mais de um log de atividades do que um relatório estruturado. Para facilitar a leitura e a busca por informações específicas, poderia ser mais padronizado, talvez com seções fixas para cada entrada de sessão.
-    *   **Impacto**: Melhora a legibilidade e a organização do histórico de progresso.
-
-*   **Visão de Alto Nível (`progresso.md`):**
-    *   **Justificativa**: Poderia haver um resumo mais conciso no início de cada sessão, destacando os principais marcos ou desafios, antes de mergulhar nos detalhes técnicos.
-    *   **Impacto**: Facilita a compreensão rápida do progresso e dos desafios.
-
-*   **Vulnerabilidades (Relatório de Configuração e Validação):**
-    *   **Justificativa**: O relatório menciona "Problemas Pendentes (Não Críticos)" como "Erros TypeScript Restantes" e "Warnings do Frontend". No entanto, o `progresso.md` menciona "Vulnerabilidades de Segurança Moderadas" que não são detalhadas aqui. Seria importante que todos os problemas conhecidos fossem consolidados em um único local ou referenciados de forma cruzada.
-    *   **Impacto**: Garante uma visão completa e centralizada de todos os problemas e vulnerabilidades conhecidas.
-
-*   **Integração de Informações de `01TestarScriptsSetup.md` nos Guias de Setup:**
-    *   **Justificativa**: Muitas das informações e recomendações de `01TestarScriptsSetup.md` (análise aprofundada dos scripts de setup, identificação de problemas e soluções) deveriam ser integradas diretamente nos guias de setup.
-    *   **Impacto**: Centraliza informações cruciais para o setup inicial, evitando que o desenvolvedor precise consultar múltiplos documentos e garantindo que as melhores práticas e soluções para problemas comuns sejam imediatamente acessíveis.
-
-*   **Rollback (Migração de Banco de Dados):**
-    *   **Justificativa**: O guia de migração de banco de dados poderia incluir uma seção sobre como reverter migrações (rollback), o que é uma prática comum e importante em desenvolvimento.
-    *   **Impacto**: Aumenta a segurança e a flexibilidade no gerenciamento de banco de dados.
-
-*   **Testes (Adicionar Nova API):**
-    *   **Justificativa**: A seção de testes é muito breve. Poderia ser expandida para incluir exemplos de testes unitários e de integração para os novos endpoints, reforçando a testabilidade.
-    *   **Impacto**: Garante a qualidade e a robustez dos novos endpoints da API.
-
-*   **Documentação da API (Adicionar Nova API):**
-    *   **Justificativa**: Mencionar a importância de documentar a nova API (ex: com Swagger/OpenAPI) para que o frontend e outros consumidores possam utilizá-la corretamente.
-    *   **Impacto**: Facilita a integração e o uso da API por outros sistemas e desenvolvedores.
-
-*   **Tratamento de Erros (Adicionar Nova API):**
-    *   **Justificativa**: Detalhar como o tratamento de erros deve ser implementado nos novos endpoints.
-    *   **Impacto**: Melhora a robustez e a usabilidade da API.
-
-*   **Testes de Componentes (Criar Novo Componente Frontend):**
-    *   **Justificativa**: Incluir exemplos de testes para componentes (ex: testes de snapshot, testes de renderização com React Testing Library).
-    *   **Impacto**: Garante a qualidade e a estabilidade dos componentes frontend.
-
-*   **Storybook/Documentação de Componentes (Criar Novo Componente Frontend):**
-    *   **Justificativa**: Mencionar a importância de documentar os componentes, talvez usando ferramentas como Storybook, para facilitar a visualização e o uso por outros desenvolvedores.
-    *   **Impacto**: Facilita a reutilização e a colaboração no desenvolvimento frontend.
-
-*   **Acessibilidade (Criar Novo Componente Frontend):**
-    *   **Justificativa**: Adicionar diretrizes básicas de acessibilidade para a criação de componentes.
-    *   **Impacto**: Garante que a aplicação seja utilizável por um público mais amplo, incluindo pessoas com deficiência.
-
-*   **Conteúdo em `03_explicacoes/`:**
-    *   **Justificativa**: Preencher este diretório com explicações detalhadas sobre conceitos chave do projeto (ex: como o Drizzle ORM é usado, detalhes sobre a autenticação, fluxo de dados entre frontend e backend).
-    *   **Impacto**: Aprofunda o conhecimento técnico da equipe e facilita o onboarding.
-
-*   **Criação de um Glossário:**
-    *   **Justificativa**: Desenvolver um glossário de termos técnicos e acrônimos específicos do projeto para facilitar o onboarding de novos membros.
-    *   **Impacto**: Reduz a curva de aprendizado para novos membros da equipe.
-
-*   **Configuração de Ambiente Incompleta:**
-    *   **Justificativa**: Arquivo `.env` precisa de configuração manual, scripts de setup podem ser interativos, dependências do Docker podem falhar.
-    *   **Impacto**: Onboarding lento, ambiente instável.
-
-*   **Análise do Banco de Dados Pendente:**
-    *   **Justificativa**: Análise detalhada do schema SQLite, identificação de melhorias de performance, verificação de índices e relacionamentos, sugestões de otimização.
-    *   **Impacto**: Performance do sistema, escalabilidade.
 
 *   **Padronização de Arquivos e Services:**
     *   **Justificativa**: Inconsistências de nomenclatura entre arquivos (`fuelPricesService.ts` vs `fuel_prices_service.ts`).
@@ -153,3 +47,7 @@ Este documento detalha as oportunidades de melhoria identificadas no projeto Gir
 *   **Inconsistência de Nomenclatura (snake_case vs camelCase):**
     *   **Justificativa**: Schema do banco usa snake_case, código TypeScript espera camelCase, migrações do Drizzle ORM falham.
     *   **Impacto**: Migrações não funcionam, tipagem quebrada.
+
+*   **Continuar Checagem de Tarefas Concluídas:**
+    *   **Justificativa**: Retomar a verificação do código fonte para identificar e remover tarefas já implementadas no `docs/progresso.md`.
+    *   **Impacto**: Manter o documento de progresso atualizado e preciso, refletindo o estado real do projeto.
