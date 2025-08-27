@@ -4,22 +4,22 @@ import { CreateGoalRequest } from "../controllers/goalsController";
 
 interface CreateGoalResponse {
   id: string;
-  title: string;
+  titulo: string;
   desiredWeeklyFrequency: number;
   createdAt: Date;
 }
 
 export async function createGoal({
-  title,
+  titulo,
   desiredWeeklyFrequency,
 }: CreateGoalRequest): Promise<CreateGoalResponse> {
   const result = await db
     .insert(metas)
     .values({
-      title: title,
+      titulo: titulo,
       valorObjetivo: desiredWeeklyFrequency, // Usando desiredWeeklyFrequency como valorObjetivo inicial
       tipoMeta: "quilometragem", // Exemplo: definir um tipo de meta padrão
-      periodo: "semanal", // Exemplo: definir um período padrão
+      period: "semanal", // Exemplo: definir um período padrão
       dataInicio: new Date(),
       dataFim: new Date(Date.now() + (7 * 24 * 60 * 60 * 1000)), // Uma semana a partir de agora
       idUsuario: "some-user-id", // TODO: Substituir por ID de usuário real
@@ -30,7 +30,7 @@ export async function createGoal({
 
   return {
     id: goal.id,
-    title: goal.title,
+    titulo: goal.titulo,
     desiredWeeklyFrequency: goal.valorObjetivo, // Retornar valorObjetivo como desiredWeeklyFrequency
     createdAt: new Date(goal.createdAt), // Converter timestamp para Date
   };

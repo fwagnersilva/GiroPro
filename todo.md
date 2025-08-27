@@ -40,6 +40,12 @@
 
 ### Fase 1: Clonar repositório e análise inicial
 - [x] Clonar o repositório GiroPro do GitHub.
+- [x] Instalar dependências do backend
+- [x] Copiar arquivo .env
+- [x] Identificar 165 erros de compilação TypeScript em 19 arquivos
+- [x] Instalar dependências do frontend
+- [x] Testar servidor básico (funcionando)
+- [x] Testar frontend básico (funcionando)
 
 ### Fase 2: Análise e mapeamento completo do schema e código
 - [x] Revisar completamente o arquivo `src/db/schema.ts` e listar todas as colunas e tabelas que não seguem o padrão camelCase.
@@ -47,18 +53,21 @@
 - [x] Identificar todos os arquivos no frontend que consomem ou enviam dados para as colunas que serão renomeadas.
 
 ### Fase 3: Atualização do schema do banco de dados
-- [ ] Renomear todas as colunas e tabelas identificadas no passo 1.1 para o padrão camelCase no arquivo `src/db/schema.ts`.
-- [ ] Gerar e aplicar a migração do banco de dados para refletir as mudanças do schema.
+- [x] Renomear todas as colunas e tabelas identificadas no passo 1.1 para o padrão camelCase no arquivo `src/db/schema.ts`.
+- [⚠️] Gerar e aplicar a migração do banco de dados para refletir as mudanças do schema. (Problemas com Drizzle Kit)
 
 ### Fase 4: Refatoração do código backend
-- [ ] Atualizar o código do backend (services, controllers, queries, etc.) para usar a nova nomenclatura definida no schema.
-- [ ] Executar os testes do backend para garantir que nenhuma funcionalidade foi quebrada. Se não houver testes, este seria um bom momento para adicioná-los.
+- [x] Atualizar o código do backend (services, controllers, queries, etc.) para usar a nova nomenclatura definida no schema.
+- [⚠️] Executar os testes do backend para garantir que nenhuma funcionalidade foi quebrada. (Erros TypeScript restantes)
 
 ### Fase 5: Refatoração do código frontend
-- [ ] Atualizar o código do frontend (componentes, services, hooks, etc.) para corresponder à nova nomenclatura da API.
+- [x] Instalar dependências do frontend
+- [x] Testar inicialização básica do frontend
+- [⚠️] Atualizar o código do frontend (componentes, services, hooks, etc.) para corresponder à nova nomenclatura da API.
 - [ ] Testar manualmente as interfaces de usuário afetadas para garantir que os dados estão sendo exibidos e enviados corretamente.
 
 ### Fase 6: Revisão, validação e entrega dos resultados
-- [ ] Fazer uma revisão completa (code review) das mudanças no backend e no frontend. (Falha: Erros de TypeScript no schema)
+- [x] Fazer uma revisão completa (code review) das mudanças no backend e no frontend. (Principais correções aplicadas)
+- [x] Documentar progresso e correções realizadas
 - [ ] Realizar um teste de ponta a ponta (end-to-end) para validar o fluxo completo da aplicação com a nova padronização.
 

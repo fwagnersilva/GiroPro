@@ -5,7 +5,7 @@ import type { WeekDateQuery } from "../controllers/goalsController";
 
 interface GoalSummary {
   id: string;
-  title: string;
+  titulo: string;
   desiredWeeklyFrequency: number;
   completionCount: number;
 }
@@ -25,7 +25,7 @@ export async function getWeekSummary({ weekStartsAt, }: WeekDateQuery = {}): Pro
   const goalsWithCompletions = await db
     .select({
       id: metas.id,
-      title: metas.title,
+      titulo: metas.titulo,
       desiredWeeklyFrequency: metas.valorObjetivo,
       completionCount: count(progressoMetas.id),
     })
@@ -34,14 +34,14 @@ export async function getWeekSummary({ weekStartsAt, }: WeekDateQuery = {}): Pro
       progressoMetas,
       sql`${progressoMetas.idMeta} = ${metas.id} AND ${progressoMetas.dataRegistro} >= ${startOfWeek.getTime()} AND ${progressoMetas.dataRegistro} <= ${endOfWeek.getTime()}`
     )
-    .groupBy(metas.id, metas.title, metas.valorObjetivo);
+    .groupBy(metas.id, metas.titulo, metas.valorObjetivo);
 
   // Buscar completações por dia para o goalsPerDay
   const completionsByDay = await db
     .select({
       goalId: progressoMetas.idMeta,
       day: sql<string>`DATE(${progressoMetas.dataRegistro})`.as("day"),
-      goalTitle: metas.title,
+      goalTitle: metas.titulo,
       desiredWeeklyFrequency: metas.valorObjetivo,
     })
     .from(progressoMetas)
@@ -74,7 +74,7 @@ export async function getWeekSummary({ weekStartsAt, }: WeekDateQuery = {}): Pro
     } else {
       goalsPerDay[day].push({
         id: completion.goalId,
-        title: completion.goalTitle,
+        titulo: completion.goalTitle,
         desiredWeeklyFrequency: completion.desiredWeeklyFrequency,
         completionCount: 1,
       });

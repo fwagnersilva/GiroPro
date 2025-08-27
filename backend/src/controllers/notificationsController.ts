@@ -90,7 +90,7 @@ export class NotificationsController {
       }
 
       const notificationData: NotificationData = {
-        idUsuario: userId,
+        userId: userId,
         tipo: validation.data.tipo,
         titulo: validation.data.titulo,
         mensagem: validation.data.mensagem,
@@ -311,7 +311,7 @@ export class NotificationsController {
       }
 
       const testNotificationData: NotificationData = {
-        idUsuario: userId,
+        userId: userId,
         tipo: 'sistema',
         titulo: '🧪 Notificação de Teste',
         mensagem: 'Esta é uma notificação de teste para verificar o funcionamento do sistema.',

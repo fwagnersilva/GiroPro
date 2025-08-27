@@ -1,11 +1,11 @@
 import { db } from '../db';
-import { notificacoes, tipoNotificacaoEnum } from "../db/schema";
+import { notificacoes, tipoNotificacao } from "../db/schema";
 import { eq, and, desc, isNull, gte, lte } from 'drizzle-orm';
 import { v4 as uuidv4 } from 'uuid';
 
 export interface NotificationData {
   id?: string;
-  idUsuario: string;
+  userId: string;
   tipo?: "sistema" | "alerta" | "promocao" | "suporte";
   titulo: string;
   mensagem: string;
@@ -21,7 +21,7 @@ export class NotificationService {
   static async createNotification(data: NotificationData): Promise<NotificationData> {
     const notification = {
       id: data.id || uuidv4(),
-      idUsuario: data.idUsuario,
+      userId: data.userId,
       tipo: data.tipo || "sistema" as "sistema" | "alerta" | "promocao" | "suporte",
       titulo: data.titulo,
       mensagem: data.mensagem,
@@ -52,7 +52,7 @@ export class NotificationService {
     const { limit = 50, offset = 0, onlyUnread = false, tipo } = options;
 
     let whereCondition = and(
-      eq(notificacoes.idUsuario, userId),
+      eq(notificacoes.userId, userId),
       isNull(notificacoes.deletedAt)
     );
 
@@ -62,7 +62,7 @@ export class NotificationService {
 
     if (tipo) {
       // Validar que o tipo é um dos valores permitidos do enum
-      const validTypes = Object.values(tipoNotificacaoEnum);
+      const validTypes = Object.values(tipoNotificacao);
       if (validTypes.includes(tipo as any)) {
         whereCondition = and(whereCondition, eq(notificacoes.tipo, tipo as any));
       } else {
@@ -97,7 +97,7 @@ export class NotificationService {
       .where(
         and(
           eq(notificacoes.id, notificationId),
-          eq(notificacoes.idUsuario, userId),
+          eq(notificacoes.userId, userId),
           isNull(notificacoes.deletedAt)
         )
       ).returning();
@@ -117,7 +117,7 @@ export class NotificationService {
       })
       .where(
         and(
-          eq(notificacoes.idUsuario, userId),
+          eq(notificacoes.userId, userId),
           eq(notificacoes.lida, false),
           isNull(notificacoes.deletedAt)
         )
@@ -135,7 +135,7 @@ export class NotificationService {
       .from(notificacoes)
       .where(
         and(
-          eq(notificacoes.idUsuario, userId),
+          eq(notificacoes.userId, userId),
           eq(notificacoes.lida, false),
           isNull(notificacoes.deletedAt)
         )
@@ -156,7 +156,7 @@ export class NotificationService {
       .where(
         and(
           eq(notificacoes.id, notificationId),
-          eq(notificacoes.idUsuario, userId),
+          eq(notificacoes.userId, userId),
           isNull(notificacoes.deletedAt)
         )
       ).returning();
@@ -200,7 +200,7 @@ export class NotificationService {
         .from(notificacoes)
         .where(
           and(
-            eq(notificacoes.idUsuario, userId),
+            eq(notificacoes.userId, userId),
             eq(notificacoes.tipo, 'sistema'),
             gte(notificacoes.dataEnvio, yesterday), 
             isNull(notificacoes.deletedAt)
@@ -214,7 +214,7 @@ export class NotificationService {
 
       if (!isDuplicate) {
         await this.createNotification({
-          idUsuario: userId,
+          userId: userId,
           tipo: 'sistema',
           titulo: insight.titulo,
           mensagem: insight.descricao,
@@ -251,7 +251,7 @@ export class NotificationService {
         .from(notificacoes)
         .where(
           and(
-            eq(notificacoes.idUsuario, userId),
+            eq(notificacoes.userId, userId),
             eq(notificacoes.tipo, 'alerta'),
             gte(notificacoes.dataEnvio, twoDaysAgo), 
             isNull(notificacoes.deletedAt)
@@ -265,7 +265,7 @@ export class NotificationService {
 
       if (!isDuplicate) {
         await this.createNotification({
-          idUsuario: userId,
+          userId: userId,
           tipo: 'alerta',
           titulo: `🎯 ${recommendation.titulo}`,
           mensagem: recommendation.descricao,
@@ -290,7 +290,7 @@ export class NotificationService {
 
     if (meta_atingida) {
       await this.createNotification({
-        idUsuario: userId,
+        userId: userId,
         tipo: 'sistema',
         titulo: '🎉 Meta Atingida!',
         mensagem: `Parabéns! Você atingiu sua meta de ${meta_tipo}.`,
@@ -303,7 +303,7 @@ export class NotificationService {
       });
     } else if (progresso_percentual >= 90) {
       await this.createNotification({
-        idUsuario: userId,
+        userId: userId,
         tipo: 'alerta',
         titulo: '🔥 Quase lá!',
         mensagem: `Você está a ${(100 - progresso_percentual).toFixed(1)}% de atingir sua meta de ${meta_tipo}.`,
@@ -316,7 +316,7 @@ export class NotificationService {
       });
     } else if (progresso_percentual >= 75) {
       await this.createNotification({
-        idUsuario: userId,
+        userId: userId,
         tipo: 'alerta',
         titulo: '💪 Bom progresso!',
         mensagem: `Você já completou ${progresso_percentual.toFixed(1)}% da sua meta de ${meta_tipo}.`,
@@ -339,7 +339,7 @@ export class NotificationService {
     switch (tipo_alerta) {
       case 'consumo_alto':
         await this.createNotification({
-          idUsuario: userId,
+          userId: userId,
           tipo: 'alerta',
           titulo: '⚠️ Consumo Elevado',
           mensagem: `O veículo ${veiculo.marca} ${veiculo.modelo} está com consumo acima do normal.`,
@@ -354,7 +354,7 @@ export class NotificationService {
 
       case 'manutencao_preventiva':
         await this.createNotification({
-          idUsuario: userId,
+          userId: userId,
           tipo: 'sistema',
           titulo: '🔧 Manutenção Preventiva',
           mensagem: `O veículo ${veiculo.marca} ${veiculo.modelo} pode precisar de manutenção em breve.`,
@@ -369,7 +369,7 @@ export class NotificationService {
 
       case 'eficiencia_baixa':
         await this.createNotification({
-          idUsuario: userId,
+          userId: userId,
           tipo: 'alerta',
           titulo: '📉 Eficiência Baixa',
           mensagem: `A eficiência do veículo ${veiculo.marca} ${veiculo.modelo} está abaixo do esperado.`,
@@ -384,7 +384,7 @@ export class NotificationService {
 
       case 'meta_diaria_risco':
         await this.createNotification({
-          idUsuario: userId,
+          userId: userId,
           tipo: 'alerta',
           titulo: '⏰ Meta Diária em Risco',
           mensagem: 'Você pode não atingir sua meta diária se continuar no ritmo atual.',

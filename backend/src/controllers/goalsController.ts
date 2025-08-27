@@ -3,7 +3,7 @@ import { z } from 'zod'
 
 // 🚀 Schemas otimizados com validações mais robustas
 const createGoalSchema = z.object({
-  title: z.string()
+  titulo: z.string()
     .min(1, 'Título é obrigatório')
     .max(100, 'Título deve ter no máximo 100 caracteres')
     .trim(),
@@ -93,17 +93,17 @@ export const goalsRoutes: FastifyPluginAsyncZod = async app => {
       },
     },
   }, withErrorHandling(async (request, reply) => {
-    const { title, desiredWeeklyFrequency } = request.body
+    const { titulo, desiredWeeklyFrequency } = request.body
 
     const result = await createGoal({
-      title,
+      titulo,
       desiredWeeklyFrequency,
     })
 
     // 🚀 Response padronizado
     return createSuccessResponse({
       goalId: result.id,
-      title: result.title,
+      titulo: result.titulo,
       desiredWeeklyFrequency: result.desiredWeeklyFrequency,
       createdAt: result.createdAt,
     })
@@ -156,7 +156,7 @@ export const goalsRoutes: FastifyPluginAsyncZod = async app => {
           data: z.object({
             pendingGoals: z.array(z.object({
               id: z.string().cuid2(),
-              title: z.string(),
+              titulo: z.string(),
               desiredWeeklyFrequency: z.number(),
               completionCount: z.number(),
             })),
@@ -212,7 +212,7 @@ export const goalsRoutes: FastifyPluginAsyncZod = async app => {
           success: z.boolean(),
           data: z.object({
             id: z.string().cuid2(),
-            title: z.string(),
+            titulo: z.string(),
             desiredWeeklyFrequency: z.number(),
             createdAt: z.string().datetime(),
           }),

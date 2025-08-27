@@ -39,11 +39,10 @@ export class AuthService {
         .insert(usuarios)
         .values({
           id: crypto.randomUUID(),
-          nome: data.nome.trim(),
-          email: data.email.toLowerCase().trim(),
+          nome: data.nome,
+          email: data.email,
           senhaHash: senhaHash,
-          statusConta: 'ativo',
-          tentativasLogin: 0,
+          accountStatus: 'ativo',
           dataCadastro: new Date(),
           ultimaAtividade: new Date(),
         })
@@ -51,7 +50,7 @@ export class AuthService {
           id: usuarios.id,
           nome: usuarios.nome,
           email: usuarios.email,
-          statusConta: usuarios.statusConta,
+          accountStatus: usuarios.accountStatus,
         });
 
       // Gerar tokens
@@ -65,7 +64,7 @@ export class AuthService {
           id: newUser.id,
           nome: newUser.nome,
           email: newUser.email,
-          statusConta: newUser.statusConta,
+          accountStatus: newUser.accountStatus,
         },
       };
     } catch (error) {
@@ -93,7 +92,7 @@ export class AuthService {
       }
 
       // Verificar se a conta está ativa
-      if (user.statusConta !== 'ativo') {
+      if (user.accountStatus !== 'ativo') {
         throw new Error('Conta inativa ou suspensa');
       }
 
@@ -123,7 +122,7 @@ export class AuthService {
           id: user.id,
           nome: user.nome,
           email: user.email,
-          statusConta: user.statusConta,
+          accountStatus: user.accountStatus,
         },
       };
     } catch (error) {
@@ -138,7 +137,7 @@ export class AuthService {
       
       // Verificar se o usuário ainda existe e está ativo
       const user = await this.getUserById(decoded.userId);
-      if (user.statusConta !== 'ativo') {
+      if (user.accountStatus !== 'ativo') {
         throw new Error('Usuário inativo');
       }
 
@@ -162,7 +161,7 @@ export class AuthService {
           id: usuarios.id,
           nome: usuarios.nome,
           email: usuarios.email,
-          statusConta: usuarios.statusConta,
+          accountStatus: usuarios.accountStatus,
           dataCadastro: usuarios.dataCadastro,
           ultimaAtividade: usuarios.ultimaAtividade,
         })
@@ -226,7 +225,7 @@ export class AuthService {
       await db
         .update(usuarios)
         .set({ 
-          statusConta: 'inativo',
+          accountStatus: 'inativo',
           ultimaAtividade: new Date(),
         })
         .where(eq(usuarios.id, userId));

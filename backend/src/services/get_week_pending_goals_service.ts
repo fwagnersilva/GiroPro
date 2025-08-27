@@ -5,7 +5,7 @@ import { WeekDateQuery } from "../controllers/goalsController";
 
 interface PendingGoal {
   id: string;
-  title: string;
+  titulo: string;
   desiredWeeklyFrequency: number; // Representa o valor_objetivo para metas semanais
   currentProgress: number; // Representa o valor_atual
 }
@@ -23,14 +23,14 @@ export async function getWeekPendingGoals({
   const pendingGoals = await db
     .select({
       id: metas.id,
-      title: metas.title,
+      titulo: metas.titulo,
       desiredWeeklyFrequency: metas.valorObjetivo,
       currentProgress: metas.valorAtual,
     })
     .from(metas)
     .where(
       and(
-        eq(metas.periodo, "semanal"), // Filtrar por metas semanais
+        eq(metas.period, "semanal"), // Filtrar por metas semanais
         lte(metas.dataInicio, endOfWeek),
         gte(metas.dataFim, startOfWeek),
         eq(metas.status, "ativa"), // Apenas metas ativas
@@ -41,7 +41,7 @@ export async function getWeekPendingGoals({
   return {
     pendingGoals: pendingGoals.map((goal) => ({
       id: goal.id,
-      title: goal.title,
+      titulo: goal.titulo,
       desiredWeeklyFrequency: goal.desiredWeeklyFrequency,
       currentProgress: goal.currentProgress,
     })),

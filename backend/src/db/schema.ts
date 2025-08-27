@@ -51,13 +51,13 @@ export const usuarios = sqliteTable("usuarios", {
 
 export const veiculos = sqliteTable("veiculos", {
   id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
-  userId: text("userId").notNull().references(() => usuarios.id, { onDelete: "cascade" }),
+  idUsuario: text("idUsuario").notNull().references(() => usuarios.id, { onDelete: "cascade" }),
   marca: text("marca", { length: 50 }).notNull(),
   modelo: text("modelo", { length: 100 }).notNull(),
   ano: integer("ano").notNull(),
   placa: text("placa", { length: 8 }).notNull(),
-  fuelType: fuelType.notNull(),
-  usageType: usageType.notNull(),
+  tipoCombustivel: fuelType.notNull(),
+  tipoUso: usageType.notNull(),
   
   // Valores em centavos para precisão
   valorAluguel: integer("valorAluguel"), // Para tipo_uso = "alugado"
@@ -68,16 +68,16 @@ export const veiculos = sqliteTable("veiculos", {
   updatedAt: integer("updatedAt", { mode: "timestamp" }).default(sql`(unixepoch())`).notNull(),
   deletedAt: integer("deletedAt", { mode: "timestamp" }),
 }, (table) => ({
-  usuarioIdx: index("veiculos_usuario_idx").on(table.userId),
+  usuarioIdx: index("veiculos_usuario_idx").on(table.idUsuario),
   placaIdx: uniqueIndex("veiculos_placa_idx").on(table.placa),
   anoIdx: index("veiculos_ano_idx").on(table.ano),
-  combustivelIdx: index("veiculos_combustivel_idx").on(table.fuelType),
-  usuarioAtivoIdx: index("veiculos_usuario_ativo_idx").on(table.userId, table.deletedAt),
+  combustivelIdx: index("veiculos_combustivel_idx").on(table.tipoCombustivel),
+  usuarioAtivoIdx: index("veiculos_usuario_ativo_idx").on(table.idUsuario, table.deletedAt),
 }));
 
 export const jornadas = sqliteTable("jornadas", {
   id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
-  userId: text("userId").notNull().references(() => usuarios.id, { onDelete: "cascade" }),
+  idUsuario: text("idUsuario").notNull().references(() => usuarios.id, { onDelete: "cascade" }),
   idVeiculo: text("idVeiculo").notNull().references(() => veiculos.id, { onDelete: "cascade" }),
   
   dataInicio: integer("dataInicio", { mode: "timestamp" }).notNull(),
@@ -95,21 +95,21 @@ export const jornadas = sqliteTable("jornadas", {
   updatedAt: integer("updatedAt", { mode: "timestamp" }).default(sql`(unixepoch())`).notNull(),
   deletedAt: integer("deletedAt", { mode: "timestamp" }),
 }, (table) => ({
-  usuarioIdx: index("jornadas_usuario_idx").on(table.userId),
+  usuarioIdx: index("jornadas_usuario_idx").on(table.idUsuario),
   veiculoIdx: index("jornadas_veiculo_idx").on(table.idVeiculo),
   dataInicioIdx: index("jornadas_dataInicio_idx").on(table.dataInicio),
   periodoIdx: index("jornadas_periodo_idx").on(table.dataInicio, table.dataFim),
-  usuarioDataIdx: index("jornadas_usuario_data_idx").on(table.userId, table.dataInicio),
+  usuarioDataIdx: index("jornadas_usuario_data_idx").on(table.idUsuario, table.dataInicio),
   statusIdx: index("jornadas_status_idx").on(table.dataFim), // Para identificar jornadas em andamento
 }));
 
 export const abastecimentos = sqliteTable("abastecimentos", {
   id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
-  userId: text("userId").notNull().references(() => usuarios.id, { onDelete: "cascade" }),
+  idUsuario: text("idUsuario").notNull().references(() => usuarios.id, { onDelete: "cascade" }),
   idVeiculo: text("idVeiculo").notNull().references(() => veiculos.id, { onDelete: "cascade" }),
   
   dataAbastecimento: integer("dataAbastecimento", { mode: "timestamp" }).notNull(),
-  fuelType: fuelType.notNull(),
+  tipoCombustivel: fuelType.notNull(),
   quantidadeLitros: real("quantidadeLitros").notNull(), // REAL para precisão
   valorLitro: integer("valorLitro").notNull(), // Em centavos
   valorTotal: integer("valorTotal").notNull(), // Em centavos
@@ -120,20 +120,20 @@ export const abastecimentos = sqliteTable("abastecimentos", {
   updatedAt: integer("updatedAt", { mode: "timestamp" }).default(sql`(unixepoch())`).notNull(),
   deletedAt: integer("deletedAt", { mode: "timestamp" }),
 }, (table) => ({
-  usuarioIdx: index("abastecimentos_usuario_idx").on(table.userId),
+  usuarioIdx: index("abastecimentos_usuario_idx").on(table.idUsuario),
   veiculoIdx: index("abastecimentos_veiculo_idx").on(table.idVeiculo),
   dataIdx: index("abastecimentos_data_idx").on(table.dataAbastecimento),
   veiculoDataIdx: index("abastecimentos_veiculo_data_idx").on(table.idVeiculo, table.dataAbastecimento),
-  combustivelIdx: index("abastecimentos_combustivel_idx").on(table.fuelType),
+  combustivelIdx: index("abastecimentos_combustivel_idx").on(table.tipoCombustivel),
 }));
 
 export const despesas = sqliteTable("despesas", {
   id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
-  userId: text("userId").notNull().references(() => usuarios.id, { onDelete: "cascade" }),
+  idUsuario: text("idUsuario").notNull().references(() => usuarios.id, { onDelete: "cascade" }),
   idVeiculo: text("idVeiculo").references(() => veiculos.id, { onDelete: "cascade" }),
   
   dataDespesa: integer("dataDespesa", { mode: "timestamp" }).notNull(),
-  expenseType: expenseType.notNull(),
+  tipoDespesa: expenseType.notNull(),
   valorDespesa: integer("valorDespesa").notNull(), // Em centavos
   descricao: text("descricao", { length: 300 }),
   
@@ -141,11 +141,11 @@ export const despesas = sqliteTable("despesas", {
   updatedAt: integer("updatedAt", { mode: "timestamp" }).default(sql`(unixepoch())`).notNull(),
   deletedAt: integer("deletedAt", { mode: "timestamp" }),
 }, (table) => ({
-  usuarioIdx: index("despesas_usuario_idx").on(table.userId),
+  usuarioIdx: index("despesas_usuario_idx").on(table.idUsuario),
   veiculoIdx: index("despesas_veiculo_idx").on(table.idVeiculo),
   dataIdx: index("despesas_data_idx").on(table.dataDespesa),
-  tipoIdx: index("despesas_tipo_idx").on(table.expenseType),
-  usuarioDataIdx: index("despesas_usuario_data_idx").on(table.userId, table.dataDespesa),
+  tipoIdx: index("despesas_tipo_idx").on(table.tipoDespesa),
+  usuarioDataIdx: index("despesas_usuario_data_idx").on(table.idUsuario, table.dataDespesa),
 }));
 
 // ===============================
@@ -156,7 +156,7 @@ export const historicoPrecoCombustivel = sqliteTable("historicoPrecoCombustivel"
   id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
   cidade: text("cidade", { length: 100 }).notNull(),
   estado: text("estado", { length: 2 }).notNull(), // Sigla do estado
-  fuelType: fuelType.notNull(),
+  tipoCombustivel: fuelType.notNull(),
   precoMedio: integer("precoMedio").notNull(), // Em centavos
   dataRegistro: integer("dataRegistro", { mode: "timestamp" }).default(sql`(unixepoch())`).notNull(),
   fonte: text("fonte", { length: 100 }), // Fonte dos dados
@@ -165,7 +165,7 @@ export const historicoPrecoCombustivel = sqliteTable("historicoPrecoCombustivel"
   deletedAt: integer("deletedAt", { mode: "timestamp" }),
 }, (table) => ({
   historicoLocalIdx: index("historicoLocalIdx").on(table.cidade, table.estado),
-  historicoCombustivelIdx: index("historicoCombustivelIdx").on(table.fuelType),
+  historicoCombustivelIdx: index("historicoCombustivelIdx").on(table.tipoCombustivel),
   historicoDataIdx: index("historicoDataIdx").on(table.dataRegistro),
   historicoLocalDataIdx: index("historicoLocalDataIdx").on(table.cidade, table.estado, table.dataRegistro),
 }));
@@ -192,12 +192,12 @@ export const logsAtividades = sqliteTable("logsAtividades", {
 
 export const metas = sqliteTable("metas", {
   id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
-  userId: text("userId").notNull().references(() => usuarios.id, { onDelete: "cascade" }),
+  idUsuario: text("idUsuario").notNull().references(() => usuarios.id, { onDelete: "cascade" }),
   idVeiculo: text("idVeiculo").references(() => veiculos.id, { onDelete: "cascade" }),
   
   titulo: text("titulo", { length: 100 }).notNull(),
   descricao: text("descricao", { length: 500 }),
-  goalType: goalType.notNull(),
+  tipoMeta: goalType.notNull(),
   period: goalPeriod.notNull(),
   
   valorObjetivo: integer("valorObjetivo").notNull(), // Valor em centavos ou unidades
@@ -214,12 +214,12 @@ export const metas = sqliteTable("metas", {
   updatedAt: integer("updatedAt", { mode: "timestamp" }).default(sql`(unixepoch())`).notNull(),
   deletedAt: integer("deletedAt", { mode: "timestamp" }),
 }, (table) => ({
-  usuarioIdx: index("metas_usuario_idx").on(table.userId),
+  usuarioIdx: index("metas_usuario_idx").on(table.idUsuario),
   veiculoIdx: index("metas_veiculo_idx").on(table.idVeiculo),
   statusIdx: index("metas_status_idx").on(table.status),
-  tipoIdx: index("metas_tipo_idx").on(table.goalType),
+  tipoIdx: index("metas_tipo_idx").on(table.tipoMeta),
   periodoIdx: index("metas_periodo_idx").on(table.dataInicio, table.dataFim),
-  usuarioStatusIdx: index("metas_usuario_status_idx").on(table.userId, table.status),
+  usuarioStatusIdx: index("metas_usuario_status_idx").on(table.idUsuario, table.status),
   ativasIdx: index("metas_ativas_idx").on(table.status, table.dataFim), // Para metas expiradas
 }));
 
