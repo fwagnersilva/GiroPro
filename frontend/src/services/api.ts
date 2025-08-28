@@ -14,7 +14,7 @@ import {
 } from '../types';
 
 // Configuração base da API
-const API_BASE_URL = 'https://3000-iwilvbbx7o8240faqq6ez-24178551.manusvm.computer/api/v1';
+const API_BASE_URL = 'http://localhost:3000/api/v1';
 
 const api = axios.create({
   baseURL: API_BASE_URL,

@@ -28,7 +28,7 @@ export interface AuthResponse {
     id: string;
     nome: string;
     email: string;
-    accountStatus: string;
+    statusConta: string;
   };
 }
 

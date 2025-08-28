@@ -1,73 +1,59 @@
-# Lista de Tarefas - GiroPro
+# TODO - Configuração GiroPro
 
-## Documentação de Setup e Onboarding
-- [x] Revisar e ajustar o "Troubleshooting Básico" e "Checklist de Setup Rápido" no `GUIA_DE_SETUP_COMPLETO.md`
-- [ ] Atualizar referências nos documentos para o novo `GUIA_DE_SETUP_COMPLETO.md`
-- [x] Remover arquivos antigos (`docs/GUIA_SETUP_DESENVOLVEDOR.md` e `docs/01_tutoriais/01SetupInicial.md`)
-- [x] Atualizar `docs/README.md` (se existir) para apontar para o novo `GUIA_DE_SETUP_COMPLETO.md` - N/A (arquivo não existe)
+## ✅ Concluído
 
-## Consistência de Nomenclatura e Framework Backend
-- [x] Padronizar Nomenclatura para `camelCase` em `src/db/schema.ts` e refatorar código backend e frontend
-- [ ] Atualizar migrações se necessário
-- [ ] Atualizar documentação para refletir `camelCase`
-- [x] Corrigir Inconsistência do Framework Backend (alterar "Fastify" para "Express.js" em documentos)
+### Preparação e Análise Inicial
+- [x] Clonagem do repositório GiroPro
+- [x] Leitura do arquivo docs/progresso.md
+- [x] Identificação das tarefas pendentes
 
-## Aprofundamento e Expansão da Documentação
-- [x] Criar `docs/04_referencias/01_documentacao_banco_dados.md` e gerar Diagrama ER
-- [ ] Criar Dicionário de Dados e documentar Migrações e Padrões de Acesso a Dados
-- [ ] Criar `docs/04_referencias/02_documentacao_testes.md` e detalhar a estratégia de testes
-- [ ] Criar `docs/04_referencias/03_guia_deploy.md` e fornecer um guia detalhado para o deploy
-- [ ] Criar `docs/04_referencias/04_documentacao_seguranca.md` e detalhar as práticas de segurança
-- [ ] Criar `docs/04_referencias/05_design_system.md` e criar um guia para o design system do frontend
+### Configuração do Ambiente
+- [x] Instalação das dependências do backend
+- [x] Instalação das dependências do frontend
+- [x] Criação dos arquivos .env necessários
+- [x] Instalação do Docker
+- [x] Configuração do banco de dados SQLite (já existente)
 
-## Melhorias de Formato e Usabilidade
-- [ ] Inserir Diagramas e Visualizações (atualizar `docs/03_explicacoes/01ArquiteturaGeral.md`)
-- [ ] Utilizar Tabelas para organizar informações (Endpoints da API, Variáveis de Ambiente, Scripts)
-- [ ] Garantir Referências Cruzadas Clicáveis em todos os documentos
-- [ ] Criar Glossário (`docs/04_referencias/06_glossario.md`)
+### Execução do Sistema
+- [x] Backend rodando na porta 3000
+- [x] Endpoints de health check funcionando
+- [x] Endpoint de teste funcionando
+- [x] Conexão com banco SQLite estabelecida
 
-## Resolução de Problemas e Vulnerabilidades
-- [ ] Resolver Erros TypeScript Restantes
-- [ ] Resolver Vulnerabilidades de Segurança Moderadas
+### Correções Implementadas
+- [x] Correção da nomenclatura accountStatus para statusConta no schema
+- [x] Correção das referências no authService.ts
+- [x] Correção dos tipos em index.ts
+- [x] Adição da variável JWT_REFRESH_SECRET
+- [x] Correção do carregamento das variáveis de ambiente no backend
+- [x] Registro de usuário funcionando
+- [x] Login de usuário funcionando
 
-## Atualização do progresso.md
-- [ ] Manter o `progresso.md` como um diário de bordo atualizado e estruturado
+## ⚠️ Problemas Identificados
 
+### Críticos
+- [x] **Compilação TypeScript**: Erros de tipagem impedem o funcionamento completo (resolvido)
 
+### Médios
 
+## 🔧 Próximas Tarefas
 
-## Tarefas para Padronização de Nomenclatura (camelCase)
+### Imediatas (Críticas)
+1. [ ] Verificar e corrigir erros de compilação TypeScript restantes
+2. [ ] Configurar e testar o frontend
+3. [ ] Validar comunicação frontend-backend
+4. [ ] Executar testes automatizados
 
-### Fase 1: Clonar repositório e análise inicial
-- [x] Clonar o repositório GiroPro do GitHub.
-- [x] Instalar dependências do backend
-- [x] Copiar arquivo .env
-- [x] Identificar 165 erros de compilação TypeScript em 19 arquivos
-- [x] Instalar dependências do frontend
-- [x] Testar servidor básico (funcionando)
-- [x] Testar frontend básico (funcionando)
+### Baixas
+1. [ ] Documentar as correções realizadas
+2. [ ] Atualizar docs/progresso.md
+3. [ ] Melhorar configuração do Docker
 
-### Fase 2: Análise e mapeamento completo do schema e código
-- [x] Revisar completamente o arquivo `src/db/schema.ts` e listar todas as colunas e tabelas que não seguem o padrão camelCase.
-- [x] Identificar todos os arquivos no backend que serão impactados pela mudança no schema (ex: services, controllers, repositories).
-- [x] Identificar todos os arquivos no frontend que consomem ou enviam dados para as colunas que serão renomeadas.
+## 📊 Status Atual
 
-### Fase 3: Atualização do schema do banco de dados
-- [x] Renomear todas as colunas e tabelas identificadas no passo 1.1 para o padrão camelCase no arquivo `src/db/schema.ts`.
-- [⚠️] Gerar e aplicar a migração do banco de dados para refletir as mudanças do schema. (Problemas com Drizzle Kit)
+**Backend**: ✅ Rodando e funcional (registro e login OK)
+**Frontend**: ❓ Não testado
+**Banco de Dados**: ✅ SQLite funcionando
+**Docker**: ❌ PostgreSQL com problemas
 
-### Fase 4: Refatoração do código backend
-- [x] Atualizar o código do backend (services, controllers, queries, etc.) para usar a nova nomenclatura definida no schema.
-- [⚠️] Executar os testes do backend para garantir que nenhuma funcionalidade foi quebrada. (Erros TypeScript restantes)
-
-### Fase 5: Refatoração do código frontend
-- [x] Instalar dependências do frontend
-- [x] Testar inicialização básica do frontend
-- [⚠️] Atualizar o código do frontend (componentes, services, hooks, etc.) para corresponder à nova nomenclatura da API.
-- [ ] Testar manualmente as interfaces de usuário afetadas para garantir que os dados estão sendo exibidos e enviados corretamente.
-
-### Fase 6: Revisão, validação e entrega dos resultados
-- [x] Fazer uma revisão completa (code review) das mudanças no backend e no frontend. (Principais correções aplicadas)
-- [x] Documentar progresso e correções realizadas
-- [ ] Realizar um teste de ponta a ponta (end-to-end) para validar o fluxo completo da aplicação com a nova padronização.
-
+**Próximo Passo**: Verificar erros de compilação TypeScript restantes e testar o frontend.

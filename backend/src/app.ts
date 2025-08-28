@@ -10,7 +10,7 @@ import { expenseRoutes } from './routes/expenses';
 import { errorHandler } from './middlewares/errorHandler';
 import { requestLogger } from './middlewares/requestLogger';
 
-dotenv.config();
+dotenv.config({ path: __dirname + '/../.env' });
 
 const app = express();
 const PORT = parseInt(process.env.PORT || '3000');

@@ -5,7 +5,7 @@ import { relations, sql } from 'drizzle-orm';
 // ENUMS TIPADOS E OTIMIZADOS
 // ===============================
 
-export const accountStatus = text("accountStatus").$type<"ativo" | "inativo" | "suspenso">().notNull();
+export const accountStatus = text("statusConta").$type<"ativo" | "inativo" | "suspenso">().notNull();
 export const fuelType = text("fuelType").$type<"gasolina" | "etanol" | "diesel" | "gnv" | "flex">().notNull();
 export const usageType = text("usageType").$type<"proprio" | "alugado" | "financiado">().notNull();
 export const expenseType = text("expenseType").$type<"manutencao" | "pneus" | "seguro" | "outros">().notNull();
@@ -26,7 +26,7 @@ export const usuarios = sqliteTable("usuarios", {
   nome: text("nome", { length: 100 }).notNull(),
   email: text("email", { length: 255 }).notNull(),
   senhaHash: text("senhaHash", { length: 255 }).notNull(),
-  accountStatus: accountStatus.default("ativo").notNull(),
+  statusConta: accountStatus.default("ativo").notNull(),
   dataCadastro: integer("dataCadastro", { mode: "timestamp" }).default(sql`(unixepoch())`).notNull(),
   
   // Gamificação
@@ -44,7 +44,7 @@ export const usuarios = sqliteTable("usuarios", {
   ultimaAtividade: integer("ultimaAtividade", { mode: "timestamp" }).default(sql`(unixepoch())`).notNull(),
 }, (table) => ({
   emailIdx: uniqueIndex("usuarios_email_idx").on(table.email),
-  statusIdx: index("usuarios_status_idx").on(table.accountStatus),
+  statusIdx: index("usuarios_status_idx").on(table.statusConta),
   pontosIdx: index("usuarios_pontos_idx").on(table.pontosTotal),
   nivelIdx: index("usuarios_nivel_idx").on(table.nivelUsuario),
 }));

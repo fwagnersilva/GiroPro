@@ -27,9 +27,9 @@ const Stack = createStackNavigator<RootStackParamList>();
 const Tab = createBottomTabNavigator();
 
 const AuthStack = () => (
-  <Stack.Navigator screenOptions={{ headerShown: false }}>
-    <Stack.Screen name="Login" component={LoginScreenOptimized} />
+  <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName="Register">
     <Stack.Screen name="Register" component={RegisterScreenOptimized} />
+    <Stack.Screen name="Login" component={LoginScreenOptimized} />
   </Stack.Navigator>
 );
 
@@ -114,7 +114,7 @@ const MainTabs = () => (
 );
 
 const AppStack = () => (
-  <Stack.Navigator screenOptions={{ headerShown: false }}>
+  <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName="Register">
     <Stack.Screen name="Auth" component={AuthStack} />
     <Stack.Screen name="Main" component={MainTabs} />
     <Stack.Screen name="AddFueling" component={AddFuelingScreenOptimized} />
