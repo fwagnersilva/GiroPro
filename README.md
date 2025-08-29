@@ -16,7 +16,7 @@ Esta documentação está organizada de acordo com o framework Diátaxis, que ca
 ### Índice da Documentação
 
 *   **01. Tutoriais**
-    *   [Setup Inicial do Ambiente de Desenvolvimento](docs/01_tutoriais/01_setup_completo.md))
+    *   [Setup Inicial do Ambiente de Desenvolvimento](docs/01_tutoriais/01_setup_completo.md)
 
 *   **02. Guias de Como Fazer**
     *   [Como Testar os Scripts de Setup](docs/02_guias_como_fazer/01_testar_scripts_setup.md)
@@ -47,7 +47,7 @@ Esta documentação está organizada de acordo com o framework Diátaxis, que ca
 
 ## Setup Rápido
 
-Para configurar o ambiente de desenvolvimento, siga as instruções detalhadas no [Tutorial de Setup Inicial](docs/01_tutoriais/01_setup_inicial.md).
+Para configurar o ambiente de desenvolvimento, siga as instruções detalhadas no [Tutorial de Setup Inicial](docs/01_tutoriais/01_setup_completo.md).
 
 ## Contato
 
