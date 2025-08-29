@@ -8,6 +8,8 @@ Este documento detalha o progresso atual na configuração e validação do proj
 
 ### 2. Execução e Correção Imediata (Em Andamento)
 
+#### 2.0. Atualizar bcrypt para a versão 6.0.0
+
 #### 2.1. Problemas de Porta do Backend
 - **Problema**: O backend estava iniciando na porta 3000, mesmo após a alteração no `giropro.env` para 4000. Isso ocorria devido a um caminho incorreto no `dotenv.config` em `src/app.ts` e/ou processos antigos ocupando a porta.
 - **Correção**: 
