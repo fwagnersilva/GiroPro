@@ -34,7 +34,7 @@ npm install || { log_error "Falha ao instalar dependências do Backend."; exit 1
 
 log_info "Copiando .env.example para .env no Backend..."
 if [ ! -f .env ]; then
-  cp .env.example .env || { log_error "Falha ao copiar .env.example no Backend."; exit 1; }
+  cp giropro.env .env || { log_error "Falha ao copiar .env.example no Backend."; exit 1; }
   log_warn "Lembre-se de editar o arquivo .env no diretório 'backend' com suas configurações de banco de dados e JWT_SECRET."
 else
   log_info ".env já existe no Backend. Pulando cópia."
@@ -52,7 +52,7 @@ npm install || { log_error "Falha ao instalar dependências do Frontend."; exit 
 
 log_info "Copiando .env.example para .env no Frontend..."
 if [ ! -f .env ]; then
-  cp .env.example .env || { log_error "Falha ao copiar .env.example no Frontend."; exit 1; }
+  touch .env || { log_error "Falha ao criar .env vazio no Frontend."; exit 1; }
   log_warn "Lembre-se de editar o arquivo .env no diretório 'frontend' com a URL da API do Backend."
 else
   log_info ".env já existe no Frontend. Pulando cópia."
@@ -66,7 +66,7 @@ log_info "Configurando Docker Compose para o Banco de Dados..."
 
 if ! command -v docker &> /dev/null || ! command -v docker-compose &> /dev/null; then
   log_warn "Docker ou Docker Compose não encontrados. O banco de dados não será iniciado automaticamente."
-  log_warn "Por favor, instale Docker e Docker Compose e execute 'docker compose up -d postgres_db' manualmente no diretório raiz do projeto."
+  log_warn "Por favor, instale Docker e Docker Compose e execute 'docker-compose up -d postgres_db' manualmente no diretório raiz do projeto."
   log_warn "Após iniciar o banco de dados, execute 'cd backend && npm run db:migrate' para as migrações."
 else
   # Verificar se docker-compose.yml existe, se não, criar um básico
@@ -102,7 +102,7 @@ EOF
   fi
 
   log_info "Iniciando contêiner do PostgreSQL via Docker Compose..."
-  docker compose up -d postgres_db || { log_error "Falha ao iniciar contêiner do PostgreSQL."; exit 1; }
+  docker-compose up -d postgres_db || { log_error "Falha ao iniciar contêiner do PostgreSQL."; exit 1; }
 
   log_info "Aguardando o banco de dados ficar pronto..."
   # Esperar até que o serviço postgres_db esteja saudável
