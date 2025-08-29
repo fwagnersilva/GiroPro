@@ -4,19 +4,7 @@ Este documento detalha as oportunidades de melhoria identificadas no projeto Gir
 
 ## Oportunidades de Melhoria
 
-### Complexidade Baixa
-
-*   **Preparação e Entendimento do Projeto:**
-    *   **Justificativa**: Clonagem do repositório e análise inicial da estrutura do projeto.
-    *   **Status**: Concluído. Repositório clonado, dependências do backend e frontend instaladas.
-    *   **Impacto**: Ambiente de desenvolvimento inicial pronto para uso.
-
 ### Complexidade Média
-
-*   **Padronização de Arquivos e Services:**
-    *   **Justificativa**: Inconsistências de nomenclatura entre arquivos (`fuelPricesService.ts` vs `fuel_prices_service.ts`).
-    *   **Status**: Resolvido. Nomenclatura de campos no schema e serviços (`notificationService.ts`, `create_goal_service.ts`, `get_week_pending_goals_service.ts`, `get_week_summary_service.ts`) padronizada para camelCase. O schema do banco de dados (`src/db/schema.ts`) e os serviços foram atualizados para usar consistentemente a nomenclatura camelCase, alinhando-se ao padrão do código. Isso resolveu a maioria dos problemas de tipagem e migração.
-    *   **Impacto**: Redução de erros de tipagem e melhoria na legibilidade do código.
 
 *   **Validação Completa dos Scripts de Setup:**
     *   **Justificativa**: Teste completo do `setup.sh` (PostgreSQL/Docker), validação em diferentes ambientes, modo não-interativo para CI/CD.
@@ -46,20 +34,113 @@ Este documento detalha as oportunidades de melhoria identificadas no projeto Gir
     *   **Status**: Parcialmente resolvido. Principais erros de nomenclatura corrigidos. O problema de carregamento da variável de ambiente `JWT_REFRESH_SECRET` foi identificado e corrigido no backend, permitindo que o registro de usuários funcione. Alguns erros de compilação TypeScript ainda podem persistir, mas não impedem a execução do backend.
     *   **Impacto**: Backend funcional para endpoints básicos e registro de usuários. A estabilidade geral do código foi melhorada.
 
-*   **Inconsistência de Nomenclatura (snake_case vs camelCase):**
-    *   **Justificativa**: Schema do banco usava snake_case, código TypeScript esperava camelCase.
-    *   **Status**: Resolvido. O schema do banco de dados (`src/db/schema.ts`) e os serviços foram atualizados para usar consistentemente a nomenclatura camelCase, alinhando-se ao padrão do código. Isso resolveu a maioria dos problemas de tipagem e migração.
-    *   **Impacto**: Tipagem correta e compatibilidade entre o código e o banco de dados.
-
-*   **Organização da Documentação:**
-    *   **Justificativa**: A documentação estava desorganizada e com nomes inconsistentes, dificultando a localização de informações.
-    *   **Status**: Resolvido. A documentação de segurança foi criada e inserida no local correto. Todos os arquivos de documentação foram renomeados e movidos para os diretórios apropriados (`01_tutoriais`, `02_guias_como_fazer`, `03_explicacoes`, `04_referencias`) e o `README.md` foi atualizado com os novos links e estrutura.
-    *   **Impacto**: Melhoria significativa na organização e facilidade de localização da documentação do projeto.
-
 ### Status dos Componentes
 - **Backend**: ✅ Funcionando (endpoints básicos OK, registro funcionando)
 - **Frontend**: ✅ Funcionando (comunicação OK, registro em teste, acessível publicamente)
 - **Banco de Dados**: ✅ SQLite funcionando corretamente
 - **Docker**: ⚠️ Instalado, PostgreSQL com problemas de rede
 
+
+
+
+## Atualização da Sessão Atual (29/08/2025)
+
+### Configuração e Execução Realizadas
+
+#### ✅ Sucessos Alcançados
+- **Ambiente Local Configurado**: Backend e frontend instalados e rodando
+- **Banco de Dados**: SQLite funcionando corretamente com migrações aplicadas
+- **Exposição Pública**: Ambos os serviços expostos via URLs públicas
+- **Correções de Código**: Imports corrigidos no authController.ts
+- **Configuração de API**: URLs da API configuradas corretamente no frontend
+
+#### ⚠️ Problemas Identificados
+- **Comunicação Frontend-Backend**: O formulário de registro não está enviando dados para o backend
+- **React Native Web**: Possíveis problemas de compatibilidade ou configuração
+- **Logs de Debug**: Ausência de logs visíveis das tentativas de requisição
+
+#### 🔧 Correções Implementadas
+1. **Imports do AuthController**: Adicionados imports necessários para Request e Response
+2. **URL da API**: Configurada para usar variável de ambiente e incluir /v1
+3. **Configuração de Ambiente**: Arquivos .env criados e configurados
+4. **Exposição de Portas**: Backend (3000) e Frontend (8081) expostos publicamente
+
+### URLs de Acesso
+- **Backend**: https://3000-iayodx5z91uhqo3ml115s-e87a027c.manus.computer
+- **Frontend**: https://8081-iayodx5z91uhqo3ml115s-e87a027c.manus.computer
+
+### Próximas Ações Recomendadas
+1. **Investigar Comunicação**: Verificar por que o formulário não envia dados
+2. **Testes Diretos**: Testar endpoints via curl ou ferramentas de API
+3. **Logs de Debug**: Implementar logging detalhado no frontend
+4. **Validação de Rede**: Verificar configurações de CORS e rede
+5. **React Native Web**: Avaliar se há problemas específicos desta tecnologia
+
+### Status dos Componentes (Atualizado)
+- **Backend**: ✅ Funcionando (endpoints básicos OK, aguardando teste de registro)
+- **Frontend**: ⚠️ Funcionando (interface OK, comunicação com problemas)
+- **Banco de Dados**: ✅ SQLite funcionando corretamente
+- **Docker**: ❌ PostgreSQL com problemas de rede no ambiente sandbox
+- **Comunicação**: ❌ Problemas na comunicação frontend-backend
+
+### Observações Técnicas
+- O projeto está estruturalmente correto e bem configurado
+- Os problemas parecem estar relacionados à camada de comunicação
+- O ambiente de desenvolvimento está funcional para debugging
+- Todas as dependências estão instaladas e configuradas corretamente
+
+
+
+## Próximas Tarefas (Baseadas no TODO.md)
+
+### Imediatas (Críticas)
+1. **Investigar comunicação frontend-backend**: Verificar por que o formulário de registro não está enviando dados para o backend
+2. **Verificar CORS e configuração de rede**: Analisar se há problemas de CORS ou configuração de rede impedindo as requisições
+3. **Implementar logs de debug no frontend**: Adicionar logs para rastrear requisições e identificar onde estão falhando
+4. **Testar endpoints diretamente**: Usar curl ou Postman para validar se os endpoints do backend estão funcionando corretamente
+5. **Validar React Native Web**: Verificar se há problemas específicos com a configuração do React Native Web
+
+### Médias
+1. **Implementar feedback visual**: Adicionar indicadores de loading e mensagens de erro no frontend
+2. **Melhorar validação de formulário**: Implementar validação mais robusta nos formulários
+3. **Configurar logs estruturados**: Implementar sistema de logs mais detalhado no backend
+4. **Implementar testes automatizados**: Criar testes para validar funcionalidades críticas
+
+### Baixas
+1. **Documentar correções realizadas**: Criar documentação detalhada das correções implementadas
+2. **Atualizar documentação do projeto**: Manter docs/progresso.md sempre atualizado
+3. **Melhorar configuração do Docker**: Resolver problemas com PostgreSQL no Docker
+4. **Implementar monitoramento**: Adicionar monitoramento de saúde do sistema
+
+## Problemas Críticos Identificados
+
+### Comunicação Frontend-Backend
+- **Sintoma**: Formulário de registro não envia dados para o backend
+- **Impacto**: Funcionalidade principal não está operacional
+- **Prioridade**: Crítica
+- **Investigação já realizada**:
+    - **Configuração da URL da API**: A URL da API no frontend foi corrigida para apontar para o endereço correto do backend, incluindo o prefixo `/api/v1`.
+    - **Logs no Frontend**: Foram adicionados logs no serviço de API do frontend para monitorar as requisições e respostas. Os logs indicam que a requisição está sendo enviada, mas o backend retorna um erro 400 (Bad Request).
+    - **Logs no Backend**: Foram adicionados logs no middleware de requisições do backend para monitorar as requisições recebidas. Os logs mostram que as requisições do frontend não estão chegando ao backend.
+    - **CORS**: A configuração de CORS no backend está permissiva (`origin: '*'`), o que descarta a possibilidade de ser um problema de CORS.
+- **Investigação necessária**: Verificar se é problema de rede, configuração do React Native Web, ou algum problema na forma como a requisição está sendo montada no frontend.
+
+### Logs e Debug
+- **Sintoma**: Não há logs visíveis das tentativas de requisição no backend
+- **Impacto**: Dificulta o debugging e identificação de problemas
+- **Prioridade**: Alta
+- **Ação**: Implementar logs detalhados tanto no frontend quanto no backend
+
+### Feedback Visual
+- **Sintoma**: Não há indicação visual de loading ou erro no frontend
+- **Impacto**: Experiência do usuário prejudicada
+- **Prioridade**: Média
+- **Ação**: Implementar componentes de feedback visual
+
+## Recomendações Imediatas
+
+1. **Priorizar investigação da comunicação**: Este é o bloqueador principal
+2. **Implementar logs de debug**: Essencial para identificar a causa raiz
+3. **Testar isoladamente**: Validar backend e frontend separadamente
+4. **Documentar achados**: Manter registro de todas as investigações e correções
 

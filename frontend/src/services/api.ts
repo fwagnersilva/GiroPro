@@ -14,7 +14,7 @@ import {
 } from '../types';
 
 // Configuração base da API
-const API_BASE_URL = 'http://localhost:3000/api/v1';
+const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:3000/api/v1';
 
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -27,29 +27,35 @@ const api = axios.create({
 // Interceptor para adicionar token de autenticação
 api.interceptors.request.use(
   async (config) => {
-    const token = await AsyncStorage.getItem('authToken');
+    const token = await AsyncStorage.getItem("authToken");
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
+    console.log("Request:", config);
     return config;
   },
   (error) => {
+    console.error("Request Error:", error);
     return Promise.reject(error);
   }
 );
 
 // Interceptor para tratar respostas
 api.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    console.log("Response:", response);
+    return response;
+  },
   async (error) => {
+    console.error("Response Error:", error.response || error);
     if (error.response?.status === 401) {
       // Token expirado ou inválido
-      await AsyncStorage.removeItem('authToken');
+      await AsyncStorage.removeItem("authToken");
       await AsyncStorage.removeItem("user");
       // Opcional: Redirecionar para a tela de login
     }
     // Centraliza a extração da mensagem de erro
-    const errorMessage = error.response?.data?.error?.message || error.message || 'Ocorreu um erro inesperado.';
+    const errorMessage = error.response?.data?.error?.message || error.message || "Ocorreu um erro inesperado.";
     return Promise.reject(new Error(errorMessage));
   }
 );
