@@ -75,9 +75,10 @@ Este documento detalha as oportunidades de melhoria identificadas no projeto Gir
 5. **Organização da Documentação**: ✅ Resolvido - estrutura e nomes padronizados
 
 ### Próximas Tarefas Críticas
-1. Testar registro e login de usuários via frontend (com JWT_REFRESH_SECRET configurado)
-2. Executar testes automatizados completos
-3. Investigar e resolver problemas de iptables para Docker PostgreSQL
+1. Executar testes automatizados completos
+2. Testar registro e login de usuários via frontend (com JWT_REFRESH_SECRET configurado)
+3. Investigar e resolver problemas de iptables para Docker PostgreSQL, incluindo a verificação de limitações do servidor Manus.
+
 
 ### Status dos Componentes
 - **Backend**: ✅ Funcionando (endpoints básicos OK, registro funcionando)
