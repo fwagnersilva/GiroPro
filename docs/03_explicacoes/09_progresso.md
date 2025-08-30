@@ -65,55 +65,47 @@ Análise de UX/UI e implementação de melhorias na tela de histórico de despes
 
 ## Complexidade Baixa (Polimento e Otimização)
 
-### 1. Melhorias de Acessibilidade
-- **Adicionar labels para screen readers**: Implementar `accessibilityLabel`, `accessibilityHint` e `accessibilityRole` em todos os elementos interativos para garantir a compatibilidade com leitores de tela.
-- **Melhorar navegação por teclado (Web)**: Assegurar uma ordem de tabulação lógica, adicionar atalhos de teclado (ex: Ctrl+N para nova despesa) e implementar indicadores de foco visíveis.
+### 1. Funcionalidades Avançadas
+- **Personalização Inteligente**: Implementar sistema de insights automáticos, com análise de padrões de uso, sugestões baseadas em dados e alertas proativos. Permitir a customização do dashboard, com reordenação de cards, e widgets personalizáveis.
+- **Onboarding Contextual**: Criar tour guiado para novos usuários, com highlights interativos, explicações contextuais e progresso de onboarding. Adicionar dicas contextuais, com tooltips informativos e dicas baseadas no comportamento.
 
-### 2. Adaptações Multiplataforma
-- **Otimizações para iOS**: Implementar swipe actions nativas, usar cores do sistema quando apropriado e adicionar `disclosure indicators` para navegação.
-- **Otimizações para Android**: Utilizar componentes do Material Design, adicionar um FAB (Floating Action Button) para novas despesas e usar `elevation` e sombras do Material Design.
-- **Otimizações para Web**: Adicionar `hover states` para elementos interativos, usar `cursor: pointer` e incluir `tooltips` informativos.
-
-### 3. Implementar Modo Escuro
-- **Criar tema escuro**: Definir uma paleta de cores para o modo escuro, implementar detecção automática da preferência do sistema, adicionar um toggle manual e testar o contraste.
-
-### 4. Otimizações de Performance
-- **Melhorar renderização da lista**: Implementar `getItemLayout` para a `FlatList`, otimizar o `keyExtractor` e usar memoização de componentes.
-- **Adicionar cache local**: Implementar cache de despesas para acesso offline com sincronização inteligente.
-
-### 5. Microinterações e Animações
-- **Adicionar animações suaves**: Usar `LayoutAnimation` para mudanças na lista, adicionar animações de entrada/saída para os cards e animar os estados de carregamento.
-- **Melhorar feedback tátil**: Adicionar `haptic feedback` para ações importantes e vibrações sutis para confirmações.
+### 2. Analytics e Monitoramento
+- **Tracking de UX**: Implementar analytics de usabilidade, com tempo de carregamento percebido, taxa de conclusão de ações e pontos de abandono.
+- **A/B testing framework**: Criar framework para testes de diferentes layouts, com métricas de engajamento e otimização baseada em dados.
 
 ## Complexidade Média (Melhorias Significativas)
 
-### 1. Adicionar Resumos Financeiros
-- **Implementar header com resumo**: Mostrar o total de despesas do período selecionado, atualizando dinamicamente com os filtros, e adicionar indicadores de tendência.
-- **Adicionar visualizações simples**: Implementar um gráfico de pizza para distribuição por categoria e barras de progresso para as categorias principais.
+### 1. Implementar Microinterações e Animações
+- **Animações de Entrada**: Adicionar animações staggered para cards, com fade in + slide up e delay escalonado. Animar valores numéricos, com contagem animada para valores monetários.
+- **Estados Interativos**: Implementar hover states para web, com elevação sutil dos cards e mudança de cor de fundo. Adicionar press states para mobile, com redução de escala e mudança de opacidade.
+- **Transições de Estado**: Animar mudanças de período, com fade out/in e loading indicator durante a transição.
 
-### 2. Melhorar Estados e Feedback
-- **Implementar skeleton screens**: Substituir o `ActivityIndicator` por um skeleton loading com animação de shimmer que imita a estrutura dos cards.
-- **Melhorar estados de erro**: Criar um componente `ErrorState` com ilustração, botões de ação (tentar novamente) e mensagens de erro mais informativas.
-- **Aprimorar empty state**: Adicionar uma ilustração mais engajante, melhorar o texto com dicas de uso e adicionar um botão de ação primário mais proeminente.
+### 2. Melhorar Acessibilidade
+- **Contraste e Legibilidade**: Auditar e corrigir contrastes, garantindo conformidade com WCAG 2.1 AA. Implementar suporte a tema escuro, com paleta de cores para dark mode e toggle automático.
+- **Navegação por Teclado**: Implementar focus management, com focus indicators visíveis e ordem de tab lógica. Adicionar atalhos de teclado para ações rápidas.
+- **Screen Readers**: Adicionar labels semânticos para todos os botões e seções principais.
 
-### 3. Implementar Funcionalidade de Edição
-- **Criar tela de edição de despesas**: Implementar uma tela `EditExpenseScreen` similar à `AddExpenseScreen`, pré-populando os campos com os dados existentes e adicionando validação de formulário.
-- **Atualizar navegação**: Adicionar a rota para edição na navegação, implementar a passagem de parâmetros da despesa e atualizar a lista após a edição.
+### 3. Otimizar Performance
+- **Memoização e Otimizações**: Implementar React.memo nos componentes, otimizar re-renders com useCallback e useMemo, e separar estado local do global.
+- **Carregamento de Dados**: Implementar cache inteligente, com cache de dados por período, invalidação automática e preload de períodos adjacentes.
 
 ## Complexidade Alta (Impacto Imediato na UX)
 
-### 1. Implementar Sistema de Filtros
-- **Criar componente FilterModal**: Implementar um modal ou bottom sheet para filtros, incluindo filtros por data, seletor de data customizado, filtros por categoria e por veículo.
-- **Adicionar barra de busca**: Implementar uma `SearchBar` no header com busca em tempo real por descrição e histórico de buscas recentes.
-- **Atualizar header com indicadores de filtro**: Adicionar um ícone de filtro no header, mostrar badges quando filtros estiverem ativos e exibir um contador de resultados.
+### 1. Melhorar Hierarquia Visual e Tipografia
+- **Reorganizar Layout de Cards por Importância**: Criar card principal destacado para lucro líquido, com maior tamanho, gradiente de fundo e fonte aumentada. Reorganizar cards secundários em grid 2x2 e implementar hierarquia tipográfica consistente.
+- **Melhorar Seletor de Período**: Redesenhar seletor com maior destaque visual, adicionando ícones para cada período e animação de transição suave.
 
-### 2. Redesign dos Cards de Despesa
-- **Melhorar hierarquia visual**: Aumentar o tamanho e o peso da fonte do valor, reposicioná-lo e reduzir a proeminência da data, melhorando o contraste de cores.
-- **Otimizar layout dos cards**: Reduzir o espaçamento vertical, implementar um layout mais compacto e ajustar o padding interno.
-- **Revisar sistema de cores**: Atualizar as cores das categorias seguindo princípios semânticos e testar o contraste WCAG AA.
+### 2. Otimizar Fluxo de Ações Rápidas
+- **Simplificar Iniciar/Finalizar Jornada**: Criar modal dedicado para iniciar e finalizar jornada, com input numérico otimizado, seletor visual de veículo, e validação em tempo real. Implementar seleção rápida de KM, com sugestão baseada no último KM registrado e botões de incremento.
+- **Adicionar Feedback Visual em Ações**: Implementar estados de loading específicos e criar sistema de notificações toast para sucesso, erro e informação.
 
-### 3. Implementar Swipe Actions
-- **Swipe para editar**: Implementar swipe da direita para a esquerda com uma ação de edição (ícone e cor azul).
-- **Swipe para excluir**: Implementar swipe da esquerda para a direita com uma ação de exclusão (ícone e cor vermelha) e confirmação com possibilidade de desfazer.
+### 3. Implementar Responsividade Avançada
+- **Layout para Desktop/Tablet**: Criar layout em grid para telas grandes, com sidebar para ações rápidas e área principal com cards em grid. Otimizar cards para diferentes tamanhos de tela.
+- **Melhorar Touch Targets**: Aumentar área de toque dos botões para no mínimo 44x44px e adicionar espaçamento mínimo entre elementos tocáveis.
+
+### 4. Adicionar Estados de Loading e Erro Melhorados
+- **Estados de Loading Contextuais**: Implementar skeleton específico para cada seção, com animação de shimmer suave.
+- **Estados de Erro Informativos**: Criar componente de erro com ações, com ícone ilustrativo, mensagem clara e acionável, e botão de retry.
+- **Estados Vazios**: Implementar empty states com ilustração amigável, texto explicativo e call-to-action para primeira ação.
 
 
