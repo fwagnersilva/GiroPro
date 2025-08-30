@@ -63,49 +63,99 @@ Este documento detalha o progresso atual na configuração e validação do proj
 
 Análise de UX/UI e implementação de melhorias na tela de histórico de despesas, focando em usabilidade, experiência do usuário e interface visual para iOS, Android e Web.
 
-## Complexidade Baixa (Polimento e Otimização)
+## Complexidade Baixa (Melhorias)
 
-### 1. Funcionalidades Avançadas
-- **Personalização Inteligente**: Implementar sistema de insights automáticos, com análise de padrões de uso, sugestões baseadas em dados e alertas proativos. Permitir a customização do dashboard, com reordenação de cards, e widgets personalizáveis.
-- **Onboarding Contextual**: Criar tour guiado para novos usuários, com highlights interativos, explicações contextuais e progresso de onboarding. Adicionar dicas contextuais, com tooltips informativos e dicas baseadas no comportamento.
+### 5. Funcionalidades Avançadas
+- [ ] **Implementar modo escuro**
+  - Criar tema escuro para a tela
+  - Implementar toggle de tema
+  - Ajustar todas as cores para modo escuro
+  - Tempo estimado: 2 horas
 
-### 2. Analytics e Monitoramento
-- **Tracking de UX**: Implementar analytics de usabilidade, com tempo de carregamento percebido, taxa de conclusão de ações e pontos de abandono.
-- **A/B testing framework**: Criar framework para testes de diferentes layouts, com métricas de engajamento e otimização baseada em dados.
+- [ ] **Adicionar tooltips informativos**
+  - Implementar tooltips para requisitos de senha
+  - Adicionar ajuda contextual
+  - Tempo estimado: 1 hora
 
-## Complexidade Média (Melhorias Significativas)
+- [ ] **Implementar navegação por teclado (Web)**
+  - Adicionar suporte completo a teclado
+  - Implementar tab order lógico
+  - Adicionar atalhos de teclado
+  - Tempo estimado: 1 hora 30 minutos
 
-### 1. Implementar Microinterações e Animações
-- **Animações de Entrada**: Adicionar animações staggered para cards, com fade in + slide up e delay escalonado. Animar valores numéricos, com contagem animada para valores monetários.
-- **Estados Interativos**: Implementar hover states para web, com elevação sutil dos cards e mudança de cor de fundo. Adicionar press states para mobile, com redução de escala e mudança de opacidade.
-- **Transições de Estado**: Animar mudanças de período, com fade out/in e loading indicator durante a transição.
+### 6. Otimizações de Performance
+- [ ] **Implementar debounce para validação**
+  - Adicionar debounce na validação em tempo real
+  - Otimizar re-renders desnecessários
+  - Tempo estimado: 30 minutos
 
-### 2. Melhorar Acessibilidade
-- **Contraste e Legibilidade**: Auditar e corrigir contrastes, garantindo conformidade com WCAG 2.1 AA. Implementar suporte a tema escuro, com paleta de cores para dark mode e toggle automático.
-- **Navegação por Teclado**: Implementar focus management, com focus indicators visíveis e ordem de tab lógica. Adicionar atalhos de teclado para ações rápidas.
-- **Screen Readers**: Adicionar labels semânticos para todos os botões e seções principais.
+- [ ] **Lazy loading de componentes**
+  - Implementar carregamento sob demanda
+  - Otimizar bundle size
+  - Tempo estimado: 45 minutos
 
-### 3. Otimizar Performance
-- **Memoização e Otimizações**: Implementar React.memo nos componentes, otimizar re-renders com useCallback e useMemo, e separar estado local do global.
-- **Carregamento de Dados**: Implementar cache inteligente, com cache de dados por período, invalidação automática e preload de períodos adjacentes.
+## Prioridade Média (Importantes)
 
-## Complexidade Alta (Impacto Imediato na UX)
+### 3. Aprimoramentos de UX
+- [ ] **Implementar barra de força da senha**
+  - Criar componente visual de força da senha
+  - Integrar com validação existente
+  - Adicionar feedback visual progressivo
+  - Tempo estimado: 1 hora
 
-### 1. Melhorar Hierarquia Visual e Tipografia
-- **Reorganizar Layout de Cards por Importância**: Criar card principal destacado para lucro líquido, com maior tamanho, gradiente de fundo e fonte aumentada. Reorganizar cards secundários em grid 2x2 e implementar hierarquia tipográfica consistente.
-- **Melhorar Seletor de Período**: Redesenhar seletor com maior destaque visual, adicionando ícones para cada período e animação de transição suave.
+- [ ] **Melhorar feedback visual de validação**
+  - Aumentar tamanho dos ícones de requisitos (16px → 20px)
+  - Adicionar animações suaves para transições
+  - Implementar estados intermediários
+  - Tempo estimado: 45 minutos
 
-### 2. Otimizar Fluxo de Ações Rápidas
-- **Simplificar Iniciar/Finalizar Jornada**: Criar modal dedicado para iniciar e finalizar jornada, com input numérico otimizado, seletor visual de veículo, e validação em tempo real. Implementar seleção rápida de KM, com sugestão baseada no último KM registrado e botões de incremento.
-- **Adicionar Feedback Visual em Ações**: Implementar estados de loading específicos e criar sistema de notificações toast para sucesso, erro e informação.
+- [ ] **Reorganizar layout em cards separados**
+  - Separar cada seção em cards distintos
+  - Implementar elevação e sombras adequadas
+  - Melhorar espaçamento entre elementos
+  - Tempo estimado: 1 hora
 
-### 3. Implementar Responsividade Avançada
-- **Layout para Desktop/Tablet**: Criar layout em grid para telas grandes, com sidebar para ações rápidas e área principal com cards em grid. Otimizar cards para diferentes tamanhos de tela.
-- **Melhorar Touch Targets**: Aumentar área de toque dos botões para no mínimo 44x44px e adicionar espaçamento mínimo entre elementos tocáveis.
+### 4. Microinterações
+- [ ] **Adicionar animações de transição**
+  - Implementar fade in/out para mensagens
+  - Adicionar bounce effect para sucesso
+  - Criar shake animation para erros
+  - Tempo estimado: 1 hora 30 minutos
 
-### 4. Adicionar Estados de Loading e Erro Melhorados
-- **Estados de Loading Contextuais**: Implementar skeleton específico para cada seção, com animação de shimmer suave.
-- **Estados de Erro Informativos**: Criar componente de erro com ações, com ícone ilustrativo, mensagem clara e acionável, e botão de retry.
-- **Estados Vazios**: Implementar empty states com ilustração amigável, texto explicativo e call-to-action para primeira ação.
+- [ ] **Melhorar estados de foco**
+  - Implementar animações suaves para foco
+  - Adicionar indicadores visuais mais claros
+  - Melhorar feedback tátil
+  - Tempo estimado: 45 minutos
+
+## Prioridade Alta (Críticas)
+
+### 1. Correção de Layout e Estrutura
+- [ ] **Reorganizar posicionamento dos ícones de visualização de senha**
+  - Mover ícones para dentro do container do input
+  - Garantir alinhamento consistente em todos os campos
+  - Tempo estimado: 30 minutos
+
+- [ ] **Corrigir posicionamento das mensagens de erro**
+  - Mover mensagens de erro para dentro do container do input
+  - Ajustar margem negativa que quebra o layout
+  - Tempo estimado: 20 minutos
+
+- [ ] **Implementar sistema de cores semânticas**
+  - Criar constantes para cores do sistema
+  - Substituir cores hardcoded por variáveis
+  - Implementar paleta de cores acessível
+  - Tempo estimado: 45 minutos
+
+### 2. Melhorias de Acessibilidade
+- [ ] **Adicionar labels adequados para screen readers**
+  - Implementar accessibilityLabel para todos os inputs
+  - Adicionar accessibilityHint para ações
+  - Tempo estimado: 30 minutos
+
+- [ ] **Melhorar contraste de cores**
+  - Ajustar cores para conformidade WCAG 2.1 AA
+  - Testar contraste em diferentes temas
+  - Tempo estimado: 25 minutos
 
 
