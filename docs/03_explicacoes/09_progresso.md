@@ -423,3 +423,32 @@ Este documento detalha as melhorias implementadas e as próximas tarefas para a 
 - [ ] **Validação de Campos:** Implementar feedback de validação em tempo real.
 - [ ] **Feedback de Operação:** Substituir `Alert.alert` por toast ou banner para feedback de sucesso/erro
 
+
+
+
+### 4.2. Melhorias na InsightsScreen.tsx
+
+Este documento lista as sugestões de melhoria para a tela InsightsScreen.tsx transformadas em tarefas acionáveis. Marque cada item como concluído ([x]) à medida que for implementado.
+
+#### Imediatas (Alta Prioridade)
+1. **Redesign do Header**: Mais compacto e informativo
+2. **Filtros Fixos**: Manter filtros sempre visíveis
+3. **Cards Redesenhados**: Layout mais limpo e hierárquico
+4. **Ícones Profissionais**: Substituir emojis
+5. **Loading States**: Melhorar skeleton loading
+
+#### Médio Prazo (Média Prioridade)
+1. **Sistema de Tabs**: Separar insights de recomendações
+2. **Busca e Filtros**: Adicionar capacidade de busca
+3. **Modo Escuro**: Implementar tema escuro
+4. **Animações**: Adicionar microinterações
+5. **Responsividade**: Otimizar para diferentes telas
+
+#### Longo Prazo (Baixa Prioridade)
+1. **Personalização**: Permitir customização da interface
+2. **Comparações**: Funcionalidade de comparar períodos
+3. **Exportação**: Permitir exportar insights
+4. **Notificações**: Sistema de alertas inteligentes
+5. **Gamificação**: Elementos de engajamento
+
+
