@@ -59,6 +59,64 @@ Este documento detalha o progresso atual na configuração e validação do proj
 #### 3.4. Code Review Aprofundado (Login)
 - **Tarefa**: Realizar um code review detalhado do `LoginScreen.tsx`, `AuthContext.tsx` e `api.ts` para o fluxo de login, garantindo que a lógica de autenticação e o tratamento de erros estejam robustos e em conformidade com as melhores práticas.
 
+### # 4. Melhorias no Frontend
+
+### 4.1 Este documento lista as sugestões de melhoria para a tela AchievementsScreen.tsx transformadas em tarefas acionáveis. Marque cada item como concluído ([x]) à medida que for implementado.
+
+1. Melhorias de Layout e Hierarquia de Informações
+1.1. Seção de Estatísticas do Usuário
+Visualização do Nível: Substituir ícones de texto por ícones de biblioteca (react-native-vector-icons ou SVGs) para consistência e escalabilidade.
+Benefícios do Nível: Implementar exibição dos benefícios do nível atual (tooltip, modal ou seção expansível).
+Progressão do Nível (Web): Garantir que a interação de hover/clique na barra de progresso exiba detalhes adicionais (pontos exatos, pontos atuais).
+Cards de Estatísticas (Web): Adicionar microinterações (elevação, mudança de cor) ao passar o mouse sobre os cards de estatísticas.
+
+1.2. Conquistas Recentes
+Indicador de Scroll: Implementar um indicador visual de rolagem para a lista horizontal de conquistas recentes (setas para web, fade out para mobile, ou manter indicador nativo).
+Interatividade dos Cards: Tornar os cards de conquistas recentes clicáveis, levando a detalhes da conquista ou exibindo um modal.
+Informações no Card: Avaliar a adição sutil de raridade ou pontos de recompensa nos cards de conquistas recentes.
+
+1.3. Filtros
+Clareza Visual dos Filtros: Aprimorar a diferenciação visual entre filtros ativos/inativos (ícones, contraste acessível, microinterações de seleção).
+Organização dos Tipos de Conquista: Para listas extensas, considerar Dropdown/Picker (mobile), categorização ou funcionalidade de pesquisa nos filtros.
+Posicionamento dos Filtros: Avaliar fixar os filtros no topo da tela para fácil acesso, especialmente em telas longas.
+
+1.4. Lista de Conquistas
+Ícones das Conquistas: Garantir renderização consistente e escalável dos ícones das conquistas (biblioteca de ícones ou SVGs).
+Badge de Desbloqueio: Aprimorar o badge de desbloqueio (ícone de troféu/estrela, animação sutil).
+Raridade (Web): Adicionar tooltip ao passar o mouse sobre o badge de raridade, explicando seu significado.
+Feedback Visual de Progresso: Exibir progresso numérico ou barra de progresso para conquistas bloqueadas.
+Estado Vazio: Adicionar ilustração ou ícone relevante para o estado vazio da lista de conquistas.
+Animações de Carregamento: Implementar animação de "esqueleto" (skeleton loader) para os cards de conquista durante o carregamento.
+
+2. Cores e Tipografia
+Paleta de Cores Centralizada: Criar um arquivo de tema (theme.ts ou colors.ts) para centralizar as cores do aplicativo.
+Tipografia Consistente: Definir uma escala tipográfica (tamanhos, pesos, alturas de linha) em um arquivo de tema.
+Acessibilidade: Verificar contraste de cores e tamanhos de fonte para garantir acessibilidade (WCAG).
+
+3. Ícones e Feedbacks Visuais
+Biblioteca de Ícones: Utilizar uma biblioteca de ícones (react-native-vector-icons ou react-native-svg) para todos os ícones.
+Feedbacks de Toque/Clique: Implementar feedbacks visuais ricos para elementos interativos (Ripple Effect para Android, Highlight/Opacity Change para iOS, Hover States para Web).
+Animações: Adicionar pequenas animações para transições de estado (desbloqueio de conquista, filtragem, carregamento).
+
+4. Microinterações
+Feedback de Sucesso/Desbloqueio: Exibir notificação toast, modal de celebração ou animação ao desbloquear uma conquista.
+Feedback de Erro: Aprimorar feedback de erro (ícone visualmente distinto, vibração sutil em mobile).
+Pull-to-Refresh: Considerar animação customizada para o pull-to-refresh.
+Empty States: Adicionar ilustração ou animação para o estado vazio que incentive a interação.
+
+5. Considerações Multiplataforma
+Navegação: Garantir que a navegação siga os padrões de cada plataforma (gestos iOS, botão Android, histórico web).
+Componentes Nativos: Avaliar o uso de componentes nativos específicos da plataforma para elementos complexos (pickers, alertas, tab bars).
+Responsividade: Testar e garantir que a interface se reorganize logicamente em diferentes tamanhos de tela (desktops, tablets, mobile landscape) para a web.
+Performance Web: Otimizar carregamento de imagens, bundle size JS e uso de recursos do navegador para a versão web.
+Acessibilidade Web: Garantir navegação via teclado, estados de foco visíveis e uso correto de atributos ARIA para a versão web.
+
+6. Pontos de Confusão e Clareza
+Benefícios do Nível: Exibir claramente os benefícios do nível atual.
+Progresso de Conquistas Bloqueadas: Implementar um indicador claro de progresso para conquistas bloqueadas.
+Ícones como Texto: Substituir ícones de texto por ícones gráficos dedicados para maior clareza e consistência.
+
+
 ### Observações Adicionais:
 - Priorizar a resolução da instabilidade do ambiente para permitir o avanço das demais tarefas.
 - Documentar qualquer avanço ou falha encontrada de forma clara e concisa.
