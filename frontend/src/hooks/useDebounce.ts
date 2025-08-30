@@ -1,0 +1,24 @@
+import { useState, useEffect } from 'react';
+
+/**
+ * Hook para implementar debounce em valores
+ * Útil para otimizar buscas e evitar chamadas excessivas à API
+ */
+export function useDebounce<T>(value: T, delay: number): T {
+  const [debouncedValue, setDebouncedValue] = useState<T>(value);
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedValue(value);
+    }, delay);
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [value, delay]);
+
+  return debouncedValue;
+}
+
+export default useDebounce;
+

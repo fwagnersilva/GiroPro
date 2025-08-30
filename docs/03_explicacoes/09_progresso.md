@@ -59,160 +59,61 @@ Este documento detalha o progresso atual na configuração e validação do proj
 #### 3.4. Code Review Aprofundado (Login)
 - **Tarefa**: Realizar um code review detalhado do `LoginScreen.tsx`, `AuthContext.tsx` e `api.ts` para o fluxo de login, garantindo que a lógica de autenticação e o tratamento de erros estejam robustos e em conformidade com as melhores práticas.
 
-### 6. Melhorias no Frontend - ExpensesScreen
+### 7. Melhorias no Frontend - ExpenseHistoryScreen
 
-## Prioridade Alta (Impacto Imediato na UX)
+Análise de UX/UI e implementação de melhorias na tela de histórico de despesas, focando em usabilidade, experiência do usuário e interface visual para iOS, Android e Web.
+
+## Complexidade Baixa (Polimento e Otimização)
+
+### 1. Melhorias de Acessibilidade
+- **Adicionar labels para screen readers**: Implementar `accessibilityLabel`, `accessibilityHint` e `accessibilityRole` em todos os elementos interativos para garantir a compatibilidade com leitores de tela.
+- **Melhorar navegação por teclado (Web)**: Assegurar uma ordem de tabulação lógica, adicionar atalhos de teclado (ex: Ctrl+N para nova despesa) e implementar indicadores de foco visíveis.
+
+### 2. Adaptações Multiplataforma
+- **Otimizações para iOS**: Implementar swipe actions nativas, usar cores do sistema quando apropriado e adicionar `disclosure indicators` para navegação.
+- **Otimizações para Android**: Utilizar componentes do Material Design, adicionar um FAB (Floating Action Button) para novas despesas e usar `elevation` e sombras do Material Design.
+- **Otimizações para Web**: Adicionar `hover states` para elementos interativos, usar `cursor: pointer` e incluir `tooltips` informativos.
+
+### 3. Implementar Modo Escuro
+- **Criar tema escuro**: Definir uma paleta de cores para o modo escuro, implementar detecção automática da preferência do sistema, adicionar um toggle manual e testar o contraste.
+
+### 4. Otimizações de Performance
+- **Melhorar renderização da lista**: Implementar `getItemLayout` para a `FlatList`, otimizar o `keyExtractor` e usar memoização de componentes.
+- **Adicionar cache local**: Implementar cache de despesas para acesso offline com sincronização inteligente.
+
+### 5. Microinterações e Animações
+- **Adicionar animações suaves**: Usar `LayoutAnimation` para mudanças na lista, adicionar animações de entrada/saída para os cards e animar os estados de carregamento.
+- **Melhorar feedback tátil**: Adicionar `haptic feedback` para ações importantes e vibrações sutis para confirmações.
+
+## Complexidade Média (Melhorias Significativas)
+
+### 1. Adicionar Resumos Financeiros
+- **Implementar header com resumo**: Mostrar o total de despesas do período selecionado, atualizando dinamicamente com os filtros, e adicionar indicadores de tendência.
+- **Adicionar visualizações simples**: Implementar um gráfico de pizza para distribuição por categoria e barras de progresso para as categorias principais.
+
+### 2. Melhorar Estados e Feedback
+- **Implementar skeleton screens**: Substituir o `ActivityIndicator` por um skeleton loading com animação de shimmer que imita a estrutura dos cards.
+- **Melhorar estados de erro**: Criar um componente `ErrorState` com ilustração, botões de ação (tentar novamente) e mensagens de erro mais informativas.
+- **Aprimorar empty state**: Adicionar uma ilustração mais engajante, melhorar o texto com dicas de uso e adicionar um botão de ação primário mais proeminente.
+
+### 3. Implementar Funcionalidade de Edição
+- **Criar tela de edição de despesas**: Implementar uma tela `EditExpenseScreen` similar à `AddExpenseScreen`, pré-populando os campos com os dados existentes e adicionando validação de formulário.
+- **Atualizar navegação**: Adicionar a rota para edição na navegação, implementar a passagem de parâmetros da despesa e atualizar a lista após a edição.
+
+## Complexidade Alta (Impacto Imediato na UX)
 
 ### 1. Implementar Sistema de Filtros
-- [ ] **Criar componente FilterModal**
-  - Implementar modal/bottom sheet para filtros
-  - Adicionar filtros por data (Hoje, Esta semana, Este mês, Últimos 3 meses, Este ano)
-  - Implementar seletor de data customizado
-  - Adicionar filtros por categoria (chips selecionáveis)
-  - Implementar filtros por veículo (checkboxes múltiplos)
-  - Adicionar botão "Limpar filtros"
-
-- [ ] **Adicionar barra de busca**
-  - Implementar SearchBar no header
-  - Adicionar busca em tempo real por descrição
-  - Implementar highlight dos termos encontrados
-  - Adicionar histórico de buscas recentes
-
-- [ ] **Atualizar header com indicadores de filtro**
-  - Adicionar ícone de filtro no header
-  - Mostrar badges quando filtros estão ativos
-  - Exibir contador de resultados filtrados
+- **Criar componente FilterModal**: Implementar um modal ou bottom sheet para filtros, incluindo filtros por data, seletor de data customizado, filtros por categoria e por veículo.
+- **Adicionar barra de busca**: Implementar uma `SearchBar` no header com busca em tempo real por descrição e histórico de buscas recentes.
+- **Atualizar header com indicadores de filtro**: Adicionar um ícone de filtro no header, mostrar badges quando filtros estiverem ativos e exibir um contador de resultados.
 
 ### 2. Redesign dos Cards de Despesa
-- [ ] **Melhorar hierarquia visual**
-  - Aumentar tamanho e peso da fonte do valor (fontSize: 22, fontWeight: 'bold')
-  - Reposicionar valor no canto superior direito
-  - Reduzir proeminência da data (fontSize: 12, cor secundária)
-  - Melhorar contraste de cores para acessibilidade
-
-- [ ] **Otimizar layout dos cards**
-  - Reduzir espaçamento vertical entre elementos
-  - Implementar layout mais compacto
-  - Ajustar padding interno dos cards
-  - Melhorar alinhamento de elementos
-
-- [ ] **Revisar sistema de cores**
-  - Atualizar cores das categorias seguindo princípios semânticos
-  - Implementar cores consistentes com guidelines de plataforma
-  - Testar contraste WCAG AA para todas as combinações
+- **Melhorar hierarquia visual**: Aumentar o tamanho e o peso da fonte do valor, reposicioná-lo e reduzir a proeminência da data, melhorando o contraste de cores.
+- **Otimizar layout dos cards**: Reduzir o espaçamento vertical, implementar um layout mais compacto e ajustar o padding interno.
+- **Revisar sistema de cores**: Atualizar as cores das categorias seguindo princípios semânticos e testar o contraste WCAG AA.
 
 ### 3. Implementar Swipe Actions
-- [ ] **Swipe para editar**
-  - Implementar swipe da direita para esquerda
-  - Adicionar ação de edição com ícone e cor azul
-  - Navegar para tela de edição de despesa
-  - Adicionar animação suave
-
-- [ ] **Swipe para excluir**
-  - Implementar swipe da esquerda para direita
-  - Adicionar ação de exclusão com ícone e cor vermelha
-  - Implementar confirmação com possibilidade de desfazer
-  - Adicionar haptic feedback
-
-## Prioridade Média (Melhorias Significativas)
-
-### 4. Adicionar Resumos Financeiros
-- [ ] **Implementar header com resumo**
-  - Mostrar total de despesas do período selecionado
-  - Atualizar dinamicamente com filtros aplicados
-  - Adicionar indicadores de tendência (aumento/diminuição)
-  - Implementar comparação com período anterior
-
-- [ ] **Adicionar visualizações simples**
-  - Implementar gráfico de pizza pequeno para distribuição por categoria
-  - Adicionar barras de progresso para categorias principais
-  - Mostrar estatísticas básicas (média, maior despesa, etc.)
-
-### 5. Melhorar Estados e Feedback
-- [ ] **Implementar skeleton screens**
-  - Substituir ActivityIndicator por skeleton loading
-  - Criar skeleton que imita estrutura dos cards
-  - Adicionar animação de shimmer
-
-- [ ] **Melhorar estados de erro**
-  - Criar componente ErrorState com ilustração
-  - Adicionar botões de ação (tentar novamente, verificar conexão)
-  - Implementar mensagens de erro mais informativas
-  - Adicionar retry automático com backoff
-
-- [ ] **Aprimorar empty state**
-  - Adicionar ilustração mais engajante
-  - Melhorar copy com dicas de uso
-  - Adicionar botão de ação primário mais proeminente
-
-### 6. Implementar Funcionalidade de Edição
-- [ ] **Criar tela de edição de despesas**
-  - Implementar EditExpenseScreen similar ao AddExpenseScreen
-  - Pré-popular campos com dados existentes
-  - Adicionar validação de formulário
-  - Implementar salvamento com feedback de sucesso
-
-- [ ] **Atualizar navegação**
-  - Adicionar rota para edição no navigation
-  - Implementar passagem de parâmetros da despesa
-  - Atualizar lista após edição bem-sucedida
-
-## Prioridade Baixa (Polimento e Otimização)
-
-### 7. Melhorias de Acessibilidade
-- [ ] **Adicionar labels para screen readers**
-  - Implementar accessibilityLabel em todos os elementos interativos
-  - Adicionar accessibilityHint para ações não óbvias
-  - Implementar accessibilityRole apropriado
-
-- [ ] **Melhorar navegação por teclado (Web)**
-  - Implementar tab order lógico
-  - Adicionar atalhos de teclado (Ctrl+N, Delete, etc.)
-  - Implementar focus indicators visíveis
-
-### 8. Adaptações Multiplataforma
-- [ ] **Otimizações para iOS**
-  - Implementar swipe actions nativas do iOS
-  - Usar cores do sistema quando apropriado
-  - Adicionar disclosure indicators para navegação
-
-- [ ] **Otimizações para Android**
-  - Implementar Material Design components
-  - Adicionar FAB para nova despesa
-  - Usar elevation e shadows do Material Design
-
-- [ ] **Otimizações para Web**
-  - Adicionar hover states para elementos interativos
-  - Implementar cursor: pointer apropriado
-  - Adicionar tooltips informativos
-
-### 9. Implementar Modo Escuro
-- [ ] **Criar tema escuro**
-  - Definir paleta de cores para modo escuro
-  - Implementar detecção automática de preferência do sistema
-  - Adicionar toggle manual para modo escuro
-  - Testar contraste em modo escuro
-
-### 10. Otimizações de Performance
-- [ ] **Melhorar renderização da lista**
-  - Implementar getItemLayout para FlatList
-  - Otimizar keyExtractor para evitar re-renders
-  - Implementar memoização de componentes quando apropriado
-
-- [ ] **Adicionar cache local**
-  - Implementar cache de despesas para acesso offline
-  - Adicionar sincronização inteligente
-  - Implementar estratégia de cache invalidation
-
-### 11. Microinterações e Animações
-- [ ] **Adicionar animações suaves**
-  - Implementar LayoutAnimation para mudanças de lista
-  - Adicionar animações de entrada/saída para cards
-  - Implementar animações de loading states
-
-- [ ] **Melhorar feedback tátil**
-  - Adicionar haptic feedback para ações importantes
-  - Implementar vibração sutil para confirmações
-  - Adicionar feedback sonoro opcional
+- **Swipe para editar**: Implementar swipe da direita para a esquerda com uma ação de edição (ícone e cor azul).
+- **Swipe para excluir**: Implementar swipe da esquerda para a direita com uma ação de exclusão (ícone e cor vermelha) e confirmação com possibilidade de desfazer.
 
 
