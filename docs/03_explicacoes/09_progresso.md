@@ -59,380 +59,160 @@ Este documento detalha o progresso atual na configuração e validação do proj
 #### 3.4. Code Review Aprofundado (Login)
 - **Tarefa**: Realizar um code review detalhado do `LoginScreen.tsx`, `AuthContext.tsx` e `api.ts` para o fluxo de login, garantindo que a lógica de autenticação e o tratamento de erros estejam robustos e em conformidade com as melhores práticas.
 
-### # 5. Melhorias no Frontend - FuelingHistoryScreen
+### 6. Melhorias no Frontend - ExpensesScreen
 
 ## Prioridade Alta (Impacto Imediato na UX)
 
-### 1. Implementar Design System
-- [ ] **Migrar cores hardcoded para tokens de design**
-  - Substituir cores como `#007AFF`, `#FF3B30` pelos tokens do theme
-  - Implementar suporte a tema claro/escuro
-  - Arquivo: `FuelingHistoryScreen.tsx` - seção styles
-
-- [ ] **Aplicar sistema tipográfico consistente**
-  - Usar tokens de tipografia para fontSize, fontWeight, lineHeight
-  - Implementar hierarquia visual clara (títulos, subtítulos, corpo)
-  - Melhorar legibilidade e acessibilidade
-
-- [ ] **Implementar safe area e header responsivo**
-  - Usar SafeAreaView ou useSafeAreaInsets
-  - Remover paddingTop fixo de 50px
-  - Adaptar header para diferentes dispositivos
-
-### 2. Melhorar Hierarquia Visual dos Cards
-- [ ] **Redesenhar layout dos cards de abastecimento**
-  - Reorganizar informações por importância
-  - Implementar tipografia hierárquica
-  - Melhorar espaçamento interno e externo
-
-- [ ] **Implementar badges visuais mais expressivos**
-  - Melhorar design dos badges de tipo de combustível
-  - Adicionar ícones mais contextuais
-  - Implementar cores semânticas consistentes
-
-- [ ] **Otimizar ações dos cards**
-  - Implementar swipe actions para editar/excluir
-  - Melhorar feedback visual dos botões
-  - Adicionar confirmação visual para ações destrutivas
-
-### 3. Aprimorar Sistema de Filtros
-- [ ] **Redesenhar interface de filtros**
-  - Implementar filtros colapsáveis/expansíveis
-  - Melhorar UX dos pickers (dropdowns)
-  - Adicionar chips para filtros ativos
-
-- [ ] **Implementar busca inteligente**
-  - Melhorar campo de busca com sugestões
-  - Adicionar busca por múltiplos critérios
-  - Implementar debounce para performance
-
-## Prioridade Média (Melhorias de Experiência)
-
-### 4. Implementar Estados de Loading Avançados
-- [ ] **Adicionar skeleton loading**
-  - Criar componente de skeleton para cards
-  - Implementar loading states mais informativos
-  - Melhorar percepção de performance
-
-- [ ] **Melhorar estados vazios**
-  - Redesenhar tela vazia com ilustrações
-  - Adicionar call-to-actions claros
-  - Implementar onboarding contextual
-
-### 5. Adicionar Microinterações
-- [ ] **Implementar animações de entrada/saída**
-  - Animar aparição dos cards na lista
-  - Adicionar transições suaves entre estados
-  - Implementar feedback tátil em botões
-
-- [ ] **Adicionar gestos intuitivos**
-  - Implementar pull-to-refresh customizado
-  - Adicionar swipe gestures para ações rápidas
-  - Implementar haptic feedback (iOS)
-
-### 6. Implementar Agrupamento Temporal
-- [ ] **Agrupar abastecimentos por período**
-  - Implementar seções por data (hoje, ontem, esta semana)
-  - Adicionar headers de seção
-  - Melhorar navegação temporal
-
-- [ ] **Adicionar resumos visuais**
-  - Implementar cards de estatísticas rápidas
-  - Adicionar gráficos simples de tendências
-  - Mostrar insights automáticos
-
-## Prioridade Baixa (Melhorias Avançadas)
-
-### 7. Otimizações para Plataformas Específicas
-- [ ] **Melhorias para iOS**
-  - Implementar navigation patterns nativos
-  - Usar componentes iOS-specific quando apropriado
-  - Implementar haptic feedback
-
-- [ ] **Melhorias para Android**
-  - Implementar Material Design principles
-  - Adicionar ripple effects
-  - Usar elevation adequada
-
-- [ ] **Melhorias para Web**
-  - Implementar layout responsivo
-  - Adicionar hover states
-  - Implementar keyboard navigation
-
-### 8. Funcionalidades Avançadas
-- [ ] **Implementar personalização**
-  - Permitir customização da visualização
-  - Adicionar preferências de ordenação
-  - Implementar temas personalizados
-
-- [ ] **Adicionar gamificação**
-  - Implementar badges de conquistas
-  - Adicionar metas de economia
-  - Mostrar progresso visual
-
-## Tarefas de Refatoração Técnica
-
-### 9. Melhorias de Performance
-- [ ] **Otimizar renderização da lista**
-  - Implementar memoização adequada
-  - Otimizar re-renders desnecessários
-  - Melhorar performance do FlatList
-
-- [ ] **Implementar cache inteligente**
-  - Adicionar cache local para dados
-  - Implementar estratégias de invalidação
-  - Melhorar experiência offline
-
-### 10. Melhorias de Acessibilidade
-- [ ] **Implementar suporte completo a acessibilidade**
-  - Adicionar labels adequados para screen readers
-  - Implementar navegação por teclado
-  - Garantir contraste adequado
-
-- [ ] **Adicionar suporte a diferentes tamanhos de fonte**
-  - Implementar escalabilidade de texto
-  - Testar com diferentes configurações de acessibilidade
-  - Garantir usabilidade para usuários com necessidades especiais
-
-### # 4. Melhorias no Frontend
-
-### 4.1 Este documento lista as sugestões de melhoria para a tela AchievementsScreen.tsx transformadas em tarefas acionáveis. Marque cada item como concluído ([x]) à medida que for implementado.
-
-1. Melhorias de Layout e Hierarquia de Informações
-1.1. Seção de Estatísticas do Usuário
-Visualização do Nível: Substituir ícones de texto por ícones de biblioteca (react-native-vector-icons ou SVGs) para consistência e escalabilidade.
-Benefícios do Nível: Implementar exibição dos benefícios do nível atual (tooltip, modal ou seção expansível).
-Progressão do Nível (Web): Garantir que a interação de hover/clique na barra de progresso exiba detalhes adicionais (pontos exatos, pontos atuais).
-Cards de Estatísticas (Web): Adicionar microinterações (elevação, mudança de cor) ao passar o mouse sobre os cards de estatísticas.
-
-1.2. Conquistas Recentes
-Indicador de Scroll: Implementar um indicador visual de rolagem para a lista horizontal de conquistas recentes (setas para web, fade out para mobile, ou manter indicador nativo).
-Interatividade dos Cards: Tornar os cards de conquistas recentes clicáveis, levando a detalhes da conquista ou exibindo um modal.
-Informações no Card: Avaliar a adição sutil de raridade ou pontos de recompensa nos cards de conquistas recentes.
-
-1.3. Filtros
-Clareza Visual dos Filtros: Aprimorar a diferenciação visual entre filtros ativos/inativos (ícones, contraste acessível, microinterações de seleção).
-Organização dos Tipos de Conquista: Para listas extensas, considerar Dropdown/Picker (mobile), categorização ou funcionalidade de pesquisa nos filtros.
-Posicionamento dos Filtros: Avaliar fixar os filtros no topo da tela para fácil acesso, especialmente em telas longas.
-
-1.4. Lista de Conquistas
-Ícones das Conquistas: Garantir renderização consistente e escalável dos ícones das conquistas (biblioteca de ícones ou SVGs).
-Badge de Desbloqueio: Aprimorar o badge de desbloqueio (ícone de troféu/estrela, animação sutil).
-Raridade (Web): Adicionar tooltip ao passar o mouse sobre o badge de raridade, explicando seu significado.
-Feedback Visual de Progresso: Exibir progresso numérico ou barra de progresso para conquistas bloqueadas.
-Estado Vazio: Adicionar ilustração ou ícone relevante para o estado vazio da lista de conquistas.
-Animações de Carregamento: Implementar animação de "esqueleto" (skeleton loader) para os cards de conquista durante o carregamento.
-
-2. Cores e Tipografia
-Paleta de Cores Centralizada: Criar um arquivo de tema (theme.ts ou colors.ts) para centralizar as cores do aplicativo.
-Tipografia Consistente: Definir uma escala tipográfica (tamanhos, pesos, alturas de linha) em um arquivo de tema.
-Acessibilidade: Verificar contraste de cores e tamanhos de fonte para garantir acessibilidade (WCAG).
+### 1. Implementar Sistema de Filtros
+- [ ] **Criar componente FilterModal**
+  - Implementar modal/bottom sheet para filtros
+  - Adicionar filtros por data (Hoje, Esta semana, Este mês, Últimos 3 meses, Este ano)
+  - Implementar seletor de data customizado
+  - Adicionar filtros por categoria (chips selecionáveis)
+  - Implementar filtros por veículo (checkboxes múltiplos)
+  - Adicionar botão "Limpar filtros"
+
+- [ ] **Adicionar barra de busca**
+  - Implementar SearchBar no header
+  - Adicionar busca em tempo real por descrição
+  - Implementar highlight dos termos encontrados
+  - Adicionar histórico de buscas recentes
+
+- [ ] **Atualizar header com indicadores de filtro**
+  - Adicionar ícone de filtro no header
+  - Mostrar badges quando filtros estão ativos
+  - Exibir contador de resultados filtrados
+
+### 2. Redesign dos Cards de Despesa
+- [ ] **Melhorar hierarquia visual**
+  - Aumentar tamanho e peso da fonte do valor (fontSize: 22, fontWeight: 'bold')
+  - Reposicionar valor no canto superior direito
+  - Reduzir proeminência da data (fontSize: 12, cor secundária)
+  - Melhorar contraste de cores para acessibilidade
+
+- [ ] **Otimizar layout dos cards**
+  - Reduzir espaçamento vertical entre elementos
+  - Implementar layout mais compacto
+  - Ajustar padding interno dos cards
+  - Melhorar alinhamento de elementos
+
+- [ ] **Revisar sistema de cores**
+  - Atualizar cores das categorias seguindo princípios semânticos
+  - Implementar cores consistentes com guidelines de plataforma
+  - Testar contraste WCAG AA para todas as combinações
+
+### 3. Implementar Swipe Actions
+- [ ] **Swipe para editar**
+  - Implementar swipe da direita para esquerda
+  - Adicionar ação de edição com ícone e cor azul
+  - Navegar para tela de edição de despesa
+  - Adicionar animação suave
+
+- [ ] **Swipe para excluir**
+  - Implementar swipe da esquerda para direita
+  - Adicionar ação de exclusão com ícone e cor vermelha
+  - Implementar confirmação com possibilidade de desfazer
+  - Adicionar haptic feedback
+
+## Prioridade Média (Melhorias Significativas)
+
+### 4. Adicionar Resumos Financeiros
+- [ ] **Implementar header com resumo**
+  - Mostrar total de despesas do período selecionado
+  - Atualizar dinamicamente com filtros aplicados
+  - Adicionar indicadores de tendência (aumento/diminuição)
+  - Implementar comparação com período anterior
+
+- [ ] **Adicionar visualizações simples**
+  - Implementar gráfico de pizza pequeno para distribuição por categoria
+  - Adicionar barras de progresso para categorias principais
+  - Mostrar estatísticas básicas (média, maior despesa, etc.)
+
+### 5. Melhorar Estados e Feedback
+- [ ] **Implementar skeleton screens**
+  - Substituir ActivityIndicator por skeleton loading
+  - Criar skeleton que imita estrutura dos cards
+  - Adicionar animação de shimmer
+
+- [ ] **Melhorar estados de erro**
+  - Criar componente ErrorState com ilustração
+  - Adicionar botões de ação (tentar novamente, verificar conexão)
+  - Implementar mensagens de erro mais informativas
+  - Adicionar retry automático com backoff
+
+- [ ] **Aprimorar empty state**
+  - Adicionar ilustração mais engajante
+  - Melhorar copy com dicas de uso
+  - Adicionar botão de ação primário mais proeminente
+
+### 6. Implementar Funcionalidade de Edição
+- [ ] **Criar tela de edição de despesas**
+  - Implementar EditExpenseScreen similar ao AddExpenseScreen
+  - Pré-popular campos com dados existentes
+  - Adicionar validação de formulário
+  - Implementar salvamento com feedback de sucesso
+
+- [ ] **Atualizar navegação**
+  - Adicionar rota para edição no navigation
+  - Implementar passagem de parâmetros da despesa
+  - Atualizar lista após edição bem-sucedida
+
+## Prioridade Baixa (Polimento e Otimização)
+
+### 7. Melhorias de Acessibilidade
+- [ ] **Adicionar labels para screen readers**
+  - Implementar accessibilityLabel em todos os elementos interativos
+  - Adicionar accessibilityHint para ações não óbvias
+  - Implementar accessibilityRole apropriado
+
+- [ ] **Melhorar navegação por teclado (Web)**
+  - Implementar tab order lógico
+  - Adicionar atalhos de teclado (Ctrl+N, Delete, etc.)
+  - Implementar focus indicators visíveis
+
+### 8. Adaptações Multiplataforma
+- [ ] **Otimizações para iOS**
+  - Implementar swipe actions nativas do iOS
+  - Usar cores do sistema quando apropriado
+  - Adicionar disclosure indicators para navegação
+
+- [ ] **Otimizações para Android**
+  - Implementar Material Design components
+  - Adicionar FAB para nova despesa
+  - Usar elevation e shadows do Material Design
+
+- [ ] **Otimizações para Web**
+  - Adicionar hover states para elementos interativos
+  - Implementar cursor: pointer apropriado
+  - Adicionar tooltips informativos
+
+### 9. Implementar Modo Escuro
+- [ ] **Criar tema escuro**
+  - Definir paleta de cores para modo escuro
+  - Implementar detecção automática de preferência do sistema
+  - Adicionar toggle manual para modo escuro
+  - Testar contraste em modo escuro
+
+### 10. Otimizações de Performance
+- [ ] **Melhorar renderização da lista**
+  - Implementar getItemLayout para FlatList
+  - Otimizar keyExtractor para evitar re-renders
+  - Implementar memoização de componentes quando apropriado
+
+- [ ] **Adicionar cache local**
+  - Implementar cache de despesas para acesso offline
+  - Adicionar sincronização inteligente
+  - Implementar estratégia de cache invalidation
+
+### 11. Microinterações e Animações
+- [ ] **Adicionar animações suaves**
+  - Implementar LayoutAnimation para mudanças de lista
+  - Adicionar animações de entrada/saída para cards
+  - Implementar animações de loading states
+
+- [ ] **Melhorar feedback tátil**
+  - Adicionar haptic feedback para ações importantes
+  - Implementar vibração sutil para confirmações
+  - Adicionar feedback sonoro opcional
 
-3. Ícones e Feedbacks Visuais
-Biblioteca de Ícones: Utilizar uma biblioteca de ícones (react-native-vector-icons ou react-native-svg) para todos os ícones.
-Feedbacks de Toque/Clique: Implementar feedbacks visuais ricos para elementos interativos (Ripple Effect para Android, Highlight/Opacity Change para iOS, Hover States para Web).
-Animações: Adicionar pequenas animações para transições de estado (desbloqueio de conquista, filtragem, carregamento).
-
-4. Microinterações
-Feedback de Sucesso/Desbloqueio: Exibir notificação toast, modal de celebração ou animação ao desbloquear uma conquista.
-Feedback de Erro: Aprimorar feedback de erro (ícone visualmente distinto, vibração sutil em mobile).
-Pull-to-Refresh: Considerar animação customizada para o pull-to-refresh.
-Empty States: Adicionar ilustração ou animação para o estado vazio que incentive a interação.
-
-5. Considerações Multiplataforma
-Navegação: Garantir que a navegação siga os padrões de cada plataforma (gestos iOS, botão Android, histórico web).
-Componentes Nativos: Avaliar o uso de componentes nativos específicos da plataforma para elementos complexos (pickers, alertas, tab bars).
-Responsividade: Testar e garantir que a interface se reorganize logicamente em diferentes tamanhos de tela (desktops, tablets, mobile landscape) para a web.
-Performance Web: Otimizar carregamento de imagens, bundle size JS e uso de recursos do navegador para a versão web.
-Acessibilidade Web: Garantir navegação via teclado, estados de foco visíveis e uso correto de atributos ARIA para a versão web.
-
-6. Pontos de Confusão e Clareza
-Benefícios do Nível: Exibir claramente os benefícios do nível atual.
-Progresso de Conquistas Bloqueadas: Implementar um indicador claro de progresso para conquistas bloqueadas.
-Ícones como Texto: Substituir ícones de texto por ícones gráficos dedicados para maior clareza e consistência.
-
-# Progresso das Melhorias na AddExpenseScreen.tsx
-
-## 1. Melhorias de Layout e Hierarquia de Informações
-
-### 1.1. Cabeçalho
-
-- [ ] **Consistência de Navegação:** Garantir que o botão de voltar funcione como um botão de navegação padrão do navegador na web e siga os padrões de navegação do iOS.
-- [ ] **Feedback Visual do Botão Voltar:** Adicionar feedback visual sutil ao tocar/clicar no botão de voltar (opacidade ou efeito de "press").
-
-### 1.2. Formulário
-
-- [ ] **Tipo de Despesa:**
-  - [ ] **Responsividade:** Ajustar o layout dos botões de tipo de despesa para garantir um layout ideal em todos os tamanhos de tela (web: CSS Grid/Flexbox com mais controle).
-  - [ ] **Feedback de Seleção:** Adicionar um ícone de checkmark dentro do botão selecionado para reforçar a seleção.
-  - [ ] **Animação de Seleção:** Implementar uma pequena animação ao selecionar um tipo de despesa (leve scale ou fade-in da cor de fundo).
-- [ ] **Data da Despesa:**
-  - [ ] **Date Picker:** Implementar um `DatePicker` nativo para iOS e Android, e um componente de calendário intuitivo para a web.
-  - [ ] **Formatação Automática:** Se mantiver o `TextInput`, implementar uma máscara de entrada para formatar a data automaticamente (ex: `DD/MM/YYYY`).
-- [ ] **Valor da Despesa:**
-  - [ ] **Formatação em Tempo Real:** Aplicar a formatação da moeda diretamente no `TextInput`.
-  - [ ] **Validação Visual:** Adicionar feedback visual (borda vermelha, mensagem de erro) se o valor for inválido antes do `handleSubmit`.
-- [ ] **Seleção de Veículo:**
-  - [ ] **Componente Multiplataforma:** Considerar um componente de seleção customizado ou biblioteca para uma experiência consistente em todas as plataformas.
-  - [ ] **Pesquisa/Filtro:** Adicionar funcionalidade de pesquisa ou filtro se a lista de veículos for muito longa.
-- [ ] **Descrição:**
-  - [ ] **Contador de Caracteres:** Adicionar um contador de caracteres se houver um limite para a descrição.
-
-### 1.3. Rodapé
-
-- [ ] **Feedback de Carregamento:** Desabilitar o botão e/ou adicionar texto "Registrando..." durante o carregamento.
-- [ ] **Feedback de Sucesso/Erro:** Exibir feedback mais integrado à UI (toast message temporário, ícone de sucesso/erro) em vez de `Alert.alert`.
-
-## 2. Cores e Tipografia
-
-- [ ] **Paleta de Cores Centralizada:** Criar um arquivo de tema (`theme.ts` ou `colors.ts`) para centralizar as cores do aplicativo.
-- [ ] **Tipografia Consistente:** Definir uma escala tipográfica (tamanhos, pesos, alturas de linha) em um arquivo de tema.
-- [ ] **Acessibilidade:** Verificar contraste de cores e tamanhos de fonte para garantir acessibilidade (WCAG).
-
-## 3. Ícones e Feedbacks Visuais
-
-- [ ] **Consistência de Ícones:** Garantir que os ícones representem claramente sua função e sejam consistentes com o restante do aplicativo.
-- [ ] **Microinterações:** Implementar feedbacks visuais ricos para elementos interativos (Ripple Effect para Android, Highlight/Opacity Change para iOS, Hover States para Web).
-- [ ] **Animações:** Adicionar pequenas animações para transições de estado (abrir teclado, enviar formulário).
-
-## 4. Microinterações
-
-- [ ] **Feedback de Validação:** Fornecer feedback visual em tempo real para validação de campos (bordas vermelhas, mensagens de erro).
-- [ ] **Feedback de Sucesso/Erro:** Usar toast message ou banner de notificação para informar sucesso ou falha da operação.
-- [ ] **Animação de Teclado:** Implementar animações mais suaves ao abrir e fechar o teclado.
-
-## 5. Considerações Multiplataforma
-
-- [ ] **Componentes Nativos:** Avaliar o uso de componentes nativos ou bibliotecas para `DatePicker` e `Picker` de veículos para uma experiência mais próxima do nativo.
-- [ ] **Responsividade:** Testar e garantir que a interface se reorganize logicamente em diferentes tamanhos de tela para a web.
-- [ ] **Performance Web:** Otimizar carregamento de recursos, bundle size JS e uso de recursos do navegador para a versão web.
-- [ ] **Acessibilidade Web:** Garantir navegação via teclado, estados de foco visíveis e uso correto de atributos ARIA para a versão web.
-
-## 6. Pontos de Confusão e Clareza
-
-- [ ] **Entrada de Data:** Substituir `TextInput` por um `DatePicker`.
-- [ ] **Validação de Campos:** Implementar feedback de validação em tempo real.
-- [ ] **Feedback de Operação:** Substituir `Alert.alert` por toast ou banner para feedback de sucesso/erro
-
-# Progresso das Melhorias na AddFuelingScreen.tsx
-
-## 1. Melhorias de Layout e Hierarquia de Informações
-
-### 1.1. Cabeçalho
-
-- [ ] **Consistência de Navegação:** Garantir que o botão de voltar funcione como um botão de navegação padrão do navegador na web e siga os padrões de navegação do iOS.
-- [ ] **Feedback Visual do Botão Voltar:** Adicionar feedback visual sutil ao tocar/clicar no botão de voltar (opacidade ou efeito de "press").
-
-### 1.2. Formulário
-
-- [ ] **Seleção de Veículo:**
-  - [ ] **Componente Multiplataforma:** Considerar um componente de seleção customizado ou biblioteca para uma experiência consistente em todas as plataformas.
-  - [ ] **Pesquisa/Filtro:** Adicionar funcionalidade de pesquisa ou filtro se a lista de veículos for muito longa.
-- [ ] **Data do Abastecimento:**
-  - [ ] **Date Picker:** Implementar um `DatePicker` nativo para iOS e Android, e um componente de calendário intuitivo para a web.
-  - [ ] **Formatação Automática:** Se mantiver o `TextInput`, implementar uma máscara de entrada para formatar a data automaticamente (ex: `DD/MM/YYYY`).
-- [ ] **Tipo de Combustível:**
-  - [ ] **Componente Multiplataforma:** Considerar um componente de seleção customizado ou botões de rádio/segmentados para uma experiência mais consistente e visualmente atraente.
-- [ ] **Quantidade de Litros e Valor por Litro:**
-  - [ ] **Formatação em Tempo Real:** Aplicar a formatação de números decimais (com vírgula para o Brasil) diretamente no `TextInput`.
-  - [ ] **Validação Visual:** Adicionar feedback visual (borda vermelha, mensagem de erro) se o valor for inválido antes do `handleSubmit`.
-- [ ] **KM Atual (Opcional):**
-  - [ ] **Formatação:** Considerar formatação de números grandes (ex: separador de milhares) para facilitar a leitura.
-- [ ] **Nome do Posto (Opcional):**
-  - [ ] **Autocompletar:** Adicionar funcionalidade de autocompletar se houver uma lista de postos frequentes ou integração com serviços de mapas.
-
-### 1.3. Rodapé
-
-- [ ] **Feedback de Carregamento:** Desabilitar o botão e/ou adicionar texto "Registrando..." durante o carregamento.
-- [ ] **Feedback de Sucesso/Erro:** Exibir feedback mais integrado à UI (toast message temporário, ícone de sucesso/erro) em vez de `Alert.alert`.
-
-## 2. Cores e Tipografia
-
-- [ ] **Paleta de Cores Centralizada:** Criar um arquivo de tema (`theme.ts` ou `colors.ts`) para centralizar as cores do aplicativo.
-- [ ] **Tipografia Consistente:** Definir uma escala tipográfica (tamanhos, pesos, alturas de linha) em um arquivo de tema.
-- [ ] **Acessibilidade:** Verificar contraste de cores e tamanhos de fonte para garantir acessibilidade (WCAG).
-
-## 3. Ícones e Feedbacks Visuais
-
-- [ ] **Consistência de Ícones:** Garantir que os ícones representem claramente sua função e sejam consistentes com o restante do aplicativo.
-- [ ] **Microinterações:** Implementar feedbacks visuais ricos para elementos interativos (Ripple Effect para Android, Highlight/Opacity Change para iOS, Hover States para Web).
-- [ ] **Animações:** Adicionar pequenas animações para transições de estado (abrir teclado, enviar formulário).
-
-## 4. Microinterações
-
-- [ ] **Feedback de Validação:** Fornecer feedback visual em tempo real para validação de campos (bordas vermelhas, mensagens de erro).
-- [ ] **Feedback de Sucesso/Erro:** Usar toast message ou banner de notificação para informar sucesso ou falha da operação.
-- [ ] **Animação de Teclado:** Implementar animações mais suaves ao abrir e fechar o teclado.
-
-## 5. Considerações Multiplataforma
-
-- [ ] **Componentes Nativos:** Avaliar o uso de componentes nativos ou bibliotecas para `DatePicker` e `Picker` de veículos para uma experiência mais próxima do nativo.
-- [ ] **Responsividade:** Testar e garantir que a interface se reorganize logicamente em diferentes tamanhos de tela para a web.
-- [ ] **Performance Web:** Otimizar carregamento de recursos, bundle size JS e uso de recursos do navegador para a versão web.
-- [ ] **Acessibilidade Web:** Garantir navegação via teclado, estados de foco visíveis e uso correto de atributos ARIA para a versão web.
-
-## 6. Pontos de Confusão e Clareza
-
-- [ ] **Entrada de Data:** Substituir `TextInput` por um `DatePicker`.
-- [ ] **Validação de Campos:** Implementar feedback de validação em tempo real.
-- [ ] **Feedback de Operação:** Substituir `Alert.alert` por toast ou banner para feedback de sucesso/erro
-
-# Progresso das Melhorias na FuelPricesScreen.tsx
-
-## 1. Melhorias de Layout e Hierarquia de Informações
-
-### 1.1. Cabeçalho
-
-- [ ] **Consistência de Navegação:** Garantir que o botão de voltar funcione como um botão de navegação padrão do navegador na web e siga os padrões de navegação do iOS.
-- [ ] **Feedback Visual do Botão Voltar:** Adicionar feedback visual sutil ao tocar/clicar no botão de voltar (opacidade ou efeito de "press").
-
-### 1.2. Formulário
-
-- [ ] **Tipo de Combustível:**
-  - [ ] **Responsividade:** Ajustar o layout dos botões de tipo de combustível para garantir um layout ideal em todos os tamanhos de tela (web: CSS Grid/Flexbox com mais controle).
-  - [ ] **Feedback de Seleção:** Adicionar um ícone de checkmark dentro do botão selecionado para reforçar a seleção.
-  - [ ] **Animação de Seleção:** Implementar uma pequena animação ao selecionar um tipo de combustível (leve scale ou fade-in da cor de fundo).
-- [ ] **Seleção de Estado e Cidade:**
-  - [ ] **Componente Multiplataforma:** Considerar um componente de seleção customizado ou biblioteca para uma experiência consistente em todas as plataformas.
-  - [ ] **Pesquisa/Filtro:** Adicionar funcionalidade de pesquisa ou filtro se a lista de estados/cidades for muito longa.
-- [ ] **Cards de Preço:**
-  - [ ] **Hierarquia Visual:** Redesenhar os cards para dar mais destaque ao preço médio, utilizando tipografia e cores para criar uma hierarquia clara.
-  - [ ] **Indicadores Visuais:** Adicionar ícones ou badges para indicar o melhor preço, a variação semanal e a data da última atualização.
-  - [ ] **Animações:** Implementar animações de entrada para os cards e microinterações ao tocar/clicar.
-
-### 1.3. Rodapé
-
-- [ ] **Feedback de Carregamento:** Desabilitar o botão e/ou adicionar texto "Reportando..." durante o carregamento.
-- [ ] **Feedback de Sucesso/Erro:** Exibir feedback mais integrado à UI (toast message temporário, ícone de sucesso/erro) em vez de `Alert.alert`.
-
-## 2. Cores e Tipografia
-
-- [ ] **Paleta de Cores Centralizada:** Criar um arquivo de tema (`theme.ts` ou `colors.ts`) para centralizar as cores do aplicativo.
-- [ ] **Tipografia Consistente:** Definir uma escala tipográfica (tamanhos, pesos, alturas de linha) em um arquivo de tema.
-- [ ] **Acessibilidade:** Verificar contraste de cores e tamanhos de fonte para garantir acessibilidade (WCAG).
-
-## 3. Ícones e Feedbacks Visuais
-
-- [ ] **Consistência de Ícones:** Garantir que os ícones representem claramente sua função e sejam consistentes com o restante do aplicativo.
-- [ ] **Microinterações:** Implementar feedbacks visuais ricos para elementos interativos (Ripple Effect para Android, Highlight/Opacity Change para iOS, Hover States para Web).
-- [ ] **Animações:** Adicionar pequenas animações para transições de estado (abrir modal, enviar reporte).
-
-## 4. Microinterações
-
-- [ ] **Feedback de Validação:** Fornecer feedback visual em tempo real para validação de campos (bordas vermelhas, mensagens de erro).
-- [ ] **Feedback de Sucesso/Erro:** Usar toast message ou banner de notificação para informar sucesso ou falha da operação.
-- [ ] **Animação de Modal:** Implementar animações mais suaves ao abrir e fechar o modal de reporte de preço.
-
-## 5. Considerações Multiplataforma
-
-- [ ] **Componentes Nativos:** Avaliar o uso de componentes nativos ou bibliotecas para `Picker` de estado/cidade para uma experiência mais próxima do nativo.
-- [ ] **Responsividade:** Testar e garantir que a interface se reorganize logicamente em diferentes tamanhos de tela para a web.
-- [ ] **Performance Web:** Otimizar carregamento de recursos, bundle size JS e uso de recursos do navegador para a versão web.
-- [ ] **Acessibilidade Web:** Garantir navegação via teclado, estados de foco visíveis e uso correto de atributos ARIA para a versão web.
-
-## 6. Pontos de Confusão e Clareza
-
-- [ ] **Entrada de Preço:** Implementar máscara de entrada para formatar o preço automaticamente.
-- [ ] **Validação de Campos:** Implementar feedback de validação em tempo real.
-- [ ] **Feedback de Operação:** Substituir `Alert.alert` por toast ou banner para feedback de sucesso/erro.
 
