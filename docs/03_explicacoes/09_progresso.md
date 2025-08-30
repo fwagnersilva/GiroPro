@@ -59,6 +59,141 @@ Este documento detalha o progresso atual na configuração e validação do proj
 #### 3.4. Code Review Aprofundado (Login)
 - **Tarefa**: Realizar um code review detalhado do `LoginScreen.tsx`, `AuthContext.tsx` e `api.ts` para o fluxo de login, garantindo que a lógica de autenticação e o tratamento de erros estejam robustos e em conformidade com as melhores práticas.
 
+### # 5. Melhorias no Frontend - FuelingHistoryScreen
+
+## Prioridade Alta (Impacto Imediato na UX)
+
+### 1. Implementar Design System
+- [ ] **Migrar cores hardcoded para tokens de design**
+  - Substituir cores como `#007AFF`, `#FF3B30` pelos tokens do theme
+  - Implementar suporte a tema claro/escuro
+  - Arquivo: `FuelingHistoryScreen.tsx` - seção styles
+
+- [ ] **Aplicar sistema tipográfico consistente**
+  - Usar tokens de tipografia para fontSize, fontWeight, lineHeight
+  - Implementar hierarquia visual clara (títulos, subtítulos, corpo)
+  - Melhorar legibilidade e acessibilidade
+
+- [ ] **Implementar safe area e header responsivo**
+  - Usar SafeAreaView ou useSafeAreaInsets
+  - Remover paddingTop fixo de 50px
+  - Adaptar header para diferentes dispositivos
+
+### 2. Melhorar Hierarquia Visual dos Cards
+- [ ] **Redesenhar layout dos cards de abastecimento**
+  - Reorganizar informações por importância
+  - Implementar tipografia hierárquica
+  - Melhorar espaçamento interno e externo
+
+- [ ] **Implementar badges visuais mais expressivos**
+  - Melhorar design dos badges de tipo de combustível
+  - Adicionar ícones mais contextuais
+  - Implementar cores semânticas consistentes
+
+- [ ] **Otimizar ações dos cards**
+  - Implementar swipe actions para editar/excluir
+  - Melhorar feedback visual dos botões
+  - Adicionar confirmação visual para ações destrutivas
+
+### 3. Aprimorar Sistema de Filtros
+- [ ] **Redesenhar interface de filtros**
+  - Implementar filtros colapsáveis/expansíveis
+  - Melhorar UX dos pickers (dropdowns)
+  - Adicionar chips para filtros ativos
+
+- [ ] **Implementar busca inteligente**
+  - Melhorar campo de busca com sugestões
+  - Adicionar busca por múltiplos critérios
+  - Implementar debounce para performance
+
+## Prioridade Média (Melhorias de Experiência)
+
+### 4. Implementar Estados de Loading Avançados
+- [ ] **Adicionar skeleton loading**
+  - Criar componente de skeleton para cards
+  - Implementar loading states mais informativos
+  - Melhorar percepção de performance
+
+- [ ] **Melhorar estados vazios**
+  - Redesenhar tela vazia com ilustrações
+  - Adicionar call-to-actions claros
+  - Implementar onboarding contextual
+
+### 5. Adicionar Microinterações
+- [ ] **Implementar animações de entrada/saída**
+  - Animar aparição dos cards na lista
+  - Adicionar transições suaves entre estados
+  - Implementar feedback tátil em botões
+
+- [ ] **Adicionar gestos intuitivos**
+  - Implementar pull-to-refresh customizado
+  - Adicionar swipe gestures para ações rápidas
+  - Implementar haptic feedback (iOS)
+
+### 6. Implementar Agrupamento Temporal
+- [ ] **Agrupar abastecimentos por período**
+  - Implementar seções por data (hoje, ontem, esta semana)
+  - Adicionar headers de seção
+  - Melhorar navegação temporal
+
+- [ ] **Adicionar resumos visuais**
+  - Implementar cards de estatísticas rápidas
+  - Adicionar gráficos simples de tendências
+  - Mostrar insights automáticos
+
+## Prioridade Baixa (Melhorias Avançadas)
+
+### 7. Otimizações para Plataformas Específicas
+- [ ] **Melhorias para iOS**
+  - Implementar navigation patterns nativos
+  - Usar componentes iOS-specific quando apropriado
+  - Implementar haptic feedback
+
+- [ ] **Melhorias para Android**
+  - Implementar Material Design principles
+  - Adicionar ripple effects
+  - Usar elevation adequada
+
+- [ ] **Melhorias para Web**
+  - Implementar layout responsivo
+  - Adicionar hover states
+  - Implementar keyboard navigation
+
+### 8. Funcionalidades Avançadas
+- [ ] **Implementar personalização**
+  - Permitir customização da visualização
+  - Adicionar preferências de ordenação
+  - Implementar temas personalizados
+
+- [ ] **Adicionar gamificação**
+  - Implementar badges de conquistas
+  - Adicionar metas de economia
+  - Mostrar progresso visual
+
+## Tarefas de Refatoração Técnica
+
+### 9. Melhorias de Performance
+- [ ] **Otimizar renderização da lista**
+  - Implementar memoização adequada
+  - Otimizar re-renders desnecessários
+  - Melhorar performance do FlatList
+
+- [ ] **Implementar cache inteligente**
+  - Adicionar cache local para dados
+  - Implementar estratégias de invalidação
+  - Melhorar experiência offline
+
+### 10. Melhorias de Acessibilidade
+- [ ] **Implementar suporte completo a acessibilidade**
+  - Adicionar labels adequados para screen readers
+  - Implementar navegação por teclado
+  - Garantir contraste adequado
+
+- [ ] **Adicionar suporte a diferentes tamanhos de fonte**
+  - Implementar escalabilidade de texto
+  - Testar com diferentes configurações de acessibilidade
+  - Garantir usabilidade para usuários com necessidades especiais
+
 ### # 4. Melhorias no Frontend
 
 ### 4.1 Este documento lista as sugestões de melhoria para a tela AchievementsScreen.tsx transformadas em tarefas acionáveis. Marque cada item como concluído ([x]) à medida que for implementado.
