@@ -59,6 +59,148 @@ Este documento detalha o progresso atual na configuração e validação do proj
 #### 3.4. Code Review Aprofundado (Login)
 - **Tarefa**: Realizar um code review detalhado do `LoginScreen.tsx`, `AuthContext.tsx` e `api.ts` para o fluxo de login, garantindo que a lógica de autenticação e o tratamento de erros estejam robustos e em conformidade com as melhores práticas.
 
+### 5. Oportunidades de Melhoria - AddFuelingScreen
+
+Análise de UX/UI e implementação de melhorias na tela de adição de abastecimento, focando em usabilidade, experiência do usuário e interface visual para iOS, Android e Web.
+
+#### 5.1. Prioridade Alta (Implementação Imediata)
+
+##### 1. Reorganizar Hierarquia de Campos
+- [ ] **Reordenar campos seguindo fluxo natural de abastecimento**
+  - Mover campo "Nome do Posto" para o topo do formulário
+  - Reorganizar sequência: Posto → Data → Veículo → Tipo Combustível → Valor/Litro → Quantidade → KM Atual
+  - Agrupar campos obrigatórios em seção "Informações Essenciais"
+  - Criar seção colapsável "Detalhes Adicionais" para campos opcionais
+  - Adicionar indicadores visuais de campos obrigatórios (asterisco colorido)
+  - Tempo estimado: 2-3 horas
+
+##### 2. Implementar Design System Consistente
+- [ ] **Utilizar tokens de design definidos no projeto**
+  - Substituir cores hardcoded pelos tokens do theme/tokens.ts
+  - Implementar hierarquia tipográfica usando tokens definidos
+  - Padronizar espaçamentos usando sistema de spacing
+  - Aplicar border-radius consistente usando tokens
+  - Implementar cores semânticas para estados (sucesso, erro, aviso)
+  - Tempo estimado: 3-4 horas
+
+##### 3. Adicionar Validação em Tempo Real
+- [ ] **Fornecer feedback imediato durante preenchimento**
+  - Implementar validação de quantidade de litros (0.1 - 200L)
+  - Validar valor por litro (R$ 0.50 - R$ 15.00)
+  - Validar formato de data automaticamente
+  - Mostrar mensagens de erro inline próximas aos campos
+  - Implementar indicadores visuais de campo válido/inválido
+  - Adicionar validação de KM (deve ser maior que KM anterior se disponível)
+  - Tempo estimado: 4-5 horas
+
+##### 4. Melhorar Feedback Visual e Microinterações
+- [ ] **Tornar interface mais responsiva e engajante**
+  - Adicionar animações de focus/blur nos campos de input
+  - Implementar transição suave para cálculo do valor total
+  - Adicionar loading states contextuais
+  - Implementar feedback visual ao completar campos obrigatórios
+  - Adicionar animação de pulse para campos com erro
+  - Implementar haptic feedback para dispositivos móveis
+  - Tempo estimado: 3-4 horas
+
+#### 5.2. Prioridade Média (Melhorias Graduais)
+
+##### 5. Implementar Componente de Input Aprimorado
+- [ ] **Utilizar EnhancedFormInput existente no projeto**
+  - Substituir TextInput básicos pelo EnhancedFormInput
+  - Configurar ícones apropriados para cada campo
+  - Implementar máscaras de entrada (data, moeda, número)
+  - Adicionar contadores de caracteres onde apropriado
+  - Configurar validações específicas para cada campo
+  - Tempo estimado: 2-3 horas
+
+##### 6. Adicionar Funcionalidades Inteligentes
+- [ ] **Acelerar preenchimento com sugestões baseadas em histórico**
+  - Implementar cache de postos frequentemente utilizados
+  - Sugerir valores médios de combustível baseados em histórico
+  - Auto-completar nome do posto baseado em entradas anteriores
+  - Detectar padrões de abastecimento (quantidade usual)
+  - Implementar sugestão de tipo de combustível baseado no veículo
+  - Adicionar opção "Repetir último abastecimento"
+  - Tempo estimado: 6-8 horas
+
+##### 7. Otimizar Layout Responsivo
+- [ ] **Melhorar experiência em diferentes tamanhos de tela**
+  - Implementar breakpoints para tablet e desktop
+  - Otimizar layout para orientação paisagem
+  - Ajustar espaçamentos para telas menores
+  - Implementar grid responsivo para campos
+  - Otimizar tipografia para diferentes densidades de tela
+  - Tempo estimado: 4-5 horas
+
+##### 8. Implementar Indicador de Progresso
+- [ ] **Mostrar progresso de preenchimento do formulário**
+  - Criar componente de barra de progresso
+  - Calcular porcentagem baseada em campos obrigatórios preenchidos
+  - Adicionar animação suave de progresso
+  - Implementar indicadores visuais de seções completas
+  - Mostrar resumo de campos restantes
+  - Tempo estimado: 2-3 horas
+
+#### 5.3. Prioridade Baixa (Polimento e Funcionalidades Avançadas)
+
+##### 9. Implementar Tema Escuro
+- [ ] **Adicionar suporte a tema escuro**
+  - Utilizar darkTheme já definido no projeto
+  - Implementar toggle de tema na tela
+  - Persistir preferência do usuário
+  - Ajustar cores para melhor contraste no tema escuro
+  - Testar legibilidade em ambos os temas
+  - Tempo estimado: 3-4 horas
+
+##### 10. Adicionar Recursos de Acessibilidade
+- [ ] **Melhorar acessibilidade para usuários com necessidades especiais**
+  - Adicionar labels de acessibilidade para screen readers
+  - Implementar navegação por teclado (web)
+  - Ajustar contrastes para WCAG 2.1 AA
+  - Adicionar hints de voz para campos
+  - Implementar atalhos de teclado para ações principais
+  - Tempo estimado: 4-5 horas
+
+##### 11. Implementar Funcionalidades Avançadas
+- [ ] **Adicionar recursos que diferenciem o aplicativo**
+  - Integração com mapas para seleção de postos próximos
+  - Scanner de QR Code para dados do posto
+  - Integração com API de preços de combustível
+  - Modo offline com sincronização posterior
+  - Exportação de dados para planilhas
+  - Compartilhamento de abastecimentos
+  - Tempo estimado: 8-10 horas
+
+#### 5.4. Tarefas de Infraestrutura e Qualidade
+
+##### 12. Implementar Testes Automatizados
+- [ ] **Garantir qualidade e prevenir regressões**
+  - Criar testes unitários para validações
+  - Implementar testes de integração para fluxo completo
+  - Adicionar testes de acessibilidade
+  - Criar testes de performance
+  - Implementar testes visuais (screenshot testing)
+  - Tempo estimado: 6-8 horas
+
+##### 13. Otimizar Performance
+- [ ] **Garantir fluidez em dispositivos de baixo desempenho**
+  - Implementar lazy loading para componentes pesados
+  - Otimizar re-renders com React.memo e useCallback
+  - Implementar debounce para validações em tempo real
+  - Otimizar animações para 60fps
+  - Reduzir bundle size removendo dependências desnecessárias
+  - Tempo estimado: 4-5 horas
+
+##### 14. Documentar Componentes e Padrões
+- [ ] **Facilitar manutenção e expansão futura**
+  - Documentar props e uso do componente melhorado
+  - Criar guia de estilo para formulários
+  - Documentar padrões de validação
+  - Criar exemplos de uso
+  - Documentar decisões de UX/UI
+  - Tempo estimado: 3-4 horas
+
 ### 4. Oportunidades de Melhoria - ChangePasswordScreen
 
 Análise de UX/UI e implementação de melhorias na tela de alteração de senha, focando em usabilidade, experiência do usuário e interface visual para iOS, Android e Web.
