@@ -179,6 +179,69 @@ Progresso de Conquistas Bloqueadas: Implementar um indicador claro de progresso 
 - [ ] **Validação de Campos:** Implementar feedback de validação em tempo real.
 - [ ] **Feedback de Operação:** Substituir `Alert.alert` por toast ou banner para feedback de sucesso/erro
 
+# Progresso das Melhorias na AddFuelingScreen.tsx
+
+## 1. Melhorias de Layout e Hierarquia de Informações
+
+### 1.1. Cabeçalho
+
+- [ ] **Consistência de Navegação:** Garantir que o botão de voltar funcione como um botão de navegação padrão do navegador na web e siga os padrões de navegação do iOS.
+- [ ] **Feedback Visual do Botão Voltar:** Adicionar feedback visual sutil ao tocar/clicar no botão de voltar (opacidade ou efeito de "press").
+
+### 1.2. Formulário
+
+- [ ] **Seleção de Veículo:**
+  - [ ] **Componente Multiplataforma:** Considerar um componente de seleção customizado ou biblioteca para uma experiência consistente em todas as plataformas.
+  - [ ] **Pesquisa/Filtro:** Adicionar funcionalidade de pesquisa ou filtro se a lista de veículos for muito longa.
+- [ ] **Data do Abastecimento:**
+  - [ ] **Date Picker:** Implementar um `DatePicker` nativo para iOS e Android, e um componente de calendário intuitivo para a web.
+  - [ ] **Formatação Automática:** Se mantiver o `TextInput`, implementar uma máscara de entrada para formatar a data automaticamente (ex: `DD/MM/YYYY`).
+- [ ] **Tipo de Combustível:**
+  - [ ] **Componente Multiplataforma:** Considerar um componente de seleção customizado ou botões de rádio/segmentados para uma experiência mais consistente e visualmente atraente.
+- [ ] **Quantidade de Litros e Valor por Litro:**
+  - [ ] **Formatação em Tempo Real:** Aplicar a formatação de números decimais (com vírgula para o Brasil) diretamente no `TextInput`.
+  - [ ] **Validação Visual:** Adicionar feedback visual (borda vermelha, mensagem de erro) se o valor for inválido antes do `handleSubmit`.
+- [ ] **KM Atual (Opcional):**
+  - [ ] **Formatação:** Considerar formatação de números grandes (ex: separador de milhares) para facilitar a leitura.
+- [ ] **Nome do Posto (Opcional):**
+  - [ ] **Autocompletar:** Adicionar funcionalidade de autocompletar se houver uma lista de postos frequentes ou integração com serviços de mapas.
+
+### 1.3. Rodapé
+
+- [ ] **Feedback de Carregamento:** Desabilitar o botão e/ou adicionar texto "Registrando..." durante o carregamento.
+- [ ] **Feedback de Sucesso/Erro:** Exibir feedback mais integrado à UI (toast message temporário, ícone de sucesso/erro) em vez de `Alert.alert`.
+
+## 2. Cores e Tipografia
+
+- [ ] **Paleta de Cores Centralizada:** Criar um arquivo de tema (`theme.ts` ou `colors.ts`) para centralizar as cores do aplicativo.
+- [ ] **Tipografia Consistente:** Definir uma escala tipográfica (tamanhos, pesos, alturas de linha) em um arquivo de tema.
+- [ ] **Acessibilidade:** Verificar contraste de cores e tamanhos de fonte para garantir acessibilidade (WCAG).
+
+## 3. Ícones e Feedbacks Visuais
+
+- [ ] **Consistência de Ícones:** Garantir que os ícones representem claramente sua função e sejam consistentes com o restante do aplicativo.
+- [ ] **Microinterações:** Implementar feedbacks visuais ricos para elementos interativos (Ripple Effect para Android, Highlight/Opacity Change para iOS, Hover States para Web).
+- [ ] **Animações:** Adicionar pequenas animações para transições de estado (abrir teclado, enviar formulário).
+
+## 4. Microinterações
+
+- [ ] **Feedback de Validação:** Fornecer feedback visual em tempo real para validação de campos (bordas vermelhas, mensagens de erro).
+- [ ] **Feedback de Sucesso/Erro:** Usar toast message ou banner de notificação para informar sucesso ou falha da operação.
+- [ ] **Animação de Teclado:** Implementar animações mais suaves ao abrir e fechar o teclado.
+
+## 5. Considerações Multiplataforma
+
+- [ ] **Componentes Nativos:** Avaliar o uso de componentes nativos ou bibliotecas para `DatePicker` e `Picker` de veículos/combustível para uma experiência mais próxima do nativo.
+- [ ] **Responsividade:** Testar e garantir que a interface se reorganize logicamente em diferentes tamanhos de tela para a web.
+- [ ] **Performance Web:** Otimizar carregamento de recursos, bundle size JS e uso de recursos do navegador para a versão web.
+- [ ] **Acessibilidade Web:** Garantir navegação via teclado, estados de foco visíveis e uso correto de atributos ARIA para a versão web.
+
+## 6. Pontos de Confusão e Clareza
+
+- [ ] **Entrada de Data:** Substituir `TextInput` por um `DatePicker`.
+- [ ] **Validação de Campos:** Implementar feedback de validação em tempo real.
+- [ ] **Feedback de Operação:** Substituir `Alert.alert` por toast ou banner para feedback de sucesso/erro.
+
 
 ### Observações Adicionais:
 - Priorizar a resolução da instabilidade do ambiente para permitir o avanço das demais tarefas.
