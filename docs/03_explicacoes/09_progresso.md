@@ -453,3 +453,32 @@ Análise de UX/UI e implementação de melhorias na tela de alteração de senha
   - Tempo estimado: 1 hora
 
 
+
+
+
+### 7. Oportunidades de Melhoria - AchievementsScreen
+
+Análise de UX/UI e implementação de melhorias na tela de conquistas, focando em usabilidade, experiência do usuário e interface visual para iOS, Android e Web.
+
+#### 7.1. Prioridade Alta (Impacto Alto + Esforço Baixo/Médio)
+
+- [ ] **Migração para Design Tokens:** Substituir todas as cores hardcoded por referências aos design tokens para consistência visual e manutenibilidade.
+- [ ] **Implementação de Propriedades de Acessibilidade:** Adicionar `accessibilityLabel`, `accessibilityHint` e `accessibilityRole` para todos os elementos interativos, garantindo conformidade com diretrizes de inclusão.
+- [ ] **Otimização de Touch Targets:** Garantir que todos os elementos interativos tenham pelo menos 44px de área tocável para melhorar a usabilidade móvel.
+- [ ] **Melhoria do Sistema de Filtros:** Reorganizar filtros em tabs fixos e adicionar contadores de conquistas por categoria para uma navegação mais clara.
+
+#### 7.2. Prioridade Média (Impacto Médio/Alto + Esforço Médio)
+
+- [ ] **Redesign dos Cards de Conquista:** Criar um novo design com bordas baseadas em raridade, ícones vetoriais e layout otimizado para maior engajamento visual.
+- [ ] **Implementação de Estados Visuais Diferenciados:** Criar três estados distintos para conquistas (desbloqueadas, em progresso, bloqueadas) para clareza da informação.
+- [ ] **Sistema de Busca por Texto:** Adicionar uma barra de busca para encontrar conquistas por nome ou descrição.
+- [ ] **Seção de Estatísticas Colapsável:** Transformar as estatísticas do usuário em uma seção colapsável para otimizar o espaço da tela.
+
+#### 7.3. Prioridade Baixa (Impacto Médio + Esforço Alto ou Funcionalidades Avançadas)
+
+- [ ] **Animações de Transição:** Adicionar animações suaves para mudanças de filtro e carregamento para uma experiência mais fluida.
+- [ ] **Celebração de Conquistas Animadas:** Implementar animações especiais para conquistas recém-desbloqueadas para aumentar o engajamento.
+- [ ] **Modo de Visualização Compacta:** Oferecer uma opção de visualização em grid para ver mais conquistas simultaneamente.
+- [ ] **Sistema de Favoritos:** Permitir que os usuários marquem conquistas como favoritas para acompanhamento especial.
+- [ ] **Conquistas Sugeridas Inteligentes:** Implementar um algoritmo que sugere as próximas conquistas mais alcançáveis com base no comportamento do usuário.
+
