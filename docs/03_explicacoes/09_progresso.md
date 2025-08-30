@@ -116,6 +116,69 @@ Benefícios do Nível: Exibir claramente os benefícios do nível atual.
 Progresso de Conquistas Bloqueadas: Implementar um indicador claro de progresso para conquistas bloqueadas.
 Ícones como Texto: Substituir ícones de texto por ícones gráficos dedicados para maior clareza e consistência.
 
+# Progresso das Melhorias na AddExpenseScreen.tsx
+
+## 1. Melhorias de Layout e Hierarquia de Informações
+
+### 1.1. Cabeçalho
+
+- [ ] **Consistência de Navegação:** Garantir que o botão de voltar funcione como um botão de navegação padrão do navegador na web e siga os padrões de navegação do iOS.
+- [ ] **Feedback Visual do Botão Voltar:** Adicionar feedback visual sutil ao tocar/clicar no botão de voltar (opacidade ou efeito de "press").
+
+### 1.2. Formulário
+
+- [ ] **Tipo de Despesa:**
+  - [ ] **Responsividade:** Ajustar o layout dos botões de tipo de despesa para garantir um layout ideal em todos os tamanhos de tela (web: CSS Grid/Flexbox com mais controle).
+  - [ ] **Feedback de Seleção:** Adicionar um ícone de checkmark dentro do botão selecionado para reforçar a seleção.
+  - [ ] **Animação de Seleção:** Implementar uma pequena animação ao selecionar um tipo de despesa (leve scale ou fade-in da cor de fundo).
+- [ ] **Data da Despesa:**
+  - [ ] **Date Picker:** Implementar um `DatePicker` nativo para iOS e Android, e um componente de calendário intuitivo para a web.
+  - [ ] **Formatação Automática:** Se mantiver o `TextInput`, implementar uma máscara de entrada para formatar a data automaticamente (ex: `DD/MM/YYYY`).
+- [ ] **Valor da Despesa:**
+  - [ ] **Formatação em Tempo Real:** Aplicar a formatação da moeda diretamente no `TextInput`.
+  - [ ] **Validação Visual:** Adicionar feedback visual (borda vermelha, mensagem de erro) se o valor for inválido antes do `handleSubmit`.
+- [ ] **Seleção de Veículo:**
+  - [ ] **Componente Multiplataforma:** Considerar um componente de seleção customizado ou biblioteca para uma experiência consistente em todas as plataformas.
+  - [ ] **Pesquisa/Filtro:** Adicionar funcionalidade de pesquisa ou filtro se a lista de veículos for muito longa.
+- [ ] **Descrição:**
+  - [ ] **Contador de Caracteres:** Adicionar um contador de caracteres se houver um limite para a descrição.
+
+### 1.3. Rodapé
+
+- [ ] **Feedback de Carregamento:** Desabilitar o botão e/ou adicionar texto "Registrando..." durante o carregamento.
+- [ ] **Feedback de Sucesso/Erro:** Exibir feedback mais integrado à UI (toast message temporário, ícone de sucesso/erro) em vez de `Alert.alert`.
+
+## 2. Cores e Tipografia
+
+- [ ] **Paleta de Cores Centralizada:** Criar um arquivo de tema (`theme.ts` ou `colors.ts`) para centralizar as cores do aplicativo.
+- [ ] **Tipografia Consistente:** Definir uma escala tipográfica (tamanhos, pesos, alturas de linha) em um arquivo de tema.
+- [ ] **Acessibilidade:** Verificar contraste de cores e tamanhos de fonte para garantir acessibilidade (WCAG).
+
+## 3. Ícones e Feedbacks Visuais
+
+- [ ] **Consistência de Ícones:** Garantir que os ícones representem claramente sua função e sejam consistentes com o restante do aplicativo.
+- [ ] **Microinterações:** Implementar feedbacks visuais ricos para elementos interativos (Ripple Effect para Android, Highlight/Opacity Change para iOS, Hover States para Web).
+- [ ] **Animações:** Adicionar pequenas animações para transições de estado (abrir teclado, enviar formulário).
+
+## 4. Microinterações
+
+- [ ] **Feedback de Validação:** Fornecer feedback visual em tempo real para validação de campos (bordas vermelhas, mensagens de erro).
+- [ ] **Feedback de Sucesso/Erro:** Usar toast message ou banner de notificação para informar sucesso ou falha da operação.
+- [ ] **Animação de Teclado:** Implementar animações mais suaves ao abrir e fechar o teclado.
+
+## 5. Considerações Multiplataforma
+
+- [ ] **Componentes Nativos:** Avaliar o uso de componentes nativos ou bibliotecas para `DatePicker` e `Picker` de veículos para uma experiência mais próxima do nativo.
+- [ ] **Responsividade:** Testar e garantir que a interface se reorganize logicamente em diferentes tamanhos de tela para a web.
+- [ ] **Performance Web:** Otimizar carregamento de recursos, bundle size JS e uso de recursos do navegador para a versão web.
+- [ ] **Acessibilidade Web:** Garantir navegação via teclado, estados de foco visíveis e uso correto de atributos ARIA para a versão web.
+
+## 6. Pontos de Confusão e Clareza
+
+- [ ] **Entrada de Data:** Substituir `TextInput` por um `DatePicker`.
+- [ ] **Validação de Campos:** Implementar feedback de validação em tempo real.
+- [ ] **Feedback de Operação:** Substituir `Alert.alert` por toast ou banner para feedback de sucesso/erro
+
 
 ### Observações Adicionais:
 - Priorizar a resolução da instabilidade do ambiente para permitir o avanço das demais tarefas.
