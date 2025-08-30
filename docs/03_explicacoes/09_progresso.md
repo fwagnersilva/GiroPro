@@ -59,7 +59,126 @@ Este documento detalha o progresso atual na configuração e validação do proj
 #### 3.4. Code Review Aprofundado (Login)
 - **Tarefa**: Realizar um code review detalhado do `LoginScreen.tsx`, `AuthContext.tsx` e `api.ts` para o fluxo de login, garantindo que a lógica de autenticação e o tratamento de erros estejam robustos e em conformidade com as melhores práticas.
 
-### 5. Oportunidades de Melhoria - AddFuelingScreen
+### 5. Oportunidades de Melhoria - AddExpenseScreen
+
+Análise de UX/UI e implementação de melhorias na tela de adição de despesas, focando em usabilidade, experiência do usuário e interface visual para iOS, Android e Web.
+
+#### 5.1. Prioridade Alta (Implementação Imediata)
+
+##### 1. Indicadores Visuais para Campos Obrigatórios
+- [x] Adicionar asterisco (*) vermelho nos labels dos campos obrigatórios
+- [x] Implementar estilo visual diferenciado para campos obrigatórios
+- [x] Adicionar texto explicativo sobre campos obrigatórios no topo do formulário
+
+##### 2. Validação em Tempo Real
+- [x] Implementar validação de valor numérico no campo "Valor"
+- [x] Adicionar validação de formato de data
+- [x] Criar estados de erro para cada campo com mensagens específicas
+- [x] Implementar bordas vermelhas para campos com erro
+- [x] Adicionar ícones de sucesso/erro nos campos
+
+##### 3. Date Picker Nativo
+- [x] Substituir TextInput de data por DateTimePicker
+- [x] Implementar diferentes comportamentos para iOS/Android/Web
+- [x] Adicionar formatação automática de data
+- [x] Definir data máxima como hoje e mínima como 1 ano atrás
+
+##### 4. Sistema de Notificações Melhorado
+- [x] Substituir Alert.alert por componente Toast customizado
+- [x] Implementar diferentes tipos de toast (sucesso, erro, aviso)
+- [x] Adicionar animações de entrada/saída para toasts
+- [x] Posicionar toasts no topo da tela
+
+#### 5.2. Prioridade Média (Melhorias Graduais)
+
+##### 5. Design System e Tokens
+- [x] Criar arquivo de design tokens (colors.ts, spacing.ts, typography.ts)
+- [x] Substituir valores hardcoded por tokens
+- [ ] Implementar tema claro/escuro
+- [ ] Criar componentes reutilizáveis (Button, Input, Card)
+
+##### 6. Acessibilidade
+- [x] Adicionar accessibilityLabel em todos os elementos interativos
+- [x] Implementar accessibilityHint para explicar ações
+- [x] Adicionar accessibilityRole apropriado
+- [ ] Testar com screen reader
+- [ ] Implementar navegação por teclado (web)
+
+##### 7. Sugestões Inteligentes
+- [x] Auto-selecionar veículo quando há apenas um disponível
+- [ ] Implementar histórico de descrições para auto-complete
+- [ ] Sugerir valores baseados em despesas anteriores do mesmo tipo
+- [x] Adicionar botões de valor rápido (R$ 50, R$ 100, R$ 200)
+
+##### 8. Melhorias de Formulário
+- [x] Implementar máscara de moeda no campo valor
+- [x] Adicionar contador de caracteres na descrição
+- [ ] Implementar salvamento automático como rascunho
+- [x] Adicionar botão "Limpar formulário"
+
+#### 5.3. Prioridade Baixa (Polimento e Funcionalidades Avançadas)
+
+##### 9. Tipografia e Hierarquia
+- [x] Implementar escala tipográfica consistente
+- [x] Melhorar hierarquia visual dos elementos
+- [x] Adicionar diferentes pesos de fonte
+- [x] Implementar line-height otimizado para legibilidade
+
+##### 10. Ícones e Elementos Visuais
+- [x] Substituir ícones genéricos por específicos:
+  - Manutenção: wrench-outline → construct-outline
+  - Pneus: ellipse-outline → radio-button-off-outline
+  - Seguro: shield-outline → shield-checkmark-outline
+  - Outros: receipt-outline → ellipsis-horizontal-outline
+- [ ] Adicionar ilustrações vazias quando não há dados
+- [ ] Implementar skeleton loading para carregamentos
+
+##### 11. Cores e Contraste
+- [x] Verificar contraste de todas as combinações de cores
+- [x] Implementar paleta de cores semânticas (success, error, warning)
+- [x] Adicionar cores de estado para diferentes tipos de despesa
+- [ ] Implementar gradientes sutis para melhor visual
+
+##### 12. Layout e Espaçamento
+- [x] Implementar grid system responsivo
+- [x] Melhorar espaçamento entre elementos
+- [x] Adicionar padding/margin consistentes
+- [ ] Implementar breakpoints para diferentes tamanhos de tela
+
+##### 13. Animações e Transições
+- [x] Adicionar animação de entrada da tela (slide-in)
+- [x] Implementar transições suaves entre estados
+- [ ] Adicionar animação de sucesso no botão submit
+- [ ] Implementar bounce effect nos botões de tipo de despesa
+
+##### 14. Feedback Háptico (Mobile)
+- [ ] Adicionar vibração leve ao selecionar tipo de despesa
+- [ ] Implementar feedback háptico no sucesso do submit
+- [ ] Adicionar vibração de erro em validações
+
+##### 15. Estados Interativos
+- [ ] Implementar estados de hover para web
+- [ ] Adicionar estados de press para mobile
+- [ ] Implementar estados de focus para navegação por teclado
+- [ ] Adicionar ripple effect nos botões (Android)
+
+##### 16. Adaptações por Plataforma
+- [ ] iOS Específico
+- [ ] Android Específico
+- [ ] Web Específico
+
+### 5.4. Tarefas de Infraestrutura e Qualidade
+
+##### 17. Implementar Testes Automatizados
+- [ ] Garantir qualidade e prevenir regressões
+
+##### 18. Otimizar Performance
+- [ ] Garantir fluidez em dispositivos de baixo desempenho
+
+##### 19. Documentar Componentes e Padrões
+- [ ] Facilitar manutenção e expansão futura
+
+### 6. Oportunidades de Melhoria - AddFuelingScreen
 
 Análise de UX/UI e implementação de melhorias na tela de adição de abastecimento, focando em usabilidade, experiência do usuário e interface visual para iOS, Android e Web.
 
