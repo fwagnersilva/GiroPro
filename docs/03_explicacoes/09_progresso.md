@@ -13,7 +13,7 @@ Este documento detalha o progresso atual na configuração e validação do proj
 #### 2.1. Problemas de Porta do Backend
 - **Problema**: O backend estava iniciando na porta 3000, mesmo após a alteração no `giropro.env` para 4000. Isso ocorria devido a um caminho incorreto no `dotenv.config` em `src/app.ts` e/ou processos antigos ocupando a porta.
 - **Correção**: 
-    - O caminho do `.env` em `backend/src/app.ts` foi corrigido para `dotenv.config({ path: __dirname + '/../giropro.env' });`.
+    - O caminho do `.env` em `backend/src/app.ts` foi corrigido para `dotenv.config({ path: __dirname + \'/../giropro.env\' });`.
     - Processos que ocupavam as portas 3000 e 4000 foram identificados e encerrados.
     - O backend agora inicia corretamente na porta 4000.
 
@@ -59,44 +59,43 @@ Este documento detalha o progresso atual na configuração e validação do proj
 #### 3.4. Code Review Aprofundado (Login)
 - **Tarefa**: Realizar um code review detalhado do `LoginScreen.tsx`, `AuthContext.tsx` e `api.ts` para o fluxo de login, garantindo que a lógica de autenticação e o tratamento de erros estejam robustos e em conformidade com as melhores práticas.
 
-### 7. Melhorias no Frontend - ExpenseHistoryScreen
+### 4. Oportunidades de Melhoria - ChangePasswordScreen
 
-Análise de UX/UI e implementação de melhorias na tela de histórico de despesas, focando em usabilidade, experiência do usuário e interface visual para iOS, Android e Web.
+Análise de UX/UI e implementação de melhorias na tela de alteração de senha, focando em usabilidade, experiência do usuário e interface visual para iOS, Android e Web.
 
-## Complexidade Baixa (Melhorias)
+#### 4.1. Prioridade Alta (Críticas)
 
-### 5. Funcionalidades Avançadas
-- [ ] **Implementar modo escuro**
-  - Criar tema escuro para a tela
-  - Implementar toggle de tema
-  - Ajustar todas as cores para modo escuro
-  - Tempo estimado: 2 horas
-
-- [ ] **Adicionar tooltips informativos**
-  - Implementar tooltips para requisitos de senha
-  - Adicionar ajuda contextual
-  - Tempo estimado: 1 hora
-
-- [ ] **Implementar navegação por teclado (Web)**
-  - Adicionar suporte completo a teclado
-  - Implementar tab order lógico
-  - Adicionar atalhos de teclado
-  - Tempo estimado: 1 hora 30 minutos
-
-### 6. Otimizações de Performance
-- [ ] **Implementar debounce para validação**
-  - Adicionar debounce na validação em tempo real
-  - Otimizar re-renders desnecessários
+##### 1. Correção de Layout e Estrutura
+- [ ] **Reorganizar posicionamento dos ícones de visualização de senha**
+  - Mover ícones para dentro do container do input
+  - Garantir alinhamento consistente em todos os campos
   - Tempo estimado: 30 minutos
 
-- [ ] **Lazy loading de componentes**
-  - Implementar carregamento sob demanda
-  - Otimizar bundle size
+- [ ] **Corrigir posicionamento das mensagens de erro**
+  - Mover mensagens de erro para dentro do container do input
+  - Ajustar margem negativa que quebra o layout
+  - Tempo estimado: 20 minutos
+
+- [ ] **Implementar sistema de cores semânticas**
+  - Criar constantes para cores do sistema
+  - Substituir cores hardcoded por variáveis
+  - Implementar paleta de cores acessível
   - Tempo estimado: 45 minutos
 
-## Prioridade Média (Importantes)
+##### 2. Melhorias de Acessibilidade
+- [ ] **Adicionar labels adequados para screen readers**
+  - Implementar accessibilityLabel para todos os inputs
+  - Adicionar accessibilityHint para ações
+  - Tempo estimado: 30 minutos
 
-### 3. Aprimoramentos de UX
+- [ ] **Melhorar contraste de cores**
+  - Ajustar cores para conformidade WCAG 2.1 AA
+  - Testar contraste em diferentes temas
+  - Tempo estimado: 25 minutos
+
+#### 4.2. Prioridade Média (Importantes)
+
+##### 3. Aprimoramentos de UX
 - [ ] **Implementar barra de força da senha**
   - Criar componente visual de força da senha
   - Integrar com validação existente
@@ -115,7 +114,7 @@ Análise de UX/UI e implementação de melhorias na tela de histórico de despes
   - Melhorar espaçamento entre elementos
   - Tempo estimado: 1 hora
 
-### 4. Microinterações
+##### 4. Microinterações
 - [ ] **Adicionar animações de transição**
   - Implementar fade in/out para mensagens
   - Adicionar bounce effect para sucesso
@@ -128,34 +127,68 @@ Análise de UX/UI e implementação de melhorias na tela de histórico de despes
   - Melhorar feedback tátil
   - Tempo estimado: 45 minutos
 
-## Prioridade Alta (Críticas)
+#### 4.3. Prioridade Baixa (Melhorias)
 
-### 1. Correção de Layout e Estrutura
-- [ ] **Reorganizar posicionamento dos ícones de visualização de senha**
-  - Mover ícones para dentro do container do input
-  - Garantir alinhamento consistente em todos os campos
+##### 5. Funcionalidades Avançadas
+- [ ] **Implementar modo escuro**
+  - Criar tema escuro para a tela
+  - Implementar toggle de tema
+  - Ajustar todas as cores para modo escuro
+  - Tempo estimado: 2 horas
+
+- [ ] **Adicionar tooltips informativos**
+  - Implementar tooltips para requisitos de senha
+  - Adicionar ajuda contextual
+  - Tempo estimado: 1 hora
+
+- [ ] **Implementar navegação por teclado (Web)**
+  - Adicionar suporte completo a teclado
+  - Implementar tab order lógico
+  - Adicionar atalhos de teclado
+  - Tempo estimado: 1 hora 30 minutos
+
+##### 6. Otimizações de Performance
+- [ ] **Implementar debounce para validação**
+  - Adicionar debounce na validação em tempo real
+  - Otimizar re-renders desnecessários
   - Tempo estimado: 30 minutos
 
-- [ ] **Corrigir posicionamento das mensagens de erro**
-  - Mover mensagens de erro para dentro do container do input
-  - Ajustar margem negativa que quebra o layout
-  - Tempo estimado: 20 minutos
-
-- [ ] **Implementar sistema de cores semânticas**
-  - Criar constantes para cores do sistema
-  - Substituir cores hardcoded por variáveis
-  - Implementar paleta de cores acessível
+- [ ] **Lazy loading de componentes**
+  - Implementar carregamento sob demanda
+  - Otimizar bundle size
   - Tempo estimado: 45 minutos
 
-### 2. Melhorias de Acessibilidade
-- [ ] **Adicionar labels adequados para screen readers**
-  - Implementar accessibilityLabel para todos os inputs
-  - Adicionar accessibilityHint para ações
+#### 4.4. Tarefas de Implementação Técnica
+
+##### 7. Refatoração de Código
+- [ ] **Extrair componentes reutilizáveis**
+  - Criar componente PasswordInput
+  - Criar componente PasswordRequirements
+  - Criar componente ErrorMessage
+  - Tempo estimado: 2 horas
+
+- [ ] **Implementar custom hooks**
+  - Criar usePasswordValidation hook
+  - Criar useFormState hook
+  - Tempo estimado: 1 hora
+
+- [ ] **Adicionar TypeScript interfaces**
+  - Definir interfaces para props
+  - Adicionar tipos para estados
   - Tempo estimado: 30 minutos
 
-- [ ] **Melhorar contraste de cores**
-  - Ajustar cores para conformidade WCAG 2.1 AA
-  - Testar contraste em diferentes temas
-  - Tempo estimado: 25 minutos
+#### 4.5. Testes e Qualidade
+
+##### 8. Testes e Qualidade
+- [ ] **Implementar testes unitários**
+  - Testar validação de senha
+  - Testar estados de erro
+  - Testar navegação
+  - Tempo estimado: 2 horas
+
+- [ ] **Adicionar testes de acessibilidade**
+  - Implementar testes automatizados
+  - Verificar conformidade WCAG
+  - Tempo estimado: 1 hora
 
 
