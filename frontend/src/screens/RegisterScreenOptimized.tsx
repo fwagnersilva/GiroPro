@@ -30,48 +30,18 @@ const RegisterScreenOptimized: React.FC<Props> = ({ navigation }) => {
   const [senha, setSenha] = useState('');
   const [confirmarSenha, setConfirmarSenha] = useState('');
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
   const { signUp } = useAuth();
 
   const handleRegister = useCallback(async () => {
-    if (!nome || !email || !senha || !confirmarSenha) {
-      if (isWeb()) {
-        alert('Por favor, preencha todos os campos');
-      } else {
-        Alert.alert('Erro', 'Por favor, preencha todos os campos');
-      }
-      return;
-    }
+    setError('');
 
-    if (senha !== confirmarSenha) {
-      if (isWeb()) {
-        alert('As senhas não coincidem');
-      } else {
-        Alert.alert('Erro', 'As senhas não coincidem');
-      }
-      return;
-    }
-
-    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/;
-    if (senha.length < 8 || !passwordRegex.test(senha)) {
-      const errorMessage = 'A senha deve ter pelo menos 8 caracteres, 1 letra minúscula, 1 maiúscula, 1 número e 1 caractere especial (@$!%*?&).';
-      if (isWeb()) {
-        alert(errorMessage);
-      } else {
-        Alert.alert('Erro', errorMessage);
-      }
-      return;
-    }
 
     setLoading(true);
     try {
       await signUp({ nome, email, senha });
     } catch (error: any) {
-      const message = error.message || 'Erro ao criar conta';
-      if (isWeb()) {
-        alert(message);
-      } else {
-        Alert.alert('Erro', message);
-      }
+      setError(error.message || 'Erro ao criar conta');
     } finally {
       setLoading(false);
     }
@@ -154,6 +124,12 @@ const RegisterScreenOptimized: React.FC<Props> = ({ navigation }) => {
       color: '#007AFF',
       ...typography.body,
     },
+    errorText: {
+      color: '#FF3B30',
+      textAlign: 'center',
+      marginBottom: spacing.md,
+      ...typography.body,
+    },
   }), []);
 
   return (
@@ -175,6 +151,8 @@ const RegisterScreenOptimized: React.FC<Props> = ({ navigation }) => {
             autoCapitalize="words"
             autoCorrect={false}
             leftIcon="person-outline"
+            required
+            validation={validators.required}
           />
 
           <FormInput
@@ -185,6 +163,8 @@ const RegisterScreenOptimized: React.FC<Props> = ({ navigation }) => {
             autoCapitalize="none"
             autoCorrect={false}
             leftIcon="mail-outline"
+            required
+            validation={combineValidators(validators.required, validators.email)}
           />
 
           <FormInput
@@ -195,6 +175,15 @@ const RegisterScreenOptimized: React.FC<Props> = ({ navigation }) => {
             autoCapitalize="none"
             autoCorrect={false}
             leftIcon="lock-closed-outline"
+            required
+            validation={combineValidators(
+              validators.required,
+              validators.minLength(8),
+              (value) => {
+                const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/;
+                return passwordRegex.test(value) ? null : 'A senha deve ter pelo menos 8 caracteres, 1 letra minúscula, 1 maiúscula, 1 número e 1 caractere especial (@$!%*?&).';
+              }
+            )}
           />
 
           <FormInput
@@ -205,7 +194,14 @@ const RegisterScreenOptimized: React.FC<Props> = ({ navigation }) => {
             autoCapitalize="none"
             autoCorrect={false}
             leftIcon="lock-closed-outline"
+            required
+            validation={combineValidators(
+              validators.required,
+              (value) => (value === senha ? null : 'As senhas não coincidem')
+            )}
           />
+
+          {error ? <Text style={responsiveStyles.errorText}>{error}</Text> : null}
 
           <TouchableOpacity
             style={[responsiveStyles.button, loading && responsiveStyles.buttonDisabled]}

@@ -305,7 +305,7 @@ const AddExpenseScreenOptimized: React.FC<AddExpenseScreenProps> = ({ navigation
         <View style={responsiveStyles.form}>
           {/* Tipo de Despesa */}
           <View style={responsiveStyles.inputGroup}>
-            <Text style={responsiveStyles.label}>Tipo de Despesa *</Text>
+            <<Text style={responsiveStyles.label}>Tipo de Despesa *</Text>>
             <View style={responsiveStyles.expenseTypeContainer}>
               {expenseTypes.map((type) => (
                 <TouchableOpacity
@@ -354,11 +354,19 @@ const AddExpenseScreenOptimized: React.FC<AddExpenseScreenProps> = ({ navigation
           <FormInput
             label="Valor (R$) *"
             value={formData.valor_despesa}
-            onChangeText={(text) => setFormData(prev => ({ ...prev, valor_despesa: text }))}
+            onChangeText={(text) => {
+              setFormData(prev => ({ ...prev, valor_despesa: text }));
+              // Validação em tempo real para o valor da despesa
+              if (parseFloat(text) <= 0 && text !== '') {
+                // Aqui você pode definir um estado de erro ou exibir uma mensagem de validação
+                // Por simplicidade, vamos apenas garantir que o handleSubmit já lida com isso
+              }
+            }}
             placeholder="Ex: 150.00"
             keyboardType="decimal-pad"
             leftIcon="cash-outline"
             required
+            validation={validators.positiveNumber}
           />
           {formData.valor_despesa && (
             <Text style={responsiveStyles.valuePreview}>

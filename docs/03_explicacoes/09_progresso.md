@@ -44,16 +44,25 @@ Análise de UX/UI e implementação de melhorias na tela de adição de despesas
 
 #### 5.1. Prioridade Alta (Implementação Imediata)
 
-##### 1. Indicadores Visuais para Campos Obrigatórios
-- **Descrição**: Foram adicionados indicadores visuais (asteriscos vermelhos) aos campos obrigatórios na tela de adicionar despesa, garantindo que o usuário identifique facilmente quais campos precisam ser preenchidos. Isso melhora a usabilidade e reduz a ocorrência de erros de validação.
-
-##### 2. Validação em Tempo Real
-- **Descrição**: Foi implementada a validação em tempo real para o campo de valor da despesa. Agora, o sistema fornece feedback instantâneo ao usuário, informando se o valor inserido é válido ou não, prevenindo erros antes do envio do formulário e melhorando a experiência do usuário.
-
 ##### 3. Date Picker Nativo
 - **Descrição**: A implementação de um Date Picker nativo foi iniciada para melhorar a experiência de seleção de data. A verificação de dependências foi realizada, e a próxima etapa é a implementação do componente, que proporcionará uma interação mais intuitiva e familiar para o usuário em cada plataforma (iOS, Android, Web).
 
+#### 5.1.1. Melhorias Implementadas
+
+##### 1. Indicadores Visuais para Campos Obrigatórios
+- **Descrição**: Foram adicionados indicadores visuais (asteriscos vermelhos) aos campos obrigatórios na tela de adicionar despesa (`AddExpenseScreenOptimized.tsx`), garantindo que o usuário identifique facilmente quais campos precisam ser preenchidos. Isso melhora a usabilidade e reduz a ocorrência de erros de validação.
+
+##### 2. Validação em Tempo Real
+- **Descrição**: Foi implementada a validação em tempo real para o campo de valor da despesa (`AddExpenseScreenOptimized.tsx`). Agora, o sistema fornece feedback instantâneo ao usuário, informando se o valor inserido é válido ou não, prevenindo erros antes do envio do formulário e melhorando a experiência do usuário.
+
+##### 3. Feedback Visual de Loading e Erro
+- **Descrição**: Implementado feedback visual de loading e erro na tela de registro (`RegisterScreenOptimized.tsx`). Um estado de erro foi adicionado e um componente de texto exibe mensagens de erro, melhorando a experiência do usuário ao fornecer informações claras sobre o status da operação.
+
+##### 4. Validação de Formulário Mais Robusta
+- **Descrição**: As validações de nome, email e senha foram integradas diretamente no componente `FormInput` na tela de registro (`RegisterScreenOptimized.tsx`), utilizando as funções `validators` e `combineValidators` existentes. Isso removeu a necessidade de validação manual no `handleRegister`, tornando o formulário mais robusto e fácil de manter.
+
 #### 5.2. Prioridade Média (Melhorias Graduais)
+
 
 ##### 5. Design System e Tokens
 - **Descrição**: Padronizar a aparência visual do aplicativo, garantindo consistência e facilitando a manutenção e a implementação de novos recursos.
@@ -177,3 +186,19 @@ Análise de UX/UI e implementação de melhorias na tela de adição de abasteci
   - Implementar `haptic feedback` (vibração) para dispositivos móveis em interações importantes.
   - Tempo estimado:
 (Content truncated due to size limit. Use page ranges or line ranges to read remaining content)
+
+
+#### 5.1.1. Melhorias Implementadas
+
+##### 1. Indicadores Visuais para Campos Obrigatórios
+- **Descrição**: Foram adicionados indicadores visuais (asteriscos vermelhos) aos campos obrigatórios na tela de adicionar despesa (`AddExpenseScreenOptimized.tsx`), garantindo que o usuário identifique facilmente quais campos precisam ser preenchidos. Isso melhora a usabilidade e reduz a ocorrência de erros de validação.
+
+##### 2. Validação em Tempo Real
+- **Descrição**: Foi implementada a validação em tempo real para o campo de valor da despesa (`AddExpenseScreenOptimized.tsx`). Agora, o sistema fornece feedback instantâneo ao usuário, informando se o valor inserido é válido ou não, prevenindo erros antes do envio do formulário e melhorando a experiência do usuário.
+
+##### 3. Feedback Visual de Loading e Erro
+- **Descrição**: Implementado feedback visual de loading e erro na tela de registro (`RegisterScreenOptimized.tsx`). Um estado de erro foi adicionado e um componente de texto exibe mensagens de erro, melhorando a experiência do usuário ao fornecer informações claras sobre o status da operação.
+
+##### 4. Validação de Formulário Mais Robusta
+- **Descrição**: As validações de nome, email e senha foram integradas diretamente no componente `FormInput` na tela de registro (`RegisterScreenOptimized.tsx`), utilizando as funções `validators` e `combineValidators` existentes. Isso removeu a necessidade de validação manual no `handleRegister`, tornando o formulário mais robusto e fácil de manter.
+

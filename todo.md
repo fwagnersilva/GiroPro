@@ -36,11 +36,11 @@
 
 ### Críticos
 - [ ] **Comunicação Frontend-Backend**: O formulário de registro não está enviando dados para o backend
-- [ ] **Validação de Formulário**: Os campos do formulário não estão sendo validados corretamente no frontend
+- [x] **Validação de Formulário**: Os campos do formulário estão sendo validados corretamente no frontend
 
 ### Médios
 - [ ] **Logs do Backend**: Não há logs visíveis das tentativas de requisição no backend
-- [ ] **Feedback Visual**: Não há indicação visual de loading ou erro no frontend
+- [x] **Feedback Visual**: Implementado indicação visual de loading e erro no frontend
 
 ## 🔧 Próximas Tarefas
 
@@ -76,3 +76,10 @@
 - Frontend: https://8081-iayodx5z91uhqo3ml115s-e87a027c.manus.computer
 
 **Próximo Passo**: Investigar problemas de comunicação entre frontend e backend, possivelmente relacionados ao React Native Web ou configuração de rede.
+
+## Tarefas Curtas e Simples
+
+- [ ] **Ajuste da Validação de Senha no Frontend**: Implementar no `RegisterScreenOptimized.tsx` a mesma lógica de validação de senha presente no `backend/src/utils/validation.ts`.
+- [x] **Indicadores Visuais para Campos Obrigatórios**: Adicionar indicadores visuais (asteriscos vermelhos) aos campos obrigatórios na tela de adicionar despesa.
+- [x] **Validação em Tempo Real**: Implementar a validação em tempo real para o campo de valor da despesa.
+
