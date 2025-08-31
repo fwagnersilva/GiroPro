@@ -150,3 +150,25 @@ Esta seção lista as lacunas e áreas que necessitam de atenção ou desenvolvi
 *   **Banco de Dados**: Configuração problemática devido a inconsistências de schema.
 *   **Deploy**: Não testado devido aos problemas técnicos e de configuração.
 
+### 2.2.1. Detalhes do DashboardScreenOptimized
+
+O `DashboardScreenOptimized.tsx` representa uma evolução significativa na experiência do usuário, incorporando:
+
+*   **Hierarquia Visual Aprimorada**: O card principal de lucro líquido é destacado, e a reorganização dos cards secundários segue uma lógica de importância e relevância. A tipografia e as cores são consistentes com o sistema de design tokens, utilizando cores semânticas para diferentes métricas.
+*   **Fluxo de Ações Otimizado**: A interação para iniciar/finalizar jornadas é centralizada em um modal dedicado (`JourneyModalImproved.tsx`), que inclui um formulário estruturado com validação em tempo real e sugestões inteligentes de quilometragem.
+*   **Responsividade Avançada**: O layout se adapta a tablets e desktops com um grid responsivo para os cards secundários. Os touch targets foram otimizados (mínimo de 44x44px) e os espaçamentos são consistentes, utilizando o sistema de tokens.
+*   **Microinterações e Animações**: Animações de entrada com efeito staggered, transições suaves entre estados e feedback visual em interações. Estados de hover/press são implementados para web e mobile.
+*   **Sistema de Feedback Melhorado**: Utiliza `Toast notifications` contextuais (`ToastNotificationImproved.tsx`), estados de loading específicos (`EnhancedSkeletonLoader.tsx`), validação visual em formulários e mensagens de erro informativas.
+
+### 2.2.2. Melhorias Técnicas e Padrões no Frontend
+
+As melhorias no frontend não se limitam apenas à interface, mas também abrangem aspectos técnicos e padrões de desenvolvimento:
+
+*   **Performance**: Utilização de `React.memo` e `useCallback` para otimização de renderização, `useMemo` para cálculos complexos e `useNativeDriver` para animações nativas. O lazy loading de componentes pesados também foi implementado para melhorar o tempo de carregamento.
+*   **Acessibilidade**: Conformidade com as diretrizes WCAG 2.1 AA, garantindo contraste adequado, touch targets de tamanho apropriado, feedback tátil (haptic feedback) e labels semânticos para screen readers.
+*   **Responsividade**: Definição de breakpoints para mobile, tablet e desktop, com um layout flexível baseado em grid system. A tipografia é escalável com base no viewport e os espaçamentos são proporcionais, utilizando design tokens.
+*   **UX/UI Design**: Implementação de um sistema de cores semântico e consistente, hierarquia visual clara e intuitiva, microinterações que guiam o usuário e estados vazios/de erro informativos.
+
+
+
+
