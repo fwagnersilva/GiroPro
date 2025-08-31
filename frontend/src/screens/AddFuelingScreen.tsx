@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   View,
   Text,
@@ -12,6 +12,7 @@ import {
   Platform,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import * as Haptics from 'expo-haptics';
 import { Picker } from '@react-native-picker/picker';
 import { fuelingService } from '../services/api';
 import { Vehicle } from '../types';
@@ -35,8 +36,10 @@ const AddFuelingScreen: React.FC<AddFuelingScreenProps> = ({ navigation, route }
     quantidade_litros: '',
     valor_litro: '',
     km_atual: '',
-    nome_posto: '',
+    nome_posto: "",
   });
+
+  const [focusedField, setFocusedField] = useState<string | null>(null);
 
   const [loading, setLoading] = useState(false);
   const [valorTotal, setValorTotal] = useState(0);
@@ -93,17 +96,38 @@ const AddFuelingScreen: React.FC<AddFuelingScreenProps> = ({ navigation, route }
         [
           {
             text: 'OK',
-            onPress: () => navigation.goBack()
+            onPress: () => {
+              handleHapticFeedback();
+              navigation.goBack();
+            }
+          }
+        ]
+      );    } catch (error: any) {
+      console.error(\'Erro ao registrar abastecimento:\', error);
+      Alert.alert(
+        \'Erro\',
+        error.message || \'Não foi possível registrar o abastecimento\',
+        [
+          {
+            text: \'OK\',
+            onPress: () => {
+              handleHapticFeedback();
+            }
           }
         ]
       );
-    } catch (error: any) {
-      console.error('Erro ao registrar abastecimento:', error);
-      Alert.alert('Erro', error.message || 'Não foi possível registrar o abastecimento');
     } finally {
       setLoading(false);
     }
   };
+
+  const handleHapticFeedback = useCallback(async () => {
+    try {
+      await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    } catch (error) {
+      console.warn("Haptics not supported or failed", error);
+    }
+  }, []);
 
   const formatCurrency = (value: number) => {
     return new Intl.NumberFormat('pt-BR', {
@@ -155,11 +179,13 @@ const AddFuelingScreen: React.FC<AddFuelingScreenProps> = ({ navigation, route }
           <View style={styles.inputGroup}>
             <Text style={styles.label}>Data *</Text>
             <TextInput
-              style={styles.input}
+              style={[styles.input, focusedField === 'data_abastecimento' && styles.inputFocused]}
               value={formData.data_abastecimento}
               onChangeText={(text) => setFormData(prev => ({ ...prev, data_abastecimento: text }))}
               placeholder="YYYY-MM-DD"
               keyboardType="numeric"
+              onFocus={() => setFocusedField('data_abastecimento')}
+              onBlur={() => setFocusedField(null)}
             />
           </View>
 
@@ -169,7 +195,10 @@ const AddFuelingScreen: React.FC<AddFuelingScreenProps> = ({ navigation, route }
             <View style={styles.pickerContainer}>
               <Picker
                 selectedValue={formData.tipo_combustivel}
-                onValueChange={(value) => setFormData(prev => ({ ...prev, tipo_combustivel: value }))}
+                onValueChange={(value) => {
+                  setFormData(prev => ({ ...prev, tipo_combustivel: value }));
+                  handleHapticFeedback();
+                }}
                 style={styles.picker}
               >
                 <Picker.Item label="Gasolina" value="Gasolina" />
@@ -185,11 +214,13 @@ const AddFuelingScreen: React.FC<AddFuelingScreenProps> = ({ navigation, route }
           <View style={styles.inputGroup}>
             <Text style={styles.label}>Quantidade (Litros) *</Text>
             <TextInput
-              style={styles.input}
+              style={[styles.input, focusedField === 'quantidade_litros' && styles.inputFocused]}
               value={formData.quantidade_litros}
               onChangeText={(text) => setFormData(prev => ({ ...prev, quantidade_litros: text }))}
               placeholder="Ex: 45.5"
               keyboardType="decimal-pad"
+              onFocus={() => setFocusedField('quantidade_litros')}
+              onBlur={() => setFocusedField(null)}
             />
           </View>
 
@@ -197,11 +228,13 @@ const AddFuelingScreen: React.FC<AddFuelingScreenProps> = ({ navigation, route }
           <View style={styles.inputGroup}>
             <Text style={styles.label}>Valor por Litro (R$) *</Text>
             <TextInput
-              style={styles.input}
+              style={[styles.input, focusedField === 'valor_litro' && styles.inputFocused]}
               value={formData.valor_litro}
               onChangeText={(text) => setFormData(prev => ({ ...prev, valor_litro: text }))}
               placeholder="Ex: 5.49"
               keyboardType="decimal-pad"
+              onFocus={() => setFocusedField('valor_litro')}
+              onBlur={() => setFocusedField(null)}
             />
           </View>
 
@@ -217,11 +250,13 @@ const AddFuelingScreen: React.FC<AddFuelingScreenProps> = ({ navigation, route }
           <View style={styles.inputGroup}>
             <Text style={styles.label}>KM Atual (Opcional)</Text>
             <TextInput
-              style={styles.input}
+              style={[styles.input, focusedField === 'km_atual' && styles.inputFocused]}
               value={formData.km_atual}
               onChangeText={(text) => setFormData(prev => ({ ...prev, km_atual: text }))}
               placeholder="Ex: 125000"
               keyboardType="numeric"
+              onFocus={() => setFocusedField('km_atual')}
+              onBlur={() => setFocusedField(null)}
             />
           </View>
 
@@ -229,10 +264,12 @@ const AddFuelingScreen: React.FC<AddFuelingScreenProps> = ({ navigation, route }
           <View style={styles.inputGroup}>
             <Text style={styles.label}>Nome do Posto (Opcional)</Text>
             <TextInput
-              style={styles.input}
+              style={[styles.input, focusedField === 'nome_posto' && styles.inputFocused]}
               value={formData.nome_posto}
               onChangeText={(text) => setFormData(prev => ({ ...prev, nome_posto: text }))}
               placeholder="Ex: Posto Shell"
+              onFocus={() => setFocusedField('nome_posto')}
+              onBlur={() => setFocusedField(null)}
             />
           </View>
         </View>
@@ -309,6 +346,14 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#000000',
   },
+  inputFocused: {
+    borderColor: '#007AFF',
+    shadowColor: '#007AFF',
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.4,
+    shadowRadius: 5,
+    elevation: 5,
+  },
   pickerContainer: {
     backgroundColor: '#FFFFFF',
     borderWidth: 1,
@@ -364,4 +409,3 @@ const styles = StyleSheet.create({
 });
 
 export default AddFuelingScreen;
-
