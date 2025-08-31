@@ -51,11 +51,13 @@ const RegisterScreenOptimized: React.FC<Props> = ({ navigation }) => {
       return;
     }
 
-    if (senha.length < 8) {
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/;
+    if (senha.length < 8 || !passwordRegex.test(senha)) {
+      const errorMessage = 'A senha deve ter pelo menos 8 caracteres, 1 letra minúscula, 1 maiúscula, 1 número e 1 caractere especial (@$!%*?&).';
       if (isWeb()) {
-        alert('A senha deve ter pelo menos 8 caracteres');
+        alert(errorMessage);
       } else {
-        Alert.alert('Erro', 'A senha deve ter pelo menos 8 caracteres');
+        Alert.alert('Erro', errorMessage);
       }
       return;
     }

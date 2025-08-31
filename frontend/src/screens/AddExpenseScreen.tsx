@@ -37,6 +37,7 @@ const AddExpenseScreen: React.FC<AddExpenseScreenProps> = ({ navigation, route }
   });
 
   const [loading, setLoading] = useState(false);
+  const [valorDespesaError, setValorDespesaError] = useState<string | null>(null);
 
   const expenseTypes = [
     { value: 'Manutencao', label: 'Manutenção', icon: 'build-outline', color: '#FF9500' },
@@ -47,6 +48,11 @@ const AddExpenseScreen: React.FC<AddExpenseScreenProps> = ({ navigation, route }
 
   const handleSubmit = async () => {
     // Validações
+    if (valorDespesaError) {
+      Alert.alert('Erro', valorDespesaError);
+      return;
+    }
+
     if (!formData.valor_despesa || parseFloat(formData.valor_despesa) <= 0) {
       Alert.alert('Erro', 'Informe um valor válido para a despesa');
       return;
@@ -115,7 +121,7 @@ const AddExpenseScreen: React.FC<AddExpenseScreenProps> = ({ navigation, route }
         <View style={styles.form}>
           {/* Tipo de Despesa */}
           <View style={styles.inputGroup}>
-            <Text style={styles.label}>Tipo de Despesa *</Text>
+            <Text style={styles.label}>Tipo de Despesa <Text style={{ color: 'red' }}>*</Text></Text>
             <View style={styles.expenseTypeContainer}>
               {expenseTypes.map((type) => (
                 <TouchableOpacity
@@ -150,7 +156,7 @@ const AddExpenseScreen: React.FC<AddExpenseScreenProps> = ({ navigation, route }
 
           {/* Data da Despesa */}
           <View style={styles.inputGroup}>
-            <Text style={styles.label}>Data *</Text>
+            <Text style={styles.label}>Data <Text style={{ color: 'red' }}>*</Text></Text>
             <TextInput
               style={styles.input}
               value={formData.data_despesa}
@@ -162,11 +168,18 @@ const AddExpenseScreen: React.FC<AddExpenseScreenProps> = ({ navigation, route }
 
           {/* Valor da Despesa */}
           <View style={styles.inputGroup}>
-            <Text style={styles.label}>Valor (R$) *</Text>
+            <Text style={styles.label}>Valor (R$) <Text style={{ color: 'red' }}>*</Text></Text>
             <TextInput
               style={styles.input}
               value={formData.valor_despesa}
-              onChangeText={(text) => setFormData(prev => ({ ...prev, valor_despesa: text }))}
+              onChangeText={(text) => {
+                setFormData(prev => ({ ...prev, valor_despesa: text }));
+                if (parseFloat(text) <= 0 || isNaN(parseFloat(text))) {
+                  setValorDespesaError('Informe um valor válido para a despesa');
+                } else {
+                  setValorDespesaError(null);
+                }
+              }}
               placeholder="Ex: 150.00"
               keyboardType="decimal-pad"
             />
@@ -175,6 +188,7 @@ const AddExpenseScreen: React.FC<AddExpenseScreenProps> = ({ navigation, route }
                 {formatCurrency(formData.valor_despesa)}
               </Text>
             )}
+            {valorDespesaError && <Text style={styles.errorText}>{valorDespesaError}</Text>}
           </View>
 
           {/* Seleção de Veículo (Opcional) */}
@@ -363,6 +377,11 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
     color: '#FFFFFF',
+  },
+  errorText: {
+    color: 'red',
+    fontSize: 12,
+    marginTop: 5,
   },
 });
 

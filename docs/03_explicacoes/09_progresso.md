@@ -45,13 +45,13 @@ Análise de UX/UI e implementação de melhorias na tela de adição de despesas
 #### 5.1. Prioridade Alta (Implementação Imediata)
 
 ##### 1. Indicadores Visuais para Campos Obrigatórios
-- **Descrição**: Destacar campos essenciais para o usuário, garantindo que todos os dados necessários sejam preenchidos antes do envio. Isso reduz a fricção e a probabilidade de erros de validação.
+- **Descrição**: Foram adicionados indicadores visuais (asteriscos vermelhos) aos campos obrigatórios na tela de adicionar despesa, garantindo que o usuário identifique facilmente quais campos precisam ser preenchidos. Isso melhora a usabilidade e reduz a ocorrência de erros de validação.
 
 ##### 2. Validação em Tempo Real
-- **Descrição**: Fornecer feedback instantâneo ao usuário enquanto ele preenche o formulário, prevenindo erros antes que aconteçam e melhorando a confiança do usuário na interface.
+- **Descrição**: Foi implementada a validação em tempo real para o campo de valor da despesa. Agora, o sistema fornece feedback instantâneo ao usuário, informando se o valor inserido é válido ou não, prevenindo erros antes do envio do formulário e melhorando a experiência do usuário.
 
 ##### 3. Date Picker Nativo
-- **Descrição**: Melhorar a experiência de seleção de data, utilizando componentes nativos de cada plataforma para uma interação mais familiar e intuitiva.
+- **Descrição**: A implementação de um Date Picker nativo foi iniciada para melhorar a experiência de seleção de data. A verificação de dependências foi realizada, e a próxima etapa é a implementação do componente, que proporcionará uma interação mais intuitiva e familiar para o usuário em cada plataforma (iOS, Android, Web).
 
 #### 5.2. Prioridade Média (Melhorias Graduais)
 
