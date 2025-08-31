@@ -320,7 +320,127 @@ Análise de UX/UI e implementação de melhorias na tela de adição de abasteci
   - Documentar decisões de UX/UI
   - Tempo estimado: 3-4 horas
 
-### 4. Oportunidades de Melhoria - ChangePasswordScreen
+### 7. Oportunidades de Melhoria - FuelingsScreen
+
+Análise de UX/UI e implementação de melhorias na tela de listagem de abastecimentos, focando em usabilidade, experiência do usuário e interface visual para iOS, Android e Web.
+
+#### 7.1. Prioridade Alta (Impacto Crítico)
+
+##### 1. Implementar Design Tokens
+- [x] Substituir cores hardcoded pelos tokens do designTokens.ts
+- [x] Aplicar sistema de espaçamento consistente
+- [x] Utilizar tipografia do design system
+- [x] Implementar shadows padronizadas
+
+##### 2. Redesign dos Cards de Abastecimento
+- [x] Criar hierarquia visual clara com valor total em destaque
+- [x] Adicionar badges coloridos para tipos de combustível
+- [x] Reorganizar layout com informações primárias e secundárias
+- [x] Implementar densidade adaptativa para diferentes telas
+
+##### 3. Melhorar Acessibilidade
+- [x] Adicionar accessibilityLabels em todos os elementos interativos
+- [x] Implementar accessibilityHints para ações complexas
+- [x] Garantir contraste mínimo WCAG AA (4.5:1)
+- [x] Aumentar touch targets para mínimo 44px
+
+##### 4. Implementar Sistema de Filtros e Busca
+- [x] Adicionar barra de busca no header
+- [x] Criar filtros por tipo de combustível
+- [x] Implementar filtro por período (última semana, mês, etc.)
+- [x] Adicionar filtro por veículo
+
+##### 5. Melhorar Empty State
+- [x] Criar ilustração mais engajadora
+- [x] Adicionar call-to-action primário
+- [x] Incluir dicas de primeiros passos
+- [x] Implementar animação sutil
+
+#### 7.2. Prioridade Média (Impacto Significativo)
+
+##### 6. Implementar Skeleton Loading
+- [x] Criar componente SkeletonCard para loading inicial
+- [x] Implementar shimmer effect
+- [x] Substituir ActivityIndicator por skeleton
+- [x] Adicionar skeleton para pull-to-refresh
+
+##### 7. Adicionar Animações e Microinterações
+- [x] Implementar animação de entrada para cards
+- [x] Adicionar feedback visual para touch
+- [x] Criar transição suave para exclusão
+- [x] Implementar pull-to-refresh customizado
+
+##### 8. Melhorar Ação de Exclusão
+- [ ] Implementar swipe-to-delete
+- [ ] Adicionar confirmação visual inline
+- [ ] Criar animação de exclusão
+- [ ] Implementar undo action
+
+##### 9. Implementar Modo Escuro
+- [ ] Criar variações de cores para dark mode
+- [ ] Implementar detecção automática do sistema
+- [ ] Adicionar toggle manual se necessário
+- [ ] Testar contraste em modo escuro
+
+##### 10. Responsividade para Web
+- [ ] Implementar breakpoints para desktop
+- [ ] Criar layout em grid para telas grandes
+- [ ] Adaptar tipografia para diferentes densidades
+- [ ] Implementar hover states para web
+
+#### 7.3. Prioridade Baixa (Melhorias Incrementais)
+
+##### 11. Adicionar Insights e Contexto
+- [ ] Mostrar estatísticas resumidas no header
+- [ ] Implementar agrupamento por período
+- [ ] Adicionar indicadores de tendência
+- [ ] Criar comparações com período anterior
+
+##### 12. Implementar Ações Rápidas
+- [ ] Adicionar FAB (Floating Action Button) para adicionar
+- [ ] Implementar shortcuts de teclado para web
+- [ ] Criar ações contextuais nos cards
+- [ ] Adicionar quick actions no swipe
+
+##### 13. Melhorar Performance
+- [ ] Implementar virtualização para listas grandes
+- [ ] Otimizar re-renders com React.memo
+- [ ] Implementar cache inteligente
+- [ ] Adicionar lazy loading para imagens
+
+##### 14. Adicionar Haptic Feedback (Mobile)
+- [ ] Implementar feedback tátil para ações importantes
+- [ ] Adicionar vibração sutil para confirmações
+- [ ] Configurar diferentes intensidades por ação
+- [ ] Respeitar configurações do sistema
+
+##### 15. Implementar Notificações e Feedbacks
+- [ ] Criar sistema de toast notifications
+- [ ] Implementar feedback de sucesso/erro
+- [ ] Adicionar progress indicators para ações longas
+- [ ] Criar confirmações visuais inline
+
+#### 7.4. Tarefas de Infraestrutura e Qualidade
+
+##### 16. Refatoração de Código
+- [ ] Extrair lógica de formatação para utils
+- [ ] Criar hooks customizados para estado
+- [ ] Implementar error boundaries
+- [ ] Adicionar testes unitários
+
+##### 17. Otimização de Bundle
+- [ ] Implementar code splitting
+- [ ] Otimizar imports de ícones
+- [ ] Reduzir dependências desnecessárias
+- [ ] Implementar tree shaking
+
+##### 18. Documentação
+- [ ] Documentar componentes com JSDoc
+- [ ] Criar guia de uso dos componentes
+- [ ] Documentar padrões de design
+- [ ] Criar changelog de melhorias
+
+### 8. Oportunidades de Melhoria - ChangePasswordScreen
 
 Análise de UX/UI e implementação de melhorias na tela de alteração de senha, focando em usabilidade, experiência do usuário e interface visual para iOS, Android e Web.
 
