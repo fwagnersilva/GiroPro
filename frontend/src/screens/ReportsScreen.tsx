@@ -113,7 +113,7 @@ const ReportsScreen: React.FC = ({ navigation }: any) => {
       const url = window.URL.createObjectURL(csvBlob);
       const link = document.createElement("a");
       link.href = url;
-      link.setAttribute("download", escapeHtml(filename));
+      link.setAttribute("download", filename.replace(/[^a-zA-Z0-9_.-]/g, ''));
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);

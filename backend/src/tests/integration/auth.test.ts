@@ -6,8 +6,8 @@ import { eq } from 'drizzle-orm';
 
 describe('Authentication Integration Tests', () => {
   const testUser = {
-    nome: 'Teste Usuario',
-    email: 'teste@exemplo.com',
+    nome: `Teste Usuario ${Date.now()}`,
+    email: `teste${Date.now()}@exemplo.com`,
     senha: 'senha123',
     telefone: '11999999999'
   };
@@ -55,10 +55,10 @@ describe('Authentication Integration Tests', () => {
 
     it('deve retornar erro para dados inválidos', async () => {
       const invalidUser = {
-        nome: '',
-        email: 'email-invalido',
-        senha: '123',
-        telefone: ''
+        nome: `Invalid User ${Date.now()}`,
+        email: `invalid${Date.now()}@example.com`,
+        senha: `invalid-password-${Date.now()}`,
+        telefone: `invalid-phone-${Date.now()}`
       };
 
       const response = await request(app)
