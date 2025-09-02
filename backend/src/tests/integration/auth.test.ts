@@ -132,7 +132,7 @@ describe('Authentication Integration Tests', () => {
       const response = await request(app)
         .post('/api/v1/auth/login')
         .send({
-          email: 'naoexiste@exemplo.com',
+          email: `naoexiste${Date.now()}@exemplo.com`,
           senha: 'qualquersenha'
         })
         .expect(401);
@@ -266,7 +266,7 @@ describe('Authentication Integration Tests', () => {
     it('deve detectar tentativas de XSS', async () => {
       const maliciousPayload = {
         nome: '<script>alert("xss")</script>',
-        email: 'test@test.com',
+        email: `test${Date.now()}@test.com`,
         senha: 'password',
         telefone: '11999999999'
       };
