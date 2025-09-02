@@ -89,7 +89,7 @@ Execute o script de setup do SQLite:
 ./setup_sqlite.sh
 ```
 
-**Nota sobre Interatividade**: O script pode solicitar confirmação durante migrações que envolvem alterações estruturais. Siga as instruções no terminal.
+**ATENÇÃO - Interatividade do Script**: Durante a execução do `setup_sqlite.sh` e `npm run db:migrate`, o script pode solicitar confirmação no terminal (ex: `Is historicoPrecoCombustivel table created or renamed from another table?`). **É crucial observar o terminal e responder com `+` (para criar) ou a opção apropriada para continuar a migração.** A falta de resposta pode fazer o script parecer travado.
 
 Comandos de migração disponíveis:
 ```bash
@@ -128,15 +128,17 @@ npm install
 
 #### 3.2. Configuração do Ambiente
 ```bash
-# Copiar arquivo de exemplo (se existir)
-cp .env.example .env
+# Criar arquivo de configuração .env no diretório frontend
+touch .env
 ```
 
-Configure o arquivo `.env`:
+Configure o arquivo `.env` com as seguintes variáveis, garantindo que a URL da API aponte para o backend local (porta 3000):
 ```env
 REACT_APP_API_URL=http://localhost:3000/api/v1
 EXPO_PUBLIC_API_URL=http://localhost:3000/api/v1
 ```
+
+**Importante**: Certifique-se de que o arquivo `.env` seja adicionado ao seu `.gitignore` para evitar que suas credenciais sejam versionadas.
 
 #### 3.3. Execução do Frontend
 ```bash

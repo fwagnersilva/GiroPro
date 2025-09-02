@@ -305,7 +305,9 @@ const AddExpenseScreenOptimized: React.FC<AddExpenseScreenProps> = ({ navigation
         <View style={responsiveStyles.form}>
           {/* Tipo de Despesa */}
           <View style={responsiveStyles.inputGroup}>
-            <<Text style={responsiveStyles.label}>Tipo de Despesa *</Text>>
+            {/* CORREÇÃO APLICADA (31/08/2025): Sintaxe corrigida - removidos caracteres extras << e >> */}
+            {/* Erro original: <<Text style={responsiveStyles.label}>Tipo de Despesa *</Text>> */}
+            <Text style={responsiveStyles.label}>Tipo de Despesa *</Text>
             <View style={responsiveStyles.expenseTypeContainer}>
               {expenseTypes.map((type) => (
                 <TouchableOpacity

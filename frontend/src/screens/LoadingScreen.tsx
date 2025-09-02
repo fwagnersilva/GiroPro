@@ -7,7 +7,9 @@ import {
   ViewStyle,
   TextStyle,
 } from 'react-native';
-import { Colors, Typography, Spacing, Animation } from '../constants/designTokens';
+// CORREÇÃO APLICADA (31/08/2025): Import corrigido de '../constants/designTokens' para '../theme/designTokens'
+// Motivo: O arquivo designTokens está localizado em src/theme/, não em src/constants/
+import { Colors, Typography, Spacing, Animation } from '../theme/designTokens';
 
 export interface ProgressIndicatorProps {
   /** Tipo do indicador de progresso */
