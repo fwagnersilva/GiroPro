@@ -1,0 +1,42 @@
+name: SonarCloud
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches:
+      - main
+
+jobs:
+  build:
+    name: Build and analyze
+    runs-on: ubuntu-latest
+
+    steps:
+      # Baixa o código do repo
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  # Sonar precisa do histórico do git
+
+      # Instala Node (ajuste versão conforme seu projeto)
+      - name: Set up Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      # Instala dependências
+      - name: Install dependencies
+        run: npm install
+
+      # Compila se tiver script build
+      - name: Build
+        run: npm run build --if-present
+
+      # Executa a análise do SonarCloud
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # token padrão do GitHub
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}   # o secret que você criou
