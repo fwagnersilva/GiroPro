@@ -449,3 +449,56 @@ npm run web # Inicia mas não carrega interface
 4. **BAIXA**: Testar fluxo completo após correção do frontend
 
 
+
+
+
+### 7. Oportunidades de Melhoria - Análise de Código e Compatibilidade (02/09/2025)
+
+Análise de código e compatibilidade de tecnologias, focando em resolver problemas críticos de inicialização do frontend e garantir a estabilidade do ambiente de desenvolvimento.
+
+#### 7.1. Complexidade Alta (Crítico para a Estabilidade)
+
+##### 1. Resolução do Problema de Incompatibilidade de Versões (React, Expo, React Native)
+- **Descrição**: O problema da tela branca e do erro 500 no Metro Bundler persiste mesmo após correções iniciais. A análise aprofundada revelou um conflito de dependências, principalmente relacionado à versão do React (19.0.0), que é muito recente para o ecossistema Expo/React Native. É crucial fazer o downgrade do React e ajustar as versões do Expo e React Native para uma combinação estável e compatível.
+- **Ações Realizadas**:
+    - Tentativa de downgrade do React para a versão 18.x.x.
+    - Tentativa de atualização do Expo para a versão recomendada.
+    - Limpeza de cache do npm e reinstalação de dependências.
+- **Status Atual**: ❌ **NÃO RESOLVIDO**. As tentativas de downgrade e reinstalação de dependências resultaram em conflitos de `peer dependency` que impediram a instalação correta dos pacotes. O `package.json` foi revertido para o estado original para evitar um estado quebrado.
+- **Próximas Ações Recomendadas**:
+    - **Pesquisar uma combinação estável e comprovada de versões** para `react`, `react-dom`, `expo` e `react-native`.
+    - **Recriar o `package.json` do frontend** com as versões corretas, em vez de tentar fazer o downgrade/upgrade de pacotes individualmente.
+    - **Utilizar a flag `--legacy-peer-deps`** no `npm install` como último recurso, se os conflitos de dependência persistirem.
+- **Impacto**: Crítico. Impede o funcionamento do frontend e bloqueia todo o desenvolvimento e teste da aplicação.
+
+#### 7.2. Complexidade Média (Melhorias de Qualidade e Manutenibilidade)
+
+##### 2. Correção de Propriedades CSS Incompatíveis com React Native Web
+- **Descrição**: O console do navegador reporta erros sobre propriedades CSS incompatíveis, como o uso de `flex` em shorthand. Isso pode causar problemas de layout e renderização na versão web da aplicação.
+- **Ações Necessárias**:
+    - Auditar os arquivos de estilo (`.tsx`, `.ts`) em busca de propriedades `flex` em shorthand e substituí-las pela sintaxe expandida (`flexGrow`, `flexShrink`, `flexBasis`).
+    - Corrigir o uso de propriedades de sombra (`shadow*`) para `boxShadow` na versão web.
+- **Impacto**: Médio. Melhora a compatibilidade com React Native Web e a qualidade visual da aplicação.
+
+##### 3. Implementação de um Error Boundary
+- **Descrição**: Para evitar que erros em um componente quebrem toda a aplicação (resultando em uma tela branca), é recomendado implementar um componente de `Error Boundary` que capture erros de renderização e exiba uma UI de fallback.
+- **Ações Necessárias**:
+    - Criar um componente `ErrorBoundary.tsx`.
+    - Envolver o `AppNavigator` ou o `App` principal com o `ErrorBoundary`.
+- **Impacto**: Médio. Melhora a resiliência e a experiência do usuário em caso de erros inesperados.
+
+#### 7.3. Complexidade Baixa (Boas Práticas e Organização)
+
+##### 4. Atualização de Plugins Babel Depreciados
+- **Descrição**: O log do `npm install` alerta sobre o uso do plugin `@babel/plugin-proposal-explicit-resource-management`, que está depreciado.
+- **Ações Necessárias**:
+    - Substituir o plugin depreciado por `@babel/plugin-transform-explicit-resource-management` no `babel.config.js`.
+- **Impacto**: Baixo. Garante que o projeto esteja utilizando as ferramentas mais recentes e evita warnings no processo de build.
+
+##### 5. Criação de um Arquivo `.env.example`
+- **Descrição**: Para facilitar a configuração do ambiente para novos desenvolvedores, é uma boa prática incluir um arquivo `.env.example` que documente as variáveis de ambiente necessárias.
+- **Ações Necessárias**:
+    - Criar um arquivo `.env.example` no diretório `frontend` com as variáveis `REACT_APP_API_URL` e `EXPO_PUBLIC_API_URL`.
+- **Impacto**: Baixo. Melhora a documentação e a experiência de onboarding.
+
+
