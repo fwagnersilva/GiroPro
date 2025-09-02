@@ -13,7 +13,7 @@ import {
 import { LineChart, BarChart } from 'react-native-chart-kit';
 import { Ionicons } from '@expo/vector-icons';
 import { Picker } from '@react-native-picker/picker';
-import { reportService, vehicleService } from '../services/api';
+import { escapeHtml } from '../utils/security';
 import { Vehicle } from '../types';
 import LoadingSpinner from './LoadingSpinner';
 
@@ -125,7 +125,7 @@ const WeeklyMonthlyReports: React.FC<WeeklyMonthlyReportsProps> = ({ navigation 
         const url = window.URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = filename;
+        a.download = escapeHtml(filename);
         document.body.appendChild(a);
         a.click();
         window.URL.revokeObjectURL(url);

@@ -16,7 +16,7 @@ import { Picker } from '@react-native-picker/picker';
 import { reportService, vehicleService } from '../services/api';
 import { Vehicle } from '../types';
 import LoadingSpinner from '../components/LoadingSpinner';
-import WeeklyMonthlyReports from '../components/WeeklyMonthlyReports';
+import { escapeHtml } from '../utils/security';
 
 type ReportType = 'journey-earnings' | 'expense-analysis' | 'fuel-consumption' | 'weekly-monthly';
 type Period = 'hoje' | 'semana' | 'mes' | 'ano';
@@ -114,7 +114,7 @@ const ReportsScreen: React.FC = ({ navigation }: any) => {
         const url = window.URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = filename;
+        a.download = escapeHtml(filename);
         document.body.appendChild(a);
         a.click();
         window.URL.revokeObjectURL(url);

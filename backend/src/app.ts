@@ -10,12 +10,16 @@ import { expenseRoutes } from './routes/expenses';
 import { errorHandler } from './middlewares/errorHandler';
 import { requestLogger } from './middlewares/requestLogger';
 
+import helmet from 'helmet';
+
 dotenv.config({ path: __dirname + '/../.env' });
 
 const app = express();
 const PORT = parseInt(process.env.PORT || '3000');
 
 // Middlewares
+app.use(helmet()); // Use Helmet para segurança
+app.disable('x-powered-by'); // Desabilita o cabeçalho X-Powered-By
 app.use(cors({
   origin: '*', // Permite qualquer origem para desenvolvimento
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
