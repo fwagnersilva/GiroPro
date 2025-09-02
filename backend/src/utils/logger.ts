@@ -5,7 +5,7 @@ export enum LogLevel {
   ERROR = 0,
   WARN = 1,
   INFO = 2,
-  DEBUG = 3
+  DEBUG = 3,
 }
 
 export interface LogEntry {
@@ -17,7 +17,7 @@ export interface LogEntry {
   requestId?: string;
 }
 
-class Logger {
+export class Logger {
   private logLevel: LogLevel;
   private logDir: string;
 
@@ -28,13 +28,18 @@ class Logger {
   }
 
   private getLogLevel(): LogLevel {
-    const level = process.env.LOG_LEVEL?.toUpperCase() || 'INFO';
-    switch (level) {
-      case 'ERROR': return LogLevel.ERROR;
-      case 'WARN': return LogLevel.WARN;
-      case 'INFO': return LogLevel.INFO;
-      case 'DEBUG': return LogLevel.DEBUG;
-      default: return LogLevel.INFO;
+    const level = process.env.LOG_LEVEL || 'INFO';
+    switch (level.toUpperCase()) {
+      case 'ERROR':
+        return LogLevel.ERROR;
+      case 'WARN':
+        return LogLevel.WARN;
+      case 'INFO':
+        return LogLevel.INFO;
+      case 'DEBUG':
+        return LogLevel.DEBUG;
+      default:
+        return LogLevel.INFO;
     }
   }
 
@@ -44,165 +49,65 @@ class Logger {
     }
   }
 
-  private shouldLog(level: LogLevel): boolean {
-    return level <= this.logLevel;
-  }
+  private writeLog(level: LogLevel, message: string, meta?: any, userId?: string, requestId?: string): void {
+    if (level > this.logLevel) {
+      return; // Do not log if the level is higher than the configured log level
+    }
 
-  private formatLogEntry(level: string, message: string, meta?: any, userId?: string, requestId?: string): LogEntry {
-    return {
-      timestamp: new Date().toISOString(),
-      level,
+    const timestamp = new Date().toISOString();
+    const levelName = LogLevel[level];
+
+    const logEntry: LogEntry = {
+      timestamp,
+      level: levelName,
       message,
       meta,
       userId,
-      requestId
+      requestId,
     };
-  }
 
-  private writeToFile(logEntry: LogEntry): void {
-    const date = new Date().toISOString().split('T')[0];
-    const filename = `${date}.log`;
-    const filepath = path.join(this.logDir, filename);
-    
+    const logFileName = path.join(this.logDir, `${new Date().toISOString().slice(0, 10)}.log`);
     const logLine = JSON.stringify(logEntry) + '\n';
-    
-    try {
-      fs.appendFileSync(filepath, logLine);
-    } catch (error) {
-      console.error('Failed to write to log file:', error);
-    }
-  }
 
-  private log(level: LogLevel, levelName: string, message: string, meta?: any, userId?: string, requestId?: string): void {
-    if (!this.shouldLog(level)) {
-      return;
-    }
+    fs.appendFile(logFileName, logLine, (err) => {
+      if (err) {
+        console.error("Failed to write log to file:", err); // Log internal error
+      }
+    });
 
-    const logEntry = this.formatLogEntry(levelName, message, meta, userId, requestId);
-    
-    // Console output
-    const consoleMessage = `[${logEntry.timestamp}] ${levelName}: ${message}`;
-    
+    // Use console for immediate feedback, passing message as a separate argument
     switch (level) {
       case LogLevel.ERROR:
-        console.error(consoleMessage, meta || '');
+        console.error(`[${timestamp}] ${levelName}: %s`, message, meta || "");
         break;
       case LogLevel.WARN:
-        console.warn(consoleMessage, meta || '');
+        console.warn(`[${timestamp}] ${levelName}: %s`, message, meta || "");
         break;
       case LogLevel.INFO:
-        console.info(consoleMessage, meta || '');
+        console.info(`[${timestamp}] ${levelName}: %s`, message, meta || "");
         break;
       case LogLevel.DEBUG:
-        console.debug(consoleMessage, meta || '');
+        console.debug(`[${timestamp}] ${levelName}: %s`, message, meta || "");
+        break;
+      default:
+        console.log(`[${timestamp}] ${levelName}: %s`, message, meta || "");
         break;
     }
-
-    // File output
-    this.writeToFile(logEntry);
   }
 
   error(message: string, meta?: any, userId?: string, requestId?: string): void {
-    this.log(LogLevel.ERROR, 'ERROR', message, meta, userId, requestId);
+    this.writeLog(LogLevel.ERROR, message, meta, userId, requestId);
   }
 
   warn(message: string, meta?: any, userId?: string, requestId?: string): void {
-    this.log(LogLevel.WARN, 'WARN', message, meta, userId, requestId);
+    this.writeLog(LogLevel.WARN, message, meta, userId, requestId);
   }
 
   info(message: string, meta?: any, userId?: string, requestId?: string): void {
-    this.log(LogLevel.INFO, 'INFO', message, meta, userId, requestId);
+    this.writeLog(LogLevel.INFO, message, meta, userId, requestId);
   }
 
   debug(message: string, meta?: any, userId?: string, requestId?: string): void {
-    this.log(LogLevel.DEBUG, 'DEBUG', message, meta, userId, requestId);
-  }
-
-  // Métodos específicos para diferentes tipos de eventos
-  apiRequest(method: string, url: string, userId?: string, requestId?: string): void {
-    this.info(`API Request: ${method} ${url}`, { method, url }, userId, requestId);
-  }
-
-  apiResponse(method: string, url: string, statusCode: number, duration: number, userId?: string, requestId?: string): void {
-    this.info(`API Response: ${method} ${url} - ${statusCode} (${duration}ms)`, {
-      method,
-      url,
-      statusCode,
-      duration
-    }, userId, requestId);
-  }
-
-  authEvent(event: string, userId?: string, email?: string, success: boolean = true): void {
-    const level = success ? LogLevel.INFO : LogLevel.WARN;
-    const levelName = success ? 'INFO' : 'WARN';
-    
-    this.log(level, levelName, `Auth Event: ${event}`, {
-      event,
-      userId,
-      email,
-      success
-    }, userId);
-  }
-
-  databaseQuery(query: string, duration: number, userId?: string, requestId?: string): void {
-    this.debug(`Database Query: ${query} (${duration}ms)`, {
-      query,
-      duration
-    }, userId, requestId);
-  }
-
-  businessLogic(action: string, details: any, userId?: string, requestId?: string): void {
-    this.info(`Business Logic: ${action}`, {
-      action,
-      details
-    }, userId, requestId);
-  }
-
-  securityEvent(event: string, details: any, userId?: string, ip?: string): void {
-    this.warn(`Security Event: ${event}`, {
-      event,
-      details,
-      ip
-    }, userId);
-  }
-
-  performanceMetric(metric: string, value: number, unit: string, userId?: string, requestId?: string): void {
-    this.info(`Performance Metric: ${metric} = ${value}${unit}`, {
-      metric,
-      value,
-      unit
-    }, userId, requestId);
+    this.writeLog(LogLevel.DEBUG, message, meta, userId, requestId);
   }
 }
-
-// Singleton instance
-export const logger = new Logger();
-
-// Middleware para adicionar requestId e logging automático
-import { Request, Response, NextFunction } from 'express';
-import { v4 as uuidv4 } from 'uuid';
-
-export interface LoggedRequest extends Request {
-  requestId?: string;
-  startTime?: number;
-}
-
-export const requestLogger = (req: LoggedRequest, res: Response, next: NextFunction): void => {
-  req.requestId = uuidv4();
-  req.startTime = Date.now();
-  
-  const userId = (req as any).userId;
-  
-  logger.apiRequest(req.method, req.url, userId, req.requestId);
-  
-  // Override res.json to log response
-  const originalJson = res.json;
-  res.json = function(body: any) {
-    const duration = Date.now() - (req.startTime || 0);
-    logger.apiResponse(req.method, req.url, res.statusCode, duration, userId, req.requestId);
-    return originalJson.call(this, body);
-  };
-  
-  next();
-};
-
