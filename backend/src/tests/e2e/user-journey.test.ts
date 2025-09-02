@@ -7,8 +7,8 @@ import { eq } from 'drizzle-orm';
 describe('User Journey E2E Tests', () => {
   const testUser = {
     nome: 'João Motorista',
-    email: process.env.TEST_USER_EMAIL || 'joao.motorista@exemplo.com',
-    senha: process.env.TEST_USER_PASSWORD || 'minhasenha123',
+    email: process.env.TEST_USER_EMAIL,
+    senha: process.env.TEST_USER_PASSWORD,
     telefone: '11987654321'
   };
 
@@ -432,4 +432,3 @@ describe('User Journey E2E Tests', () => {
     });
   });
 });
-
