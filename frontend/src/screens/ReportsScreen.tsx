@@ -112,8 +112,7 @@ const ReportsScreen: React.FC = ({ navigation }: any) => {
       const csvBlob = new Blob([blobResponse], { type: 'text/csv' });
       const url = window.URL.createObjectURL(csvBlob);
       const link = document.createElement("a");
-      link.href = url;
-      link.setAttribute("download", filename.replace(/[^a-zA-Z0-9_.-]/g, ''));
+      link.href = url;      link.setAttribute("download", encodeURIComponent(filename.replace(/[^a-zA-Z0-9_.-]/g, ".")));
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
