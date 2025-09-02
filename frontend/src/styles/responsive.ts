@@ -41,7 +41,9 @@ export const grid = {
   },
   
   col: (span: number = 12) => ({
-    flex: isWeb() ? `0 0 ${(span / 12) * 100}%` as const : 1,
+    flexGrow: isWeb() ? 0 : 1,
+    flexShrink: isWeb() ? 0 : 1,
+    flexBasis: isWeb() ? `${(span / 12) * 100}%` : undefined,
     paddingHorizontal: getResponsiveSpacing(10),
     maxWidth: isWeb() ? `${(span / 12) * 100}%` : '100%',
   }),
