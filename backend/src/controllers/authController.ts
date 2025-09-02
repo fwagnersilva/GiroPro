@@ -12,23 +12,18 @@ export class AuthController {
       const { token, user, refreshToken } = await AuthService.register({ email, senha, nome });
       res.status(201).send({ success: true, message: 'Usuário registrado com sucesso', accessToken: token, user, refreshToken });
     } catch (error: any) {
-   if (error instanceof ValidationError) {
-     // Logar o erro completo para depuração interna (opcional, mas recomendado)
-     console.error("Validation Error:", error);
-     // Enviar uma mensagem de erro genérica e segura para o cliente
-     res.status(400).send({ success: false, message: "Dados de entrada inválidos." });
-   } else {
-     // Lidar com outros tipos de erros de forma segura
-     console.error("Server Error:", error);
-     res.status(500).send({ success: false, message: "Ocorreu um erro interno no servidor." });
-   }
-      } else if (error.message === 'Email já está em uso') {
-        res.status(409).send({ success: false, error: error.message });
+      if (error instanceof ValidationError) {
+        console.error("Validation Error:", error);
+        res.status(400).send({ success: false, message: "Dados de entrada inválidos." });
+      } else if (error instanceof ConflictError) {
+        console.error("Conflict Error:", error);
+        res.status(409).send({ success: false, message: "Email já está em uso." });
       } else if (error instanceof z.ZodError) {
-        res.status(400).send({ success: false, error: 'Erro de validação', details: error.errors });
+        console.error("Zod Validation Error:", error);
+        res.status(400).send({ success: false, message: "Erro de validação dos dados." });
       } else {
         console.error('Erro no registro:', error);
-        res.status(500).send({ success: false, error: 'Erro interno do servidor' });
+        res.status(500).send({ success: false, message: 'Ocorreu um erro interno no servidor.' });
       }
     }
   }
@@ -40,14 +35,17 @@ export class AuthController {
       res.send({ success: true, message: 'Login bem-sucedido', accessToken, refreshToken });
     } catch (error: any) {
       if (error instanceof ValidationError) {
-        res.status(400).send({ success: false, error: error.message, details: error.details });
+        console.error("Validation Error:", error);
+        res.status(400).send({ success: false, message: "Dados de entrada inválidos." });
       } else if (error instanceof UnauthorizedError) {
-        res.status(401).send({ success: false, error: error.message });
+        console.error("Unauthorized Error:", error);
+        res.status(401).send({ success: false, message: "Credenciais inválidas." });
       } else if (error instanceof z.ZodError) {
-        res.status(400).send({ success: false, error: 'Erro de validação', details: error.errors });
+        console.error("Zod Validation Error:", error);
+        res.status(400).send({ success: false, message: "Erro de validação dos dados." });
       } else {
         console.error('Erro no login:', error);
-        res.status(500).send({ success: false, error: 'Erro interno do servidor' });
+        res.status(500).send({ success: false, message: 'Ocorreu um erro interno no servidor.' });
       }
     }
   }
@@ -59,14 +57,17 @@ export class AuthController {
       res.send({ success: true, message: 'Se o email estiver registrado, um link de redefinição de senha foi enviado.' });
     } catch (error: any) {
       if (error instanceof ValidationError) {
-        res.status(400).send({ success: false, error: error.message, details: error.details });
+        console.error("Validation Error:", error);
+        res.status(400).send({ success: false, message: "Dados de entrada inválidos." });
       } else if (error instanceof NotFoundError) {
-        res.status(404).send({ success: false, error: error.message });
+        console.error("Not Found Error:", error);
+        res.status(404).send({ success: false, message: "Email não encontrado." });
       } else if (error instanceof z.ZodError) {
-        res.status(400).send({ success: false, error: 'Erro de validação', details: error.errors });
+        console.error("Zod Validation Error:", error);
+        res.status(400).send({ success: false, message: "Erro de validação dos dados." });
       } else {
         console.error('Erro ao solicitar redefinição de senha:', error);
-        res.status(500).send({ success: false, error: 'Erro interno do servidor' });
+        res.status(500).send({ success: false, message: 'Ocorreu um erro interno no servidor.' });
       }
     }
   }
@@ -78,14 +79,17 @@ export class AuthController {
       res.send({ success: true, message: 'Senha redefinida com sucesso.' });
     } catch (error: any) {
       if (error instanceof ValidationError) {
-        res.status(400).send({ success: false, error: error.message, details: error.details });
+        console.error("Validation Error:", error);
+        res.status(400).send({ success: false, message: "Dados de entrada inválidos." });
       } else if (error instanceof UnauthorizedError || error instanceof NotFoundError) {
-        res.status(401).send({ success: false, error: error.message });
+        console.error("Authentication/Not Found Error:", error);
+        res.status(401).send({ success: false, message: "Token inválido ou expirado." });
       } else if (error instanceof z.ZodError) {
-        res.status(400).send({ success: false, error: 'Erro de validação', details: error.errors });
+        console.error("Zod Validation Error:", error);
+        res.status(400).send({ success: false, message: "Erro de validação dos dados." });
       } else {
         console.error('Erro ao redefinir senha:', error);
-        res.status(500).send({ success: false, error: 'Erro interno do servidor' });
+        res.status(500).send({ success: false, message: 'Ocorreu um erro interno no servidor.' });
       }
     }
   }
@@ -97,12 +101,14 @@ export class AuthController {
       res.send({ success: true, message: 'Token atualizado com sucesso', accessToken, refreshToken: newRefreshToken });
     } catch (error: any) {
       if (error instanceof UnauthorizedError) {
-        res.status(401).send({ success: false, error: error.message });
+        console.error("Unauthorized Error:", error);
+        res.status(401).send({ success: false, message: "Token de atualização inválido." });
       } else if (error instanceof z.ZodError) {
-        res.status(400).send({ success: false, error: 'Erro de validação', details: error.errors });
+        console.error("Zod Validation Error:", error);
+        res.status(400).send({ success: false, message: "Erro de validação dos dados." });
       } else {
         console.error('Erro ao atualizar token:', error);
-        res.status(500).send({ success: false, error: 'Erro interno do servidor' });
+        res.status(500).send({ success: false, message: 'Ocorreu um erro interno no servidor.' });
       }
     }
   }
@@ -118,14 +124,17 @@ export class AuthController {
       res.send({ success: true, message: 'Senha alterada com sucesso.' });
     } catch (error: any) {
       if (error instanceof ValidationError) {
-        res.status(400).send({ success: false, error: error.message, details: error.details });
+        console.error("Validation Error:", error);
+        res.status(400).send({ success: false, message: "Dados de entrada inválidos." });
       } else if (error instanceof UnauthorizedError) {
-        res.status(401).send({ success: false, error: error.message });
+        console.error("Unauthorized Error:", error);
+        res.status(401).send({ success: false, message: "Credenciais inválidas ou usuário não autorizado." });
       } else if (error instanceof z.ZodError) {
-        res.status(400).send({ success: false, error: 'Erro de validação', details: error.errors });
+        console.error("Zod Validation Error:", error);
+        res.status(400).send({ success: false, message: "Erro de validação dos dados." });
       } else {
         console.error('Erro ao alterar senha:', error);
-        res.status(500).send({ success: false, error: 'Erro interno do servidor' });
+        res.status(500).send({ success: false, message: 'Ocorreu um erro interno no servidor.' });
       }
     }
   }
@@ -143,15 +152,15 @@ export class AuthController {
       res.send({ success: true, user });
     } catch (error: any) {
       if (error instanceof UnauthorizedError) {
-        res.status(401).send({ success: false, error: error.message });
+        console.error("Unauthorized Error:", error);
+        res.status(401).send({ success: false, message: "Usuário não autenticado." });
       } else if (error instanceof NotFoundError) {
-        res.status(404).send({ success: false, error: error.message });
+        console.error("Not Found Error:", error);
+        res.status(404).send({ success: false, message: "Usuário não encontrado." });
       } else {
         console.error('Erro ao buscar dados do usuário:', error);
-        res.status(500).send({ success: false, error: 'Erro interno do servidor' });
+        res.status(500).send({ success: false, message: 'Ocorreu um erro interno no servidor.' });
       }
     }
   }
 }
-
-
