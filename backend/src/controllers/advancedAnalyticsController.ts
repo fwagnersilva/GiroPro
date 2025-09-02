@@ -180,8 +180,105 @@ export class AdvancedAnalyticsController {
     return !!vehicle;
   }
 
+  private static async fetchVehicleData(userId: string, vehicleId: string, startDate: Date, endDate: Date) {
+    return Promise.all([
+      db
+        .select({
+          dataAbastecimento: abastecimentos.dataAbastecimento,
+          quantidadeLitros: abastecimentos.quantidadeLitros,
+          valorTotal: abastecimentos.valorTotal,
+          kmAtual: abastecimentos.kmAtual,
+        })
+        .from(abastecimentos)
+        .where(
+          and(
+            eq(abastecimentos.idVeiculo, vehicleId),
+            eq(abastecimentos.idUsuario, userId),
+            gte(abastecimentos.dataAbastecimento, startDate),
+            lte(abastecimentos.dataAbastecimento, endDate),
+            isNull(abastecimentos.deletedAt)
+          )
+        )
+        .orderBy(asc(abastecimentos.dataAbastecimento)),
+
+      db
+        .select({
+          kmTotal: jornadas.kmTotal,
+          dataInicio: jornadas.dataInicio,
+          dataFim: jornadas.dataFim,
+          ganhoBruto: jornadas.ganhoBruto,
+        })
+        .from(jornadas)
+        .where(
+          and(
+            eq(jornadas.idVeiculo, vehicleId),
+            eq(jornadas.idUsuario, userId),
+            gte(jornadas.dataInicio, startDate),
+            lte(jornadas.dataInicio, endDate),
+            isNull(jornadas.deletedAt)
+          )
+        ),
+    ]);
+  }
+
+  private static calculateVehicleMetrics(fuelings: any[], journeys: any[]): VehicleMetrics {
+    const totalLitros = fuelings.reduce((sum, f) => sum + (Number(f.quantidadeLitros) || 0), 0);
+    const totalGastoCombustivel = fuelings.reduce((sum, f) => sum + (Number(f.valorTotal) || 0), 0);
+    const totalKm = journeys.reduce((sum, j) => sum + (Number(j.kmTotal) || 0), 0);
+    const totalFaturamento = journeys.reduce((sum, j) => sum + (Number(j.ganhoBruto) || 0), 0);
+
+    const consumoMedio = totalKm > 0 && totalLitros > 0 ? totalKm / totalLitros : 0;
+    const custoMedioPorKm = totalKm > 0 ? totalGastoCombustivel / totalKm : 0;
+    const custoMedioPorLitro = totalLitros > 0 ? totalGastoCombustivel / totalLitros : 0;
+
+    return {
+      totalLitros: Math.round(totalLitros * 100) / 100,
+      totalKm: Math.round(totalKm * 100) / 100,
+      totalGastoCombustivel: Math.round(totalGastoCombustivel),
+      consumoMedio: Math.round(consumoMedio * 100) / 100,
+      custoMedioPorKm: Math.round(custoMedioPorKm),
+      custoMedioPorLitro: Math.round(custoMedioPorLitro),
+      numeroAbastecimentos: fuelings.length,
+      numeroJornadas: journeys.length,
+    };
+  }
+
+  private static calculateEfficiencyHistory(fuelings: any[], consumoMedio: number) {
+    return fuelings.map((fueling, index) => {
+      if (index === 0 || !fueling.kmAtual) {
+        return { ...fueling, consumoPeriodo: null, eficiencia: null, kmPercorridos: null };
+      }
+
+      const prevFueling = fuelings[index - 1];
+      if (!prevFueling.kmAtual) {
+        return { ...fueling, consumoPeriodo: null, eficiencia: null, kmPercorridos: null };
+      }
+
+      const kmPercorridos = Number(fueling.kmAtual) - Number(prevFueling.kmAtual);
+      const litrosConsumidos = Number(fueling.quantidadeLitros) || 0;
+      const consumoPeriodo = litrosConsumidos > 0 && kmPercorridos > 0 ? kmPercorridos / litrosConsumidos : 0;
+
+      let eficiencia = 'Sem dados';
+      if (consumoPeriodo > 0 && consumoMedio > 0) {
+        const percentualEficiencia = (consumoPeriodo / consumoMedio) * 100;
+        if (percentualEficiencia >= 110) eficiencia = 'Excelente';
+        else if (percentualEficiencia >= 100) eficiencia = 'Boa';
+        else if (percentualEficiencia >= 90) eficiencia = 'Regular';
+        else eficiencia = 'Baixa';
+      }
+
+      return {
+        ...fueling,
+        consumoPeriodo: Math.round(consumoPeriodo * 100) / 100,
+        kmPercorridos: kmPercorridos,
+        eficiencia,
+        percentualEficiencia: consumoPeriodo > 0 && consumoMedio > 0 ? Math.round((consumoPeriodo / consumoMedio) * 100) : null,
+      };
+    });
+  }
+
   /**
-   * Análise de consumo por veículo - MELHORADA
+   * Análise de consumo por veículo
    */
   static async getConsumptionAnalysis(req: AuthenticatedRequest, res: Response) {
     try {
@@ -195,35 +292,14 @@ export class AdvancedAnalyticsController {
       }
 
       const { dataInicio, dataFim, idVeiculo, periodo, timezone } = validation.data;
-      
-      // Validar acesso ao veículo se especificado
+
       if (idVeiculo && !(await this.validateVehicleAccess(req.user.id, idVeiculo))) {
         throw new NotFoundError('Veículo não encontrado ou sem acesso');
       }
 
       const { startDate, endDate } = this.calculatePeriod(periodo, dataInicio, dataFim, timezone);
 
-      // Buscar veículos do usuário com query otimizada
-      const vehicleConditions = [
-        eq(veiculos.idUsuario, req.user.id),
-        isNull(veiculos.deletedAt)
-      ];
-
-      if (idVeiculo) {
-        vehicleConditions.push(eq(veiculos.id, idVeiculo));
-      }
-
-      const userVehicles = await db
-        .select({
-          id: veiculos.id,
-          marca: veiculos.marca,
-          modelo: veiculos.modelo,
-          ano: veiculos.ano,
-          placa: veiculos.placa,
-          tipoCombustivel: veiculos.tipoCombustivel,
-        })
-        .from(veiculos)
-        .where(and(...vehicleConditions));
+      const userVehicles = await db.select().from(veiculos).where(and(eq(veiculos.idUsuario, req.user.id), isNull(veiculos.deletedAt)));
 
       if (userVehicles.length === 0) {
         throw new NotFoundError('Nenhum veículo encontrado');
@@ -232,136 +308,26 @@ export class AdvancedAnalyticsController {
       const consumptionAnalysis = [];
 
       for (const vehicle of userVehicles) {
-        // Usar transação para garantir consistência dos dados
-        const [fuelings, journeys] = await Promise.all([
-          // Buscar abastecimentos otimizado
-          db
-            .select({
-              dataAbastecimento: abastecimentos.dataAbastecimento,
-              quantidadeLitros: abastecimentos.quantidadeLitros,
-              valorTotal: abastecimentos.valorTotal,
-              kmAtual: abastecimentos.kmAtual,
-            })
-            .from(abastecimentos)
-            .where(
-              and(
-                eq(abastecimentos.idVeiculo, vehicle.id),
-                eq(abastecimentos.idUsuario, req.user.id),
-                gte(abastecimentos.dataAbastecimento, startDate),
-                lte(abastecimentos.dataAbastecimento, endDate),
-                isNull(abastecimentos.deletedAt)
-              )
-            )
-            .orderBy(asc(abastecimentos.dataAbastecimento)),
-
-          // Buscar jornadas otimizado
-          db
-            .select({
-              kmTotal: jornadas.kmTotal,
-              dataInicio: jornadas.dataInicio,
-              dataFim: jornadas.dataFim,
-              ganhoBruto: jornadas.ganhoBruto,
-            })
-            .from(jornadas)
-            .where(
-              and(
-                eq(jornadas.idVeiculo, vehicle.id),
-                eq(jornadas.idUsuario, req.user.id),
-                gte(jornadas.dataInicio, startDate),
-                lte(jornadas.dataInicio, endDate),
-                isNull(jornadas.deletedAt)
-              )
-            )
-        ]);
-
-        // Calcular métricas com validação
-        const totalLitros = fuelings.reduce((sum, f) => sum + (Number(f.quantidadeLitros) || 0), 0);
-        const totalGastoCombustivel = fuelings.reduce((sum, f) => sum + (Number(f.valorTotal) || 0), 0);
-        const totalKm = journeys.reduce((sum, j) => sum + (Number(j.kmTotal) || 0), 0);
-        const totalFaturamento = journeys.reduce((sum, j) => sum + (Number(j.ganhoBruto) || 0), 0);
-        
-        const consumoMedio = totalKm > 0 && totalLitros > 0 ? totalKm / totalLitros : 0;
-        const custoMedioPorKm = totalKm > 0 ? totalGastoCombustivel / totalKm : 0;
-        const custoMedioPorLitro = totalLitros > 0 ? totalGastoCombustivel / totalLitros : 0;
-
-        // Análise de eficiência temporal melhorada
-        const fuelingsWithEfficiency = fuelings.map((fueling, index) => {
-          if (index === 0 || !fueling.kmAtual) {
-            return { 
-              ...fueling, 
-              consumoPeriodo: null, 
-              eficiencia: null,
-              kmPercorridos: null
-            };
-          }
-          
-          const prevFueling = fuelings[index - 1];
-          if (!prevFueling.kmAtual) {
-            return { 
-              ...fueling, 
-              consumoPeriodo: null, 
-              eficiencia: null,
-              kmPercorridos: null
-            };
-          }
-
-          const kmPercorridos = Number(fueling.kmAtual) - Number(prevFueling.kmAtual);
-          const litrosConsumidos = Number(fueling.quantidadeLitros) || 0;
-          const consumoPeriodo = litrosConsumidos > 0 && kmPercorridos > 0 ? kmPercorridos / litrosConsumidos : 0;
-          
-          // Classificação mais detalhada
-          let eficiencia = 'Sem dados';
-          if (consumoPeriodo > 0 && consumoMedio > 0) {
-            const percentualEficiencia = (consumoPeriodo / consumoMedio) * 100;
-            if (percentualEficiencia >= 110) eficiencia = 'Excelente';
-            else if (percentualEficiencia >= 100) eficiencia = 'Boa';
-            else if (percentualEficiencia >= 90) eficiencia = 'Regular';
-            else eficiencia = 'Baixa';
-          }
-          
-          return {
-            ...fueling,
-            consumoPeriodo: Math.round(consumoPeriodo * 100) / 100,
-            kmPercorridos: kmPercorridos,
-            eficiencia,
-            percentualEficiencia: consumoPeriodo > 0 && consumoMedio > 0 ? 
-              Math.round((consumoPeriodo / consumoMedio) * 100) : null
-          };
-        });
-
-        // Análise de tendência de consumo
-        const consumoTrend = this.calculateConsumptionTrend(fuelingsWithEfficiency);
+        const [fuelings, journeys] = await this.fetchVehicleData(req.user.id, vehicle.id, startDate, endDate);
+        const metricasPeriodo = this.calculateVehicleMetrics(fuelings, journeys);
+        const historicoEficiencia = this.calculateEfficiencyHistory(fuelings, metricasPeriodo.consumoMedio);
+        const tendenciaConsumo = this.calculateConsumptionTrend(historicoEficiencia);
 
         consumptionAnalysis.push({
           veiculo: vehicle,
-          metricasPeriodo: {
-            totalLitros: Math.round(totalLitros * 100) / 100,
-            totalKm: Math.round(totalKm * 100) / 100,
-            totalGastoCombustivel: Math.round(totalGastoCombustivel),
-            totalFaturamento: Math.round(totalFaturamento),
-            lucroBruto: Math.round(totalFaturamento - totalGastoCombustivel),
-            consumoMedio: Math.round(consumoMedio * 100) / 100,
-            custoMedioPorKm: Math.round(custoMedioPorKm),
-            custoMedioPorLitro: Math.round(custoMedioPorLitro),
-            numeroAbastecimentos: fuelings.length,
-            numeroJornadas: journeys.length,
-            roiCombustivel: totalGastoCombustivel > 0 ? 
-              Math.round(((totalFaturamento - totalGastoCombustivel) / totalGastoCombustivel) * 100) : 0,
-          },
-          historicoEficiencia: fuelingsWithEfficiency.slice(1),
-          tendenciaConsumo: consumoTrend,
+          metricasPeriodo: metricasPeriodo,
+          historicoEficiencia: historicoEficiencia.slice(1),
+          tendenciaConsumo: tendenciaConsumo,
           periodo: {
             dataInicio: startDate.toISOString(),
             dataFim: endDate.toISOString(),
             descricao: this.getPeriodDescription(startDate, endDate),
-            diasAnalisados: Math.ceil((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24))
-          }
+            diasAnalisados: Math.ceil((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)),
+          },
         });
       }
 
-      // Estatísticas comparativas se mais de um veículo
-      const estatisticasComparativas = consumptionAnalysis.length > 1 ? 
-        this.calculateComparativeStats(consumptionAnalysis) : null;
+      const estatisticasComparativas = consumptionAnalysis.length > 1 ? this.calculateComparativeStats(consumptionAnalysis) : null;
 
       return res.json({
         success: true,
@@ -373,23 +339,22 @@ export class AdvancedAnalyticsController {
             dataInicio: startDate.toISOString(),
             dataFim: endDate.toISOString(),
             descricao: this.getPeriodDescription(startDate, endDate),
-            timezone: timezone
+            timezone: timezone,
           },
           metadata: {
             totalVeiculosAnalisados: consumptionAnalysis.length,
             periodoDias: Math.ceil((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)),
-            dataProcessamento: new Date().toISOString()
-          }
-        }
+            dataProcessamento: new Date().toISOString(),
+          },
+        },
       });
-
     } catch (error: any) {
       console.error('Erro ao gerar análise de consumo:', error);
-      
+
       if (error instanceof ValidationError || error instanceof UnauthorizedError || error instanceof NotFoundError) {
         throw error;
       }
-      
+
       throw new Error('Erro interno do servidor ao processar análise de consumo');
     }
   }
@@ -501,7 +466,11 @@ export class AdvancedAnalyticsController {
           isNull(jornadas.deletedAt)
         ))
         .where(and(...vehicleConditions))
-        .groupBy(veiculos.id);
+        .groupBy(veiculos.id, veiculos.marca, veiculos.modelo);
+
+      if (productivityData.length === 0) {
+        throw new NotFoundError('Nenhum dado de produtividade encontrado para os filtros selecionados');
+      }
 
       return res.json({
         success: true,
@@ -510,110 +479,23 @@ export class AdvancedAnalyticsController {
           periodo: {
             dataInicio: startDate.toISOString(),
             dataFim: endDate.toISOString(),
-            descricao: this.getPeriodDescription(startDate, endDate)
+            descricao: this.getPeriodDescription(startDate, endDate),
+            timezone: timezone
           }
         }
       });
 
     } catch (error: any) {
-      console.error('Erro ao gerar análise de produtividade:', error);
-      
+      console.error('Erro na análise de produtividade:', error);
       if (error instanceof ValidationError || error instanceof UnauthorizedError || error instanceof NotFoundError) {
         throw error;
       }
-      
       throw new Error('Erro interno do servidor ao processar análise de produtividade');
     }
   }
 
   /**
-   * Análise de padrões temporais - NOVO MÉTODO
-   */
-  static async getTemporalPatterns(req: AuthenticatedRequest, res: Response) {
-    try {
-      if (!req.user?.id) {
-        throw new UnauthorizedError('Usuário não autenticado');
-      }
-
-      const validation = analyticsQuerySchema.safeParse(req.query);
-      if (!validation.success) {
-        throw new ValidationError('Parâmetros inválidos', validation.error.errors);
-      }
-
-      const { dataInicio, dataFim, idVeiculo, periodo, timezone } = validation.data;
-      const { startDate, endDate } = this.calculatePeriod(periodo, dataInicio, dataFim, timezone);
-
-      // Buscar padrões por dia da semana
-      const journeyConditions = [
-        eq(jornadas.idUsuario, req.user.id),
-        gte(jornadas.dataInicio, startDate),
-        lte(jornadas.dataInicio, endDate),
-        isNull(jornadas.deletedAt)
-      ];
-
-      if (idVeiculo) {
-        journeyConditions.push(eq(jornadas.idVeiculo, idVeiculo));
-      }
-
-      const temporalData = await db
-        .select({
-          dataInicio: jornadas.dataInicio,
-          kmTotal: jornadas.kmTotal,
-          ganhoBruto: jornadas.ganhoBruto,
-          tempoTotal: jornadas.tempoTotal
-        })
-        .from(jornadas)
-        .where(and(...journeyConditions));
-
-      // Agrupar por dia da semana
-      const dayPatterns = Array.from({ length: 7 }, (_, i) => ({
-        diaSemana: this.getDayOfWeekName(i),
-        totalJornadas: 0,
-        totalKm: 0,
-        totalFaturamento: 0,
-        mediaDuracao: 0
-      }));
-
-      temporalData.forEach(journey => {
-        const dayOfWeek = new Date(journey.dataInicio).getDay();
-        dayPatterns[dayOfWeek].totalJornadas++;
-        dayPatterns[dayOfWeek].totalKm += Number(journey.kmTotal) || 0;
-        dayPatterns[dayOfWeek].totalFaturamento += Number(journey.ganhoBruto) || 0;
-        dayPatterns[dayOfWeek].mediaDuracao += Number(journey.tempoTotal) || 0;
-      });
-
-      // Calcular médias
-      dayPatterns.forEach(pattern => {
-        if (pattern.totalJornadas > 0) {
-          pattern.mediaDuracao = Math.round(pattern.mediaDuracao / pattern.totalJornadas);
-        }
-      });
-
-      return res.json({
-        success: true,
-        data: {
-          padroesDiarios: dayPatterns,
-          periodo: {
-            dataInicio: startDate.toISOString(),
-            dataFim: endDate.toISOString(),
-            descricao: this.getPeriodDescription(startDate, endDate)
-          }
-        }
-      });
-
-    } catch (error: any) {
-      console.error('Erro ao gerar análise de padrões temporais:', error);
-      
-      if (error instanceof ValidationError || error instanceof UnauthorizedError || error instanceof NotFoundError) {
-        throw error;
-      }
-      
-      throw new Error('Erro interno do servidor ao processar análise de padrões temporais');
-    }
-  }
-
-  /**
-   * Comparação entre veículos - NOVO MÉTODO
+   * Comparativo entre veículos - NOVO MÉTODO
    */
   static async getVehicleComparison(req: AuthenticatedRequest, res: Response) {
     try {
@@ -627,112 +509,44 @@ export class AdvancedAnalyticsController {
       }
 
       const { vehicleIds } = validation.data;
-      const queryValidation = analyticsQuerySchema.safeParse(req.query);
-      if (!queryValidation.success) {
-        throw new ValidationError('Parâmetros de período inválidos', queryValidation.error.errors);
-      }
-
-      const { dataInicio, dataFim, periodo, timezone } = queryValidation.data;
+      const { dataInicio, dataFim, periodo, timezone } = analyticsQuerySchema.parse(req.query);
       const { startDate, endDate } = this.calculatePeriod(periodo, dataInicio, dataFim, timezone);
-
-      // Validar acesso aos veículos
-      for (const vehicleId of vehicleIds) {
-        if (!(await this.validateVehicleAccess(req.user.id, vehicleId))) {
-          throw new NotFoundError(`Veículo ${vehicleId} não encontrado ou sem acesso`);
-        }
-      }
 
       const comparisonData = [];
 
       for (const vehicleId of vehicleIds) {
-        // Buscar dados do veículo
-        const [vehicle] = await db
-          .select({
-            id: veiculos.id,
-            marca: veiculos.marca,
-            modelo: veiculos.modelo,
-            ano: veiculos.ano,
-            placa: veiculos.placa
-          })
-          .from(veiculos)
-          .where(eq(veiculos.id, vehicleId))
-          .limit(1);
+        if (!(await this.validateVehicleAccess(req.user.id, vehicleId))) {
+          throw new NotFoundError(`Veículo com ID ${vehicleId} não encontrado ou sem acesso`);
+        }
 
-        // Buscar métricas do período
-        const [journeyMetrics] = await db
-          .select({
-            totalJornadas: count(jornadas.id),
-            totalKm: sum(jornadas.kmTotal),
-            totalFaturamento: sum(jornadas.ganhoBruto),
-            mediaKmPorJornada: avg(jornadas.kmTotal)
-          })
-          .from(jornadas)
-          .where(and(
-            eq(jornadas.idVeiculo, vehicleId),
-            eq(jornadas.idUsuario, req.user.id),
-            gte(jornadas.dataInicio, startDate),
-            lte(jornadas.dataInicio, endDate),
-            isNull(jornadas.deletedAt)
-          ));
+        const [fuelings, journeys] = await this.fetchVehicleData(req.user.id, vehicleId, startDate, endDate);
+        const metrics = this.calculateVehicleMetrics(fuelings, journeys);
 
-        const [fuelMetrics] = await db
-          .select({
-            totalAbastecimentos: count(abastecimentos.id),
-            totalLitros: sum(abastecimentos.quantidadeLitros),
-            totalGastoCombustivel: sum(abastecimentos.valorTotal)
-          })
-          .from(abastecimentos)
-          .where(and(
-            eq(abastecimentos.idVeiculo, vehicleId),
-            eq(abastecimentos.idUsuario, req.user.id),
-            gte(abastecimentos.dataAbastecimento, startDate),
-            lte(abastecimentos.dataAbastecimento, endDate),
-            isNull(abastecimentos.deletedAt)
-          ));
-
-        const totalKm = Number(journeyMetrics?.totalKm) || 0;
-        const totalLitros = Number(fuelMetrics?.totalLitros) || 0;
-        const totalFaturamento = Number(journeyMetrics?.totalFaturamento) || 0;
-        const totalGastoCombustivel = Number(fuelMetrics?.totalGastoCombustivel) || 0;
-
-        comparisonData.push({
-          veiculo: vehicle,
-          metricas: {
-            totalJornadas: Number(journeyMetrics?.totalJornadas) || 0,
-            totalKm: totalKm,
-            totalFaturamento: totalFaturamento,
-            totalAbastecimentos: Number(fuelMetrics?.totalAbastecimentos) || 0,
-            totalLitros: totalLitros,
-            totalGastoCombustivel: totalGastoCombustivel,
-            consumoMedio: totalKm > 0 && totalLitros > 0 ? totalKm / totalLitros : 0,
-            custoMedioPorKm: totalKm > 0 ? totalGastoCombustivel / totalKm : 0,
-            lucroLiquido: totalFaturamento - totalGastoCombustivel,
-            roiCombustivel: totalGastoCombustivel > 0 ? 
-              ((totalFaturamento - totalGastoCombustivel) / totalGastoCombustivel) * 100 : 0
-          }
+        comparisonData.push({ 
+          vehicleId, 
+          ...metrics 
         });
       }
 
       return res.json({
         success: true,
         data: {
-          comparacao: comparisonData,
+          comparativo: comparisonData,
           periodo: {
             dataInicio: startDate.toISOString(),
             dataFim: endDate.toISOString(),
-            descricao: this.getPeriodDescription(startDate, endDate)
+            descricao: this.getPeriodDescription(startDate, endDate),
+            timezone: timezone
           }
         }
       });
 
     } catch (error: any) {
-      console.error('Erro ao gerar comparação de veículos:', error);
-      
+      console.error('Erro na comparação de veículos:', error);
       if (error instanceof ValidationError || error instanceof UnauthorizedError || error instanceof NotFoundError) {
         throw error;
       }
-      
-      throw new Error('Erro interno do servidor ao processar comparação de veículos');
+      throw new Error('Erro interno do servidor ao comparar veículos');
     }
   }
 }
