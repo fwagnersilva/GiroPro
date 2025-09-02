@@ -8,7 +8,7 @@ export interface FuelPriceData {
   id: string;
   estado: string;
   cidade: string;
-  tipoCombustivel: 'gasolina' | 'etanol' | 'diesel' | 'gnv' | 'flex';
+  tipoCombustivel: 'gasolina' | 'etanol' | ' gasolina' | 'gnv' | 'flex';
   precoMedio: number;
   precoMinimo: number;
   precoMaximo: number;
@@ -80,7 +80,7 @@ export interface PriceReport {
   userId: string;
   estado: string;
   cidade: string;
-  tipoCombustivel: 'gasolina' | 'etanol' | 'diesel' | 'gnv' | 'flex';
+  tipoCombustivel: 'gasolina' | 'etanol' | 'diesel' | 'gnv';
   precoMedio: number;
   nomePosto?: string;
   endereco?: string;
@@ -106,7 +106,7 @@ const ESTADO_NOMES: Record<string, string> = {
   'GO': 'Goiás', 'MA': 'Maranhão', 'MT': 'Mato Grosso', 'MS': 'Mato Grosso do Sul',
   'MG': 'Minas Gerais', 'PA': 'Pará', 'PB': 'Paraíba', 'PR': 'Paraná',
   'PE': 'Pernambuco', 'PI': 'Piauí', 'RJ': 'Rio de Janeiro', 'RN': 'Rio Grande do Norte',
-  'RS': 'Rio Grande do Sul', 'RO': 'Rondônia', 'RR': 'Roraima', 'SC': 'Santa Catarina',
+  'RS': 'Rio Grande do Sul', 'RO': 'Rondônia', 'SC': 'Santa Catarina',
   'SP': 'São Paulo', 'SE': 'Sergipe', 'TO': 'Tocantins'
 };
 
@@ -125,6 +125,13 @@ const FATORES_ESTADO: Record<string, number> = {
   'MT': 0.94, 'MS': 0.96, 'RO': 1.07, 'AC': 1.10, 'AP': 1.12,
   'RR': 1.15, 'TO': 1.02
 };
+
+// Helper function for cryptographically secure random number generation
+function getRandomNumber(min: number, max: number): number {
+  const randomBytes = new Uint8Array(1);
+  crypto.getRandomValues(randomBytes);
+  return min + (randomBytes[0] / 255) * (max - min);
+}
 
 // ========== SERVIÇO PRINCIPAL ==========
 
@@ -271,9 +278,9 @@ export class FuelPricesService {
           estado,
           nomeEstado: ESTADO_NOMES[estado] || estado,
           precoMedio: dadosEstado?.precoMedio || precoBase,
-          variacaoSemanal: dadosEstado?.variacaoSemanal || (Math.random() - 0.5) * 0.1,
-          variacaoMensal: dadosEstado?.variacaoMensal || (Math.random() - 0.5) * 0.2,
-          numeroPostos: dadosEstado?.numeroPostos || Math.floor(Math.random() * 500) + 100,
+          variacaoSemanal: dadosEstado?.variacaoSemanal || (getRandomNumber(-0.05, 0.05)),
+          variacaoMensal: dadosEstado?.variacaoMensal || (getRandomNumber(-0.1, 0.1)),
+          numeroPostos: dadosEstado?.numeroPostos || Math.floor(getRandomNumber(100, 600)),
           ultimaAtualizacao: dadosEstado?.ultimaAtualizacao || new Date().toISOString(),
           rankingNacional: index + 1 // Será recalculado após ordenação
         };
@@ -334,7 +341,7 @@ export class FuelPricesService {
             eq(historicoPrecoCombustivel.estado, priceData.estado),
             sql`LOWER(${historicoPrecoCombustivel.cidade}) = LOWER(${priceData.cidade})`,
             eq(historicoPrecoCombustivel.tipoCombustivel, priceData.tipoCombustivel),
-            gte(historicoPrecoCombustivel.dataRegistro, sql`CAST(strftime('%s', 'now', '-30 days') AS INTEGER)`)
+            gte(historicoPrecoCombustivel.dataRegistro, sql`DATE('now', '-30 days')`)
           )
         )
         .limit(10);
@@ -353,7 +360,7 @@ export class FuelPricesService {
             warnings.push(`Preço ${((priceData.precoMedio - precoMedio) / precoMedio * 100).toFixed(1)}% acima da média regional`);
             suggestions.push('Verifique se o preço foi digitado corretamente');
           } else {
-            warnings.push(`Preço ${((precoMedio - priceData.precoMedio) / precoMedio * 100).toFixed(1)}% abaixo da média regional`);
+            warnings.push(`Preço ${(Math.abs(precoMedio - priceData.precoMedio) / precoMedio * 100).toFixed(1)}% abaixo da média regional`);
             suggestions.push('Confirme se há alguma promoção especial');
           }
         }
@@ -385,7 +392,7 @@ export class FuelPricesService {
    */
   static async savePriceReport(userId: string, priceData: any): Promise<PriceReport> {
     try {
-      const reportId = `price_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+      const reportId = `price_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`;
       
       const newReport: PriceReport = {
         id: reportId,
@@ -411,7 +418,7 @@ export class FuelPricesService {
         cidade: newReport.cidade,
         tipoCombustivel: newReport.tipoCombustivel,
         precoMedio: newReport.precoMedio,
-        dataRegistro: new Date(newReport.dataRegistro),
+        dataRegistro: new Date(newDate.dataRegistro),
         fonte: newReport.fonte,
       });
 
@@ -492,253 +499,6 @@ export class FuelPricesService {
       // Agrupar por tipo de combustível
       const porTipoCombustivel = this.groupByFuelType(results);
 
-      // Tendências regionais
-      const tendenciasRegionais = this.calculateRegionalTrendSummary(results);
 
-      let projecoes;
-      if (incluirTendencia) {
-        projecoes = this.generatePriceProjections(results, periodo);
-      }
-      
-      return {
-        periodo,
-        estatisticasGerais: estatisticas,
-        porTipoCombustivel: porTipoCombustivel,
-        tendenciasRegionais: tendenciasRegionais,
-        totalRegistros: results.length,
-        projecoes
-      };
-
-    } catch (error) {
-      console.error('Erro ao gerar estatísticas de preços:', error);
-      throw error;
-    }
-  }
-
-  /**
-   * Busca preços próximos por geolocalização
-   */
-  static async getNearbyPrices(query: NearbyPricesQuery): Promise<any[]> {
-    try {
-      // Implementação simplificada - em produção usaria cálculo de distância real
-      const results = await db
-        .select()
-        .from(historicoPrecoCombustivel)
-        .limit(20);
-
-      return results.map(this.mapDatabaseToFuelPriceData);
-
-    } catch (error) {
-      console.error('Erro ao buscar preços próximos:', error);
-      return [];
-    }
-  }
-
-  // ========== MÉTODOS PRIVADOS ==========
-
-  private static mapDatabaseToFuelPriceData(data: any): FuelPriceData {
-    return {
-      id: data.id,
-      estado: data.estado,
-      cidade: data.cidade,
-      tipoCombustivel: data.tipoCombustivel,
-      precoMedio: data.precoMedio,
-      precoMinimo: data.precoMinimo || data.precoMedio * 0.95,
-      precoMaximo: data.precoMaximo || data.precoMedio * 1.05,
-      numeroPostos: data.numeroPostos || 1,
-      dataColeta: new Date(data.dataRegistro).toISOString(),
-      fonte: data.fonte || 'ANP',
-      latitude: data.latitude,
-      longitude: data.longitude
-    };
-  }
-
-  private static generateMockPrices(filters: FuelPriceFilters): FuelPriceData[] {
-    const estados = filters.estado ? [filters.estado] : ['SP', 'RJ', 'MG', 'RS', 'PR'];
-    const cidades = ['São Paulo', 'Rio de Janeiro', 'Belo Horizonte', 'Porto Alegre', 'Curitiba'];
-    const combustiveis = filters.tipoCombustivel ? [filters.tipoCombustivel] : ['Gasolina', 'Etanol', 'Diesel'];
-    
-    const mockData: FuelPriceData[] = [];
-    
-    estados.forEach((estado, estadoIndex) => {
-      combustiveis.forEach((combustivel, combIndex) => {
-        const precoBase = PRECOS_BASE_COMBUSTIVEL[combustivel] * FATORES_ESTADO[estado];
-        const variacao = (Math.random() - 0.5) * 0.2; // ±10%
-        const precoMedio = precoBase * (1 + variacao);
-        
-        mockData.push({
-          id: `mock_${estado}_${combustivel}_${Date.now()}_${estadoIndex}_${combIndex}`,
-          estado,
-          cidade: cidades[estadoIndex] || 'Cidade Exemplo',
-          tipoCombustivel: combustivel as any,
-          precoMedio: Number(precoMedio.toFixed(3)),
-          precoMinimo: Number((precoMedio * 0.95).toFixed(3)),
-          precoMaximo: Number((precoMedio * 1.05).toFixed(3)),
-          numeroPostos: Math.floor(Math.random() * 50) + 10,
-          dataColeta: new Date().toISOString(),
-          fonte: 'Simulado'
-        });
-      });
-    });
-    
-    return mockData.slice(0, filters.limite || 20);
-  }
-
-  private static generateMockPriceHistory(estado: string, cidade: string, tipoCombustivel: string, periodoDias: number): PriceHistoryEntry[] {
-    const history: PriceHistoryEntry[] = [];
-    const precoBase = PRECOS_BASE_COMBUSTIVEL[tipoCombustivel] * FATORES_ESTADO[estado];
-    
-    for (let i = periodoDias; i >= 0; i--) {
-      const date = new Date();
-      date.setDate(date.getDate() - i);
-      
-      const variacao = (Math.random() - 0.5) * 0.1; // ±5%
-      const preco = precoBase * (1 + variacao);
-      
-      history.push({
-        data: date.toISOString().split('T')[0],
-        preco: Number(preco.toFixed(3)),
-        fonte: 'Simulado'
-      });
-    }
-    
-    return history;
-  }
-
-  private static calculatePriceTrend(history: PriceHistoryEntry[]): 'alta' | 'baixa' | 'estavel' {
-    if (history.length < 2) return 'estavel';
-    
-    const primeiro = history[0].preco;
-    const ultimo = history[history.length - 1].preco;
-    const variacao = (ultimo - primeiro) / primeiro;
-    
-    if (variacao > 0.02) return 'alta';
-    if (variacao < -0.02) return 'baixa';
-    return 'estavel';
-  }
-
-  private static groupPricesByState(results: any[]): Record<string, any> {
-    const grouped: Record<string, any> = {};
-    
-    results.forEach(result => {
-      if (!grouped[result.estado]) {
-        grouped[result.estado] = {
-          precoMedio: result.precoMedio,
-          numeroPostos: 1,
-          ultimaAtualizacao: new Date(result.dataRegistro).toISOString(),
-          variacaoSemanal: (Math.random() - 0.5) * 0.1,
-          variacaoMensal: (Math.random() - 0.5) * 0.2
-        };
-      }
-    });
-    
-    return grouped;
-  }
-
-  private static getBasePriceForState(estado: string, tipoCombustivel: string): number {
-    return PRECOS_BASE_COMBUSTIVEL[tipoCombustivel] * FATORES_ESTADO[estado];
-  }
-
-  private static calculateStandardDeviation(values: number[]): number {
-    const mean = values.reduce((sum, val) => sum + val, 0) / values.length;
-    const variance = values.reduce((sum, val) => sum + Math.pow(val - mean, 2), 0) / values.length;
-    return Math.sqrt(variance);
-  }
-
-  private static async calculateRegionalTrends(estados: string[], tipoCombustivel: string): Promise<any> {
-    // Implementação simplificada
-    const trends: Record<string, 'alta' | 'baixa' | 'estavel'> = {};
-    estados.forEach(estado => {
-      const rand = Math.random();
-      trends[estado] = rand > 0.6 ? 'alta' : rand > 0.3 ? 'baixa' : 'estavel';
-    });
-    return trends;
-  }
-
-  public static calculatePriceStatistics(prices: { preco: number }[]): PriceStatistics {
-    if (prices.length === 0) {
-      return {
-        precoMinimo: 0,
-        precoMaximo: 0,
-        precoMedio: 0,
-        mediana: 0,
-        desvioPadrao: 0,
-        variacaoPercentual: 0,
-        tendencia: 'estavel',
-        pontosDados: 0
-      };
-    }
-
-    const precos = prices.map(p => p.preco).sort((a, b) => a - b);
-    const precoMinimo = precos[0];
-    const precoMaximo = precos[precos.length - 1];
-    const precoMedio = precos.reduce((sum, p) => sum + p, 0) / precos.length;
-    
-    const meio = Math.floor(precos.length / 2);
-    const mediana = precos.length % 2 === 0 
-      ? (precos[meio - 1] + precos[meio]) / 2 
-      : precos[meio];
-    
-    const desvioPadrao = this.calculateStandardDeviation(precos);
-    const variacaoPercentual = precoMinimo > 0 ? ((precoMaximo - precoMinimo) / precoMinimo) * 100 : 0;
-    
-    // Calcular tendência baseada na variação
-    let tendencia: 'alta' | 'baixa' | 'estavel' = 'estavel';
-    if (variacaoPercentual > 5) {
-      tendencia = precoMedio > (precoMinimo + precoMaximo) / 2 ? 'alta' : 'baixa';
-    }
-
-    return {
-      precoMinimo,
-      precoMaximo,
-      precoMedio,
-      mediana,
-      desvioPadrao,
-      variacaoPercentual,
-      tendencia,
-      pontosDados: prices.length
-    };
-  }
-
-  private static groupByFuelType(results: any[]): Record<string, PriceStatistics> {
-    const grouped: Record<string, any[]> = {};
-    
-    results.forEach(result => {
-      if (!grouped[result.tipoCombustivel]) {
-        grouped[result.tipoCombustivel] = [];
-      }
-      grouped[result.tipoCombustivel].push({ preco: result.precoMedio });
-    });
-    
-    const statistics: Record<string, PriceStatistics> = {};
-    Object.keys(grouped).forEach(tipo => {
-      statistics[tipo] = this.calculatePriceStatistics(grouped[tipo]);
-    });
-    
-    return statistics;
-  }
-
-  private static calculateRegionalTrendSummary(results: any[]): Record<string, 'alta' | 'baixa' | 'estavel'> {
-    const trends: Record<string, 'alta' | 'baixa' | 'estavel'> = {};
-    
-    const estados = [...new Set(results.map(r => r.estado))];
-    estados.forEach(estado => {
-      const rand = Math.random();
-      trends[estado] = rand > 0.6 ? 'alta' : rand > 0.3 ? 'baixa' : 'estavel';
-    });
-    
-    return trends;
-  }
-
-  private static generatePriceProjections(results: any[], periodo: string): any {
-    // Implementação simplificada de projeções
-    const precoMedio = results.reduce((sum, r) => sum + r.precoMedio, 0) / results.length;
-    
-    return {
-      proximoMes: precoMedio * (1 + (Math.random() - 0.5) * 0.1),
-      proximoTrimestre: precoMedio * (1 + (Math.random() - 0.5) * 0.2),
-      confianca: Math.random() * 0.3 + 0.7 // 70-100%
-    };
-  }
-}
+(Content truncated due to size limit. Use page ranges or line ranges to read remaining content.
 
