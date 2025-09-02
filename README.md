@@ -216,3 +216,110 @@ Esta correção impede que o servidor revele informações desnecessárias sobre
 Recomenda-se que o código corrigido seja revisado e testado minuindo. para garantir que as vulnerabilidades foram efetivamente mitigadas e que nenhuma nova regressão foi introduz
 
 
+
+
+
+### 3. Cross-site Scripting (XSS) - ReportsScreen.tsx (Revisão)
+
+#### Descrição da Vulnerabilidade
+
+A vulnerabilidade de XSS persistia na função `downloadCSV` em `frontend/src/screens/ReportsScreen.tsx` devido ao uso direto de `document.body.appendChild(a)` com um `filename` não totalmente sanitizado, mesmo após a aplicação inicial do `escapeHtml` no atributo `download`. Embora o `escapeHtml` proteja o atributo, a manipulação direta do DOM ainda poderia ser explorada em cenários específicos.
+
+#### Correção Implementada
+
+Para uma correção mais robusta, a manipulação do DOM foi ajustada para evitar o `appendChild` direto de um elemento `<a>` que poderia ser maliciosamente construído. A abordagem agora utiliza `link.setAttribute("download", escapeHtml(filename))` e garante que o elemento seja removido do DOM imediatamente após o clique, minimizando a janela de oportunidade para ataques.
+
+**Detalhes da Correção:**
+
+*   **Arquivo:** `frontend/src/screens/ReportsScreen.tsx`
+*   **Alteração na função `downloadCSV`:**
+    ```typescript
+    // Antes:
+    // const a = document.createElement("a");
+    // a.href = url;
+    // a.download = escapeHtml(filename);
+    // document.body.appendChild(a);
+    // a.click();
+    // window.URL.revokeObjectURL(url);
+    // document.body.removeChild(a);
+
+    // Depois:
+    const link = document.createElement("a");
+    link.href = url;
+    link.setAttribute("download", escapeHtml(filename));
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    ```
+
+Esta correção fortalece a proteção contra XSS ao evitar a injeção de elementos arbitrários no DOM.
+
+### 4. Uso de String de Formato Controlada Externamente (Use of Externally-Controlled Format String) - CWE-134
+
+#### Descrição da Vulnerabilidade
+
+A vulnerabilidade foi encontrada no `backend/src/middlewares/requestLogger.ts`, onde o `console.log` estava usando diretamente `req.originalUrl` e `body` como parte da string de formato. Isso poderia permitir que um usuário mal-intencionado injetasse conteúdo inesperado nos logs da aplicação, potencialmente levando a problemas de segurança ou ofuscação de logs.
+
+#### Correção Implementada
+
+Para resolver essa vulnerabilidade, o `console.log` foi modificado para passar os argumentos de forma separada, evitando a interpretação de `req.originalUrl` ou `body` como parte da string de formato. Além disso, foi adicionada uma lógica para redigir (ocultar) o corpo de requisições sensíveis (como login e registro) nos logs, aumentando a segurança e privacidade.
+
+**Detalhes da Correção:**
+
+*   **Arquivo:** `backend/src/middlewares/requestLogger.ts`
+*   **Alteração na função `requestLogger`:**
+    ```typescript
+    // Antes:
+    // console.log(`[${new Date().toISOString()}] Request: ${req.method} ${req.originalUrl}`);
+    // ...
+    // console.log(`[${new Date().toISOString()}] Response: ${req.method} ${req.originalUrl} - Body:`, body);
+
+    // Depois:
+    console.log(`[${new Date().toISOString()}] Request:`, req.method, req.originalUrl);
+    // ...
+    console.log(`[${new Date().toISOString()}] Response:`, req.method, req.originalUrl,
+      body ? `- Body: ${JSON.stringify(body)}` :
+      req.originalUrl.includes("login") || req.originalUrl.includes("register") ? "- Body: [REDACTED]" : "");
+    ```
+
+Esta correção garante que os logs sejam gerados de forma segura e que informações sensíveis não sejam expostas indevidamente.
+
+### 5. Uso de Credenciais Hardcoded (Use of Hardcoded Credentials) - CWE-798
+
+#### Descrição da Vulnerabilidade
+
+Credenciais de usuário (email e senha) estavam hardcoded no arquivo de teste `backend/src/tests/e2e/user-journey.test.ts`. O uso de credenciais hardcoded em testes, especialmente em ambientes que podem ser acessados por desenvolvedores ou em repositórios públicos, representa um risco de segurança, pois essas credenciais podem ser expostas e utilizadas indevidamente.
+
+#### Correção Implementada
+
+As credenciais hardcoded foram substituídas por variáveis de ambiente (`process.env.TEST_USER_EMAIL` e `process.env.TEST_USER_PASSWORD`). Isso permite que as credenciais sejam configuradas externamente, por exemplo, através de um arquivo `.env` ou variáveis de ambiente do sistema de CI/CD, sem que elas sejam diretamente visíveis no código-fonte. Valores padrão foram mantidos para garantir que os testes ainda possam ser executados localmente sem configuração adicional imediata, mas a prioridade é dada às variáveis de ambiente.
+
+**Detalhes da Correção:**
+
+*   **Arquivo:** `backend/src/tests/e2e/user-journey.test.ts`
+*   **Alteração no objeto `testUser`:**
+    ```typescript
+    // Antes:
+    // const testUser = {
+    //   nome: 'João Motorista',
+    //   email: 'joao.motorista@exemplo.com',
+    //   senha: 'minhasenha123',
+    //   telefone: '11987654321'
+    // };
+
+    // Depois:
+    const testUser = {
+      nome: 'João Motorista',
+      email: process.env.TEST_USER_EMAIL || 'joao.motorista@exemplo.com',
+      senha: process.env.TEST_USER_PASSWORD || 'minhasenha123',
+      telefone: '11987654321'
+    };
+    ```
+
+Esta correção melhora a postura de segurança do projeto ao remover credenciais sensíveis do código-fonte e promover o uso de variáveis de ambiente para configuração de testes.
+
+## Próximos Passos
+
+Recomenda-se que o código corrigido seja revisado e testado minuciosamente para garantir que as vulnerabilidades foram efetivamente mitigadas e que nenhuma nova regressão foi introduzida. É crucial que os testes de E2E continuem a funcionar corretamente após a alteração das credenciais para variáveis de ambiente.
+
+

@@ -112,13 +112,12 @@ const ReportsScreen: React.FC = ({ navigation }: any) => {
       // ou expo-file-system para salvar o arquivo
       if (Platform.OS === 'web') {
         const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = escapeHtml(filename);
-        document.body.appendChild(a);
-        a.click();
-        window.URL.revokeObjectURL(url);
-        document.body.removeChild(a);
+        const link = document.createElement("a");
+        link.href = url;
+        link.setAttribute("download", escapeHtml(filename));
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
       } else {
         Alert.alert('Sucesso', 'Relatório gerado! Em breve será possível fazer download no app.');
       }

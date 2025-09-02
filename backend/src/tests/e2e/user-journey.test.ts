@@ -7,8 +7,8 @@ import { eq } from 'drizzle-orm';
 describe('User Journey E2E Tests', () => {
   const testUser = {
     nome: 'João Motorista',
-    email: 'joao.motorista@exemplo.com',
-    senha: 'minhasenha123',
+    email: process.env.TEST_USER_EMAIL || 'joao.motorista@exemplo.com',
+    senha: process.env.TEST_USER_PASSWORD || 'minhasenha123',
     telefone: '11987654321'
   };
 
