@@ -5,9 +5,7 @@ on:
     branches:
       - main
   pull_request:
-    types: [opened, synchronize, reopened]
-    branches:
-      - main
+    types: [opened, synchronize, reopened, ready_for_review]
 
 jobs:
   build:
@@ -15,28 +13,38 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Baixa o código do repo
       - uses: actions/checkout@v3
         with:
-          fetch-depth: 0  # Sonar precisa do histórico do git
+          fetch-depth: 0
 
-      # Instala Node (ajuste versão conforme seu projeto)
       - name: Set up Node
         uses: actions/setup-node@v3
         with:
-          node-version: '18'
+          node-version: 18
 
-      # Instala dependências
-      - name: Install dependencies
+      # Instala dependências do backend
+      - name: Install backend deps
         run: npm install
+        working-directory: backend
 
-      # Compila se tiver script build
-      - name: Build
+      # Build backend (se tiver script build)
+      - name: Build backend
         run: npm run build --if-present
+        working-directory: backend
 
-      # Executa a análise do SonarCloud
+      # Instala dependências do frontend
+      - name: Install frontend deps
+        run: npm install
+        working-directory: frontend
+
+      # Build frontend (se tiver script build)
+      - name: Build frontend
+        run: npm run build --if-present
+        working-directory: frontend
+
+      # Rodar análise Sonar
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@v2
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # token padrão do GitHub
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}   # o secret que você criou
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
