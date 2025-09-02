@@ -12,8 +12,16 @@ export class AuthController {
       const { token, user, refreshToken } = await AuthService.register({ email, senha, nome });
       res.status(201).send({ success: true, message: 'Usuário registrado com sucesso', accessToken: token, user, refreshToken });
     } catch (error: any) {
-      if (error instanceof ValidationError) {
-        res.status(400).send({ success: false, error: error.message, details: error.details });
+   if (error instanceof ValidationError) {
+     // Logar o erro completo para depuração interna (opcional, mas recomendado)
+     console.error("Validation Error:", error);
+     // Enviar uma mensagem de erro genérica e segura para o cliente
+     res.status(400).send({ success: false, message: "Dados de entrada inválidos." });
+   } else {
+     // Lidar com outros tipos de erros de forma segura
+     console.error("Server Error:", error);
+     res.status(500).send({ success: false, message: "Ocorreu um erro interno no servidor." });
+   }
       } else if (error.message === 'Email já está em uso') {
         res.status(409).send({ success: false, error: error.message });
       } else if (error instanceof z.ZodError) {
