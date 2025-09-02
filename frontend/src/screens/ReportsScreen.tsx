@@ -39,7 +39,7 @@ const ReportsScreen: React.FC = ({ navigation }: any) => {
       setLoadingVehicles(true);
       const vehiclesData = await vehicleService.getVehicles();
       setVehicles(vehiclesData);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Erro ao carregar veículos:', error);
       Alert.alert('Erro', 'Não foi possível carregar os veículos');
     } finally {
@@ -88,42 +88,43 @@ const ReportsScreen: React.FC = ({ navigation }: any) => {
         id_veiculo: selectedVehicle || undefined,
       };
 
-      let blob;
+      let blobResponse;
       let filename;
       
       switch (selectedReport) {
         case 'journey-earnings':
-          blob = await reportService.downloadJourneyEarningsCSV(params);
+          blobResponse = await reportService.downloadJourneyEarningsCSV(params);
           filename = 'relatorio_jornadas.csv';
           break;
         case 'expense-analysis':
-          blob = await reportService.downloadExpenseAnalysisCSV(params);
+          blobResponse = await reportService.downloadExpenseAnalysisCSV(params);
           filename = 'relatorio_despesas.csv';
           break;
         case 'fuel-consumption':
-          blob = await reportService.downloadFuelConsumptionCSV(params);
-          filename = 'relatorio_combustivel.csv';
+          blobResponse = await reportService.downloadFuelConsumptionCSV(params);
+          filename = 'relatório_combustivel.csv';
           break;
         default:
           throw new Error('Tipo de relatório inválido');
       }
 
-      // Para React Native, você precisaria usar uma biblioteca como react-native-fs
-      // ou expo-file-system para salvar o arquivo
-      if (Platform.OS === 'web') {
-        const url = window.URL.createObjectURL(blob);
-        const link = document.createElement("a");
-        link.href = url;
-        link.setAttribute("download", escapeHtml(filename));
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-      } else {
-        Alert.alert('Sucesso', 'Relatório gerado! Em breve será possível fazer download no app.');
+      // Ensure the blob is treated as text/csv to prevent XSS
+      const csvBlob = new Blob([blobResponse], { type: 'text/csv' });
+      const url = window.URL.createObjectURL(csvBlob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", escapeHtml(filename));
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+
+      if (Platform.OS !== 'web') {
+        Alert.alert('Sucesso', 'Relatório gerado! Em breve você poderá fazer o download no aplicativo.');
       }
     } catch (error: any) {
       console.error('Erro ao baixar CSV:', error);
-      Alert.alert('Erro', error.message || 'Não foi possível baixar o relatório');
+      Alert.alert('Erro', error.message || 'Não foi possível baixar o relatório.');
     }
   };
 
@@ -150,7 +151,7 @@ const ReportsScreen: React.FC = ({ navigation }: any) => {
         return 'Este Mês';
       case 'ano':
         return 'Este Ano';
-      default:
+      default: 
         return 'Período';
     }
   };
@@ -423,8 +424,7 @@ const ReportsScreen: React.FC = ({ navigation }: any) => {
               <Picker
                 selectedValue={selectedVehicle}
                 onValueChange={(value) => setSelectedVehicle(value)}
-                style={styles.picker}
-              >
+                style={styles.picker}>
                 <Picker.Item label="Todos os veículos" value="" />
                 {vehicles.map((vehicle) => (
                   <Picker.Item
@@ -456,60 +456,61 @@ const ReportsScreen: React.FC = ({ navigation }: any) => {
                 <TouchableOpacity
                   style={styles.downloadButton}
                   onPress={downloadCSV}
+                  disabled={loading}
                 >
-                  <Ionicons name="download" size={20} color="#FFF" />
-                  <Text style={styles.buttonText}>Baixar CSV</Text>
+                  {loading ? (
+                    <ActivityIndicator color="#FFF" />
+                  ) : (
+                    <>
+                      <Ionicons name="download" size={20} color="#FFF" />
+                      <Text style={styles.buttonText}>Baixar CSV</Text>
+                    </>
+                  )}
                 </TouchableOpacity>
               )}
             </View>
-          </>
+          </> 
+        )}
+
+        {selectedReport === 'weekly-monthly' && (
+          <View style={styles.weeklyMonthlyContainer}>
+            <Text style={styles.placeholder}>Funcionalidade em desenvolvimento. Em breve você poderá visualizar relatórios semanais e mensais aqui.</Text>
+          </View>
         )}
       </View>
 
-      {selectedReport === 'weekly-monthly' ? (
-        renderReportContent()
+      {loading ? (
+        <LoadingSpinner />
       ) : (
-        reportData && (
-          <View style={styles.reportContainer}>
-            <View style={styles.reportHeader}>
-              <Text style={styles.reportTitle}>{getReportTitle()}</Text>
-              <Text style={styles.reportPeriod}>{getPeriodLabel()}</Text>
-            </View>
-            
-            {renderReportContent()}
-          </View>
-        )
+        renderReportContent()
       )}
     </ScrollView>
   );
 };
 
 const chartConfig = {
-  backgroundGradientFrom: "#FFF",
-  backgroundGradientFromOpacity: 0,
-  backgroundGradientTo: "#FFF",
-  backgroundGradientToOpacity: 0.5,
-  color: (opacity = 1) => `rgba(0, 122, 255, ${opacity})`,
-  strokeWidth: 2, // optional, default 3
+  backgroundGradientFrom: '#1E2923',
+  backgroundGradientTo: '#08130D',
+  color: (opacity = 1) => `rgba(26, 255, 146, ${opacity})`,
+  strokeWidth: 2,
   barPercentage: 0.5,
-  useShadowColorFromDataset: false // optional
+  useShadowColorFromDataset: false
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#F5F5F5',
+    padding: 20,
   },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    padding: 20,
-    backgroundColor: '#FFF',
-    borderBottomWidth: 1,
-    borderBottomColor: '#E0E0E0',
+    marginBottom: 20,
   },
   backButton: {
-    marginRight: 15,
+    marginRight: 10,
+    padding: 5,
   },
   title: {
     fontSize: 24,
@@ -517,202 +518,193 @@ const styles = StyleSheet.create({
     color: '#333',
   },
   filtersContainer: {
-    backgroundColor: '#FFF',
-    margin: 15,
-    padding: 20,
+    backgroundColor: '#FFFFFF',
     borderRadius: 10,
-    elevation: 2,
+    padding: 15,
+    marginBottom: 20,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
-    shadowRadius: 4,
+    shadowRadius: 2,
+    elevation: 3,
   },
   filterLabel: {
     fontSize: 16,
-    fontWeight: '600',
-    color: '#333',
-    marginBottom: 8,
-    marginTop: 15,
+    fontWeight: 'bold',
+    marginBottom: 5,
+    color: '#555',
   },
   pickerContainer: {
-    borderWidth: 1,
     borderColor: '#DDD',
+    borderWidth: 1,
     borderRadius: 8,
-    backgroundColor: '#F9F9F9',
+    marginBottom: 15,
+    overflow: 'hidden',
   },
   picker: {
     height: 50,
+    width: '100%',
+    color: '#333',
   },
   buttonContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginTop: 20,
+    justifyContent: 'space-around',
+    marginTop: 15,
   },
   generateButton: {
-    backgroundColor: '#2196F3',
-    flexDirection: 'row',
+    backgroundColor: '#007BFF',
+    padding: 12,
+    borderRadius: 8,
     alignItems: 'center',
     justifyContent: 'center',
-    padding: 15,
-    borderRadius: 8,
+    flexDirection: 'row',
     flex: 1,
     marginRight: 10,
   },
   downloadButton: {
-    backgroundColor: '#4CAF50',
-    flexDirection: 'row',
+    backgroundColor: '#28A745',
+    padding: 12,
+    borderRadius: 8,
     alignItems: 'center',
     justifyContent: 'center',
-    padding: 15,
-    borderRadius: 8,
+    flexDirection: 'row',
     flex: 1,
-    marginLeft: 10,
   },
   buttonText: {
-    color: '#FFF',
-    fontWeight: '600',
-    marginLeft: 8,
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginLeft: 5,
   },
-  reportContainer: {
-    backgroundColor: '#FFF',
-    margin: 15,
+  reportContent: {
+    backgroundColor: '#FFFFFF',
     borderRadius: 10,
-    elevation: 2,
+    padding: 15,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
-    shadowRadius: 4,
-  },
-  reportHeader: {
-    padding: 20,
-    borderBottomWidth: 1,
-    borderBottomColor: '#E0E0E0',
-  },
-  reportTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#333',
-  },
-  reportPeriod: {
-    fontSize: 14,
-    color: '#666',
-    marginTop: 4,
-  },
-  reportContent: {
-    padding: 20,
+    shadowRadius: 2,
+    elevation: 3,
   },
   sectionTitle: {
     fontSize: 18,
-    fontWeight: '600',
+    fontWeight: 'bold',
     color: '#333',
-    marginBottom: 15,
+    marginBottom: 10,
   },
   statsGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'space-between',
-    marginBottom: 25,
+    marginBottom: 20,
   },
   statCard: {
-    backgroundColor: '#F8F9FA',
-    padding: 15,
+    backgroundColor: '#F0F0F0',
     borderRadius: 8,
+    padding: 10,
     width: '48%',
     marginBottom: 10,
+    alignItems: 'center',
   },
   statLabel: {
-    fontSize: 12,
+    fontSize: 14,
     color: '#666',
-    marginBottom: 5,
+    textAlign: 'center',
   },
   statValue: {
     fontSize: 18,
     fontWeight: 'bold',
     color: '#333',
+    marginTop: 5,
+  },
+  chartContainer: {
+    marginVertical: 20,
+    backgroundColor: '#F0F0F0',
+    borderRadius: 16,
+    padding: 10,
   },
   journeyCard: {
-    backgroundColor: '#F8F9FA',
-    padding: 15,
+    backgroundColor: '#F9F9F9',
     borderRadius: 8,
+    padding: 15,
     marginBottom: 10,
+    borderWidth: 1,
+    borderColor: '#EEE',
   },
   journeyHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: 10,
+    marginBottom: 5,
   },
   journeyDate: {
     fontSize: 14,
-    fontWeight: '600',
-    color: '#333',
+    fontWeight: 'bold',
+    color: '#555',
   },
   journeyVehicle: {
-    fontSize: 12,
-    color: '#666',
+    fontSize: 14,
+    color: '#777',
   },
   journeyStats: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    marginTop: 10,
   },
   journeyStat: {
-    flex: 1,
+    alignItems: 'center',
   },
   journeyStatLabel: {
-    fontSize: 10,
-    color: '#666',
-    marginBottom: 2,
+    fontSize: 12,
+    color: '#888',
   },
   journeyStatValue: {
-    fontSize: 14,
-    fontWeight: '600',
+    fontSize: 15,
+    fontWeight: 'bold',
     color: '#333',
+    marginTop: 5,
   },
   expenseCategoryItem: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center',
-    backgroundColor: '#F8F9FA',
-    padding: 12,
-    borderRadius: 8,
-    marginBottom: 8,
+    paddingVertical: 8,
+    borderBottomWidth: 1,
+    borderBottomColor: '#EEE',
   },
   expenseCategoryText: {
-    fontSize: 14,
+    fontSize: 15,
     color: '#333',
-    fontWeight: '500',
   },
   expenseCategoryValue: {
-    fontSize: 14,
-    color: '#FF3B30',
-    fontWeight: '600',
+    fontSize: 15,
+    fontWeight: 'bold',
+    color: '#333',
   },
   fuelConsumptionItem: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center',
-    backgroundColor: '#F8F9FA',
-    padding: 12,
-    borderRadius: 8,
-    marginBottom: 8,
+    paddingVertical: 8,
+    borderBottomWidth: 1,
+    borderBottomColor: '#EEE',
   },
   fuelConsumptionText: {
-    fontSize: 14,
+    fontSize: 15,
     color: '#333',
-    fontWeight: '500',
   },
   fuelConsumptionValue: {
-    fontSize: 14,
-    color: '#007AFF',
-    fontWeight: '600',
+    fontSize: 15,
+    fontWeight: 'bold',
+    color: '#333',
   },
   placeholder: {
-    fontSize: 16,
-    color: '#666',
+    fontSize: 14,
+    color: '#777',
     textAlign: 'center',
-    fontStyle: 'italic',
+    paddingVertical: 20,
+  },
+  weeklyMonthlyContainer: {
     marginTop: 20,
+    alignItems: 'center',
   },
 });
 
 export default ReportsScreen;
-
