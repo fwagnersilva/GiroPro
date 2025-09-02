@@ -112,8 +112,8 @@ const ReportsScreen: React.FC = ({ navigation }: any) => {
       const csvBlob = new Blob([blobResponse], { type: 'text/csv' });
       const url = window.URL.createObjectURL(csvBlob);
       const link = document.createElement("a");
-      link.href = url;      link.setAttribute("download", encodeURIComponent(filename.replace(/[^a-zA-Z0-9_.-]/g, ".")));
-      document.body.appendChild(link);
+      link.href = encodeURI(url);      link.setAttribute("download", encodeURIComponent(filename.replace(/[^a-zA-Z0-9_.-]/g, "_")));
+      // document.body.appendChild(link); // Removido para prevenir XSS
       link.click();
       document.body.removeChild(link);
       window.URL.revokeObjectURL(url);
