@@ -58,8 +58,7 @@ Esta seção registra as tarefas que foram concluídas, com um breve resumo do q
 ## 🔴 Prioridade Crítica
 
 ### Backend
-- [>] **Resolver Problema de Schema Drizzle-SQLite:** Investigar e corrigir a incompatibilidade entre o Drizzle ORM e a criação manual de tabelas SQLite, que impede o registro de usuários. (Status: Em Andamento)
-
+- [x] **Resolver Problema de Schema Drizzle-SQLite:** Problema resolvido. O Drizzle ORM agora cria e gerencia as tabelas corretamente no banco de dados em memória, permitindo o registro de usuários.
 ### Frontend
 - [x] **Resolver problema de renderização do Frontend (Tela Branca)**
   - **Progresso:** Resolvido com sucesso. O frontend está agora 100% funcional via build estático.
