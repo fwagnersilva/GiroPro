@@ -178,10 +178,9 @@ const RegisterScreenOptimized: React.FC<Props> = ({ navigation }) => {
             required
             validation={combineValidators(
               validators.required,
-              validators.minLength(8),
+              validators.password,
               (value) => {
-                const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/;
-                return passwordRegex.test(value) ? null : 'A senha deve ter pelo menos 8 caracteres, 1 letra minúscula, 1 maiúscula, 1 número e 1 caractere especial (@$!%*?&).';
+                return value.length >= 8 ? null : 'A senha deve ter pelo menos 8 caracteres.';
               }
             )}
           />

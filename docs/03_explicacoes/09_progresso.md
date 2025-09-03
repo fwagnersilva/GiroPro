@@ -63,7 +63,9 @@ Esta seção registra as tarefas que foram concluídas, com um breve resumo do q
 ## 🟠 Prioridade Alta
 
 ### Validação Técnica
-- [ ] **Ajuste da Validação de Senha no Frontend**
+- [>] **Ajuste da Validação de Senha no Frontend**
+  - **Progresso:** A lógica de validação de senha do backend foi replicada para o frontend em `FormInput.tsx` e aplicada em `RegisterScreenOptimized.tsx`. No entanto, a tela branca do frontend persiste, impedindo a validação visual e funcional completa. O problema de parsing JSX em `node_modules` com Vite ainda não foi resolvido.
+  - **Observação:** As tentativas de correção no `vite.config.js` (incluindo `vite-plugin-babel` e ajustes no `esbuildOptions`) não foram bem-sucedidas. O erro `Unexpected "type"` em `@react-native/assets-registry/registry.js` indica um problema mais profundo na transpilação de módulos do `node_modules` que contêm sintaxe TypeScript.
   - **Descrição:** Implementar no `RegisterScreenOptimized.tsx` (e possivelmente no `FormInput.tsx` ou em um novo utilitário de validação no frontend) a mesma lógica de validação de senha presente no `backend/src/utils/validation.ts`.
   - **Detalhes:** Garantir que o frontend valide a senha para incluir: Mínimo de 8 caracteres, Pelo menos 1 letra minúscula, Pelo menos 1 letra maiúscula, Pelo menos 1 número, Pelo menos 1 caractere especial (`@$!%*?&`).
 - [ ] **Teste End-to-End do Fluxo de Registro e Login**
@@ -98,7 +100,7 @@ Esta seção registra as tarefas que foram concluídas, com um breve resumo do q
 ### Oportunidades de Melhoria - Complexidade Alta
 
 - [>] **Feedback Háptico (Mobile):** Utilizar a vibração do dispositivo para fornecer feedback físico em interações importantes.
-  - **Progresso:** `expo-haptics` instalado e utilitário `src/utils/haptics.ts` criado para encapsular a lógica de feedback háptico. Próximo passo é mapear as interações chave na UI onde o feedback háptico seria mais benéfico (ex: cliques em botões críticos, sucesso/falha de operações, confirmações).
+  - **Progresso:** `expo-haptics` instalado e utilitário `src/utils/haptics.ts` criado para encapsular a lógica de feedback háptico. **Próximo passo:** Mapear as interações chave na UI onde o feedback háptico seria mais benéfico (ex: cliques em botões críticos, sucesso/falha de operações, confirmações).
 - [ ] **Estados Interativos:** Fornecer feedback visual claro para todas as interações do usuário.
 - [ ] **Adaptações por Plataforma:** Otimizar a experiência do usuário para as convenções de design de cada plataforma (iOS, Android, Web).
 - [ ] **Implementar Testes Automatizados:** Garantir a qualidade do código e prevenir regressões futuras com a criação de testes automatizados.

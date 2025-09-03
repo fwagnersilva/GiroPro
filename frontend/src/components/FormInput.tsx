@@ -147,9 +147,9 @@ export const validators = {
     return emailRegex.test(value) ? null : 'Email inválido';
   },
   
-  minLength: (min: number) => (value: string) => {
-    if (value.trim() === '') return null;
-    return value.length >= min ? null : `Mínimo de ${min} caracteres`;
+  password: (value: string) => {
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=(.*\d){1,})(?=(.*[@$!%*?&]){1,})[A-Za-z\d@$!%*?&]{8,}$/;
+    return passwordRegex.test(value) ? null : 'A senha deve ter pelo menos 8 caracteres, 1 letra minúscula, 1 maiúscula, 1 número e 1 caractere especial (@$!%*?&).';
   },
   
   positiveNumber: (value: string) => {
