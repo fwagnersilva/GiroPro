@@ -6,7 +6,7 @@ on:
   pull_request:
     branches: [ "main" ]
   schedule:
-    - cron: "0 0 * * 0" # Weekly on Sunday at midnight
+    - cron: "0 0 * * 0" # Semanalmente, no domingo à meia-noite
 
 jobs:
   analyze:
@@ -25,28 +25,31 @@ jobs:
     - name: Initialize CodeQL
       uses: github/codeql-action/init@v2
       with:
-        languages: javascript # Ajustado para analisar apenas JavaScript
+        languages: javascript # **IMPORTANTE:** Configurado para JavaScript/TypeScript, não Java/Kotlin.
+                                # O CodeQL detectará automaticamente os arquivos TypeScript.
 
     - name: Setup Node.js
       uses: actions/setup-node@v3
       with:
-        node-version: 18
+        node-version: 18 # Use a versão do Node.js compatível com seu projeto
 
     - name: Install backend dependencies
-      run: npm ci || npm install
+      run: npm ci || npm install # Instala dependências do backend. `npm ci` para instalações limpas.
       working-directory: backend
 
     - name: Build backend
-      run: npm run build --if-present
+      run: npm run build --if-present # Executa o script de build do backend, se existir.
       working-directory: backend
 
     - name: Install frontend dependencies
-      run: npm ci || npm install
+      run: npm ci || npm install # Instala dependências do frontend.
       working-directory: frontend
 
     - name: Build frontend
-      run: npm run build --if-present
+      run: npm run build --if-present # Executa o script de build do frontend, se existir.
       working-directory: frontend
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v2
+
+
