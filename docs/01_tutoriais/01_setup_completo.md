@@ -141,11 +141,14 @@ EXPO_PUBLIC_API_URL=http://localhost:3000/api/v1
 **Importante**: Certifique-se de que o arquivo `.env` seja adicionado ao seu `.gitignore` para evitar que suas credenciais sejam versionadas.
 
 #### 3.3. Execução do Frontend
-```bash
-# Para desenvolvimento web
-npm run web
 
-# Para iniciar o Expo (todas as plataformas)
+Para desenvolvimento web com Vite (recomendado):
+```bash
+npm run web-vite
+```
+
+Para desenvolvimento com Expo (mobile):
+```bash
 npm start
 
 # Para Android
@@ -209,10 +212,11 @@ frontend/
 ### Frontend
 | Script | Descrição |
 |--------|-----------|
-| `npm start` | Iniciar Expo |
+| `npm start` | Iniciar Expo (mobile) |
 | `npm run android` | Executar no Android |
 | `npm run ios` | Executar no iOS |
-| `npm run web` | Executar na web |
+| `npm run web-vite` | Executar na web com Vite (recomendado) |
+| `npm run web` | Executar na web com Expo (legado) |
 
 ## Endpoints da API
 
@@ -257,7 +261,7 @@ curl http://localhost:3000/api/test
 - [ ] `npm install`
 - [ ] `cp .env.example .env` (se existir)
 - [ ] Configurar `REACT_APP_API_URL` no `.env`
-- [ ] `npm start` ou `npm run web`
+- [ ] `npm run web-vite` (para web) ou `npm start` (para mobile)
 
 ### Verificação
 - [ ] Backend rodando em http://localhost:3000
@@ -299,10 +303,10 @@ kill -9 $(lsof -t -i:3000)
 
 ### Problemas Comuns do Frontend
 
-**Porta já em uso**:
+**Porta já em uso (Vite)**:
 ```bash
 # Usar porta diferente
-npm run web -- --port 8082
+npm run web-vite -- --port 19007
 ```
 
 **Erro de conexão com API**:
@@ -374,9 +378,9 @@ cd backend
 npm run build
 npm start
 
-# Frontend
+# Frontend (Vite)
 cd frontend
-npm run build
+npm run build-vite
 ```
 
 ### Variáveis de Ambiente para Produção
@@ -417,6 +421,6 @@ Para dúvidas ou problemas:
 
 ---
 
-**Última atualização**: 25/08/2025
+**Última atualização**: 03/09/2025
 **Versão do guia**: 2.0
 
