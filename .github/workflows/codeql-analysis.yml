@@ -26,10 +26,13 @@ jobs:
       uses: github/codeql-action/init@v2
       with:
         languages: javascript
-        # Desabilita o autobuild para JavaScript/TypeScript e usa as etapas de build personalizadas
-        # Para outras linguagens, o CodeQL pode tentar o autobuild se não for explicitamente desabilitado
-        # ou se não houver arquivos da linguagem no repositório.
-        # Como o projeto é Node.js/React, focar apenas em JavaScript é o ideal.
+        # Explicitamente desabilitar o autobuild para Java/Kotlin se ele estiver sendo detectado
+        # e causando problemas, mesmo que o projeto não seja Java/Kotlin.
+        # Isso pode ser feito adicionando um arquivo de configuração CodeQL
+        # ou garantindo que apenas as linguagens desejadas sejam analisadas.
+        # Como o problema persiste, vamos garantir que apenas JavaScript seja analisado.
+        # Se o CodeQL ainda tentar analisar Java/Kotlin, pode ser necessário
+        # um arquivo de configuração CodeQL mais granular para excluir explicitamente.
 
     - name: Setup Node.js
       uses: actions/setup-node@v3
