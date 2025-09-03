@@ -1,3 +1,4 @@
+const logger = new Logger();
 import { Request, Response, NextFunction } from 'express';
 import { cacheService } from '../services/cacheService';
 import { Logger } from '../utils/logger';
@@ -53,13 +54,13 @@ export const cache = (options: CacheOptions = {}) => {
       // Tenta buscar no cache
       const cachedData = await cacheService.get(cacheKey);
       if (cachedData) {
-        Logger.debug(`Cache hit for key: ${cacheKey}`);
+        logger.debug(`Cache hit for key: ${cacheKey}`);
         res.setHeader('X-Cache', 'HIT');
         return res.json(cachedData);
       }
 
       // Cache miss - intercepta a resposta
-      Logger.debug(`Cache miss for key: ${cacheKey}`);
+      logger.debug(`Cache miss for key: ${cacheKey}`);
       res.setHeader('X-Cache', 'MISS');
 
       const originalJson = res.json;
@@ -67,7 +68,7 @@ export const cache = (options: CacheOptions = {}) => {
         // Só faz cache de respostas de sucesso
         if (res.statusCode >= 200 && res.statusCode < 300) {
           cacheService.set(cacheKey, data, ttl).catch(error => {
-            Logger.error('Failed to cache response:', error);
+            logger.error('Failed to cache response:', error);
           });
         }
         
@@ -76,7 +77,7 @@ export const cache = (options: CacheOptions = {}) => {
 
       next();
     } catch (error) {
-      Logger.error('Cache middleware error:', error);
+      logger.error('Cache middleware error:', error);
       next();
     }
   };
@@ -143,7 +144,7 @@ export const invalidateCache = (patterns: string[]) => {
           patterns.forEach(pattern => {
             const resolvedPattern = pattern.replace(':userId', req.user?.id || '');
             cacheService.delPattern(resolvedPattern).catch(error => {
-              Logger.error('Failed to invalidate cache:', error);
+              logger.error('Failed to invalidate cache:', error);
             });
           });
         }
@@ -153,7 +154,7 @@ export const invalidateCache = (patterns: string[]) => {
 
       next();
     } catch (error) {
-      Logger.error('Cache invalidation middleware error:', error);
+      logger.error('Cache invalidation middleware error:', error);
       next();
     }
   };

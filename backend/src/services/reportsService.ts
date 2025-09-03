@@ -3,7 +3,7 @@ import { jornadas, abastecimentos, despesas } from '../db/schema';
 import { eq, and, isNull, gte, lte, sum, count, desc, avg, sql, ne } from 'drizzle-orm';
 import { DateUtils } from '../utils/dateUtils';
 import { StatisticsCalculator } from '../utils/statisticsCalculator';
-import { Logger } from "../utils/Logger";
+import { Logger } from "../utils/logger";
 
 export interface ReportParams {
   userId: string;
@@ -30,7 +30,7 @@ interface InactiveVehicle {
 }
 
 export class ReportsService {
-  private static readonly LoggerInstance = Logger;
+  private static readonly LoggerInstance = new Logger();
 
   /**
    * Gera relatório semanal otimizado

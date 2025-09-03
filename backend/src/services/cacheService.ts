@@ -45,7 +45,7 @@ class CacheService {
 
   async get<T>(key: string): Promise<T | null> {
     // if (!this.redis || !this.isConnected) {
-      Logger.warn('Redis not available, cache miss for key:', key);    //   return null;
+      logger.warn('Redis not available, cache miss for key:', key);    //   return null;
     // }
 
     try {

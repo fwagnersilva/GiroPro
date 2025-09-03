@@ -1,3 +1,4 @@
+const logger = new Logger();
 import { Request, Response, NextFunction } from 'express';
 import compression from 'compression';
 import { performanceService } from '../services/performanceService';
@@ -53,7 +54,7 @@ export const requestTimeout = (timeoutMs: number = 30000) => {
   return (req: Request, res: Response, next: NextFunction) => {
     const timeout = setTimeout(() => {
       if (!res.headersSent) {
-        Logger.warn(`Request timeout for ${req.method} ${req.path}`, {
+        logger.warn(`Request timeout for ${req.method} ${req.path}`, {
           ip: req.ip,
           userAgent: req.get("User-Agent"),
           timeout: timeoutMs
@@ -80,7 +81,7 @@ export const payloadSizeLimit = (maxSizeBytes: number = 10 * 1024 * 1024) => {
     const contentLength = parseInt(req.get("Content-Length") || "0");
     
     if (contentLength > maxSizeBytes) {
-      Logger.warn(`Payload too large: ${contentLength} bytes`, {
+      logger.warn(`Payload too large: ${contentLength} bytes`, {
         ip: req.ip,
         path: req.path,
         maxSize: maxSizeBytes
@@ -138,7 +139,7 @@ export const memoryLeakDetector = (req: Request, res: Response, next: NextFuncti
     
     // Se o heap cresceu mais que 50MB em uma request, pode ser um leak
     if (heapDiff > 50 * 1024 * 1024) {
-      Logger.warn("Potential memory leak detected", {
+      logger.warn("Potential memory leak detected", {
         endpoint: req.path,
         method: req.method,
         heapDiff: `${(heapDiff / 1024 / 1024).toFixed(2)}MB`,
@@ -167,7 +168,7 @@ export const healthCheck = async (req: Request, res: Response, next: NextFunctio
         alerts
       });
     } catch (error) {
-      Logger.error("Health check error:", error);
+      logger.error("Health check error:", error);
       res.status(503).json({
         status: "error",
         message: "Health check failed"

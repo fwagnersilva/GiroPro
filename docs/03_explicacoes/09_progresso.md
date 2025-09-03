@@ -10,10 +10,10 @@ Para manter este backlog organizado e útil, por favor, siga as seguintes regras
 2.  **Formato da Tarefa:** Utilize o formato de lista Markdown (`- [ ] Descrição da Tarefa`).
 3.  **Status:**
     *   `[ ]` (vazio): Tarefa Pendente / Não Iniciada.
-    *   `[x]` (x minúsculo): Tarefa Concluída. **Após a conclusão, a tarefa deve ser MOVIDA para a seção 'Histórico de Conclusões' e detalhada.**
+    *   `[x]` (x minúsculo): Tarefa Concluída. **Após a conclusão, a tarefa deve ser MOVIDA para a seção \'Histórico de Conclusões\' e detalhada.**
     *   `[>]` (>): Tarefa Em Andamento. Adicione detalhes sobre o progresso e o que falta.
 4.  **Detalhes:** Cada tarefa deve ter uma descrição clara e concisa. Se necessário, adicione sub-itens ou observações (`- **Observação**: ...`).
-5.  **Exclusão:** Tarefas **concluídas** não devem ser simplesmente deletadas; elas devem ser movidas para o 'Histórico de Conclusões' para manter um registro do trabalho realizado.
+5.  **Exclusão:** Tarefas **concluídas** não devem ser simplesmente deletadas; elas devem ser movidas para o \'Histórico de Conclusões\' para manter um registro do trabalho realizado.
 6.  **Novas Tarefas:** Ao adicionar uma nova tarefa, insira-a na categoria de prioridade apropriada e no topo da lista dentro dessa categoria.
 7.  **Conflitos:** Em caso de dúvidas ou conflitos de prioridade, discuta com a equipe antes de fazer alterações significativas.
 8.  **Data de Atualização:** Mantenha a data de atualização no final do documento sempre atualizada.
@@ -44,6 +44,9 @@ Esta seção registra as tarefas que foram concluídas, com um breve resumo do q
 - **Backend:** Erros de TypeScript corrigidos (logger não instanciado em `journeysController.ts` e `cacheService.ts`, métodos privados/inexistentes em `fuelingsController.ts`).
 - **Frontend:** Migração do Metro Bundler para Vite, com servidor funcionando na porta 19006. Dependências atualizadas para versões mais recentes e compatíveis (Expo SDK 53.0.0, React 18.3.1, Vite 7.1.4).
 
+### 03/09/2025 - Correções de Compilação do Backend
+- **Backend:** Corrigidos erros de compilação relacionados ao Logger e rotas não existentes.
+
 ---
 
 
@@ -53,8 +56,8 @@ Esta seção registra as tarefas que foram concluídas, com um breve resumo do q
 
 ### Frontend
 - [>] **Resolver problema de renderização do Frontend (Tela Branca)**
-  - **Progresso:** Servidor Vite está rodando na porta 19006, mas a aplicação não renderiza. O problema é relacionado ao parsing de JSX/TSX no Vite, mesmo com as configurações de `esbuild` e `tsconfig.json` atualizadas.
-  - **Ações Necessárias:** Investigar mais a fundo a configuração do `esbuild` dentro do Vite para garantir que o JSX seja transpilado corretamente. Pode ser necessário ajustar o `jsxRuntime` ou `jsxFactory` no `tsconfig.json` ou no `vite.config.js`.
+  - **Progresso:** Servidor Vite está rodando na porta 19006, mas a aplicação não renderiza. O problema é relacionado ao parsing de JSX/TSX no Vite, mesmo com as configurações de `esbuild` e `tsconfig.json` atualizadas. Tentativas de correção no `vite.config.js` não resolveram o problema de parsing de JSX em `node_modules`.
+  - **Ações Necessárias:** Investigar mais a fundo a configuração do `esbuild` dentro do Vite para garantir que o JSX seja transpilado corretamente. Pode ser necessário ajustar o `jsxRuntime` ou `jsxFactory` no `tsconfig.json` ou no `vite.config.js`. Considerar alternativas como o uso de plugins específicos para Vite ou a investigação de compatibilidade entre o Expo SDK e o Vite.
   - **Observação:** Já foram criados mocks para `codegenNativeComponent` e `codegenNativeCommands` para contornar problemas de importação de módulos nativos.
 
 ## 🟠 Prioridade Alta
@@ -130,3 +133,5 @@ Esta seção registra as tarefas que foram concluídas, com um breve resumo do q
 ---
 
 **Última Atualização:** 03 de Setembro de 2025
+
+

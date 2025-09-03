@@ -1,3 +1,4 @@
+const logger = new Logger();
 import { Logger } from "../utils/logger";
 import { cacheService } from './cacheService';
 
@@ -50,7 +51,7 @@ class PerformanceService {
 
     // Log de requests lentos
     if (metric.duration > 2000) {
-    Logger.warn('Slow request detected', {       endpoint: metric.endpoint,
+    logger.warn('Slow request detected', {       endpoint: metric.endpoint,
         method: metric.method,
         duration: metric.duration,
         statusCode: metric.statusCode
@@ -172,7 +173,7 @@ class PerformanceService {
       const dailyStats = this.getAggregatedStats(1440); // 24 horas
       await cacheService.set('performance:stats:daily', dailyStats, 86400);
     } catch (error) {
-      Logger.error('Failed to save aggregated metrics:', error);
+      logger.error('Failed to save aggregated metrics:', error);
     }
   }
 
@@ -181,7 +182,7 @@ class PerformanceService {
     try {
       return await cacheService.get(`performance:stats:${period}`);
     } catch (error) {
-      Logger.error("Failed to get cached stats:", error);     return null;
+      logger.error("Failed to get cached stats:", error);     return null;
     }
   }
 
@@ -189,7 +190,7 @@ class PerformanceService {
   clearOldMetrics() {
     const cutoff = Date.now() - (24 * 60 * 60 * 1000); // 24 horas
     this.metrics = this.metrics.filter(metric => metric.timestamp > cutoff);
-    Logger.info(`Cleared old metrics, ${this.metrics.length} metrics remaining`);
+    logger.info(`Cleared old metrics, ${this.metrics.length} metrics remaining`);
   }
 
   // Obter top endpoints mais lentos
