@@ -25,8 +25,11 @@ jobs:
     - name: Initialize CodeQL
       uses: github/codeql-action/init@v2
       with:
-        languages: javascript # **IMPORTANTE:** Configurado para JavaScript/TypeScript, não Java/Kotlin.
-                                # O CodeQL detectará automaticamente os arquivos TypeScript.
+        languages: javascript
+        # Desabilita o autobuild para JavaScript/TypeScript e usa as etapas de build personalizadas
+        # Para outras linguagens, o CodeQL pode tentar o autobuild se não for explicitamente desabilitado
+        # ou se não houver arquivos da linguagem no repositório.
+        # Como o projeto é Node.js/React, focar apenas em JavaScript é o ideal.
 
     - name: Setup Node.js
       uses: actions/setup-node@v3
