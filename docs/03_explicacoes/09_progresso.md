@@ -66,11 +66,13 @@ Esta seção registra as tarefas que foram concluídas, com um breve resumo do q
 ## 🟠 Prioridade Alta
 
 ### Validação Técnica
-- [ ] **Ajuste da Validação de Senha no Frontend**
+- [>] **Ajuste da Validação de Senha no Frontend**
+  - **Progresso:** Tarefa em andamento. Será implementada a lógica de validação de senha do backend (`backend/src/utils/validation.ts`) nos componentes de registro e login do frontend (`RegisterScreenOptimized.tsx` e `LoginScreenOptimized.tsx`).
+  - **Observação:** Esta tarefa será priorizada após a validação inicial do fluxo de registro/login.
   - **Descrição:** Implementar no `RegisterScreenOptimized.tsx` (e possivelmente no `FormInput.tsx` ou em um novo utilitário de validação no frontend) a mesma lógica de validação de senha presente no `backend/src/utils/validation.ts`.
   - **Detalhes:** Garantir que o frontend valide a senha para incluir: Mínimo de 8 caracteres, Pelo menos 1 letra minúscula, Pelo menos 1 letra maiúscula, Pelo menos 1 número, Pelo menos 1 caractere especial (`@$!%*?&`).
 - [ ] **Teste End-to-End do Fluxo de Registro e Login**
-  - **Descrição:** Após a estabilização do ambiente e a correção da validação de senha no frontend, realizar testes completos do fluxo de registro e login para garantir que novos usuários possam se registrar com sucesso, usuários registrados possam fazer login sem erros, e a comunicação entre frontend e backend esteja funcionando perfeitamente para essas operações.
+  - **Descrição:** Após a implementação da validação de senha no frontend, realizar testes completos do fluxo de registro e login para garantir que novos usuários possam se registrar com sucesso, usuários registrados possam fazer login sem erros, e a comunicação entre frontend e backend esteja funcionando perfeitamente para essas operações.
 - [ ] **Code Review Aprofundado (Login)**
   - **Descrição:** Realizar um code review detalhado do `LoginScreen.tsx`, `AuthContext.tsx` e `api.ts` para o fluxo de login, garantindo que a lógica de autenticação e o tratamento de erros estejam robustos e em conformidade com as melhores práticas.
 
@@ -81,7 +83,8 @@ Esta seção registra as tarefas que foram concluídas, com um breve resumo do q
   - **Observação:** O projeto está funcional, mas a resolução completa das vulnerabilidades requer análise mais aprofundada das dependências.
 
 ### Infraestrutura e Setup
-- [ ] **Migração para SQLite Persistente:** Após resolver o problema de schema Drizzle-SQLite, configurar o backend para usar um arquivo SQLite persistente (`./giropro.db`) e garantir que as migrações funcionem corretamente.
+- [ ] **Migração para SQLite Persistente**
+  - **Descrição:** Configurar o backend para usar um arquivo SQLite persistente (`./giropro.db`) em vez do banco em memória, garantindo que os dados não sejam perdidos após o reinício do servidor.
 
 ## 🟡 Prioridade Média
 
