@@ -134,3 +134,19 @@ O projeto GiroPro teve **progresso significativo** com backend e frontend funcio
 
 **Última Atualização:** 03 de Setembro de 2025 - 19:00
 
+
+
+
+## Oportunidades de Melhoria
+
+### Complexidade Alta
+- [ ] **Refatoração Geral dos Formulários:** Aplicar os novos padrões (InteractiveComponents, enhancedTokens, EnhancedIcons) em todos os formulários da aplicação, incluindo `GoalsScreen`, `ProfileScreen`, etc.
+
+### Complexidade Média
+- [>] **Finalizar Integração nos Formulários Principais:** Concluir a implementação e testes das versões `Enhanced` dos formulários `AddExpenseScreen` e `AddFuelingScreen`, substituindo as versões antigas. (Progresso: Versões `Enhanced` criadas, mas não integradas ou testadas).
+- [ ] **Aplicar `enhancedTokens` Globalmente:** Realizar uma varredura completa no projeto e substituir todos os estilos hardcoded pelos tokens definidos em `enhancedTokens.ts` para garantir consistência visual.
+
+### Complexidade Baixa
+- [ ] **Substituir Ícones Simples:** Substituir os ícones restantes (como os de navegação e botões simples) pelos componentes de `EnhancedIcons.tsx`.
+- [ ] **Documentar Novos Componentes:** Criar documentação para os componentes `InteractiveButton`, `InteractiveToggle`, e os ícones de `EnhancedIcons.tsx` no Storybook ou em um arquivo de documentação similar.
+
