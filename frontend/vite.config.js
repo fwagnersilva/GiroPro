@@ -1,40 +1,43 @@
+import { defineConfig } from 'vite';
+import { rnw } from 'vite-plugin-rnw';
+
+// Módulos que precisam ser transpilados
+const modulesToTranspile = [
+  'react-native',
+  '@react-native',
+  'expo',
+  '@expo',
+  '@react-navigation',
+  '@tanstack'
+];
+
+const exclude = new RegExp(`/node_modules/(?!${modulesToTranspile.join('|')})`);
+
+export default defineConfig({
   plugins: [
-    react({
-      jsxRuntime: 'automatic',
-      include: '**/*.{jsx,tsx,js,ts}',
-    }),
+    rnw({ 
+      exclude,
+      // Configurações específicas para o projeto
+      esbuildOptions: {
+        loader: {
+          '.js': 'jsx',
+          '.ts': 'tsx',
+          '.tsx': 'tsx'
+        }
+      }
+    })
   ],
-  resolve: {
-    alias: {
-      'react-native': 'react-native-web',
-      'react-native/Libraries/ReactNative/AppContainer': 'react-native-web/dist/exports/AppRegistry',
-      'react-native/Libraries/Utilities/codegenNativeComponent': resolve(__dirname, 'src/utils/mockNativeComponent.js'),
-      'react-native/Libraries/Utilities/codegenNativeCommands': resolve(__dirname, 'src/utils/mockNativeCommands.js'),
-      '@': resolve(__dirname, './src'),
-    },
-    extensions: ['.web.tsx', '.web.ts', '.web.jsx', '.web.js', '.tsx', '.ts', '.jsx', '.js'],
+  server: {
+    port: 19006,
+    host: '0.0.0.0',
+    hmr: {
+      overlay: false
+    }
   },
   define: {
     global: 'globalThis',
     __DEV__: JSON.stringify(true),
     'process.env.NODE_ENV': JSON.stringify('development'),
   },
-  server: {
-    port: 19006,
-    host: '0.0.0.0',
-  },
-  optimizeDeps: {
-    include: [
-      'react', 
-      'react-dom', 
-      'react-native-web',
-      '@react-native-async-storage/async-storage',
-      'axios'
-    ],
-    exclude: [
-      '@expo/vector-icons',
-      'react-native-screens',
-      'react-native-safe-area-context'
-    ],
-  },
 });
+
