@@ -1,0 +1,89 @@
+name: CI - Quality & Security (front+back)
+
+on:
+  pull_request:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  build-and-scan:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0   # Sonar gosta do histórico completo
+
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      # ---------- BACKEND ----------
+      - name: Install backend deps
+        run: npm ci || npm install
+        working-directory: backend
+
+      - name: Build backend
+        run: npm run build --if-present
+        working-directory: backend
+
+      # ---------- FRONTEND ----------
+      - name: Install frontend deps
+        run: npm ci || npm install
+        working-directory: frontend
+
+      - name: Build frontend
+        run: npm run build --if-present
+        working-directory: frontend
+
+      # ---------- SONARCLOUD ----------
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+      # ---------- SNYK (BACKEND) ----------
+      - name: Snyk Test (backend)
+        uses: snyk/actions/node@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          args: test --severity-threshold=high
+          command: test
+          project: backend
+        working-directory: backend
+
+      # ---------- SNYK (FRONTEND) ----------
+      - name: Snyk Test (frontend)
+        uses: snyk/actions/node@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          args: test --severity-threshold=high
+          command: test
+          project: frontend
+        working-directory: frontend
+
+      # (Opcional) Enviar “monitor” pro dashboard do Snyk sem quebrar o build
+      - name: Snyk Monitor (backend)
+        if: always()
+        continue-on-error: true
+        uses: snyk/actions/node@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          command: monitor
+        working-directory: backend
+
+      - name: Snyk Monitor (frontend)
+        if: always()
+        continue-on-error: true
+        uses: snyk/actions/node@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          command: monitor
+        working-directory: frontend
