@@ -29,7 +29,7 @@ export default defineConfig({
   ],
   server: {
     port: 19006,
-    host: '0.0.0.0',
+    host: true,
     hmr: {
       overlay: false
     }

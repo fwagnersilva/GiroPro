@@ -57,9 +57,12 @@ Esta seção registra as tarefas que foram concluídas, com um breve resumo do q
 
 ## 🔴 Prioridade Crítica
 
+### Backend
+- [>] **Resolver Problema de Schema Drizzle-SQLite:** Investigar e corrigir a incompatibilidade entre o Drizzle ORM e a criação manual de tabelas SQLite, que impede o registro de usuários. (Status: Em Andamento)
+
 ### Frontend
 - [x] **Resolver problema de renderização do Frontend (Tela Branca)**
-  - **Progresso:** Resolvido com sucesso. O frontend está agora 100% funcional.
+  - **Progresso:** Resolvido com sucesso. O frontend está agora 100% funcional via build estático.
 
 ## 🟠 Prioridade Alta
 
@@ -78,6 +81,9 @@ Esta seção registra as tarefas que foram concluídas, com um breve resumo do q
   - **Ações Necessárias:** Investigar a possibilidade de atualizações manuais de pacotes específicos ou aguardar novas versões do Expo SDK que resolvam esses conflitos. Para o momento, as vulnerabilidades são consideradas de baixo risco para o ambiente de desenvolvimento local, mas devem ser monitoradas para produção.
   - **Observação:** O projeto está funcional, mas a resolução completa das vulnerabilidades requer análise mais aprofundada das dependências.
 
+### Infraestrutura e Setup
+- [ ] **Migração para SQLite Persistente:** Após resolver o problema de schema Drizzle-SQLite, configurar o backend para usar um arquivo SQLite persistente (`./giropro.db`) e garantir que as migrações funcionem corretamente.
+
 ## 🟡 Prioridade Média
 
 ### Infraestrutura e Setup
@@ -87,6 +93,7 @@ Esta seção registra as tarefas que foram concluídas, com um breve resumo do q
   - **Descrição:** Implementar uma solução para que as migrações do banco de dados (drizzle-kit push) possam ser executadas de forma não interativa, utilizando a flag `--force` ou ajustando o script `setup_sqlite.sh` para incluir essa opção. Isso evitará a necessidade de intervenção manual durante o processo de setup.
 - [ ] **Aprimoramento da Documentação de Setup**
   - **Descrição:** Atualizar o `docs/01_tutoriais/01_setup_completo.md` para refletir as correções e os problemas identificados, incluindo uma seção de troubleshooting para o problema da "Tela Branca" no frontend.
+- [ ] **Configurar Vite Dev Mode Adequadamente:** Investigar e corrigir a configuração do Vite para que o modo de desenvolvimento funcione corretamente, permitindo hot reload e evitando a necessidade de build estático para testes.
 
 ### Oportunidades de Melhoria - Complexidade Baixa
 
@@ -140,7 +147,7 @@ Esta seção registra as tarefas que foram concluídas, com um breve resumo do q
 
 ---
 
-**Última Atualização:** 03 de Setembro de 2025
+**Última Atualização:** 03 de Setembro de 2025 - 19:00
 
 
 
