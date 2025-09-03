@@ -3,7 +3,7 @@ import { authMiddleware } from '../middlewares/auth';
 import { backupService } from '../services/backupService';
 import { performanceService } from '../services/performanceService';
 import { cacheService } from '../services/cacheService';
-import { logger } from '../utils/logger';
+import { Logger } from "../utils/Logger";
 
 const router = Router();
 
@@ -41,7 +41,7 @@ router.get('/health', async (req, res) => {
       timestamp: new Date().toISOString()
     });
   } catch (error) {
-    logger.error('Erro ao obter status do sistema:', error);
+    Logger.error('Erro ao obter status do sistema:', error);
     res.status(500).json({
       error: 'Erro interno do servidor',
       code: 'INTERNAL_ERROR'
@@ -66,7 +66,7 @@ router.get('/metrics', async (req, res) => {
       period
     });
   } catch (error) {
-    logger.error('Erro ao obter métricas:', error);
+    Logger.error('Erro ao obter métricas:', error);
     res.status(500).json({
       error: 'Erro interno do servidor',
       code: 'INTERNAL_ERROR'
@@ -92,7 +92,7 @@ router.post('/backup', async (req, res) => {
       status: 'started'
     });
   } catch (error) {
-    logger.error('Erro ao iniciar backup:', error);
+    Logger.error('Erro ao iniciar backup:', error);
     return res.status(500).json({
       error: 'Erro interno do servidor',
       code: 'INTERNAL_ERROR'
@@ -117,7 +117,7 @@ router.get('/backup/history', async (req, res) => {
       }
     });
   } catch (error) {
-    logger.error('Erro ao obter histórico de backups:', error);
+    Logger.error('Erro ao obter histórico de backups:', error);
     res.status(500).json({
       error: 'Erro interno do servidor',
       code: 'INTERNAL_ERROR'
@@ -137,7 +137,7 @@ router.get('/backup/status', async (req, res) => {
       config: backupService.getConfig()
     });
   } catch (error) {
-    logger.error('Erro ao obter status do backup:', error);
+    Logger.error('Erro ao obter status do backup:', error);
     res.status(500).json({
       error: 'Erro interno do servidor',
       code: 'INTERNAL_ERROR'
@@ -152,10 +152,10 @@ router.post('/cache/clear', async (req, res) => {
     
     if (pattern === '*') {
       await cacheService.flushAll();
-      logger.info('Cache completamente limpo por admin', { userId: req.user.id });
+      Logger.info('Cache completamente limpo por admin', { userId: req.user.id });
     } else {
       await cacheService.delPattern(pattern);
-      logger.info('Cache limpo por padrão', { pattern, userId: req.user.id });
+      Logger.info('Cache limpo por padrão', { pattern, userId: req.user.id });
     }
     
     res.json({
@@ -163,7 +163,7 @@ router.post('/cache/clear', async (req, res) => {
       pattern
     });
   } catch (error) {
-    logger.error('Erro ao limpar cache:', error);
+    Logger.error('Erro ao limpar cache:', error);
     res.status(500).json({
       error: 'Erro interno do servidor',
       code: 'INTERNAL_ERROR'
@@ -183,7 +183,7 @@ router.get('/cache/stats', async (req, res) => {
       // como uso de memória, número de chaves, etc.
     });
   } catch (error) {
-    logger.error('Erro ao obter estatísticas do cache:', error);
+    Logger.error('Erro ao obter estatísticas do cache:', error);
     res.status(500).json({
       error: 'Erro interno do servidor',
       code: 'INTERNAL_ERROR'
@@ -205,7 +205,7 @@ router.get('/logs', async (req, res) => {
       limit
     });
   } catch (error) {
-    logger.error('Erro ao obter logs:', error);
+    Logger.error('Erro ao obter logs:', error);
     res.status(500).json({
       error: 'Erro interno do servidor',
       code: 'INTERNAL_ERROR'
@@ -221,11 +221,11 @@ router.post('/maintenance', async (req, res) => {
     if (enabled) {
       await cacheService.set('maintenance:enabled', true, 86400);
       await cacheService.set('maintenance:message', message || 'Sistema em manutenção', 86400);
-      logger.warn('Modo de manutenção ativado', { userId: req.user.id, message });
+      Logger.warn('Modo de manutenção ativado', { userId: req.user.id, message });
     } else {
       await cacheService.del('maintenance:enabled');
       await cacheService.del('maintenance:message');
-      logger.info('Modo de manutenção desativado', { userId: req.user.id });
+      Logger.info('Modo de manutenção desativado', { userId: req.user.id });
     }
     
     res.json({
@@ -233,7 +233,7 @@ router.post('/maintenance', async (req, res) => {
       enabled
     });
   } catch (error) {
-    logger.error('Erro ao alterar modo de manutenção:', error);
+    Logger.error('Erro ao alterar modo de manutenção:', error);
     res.status(500).json({
       error: 'Erro interno do servidor',
       code: 'INTERNAL_ERROR'
@@ -250,7 +250,7 @@ router.get('/users/stats', async (req, res) => {
       message: 'Estatísticas de usuários seriam implementadas aqui'
     });
   } catch (error) {
-    logger.error('Erro ao obter estatísticas de usuários:', error);
+    Logger.error('Erro ao obter estatísticas de usuários:', error);
     res.status(500).json({
       error: 'Erro interno do servidor',
       code: 'INTERNAL_ERROR'

@@ -3,7 +3,7 @@ import { jornadas, abastecimentos, despesas } from '../db/schema';
 import { eq, and, isNull, gte, lte, sum, count, desc, avg, sql, ne } from 'drizzle-orm';
 import { DateUtils } from '../utils/dateUtils';
 import { StatisticsCalculator } from '../utils/statisticsCalculator';
-import { logger } from '../utils/logger';
+import { Logger } from "../utils/logger";
 
 export interface ReportParams {
   userId: string;

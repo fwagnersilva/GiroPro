@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { JourneyService } from '../services/journeyService';
 import { CreateJourneyRequest, UpdateJourneyRequest, JourneyFilters } from '../types';
-import { logger } from '../utils/logger';
+import { Logger } from "../utils/logger";
 import { Cache } from '../utils/cache';
 import { z } from 'zod';
 import { performance } from 'perf_hooks';

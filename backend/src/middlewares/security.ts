@@ -2,7 +2,7 @@ import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
 import slowDown, { Options } from 'express-slow-down';
 import { Request, Response, NextFunction } from 'express';
-import { logger } from '../utils/logger';
+import { Logger } from '../utils/Logger';
 import { cacheService } from '../services/cacheService';
 
 // Configuração do Helmet para segurança
@@ -77,7 +77,7 @@ export const bruteForceProtection = async (req: Request, res: Response, next: Ne
     const attempts = await cacheService.increment(key, 3600); // 1 hora
 
     if (attempts > 10) {
-      logger.warn(`Brute force attack detected for email: ${email}`, {
+      Logger.warn(`Brute force attack detected for email: ${email}`, {
         ip: req.ip,
         userAgent: req.get('User-Agent'),
         attempts
@@ -93,7 +93,7 @@ export const bruteForceProtection = async (req: Request, res: Response, next: Ne
     req.bruteForceAttempts = attempts;
     next();
   } catch (error) {
-    logger.error('Brute force protection error:', error);
+    Logger.error('Brute force protection error:', error);
     next();
   }
 };
@@ -107,7 +107,7 @@ export const clearBruteForceAttempts = async (req: Request, res: Response, next:
       if (res.statusCode === 200 && data.token && req.body?.email) {
         const key = `brute_force:${req.body.email}`;
         cacheService.del(key).catch(error => {
-          logger.error('Failed to clear brute force attempts:', error);
+          Logger.error('Failed to clear brute force attempts:', error);
         });
       }
       
@@ -116,7 +116,7 @@ export const clearBruteForceAttempts = async (req: Request, res: Response, next:
 
     next();
   } catch (error) {
-    logger.error('Clear brute force attempts error:', error);
+    Logger.error('Clear brute force attempts error:', error);
     next();
   }
 };
@@ -146,7 +146,7 @@ export const sanitizeHeaders = (req: Request, res: Response, next: NextFunction)
   // Valida User-Agent
   const userAgent = req.get('User-Agent');
   if (!userAgent || userAgent.length > 500) {
-    logger.warn(`Suspicious User-Agent from IP: ${req.ip}`, {
+    Logger.warn(`Suspicious User-Agent from IP: ${req.ip}`, {
       ip: req.ip,
       userAgent: userAgent?.substring(0, 100)
     });
@@ -176,7 +176,7 @@ export const sqlInjectionProtection = (req: Request, res: Response, next: NextFu
   const suspicious = checkValue(req.body) || checkValue(req.query) || checkValue(req.params);
 
   if (suspicious) {
-    logger.warn(`SQL injection attempt detected from IP: ${req.ip}`, {
+    Logger.warn(`SQL injection attempt detected from IP: ${req.ip}`, {
       ip: req.ip,
       userAgent: req.get("User-Agent"),
       path: req.path,
@@ -215,7 +215,7 @@ export const xssProtection = (req: Request, res: Response, next: NextFunction) =
   const suspicious = checkValue(req.body) || checkValue(req.query) || checkValue(req.params);
 
   if (suspicious) {
-    logger.warn(`XSS attempt detected from IP: ${req.ip}`, {
+    Logger.warn(`XSS attempt detected from IP: ${req.ip}`, {
       ip: req.ip,
       userAgent: req.get('User-Agent'),
       path: req.path,
@@ -251,9 +251,9 @@ export const securityLogger = (req: Request, res: Response, next: NextFunction) 
 
     // Log requests suspeitos
     if (res.statusCode >= 400 || duration > 5000) {
-      logger.warn('Suspicious request detected', logData);
+      Logger.warn('Suspicious request detected', logData);
     } else {
-      logger.info('Request processed', logData);
+      Logger.info('Request processed', logData);
     }
   });
 

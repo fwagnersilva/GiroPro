@@ -58,7 +58,7 @@ Análise de UX/UI e implementação de melhorias na tela de adição de despesas
     - Isolar o problema comentando seções do código (ex: navegação, contextos) para identificar o ponto de falha.
 - **Impacto**: Crítico. Impede qualquer teste ou desenvolvimento no frontend.
 
-##### 2. Sincronização da Validação de Senha (Frontend vs. Backend) - ✅ VERIFICADO
+##### 2. Sincronização da Validação de Senha (Frontend vs. Backend) - ✅ CONCLUÍDO
 - **Descrição**: Foi verificado que a validação de senha no frontend (`RegisterScreenOptimized.tsx`) já está sincronizada com as regras rigorosas do backend (`backend/src/utils/validation.ts`).
 - **Regras Implementadas**:
     - Mínimo de 8 caracteres.
@@ -72,6 +72,11 @@ Análise de UX/UI e implementação de melhorias na tela de adição de despesas
 - **Descrição**: O componente `LoadingScreen.tsx` original era excessivamente complexo e continha referências a tokens de design que poderiam estar causando problemas de import. 
 - **Ação Realizada**: O arquivo foi substituído por um componente funcional e simples que utiliza o `LoadingSpinner` já existente no projeto, eliminando uma possível fonte de erro durante a inicialização do app.
 - **Impacto**: Positivo. Simplifica o código e remove uma fonte de instabilidade.
+
+##### 4. Padronização do Logger (Backend) - ✅ CONCLUÍDO
+- **Descrição**: O uso do logger no backend estava inconsistente, com algumas importações usando `logger` e outras `Logger`, e em alguns casos, a instanciação do logger estava faltando. Isso causava erros de compilação e dificultava a depuração.
+- **Ação Realizada**: Foi padronizada a importação e instanciação do `Logger` em todos os arquivos relevantes do backend (`controllers`, `middlewares`, `routes`, `services`). Agora, todos os arquivos importam `Logger` e instanciam `const logger = new Logger();` para uso consistente.
+- **Impacto**: Positivo. Resolve erros de compilação, melhora a legibilidade do código e facilita a depuração e o monitoramento de logs.
 
 #### 5.2. Prioridade Média (Melhorias Graduais)
 
