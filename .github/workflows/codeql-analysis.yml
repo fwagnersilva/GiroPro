@@ -1,40 +1,52 @@
-steps:
-- name: Checkout repository
-  uses: actions/checkout@v3
-  with:
-    fetch-depth: 0
+name: "CodeQL"
 
-- name: Initialize CodeQL
-  uses: github/codeql-action/init@v2
-  with:
-    languages: java, javascript # Inclua as linguagens que você usa
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  schedule:
+    - cron: "0 0 * * 0" # Weekly on Sunday at midnight
 
-- name: Setup Node.js
-  uses: actions/setup-node@v3
-  with:
-    node-version: 18
+jobs:
+  analyze:
+    name: Analyze
+    runs-on: ubuntu-latest
+    permissions:
+      security-events: write
+      actions: read
 
-- name: Install backend dependencies
-  run: npm ci || npm install
-  working-directory: backend
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
 
-- name: Build backend
-  run: npm run build --if-present
-  working-directory: backend
+    - name: Initialize CodeQL
+      uses: github/codeql-action/init@v2
+      with:
+        languages: javascript # Ajustado para analisar apenas JavaScript
 
-- name: Install frontend dependencies
-  run: npm ci || npm install
-  working-directory: frontend
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: 18
 
-- name: Build frontend
-  run: npm run build --if-present
-  working-directory: frontend
+    - name: Install backend dependencies
+      run: npm ci || npm install
+      working-directory: backend
 
-- name: Perform CodeQL Analysis
-  uses: github/codeql-action/analyze@v2
-```
+    - name: Build backend
+      run: npm run build --if-present
+      working-directory: backend
 
-**Explicação das Mudanças:**
-*   `github/codeql-action/init@v2`: Inicializa o ambiente CodeQL e especifica as linguagens a serem analisadas (`java` e `javascript`). Certifique-se de incluir `kotlin` se houver código Kotlin significativo.
-*   As etapas de `Install backend deps`, `Build backend`, `Install frontend deps` e `Build frontend` são cruciais. O CodeQL precisa que o código seja compilado para que ele possa analisá-lo. Ao incluir essas etapas antes de `Perform CodeQL Analysis`, você garante que o CodeQL tenha acesso a todos os artefatos de build necessários.
-*   `github/codeql-action/analyze@v2`: Executa a análise do CodeQL.
+    - name: Install frontend dependencies
+      run: npm ci || npm install
+      working-directory: frontend
+
+    - name: Build frontend
+      run: npm run build --if-present
+      working-directory: frontend
+
+    - name: Perform CodeQL Analysis
+      uses: github/codeql-action/analyze@v2
