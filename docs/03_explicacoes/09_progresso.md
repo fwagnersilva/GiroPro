@@ -73,6 +73,8 @@ Esta seção registra as tarefas que foram concluídas, com um breve resumo do q
 ### Infraestrutura e Setup
 - [ ] **Criação de Script de Setup Automatizado**
   - **Descrição:** Desenvolver um script que automatize todos os passos de configuração do ambiente (instalação de dependências frontend/backend, execução do `setup_sqlite.sh`).
+- [ ] **Migração de Banco de Dados Não Interativa**
+  - **Descrição:** Implementar uma solução para que as migrações do banco de dados (drizzle-kit push) possam ser executadas de forma não interativa, utilizando a flag `--force` ou ajustando o script `setup_sqlite.sh` para incluir essa opção. Isso evitará a necessidade de intervenção manual durante o processo de setup.
 - [ ] **Aprimoramento da Documentação de Setup**
   - **Descrição:** Atualizar o `docs/01_tutoriais/01_setup_completo.md` para refletir as correções e os problemas identificados, incluindo uma seção de troubleshooting para o problema da "Tela Branca" no frontend.
 
@@ -115,5 +117,3 @@ Esta seção registra as tarefas que foram concluídas, com um breve resumo do q
 ---
 
 **Última Atualização:** 03 de Setembro de 2025
-
-
