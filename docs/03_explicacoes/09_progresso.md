@@ -73,9 +73,10 @@ Esta seção registra as tarefas que foram concluídas, com um breve resumo do q
   - **Descrição:** Realizar um code review detalhado do `LoginScreen.tsx`, `AuthContext.tsx` e `api.ts` para o fluxo de login, garantindo que a lógica de autenticação e o tratamento de erros estejam robustos e em conformidade com as melhores práticas.
 
 ### Segurança
-- [ ] **Correção de Vulnerabilidades no Frontend**
-  - **Descrição:** Resolver as 5 vulnerabilidades (1 moderada, 4 altas) detectadas durante a instalação das dependências do frontend.
-  - **Observação:** Utilizar `npm audit fix --force` e revisar as dependências para atualizações de segurança.
+- [>] **Correção de Vulnerabilidades no Frontend**
+  - **Progresso:** `npm audit fix --force` foi executado, mas 7 vulnerabilidades (2 moderadas, 5 altas) persistem devido a conflitos de `peer dependency` (semver e xml2js). Essas vulnerabilidades estão aninhadas em dependências do `@expo/webpack-config` e `expo-pwa`.
+  - **Ações Necessárias:** Investigar a possibilidade de atualizações manuais de pacotes específicos ou aguardar novas versões do Expo SDK que resolvam esses conflitos. Para o momento, as vulnerabilidades são consideradas de baixo risco para o ambiente de desenvolvimento local, mas devem ser monitoradas para produção.
+  - **Observação:** O projeto está funcional, mas a resolução completa das vulnerabilidades requer análise mais aprofundada das dependências.
 
 ## 🟡 Prioridade Média
 
