@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { cacheService } from '../services/cacheService';
-import { Logger } from '../utils/Logger';
+import { Logger } from '../utils/logger';
 
 interface CacheOptions {
   ttl?: number; // Time to live em segundos

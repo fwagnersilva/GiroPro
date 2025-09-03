@@ -50,7 +50,7 @@ class PerformanceService {
 
     // Log de requests lentos
     if (metric.duration > 2000) {
-      Logger.warn(\'Slow request detected\', {       endpoint: metric.endpoint,
+    Logger.warn('Slow request detected', {       endpoint: metric.endpoint,
         method: metric.method,
         duration: metric.duration,
         statusCode: metric.statusCode
@@ -172,7 +172,7 @@ class PerformanceService {
       const dailyStats = this.getAggregatedStats(1440); // 24 horas
       await cacheService.set('performance:stats:daily', dailyStats, 86400);
     } catch (error) {
-      Logger.error(\'Failed to save aggregated metrics:\', error);
+      Logger.error('Failed to save aggregated metrics:', error);
     }
   }
 
@@ -181,7 +181,7 @@ class PerformanceService {
     try {
       return await cacheService.get(`performance:stats:${period}`);
     } catch (error) {
-      Logger.error(\'Failed to get cached stats:\', error);     return null;
+      Logger.error("Failed to get cached stats:", error);     return null;
     }
   }
 

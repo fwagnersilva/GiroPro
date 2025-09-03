@@ -81,7 +81,7 @@ class BackupService {
     const startTime = Date.now();
 
     try {
-      logger.info('Iniciando backup automático');
+      Logger.info('Iniciando backup automático');
 
       // Criar diretório de backup se não existir
       await this.ensureBackupDirectory();
@@ -134,7 +134,7 @@ class BackupService {
         success: true
       });
 
-      logger.info('Backup concluído com sucesso', {
+      Logger.info('Backup concluído com sucesso', {
         filename: path.basename(finalFilepath),
         size: `${(fileSize / 1024 / 1024).toFixed(2)}MB`,
         duration: `${duration}ms`
@@ -149,7 +149,7 @@ class BackupService {
 
     } catch (error) {
       const duration = Date.now() - startTime;
-      logger.error('Erro durante backup:', error);
+      Logger.error('Erro durante backup:', error);
 
       await this.saveBackupInfo({
         timestamp: Date.now(),
@@ -237,7 +237,7 @@ class BackupService {
 
     // Aqui seria implementado o upload para S3
     // Por simplicidade, apenas logamos que seria feito
-    logger.info('Upload para S3 seria executado aqui', {
+    Logger.info('Upload para S3 seria executado aqui', {
       bucket: this.config.storage.s3.bucket,
       file: path.basename(filepath)
     });
@@ -307,11 +307,11 @@ class BackupService {
       // Deletar arquivos antigos
       for (const file of toDelete) {
         await fs.unlink(file.path);
-        logger.info(`Backup antigo removido: ${file.name}`);
+        Logger.info(`Backup antigo removido: ${file.name}`);
       }
 
     } catch (error) {
-      logger.error('Erro ao limpar backups antigos:', error);
+      Logger.error('Erro ao limpar backups antigos:', error);
     }
   }
 
@@ -339,7 +339,7 @@ class BackupService {
       await cacheService.set('backup:history', backupHistory, 86400 * 30); // 30 dias
       await cacheService.set('backup:last', info, 86400 * 7); // 7 dias
     } catch (error) {
-      logger.error('Erro ao salvar informações do backup:', error);
+      Logger.error('Erro ao salvar informações do backup:', error);
     }
   }
 
@@ -348,7 +348,7 @@ class BackupService {
     try {
       return await cacheService.get('backup:history') || [];
     } catch (error) {
-      logger.error('Erro ao obter histórico de backups:', error);
+      Logger.error('Erro ao obter histórico de backups:', error);
       return [];
     }
   }
@@ -358,7 +358,7 @@ class BackupService {
     try {
       return await cacheService.get('backup:last');
     } catch (error) {
-      logger.error('Erro ao obter último backup:', error);
+      Logger.error('Erro ao obter último backup:', error);
       return null;
     }
   }
@@ -386,14 +386,14 @@ class BackupService {
       // Verificar se arquivo existe
       await fs.access(filepath);
 
-      logger.warn('Restauração de backup solicitada', { filename });
+      Logger.warn('Restauração de backup solicitada', { filename });
       
       // Aqui seria implementada a lógica de restauração
       // Por segurança, apenas logamos a tentativa
       
       return true;
     } catch (error) {
-      logger.error('Erro ao restaurar backup:', error);
+      Logger.error('Erro ao restaurar backup:', error);
       return false;
     }
   }

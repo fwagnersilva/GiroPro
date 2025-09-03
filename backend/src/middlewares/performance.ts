@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import compression from 'compression';
 import { performanceService } from '../services/performanceService';
-import { Logger } from '../utils/Logger';
+import { Logger } from '../utils/logger';
 
 // Middleware de compressão
 export const compressionMiddleware = compression({

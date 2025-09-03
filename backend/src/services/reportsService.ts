@@ -3,7 +3,7 @@ import { jornadas, abastecimentos, despesas } from '../db/schema';
 import { eq, and, isNull, gte, lte, sum, count, desc, avg, sql, ne } from 'drizzle-orm';
 import { DateUtils } from '../utils/dateUtils';
 import { StatisticsCalculator } from '../utils/statisticsCalculator';
-import { Logger } from "../utils/logger";
+import { Logger } from "../utils/Logger";
 
 export interface ReportParams {
   userId: string;
@@ -30,7 +30,7 @@ interface InactiveVehicle {
 }
 
 export class ReportsService {
-  private static readonly loggerInstance = logger;
+  private static readonly LoggerInstance = Logger;
 
   /**
    * Gera relatório semanal otimizado
@@ -40,7 +40,7 @@ export class ReportsService {
     
     const { dataInicio, dataFim } = DateUtils.calculateWeeklyPeriod(startDate, endDate);
     
-    ReportsService.loggerInstance.info("Gerando relatório semanal", { 
+    ReportsService.LoggerInstance.info("Gerando relatório semanal", { 
       userId, dataInicio, dataFim, vehicleId 
     });
 
@@ -90,7 +90,7 @@ export class ReportsService {
     
     const { dataInicio, dataFim } = DateUtils.calculateMonthlyPeriod(startDate, endDate);
     
-    ReportsService.loggerInstance.info("Gerando relatório mensal", { 
+    ReportsService.LoggerInstance.info("Gerando relatório mensal", { 
       userId, dataInicio, dataFim, vehicleId 
     });
 
@@ -652,7 +652,7 @@ export class ReportsService {
    * Exporta dados para formato específico
    */
   static async exportToFormat(data: any, format: string): Promise<any> {
-    ReportsService.loggerInstance.info("Exportando dados", { format });
+    ReportsService.LoggerInstance.info("Exportando dados", { format });
     
     switch (format.toLowerCase()) {
       case 'json':
@@ -670,11 +670,11 @@ export class ReportsService {
         return JSON.stringify(data);
       case 'xlsx':
         // Para implementação futura com biblioteca específica
-        ReportsService.loggerInstance.warn("Formato XLSX não implementado, retornando JSON");
+        ReportsService.LoggerInstance.warn("Formato XLSX não implementado, retornando JSON");
         return JSON.stringify(data, null, 2);
       case 'pdf':
         // Para implementação futura com biblioteca específica
-        ReportsService.loggerInstance.warn("Formato PDF não implementado, retornando JSON");
+        ReportsService.LoggerInstance.warn("Formato PDF não implementado, retornando JSON");
         return JSON.stringify(data, null, 2);
       default:
         return JSON.stringify(data, null, 2);
@@ -685,7 +685,7 @@ export class ReportsService {
    * Obtém status de exportação em lote
    */
   static async getBatchExportStatus(batchId: string): Promise<any> {
-    ReportsService.loggerInstance.info("Obtendo status de exportação em lote", { batchId });
+    ReportsService.LoggerInstance.info("Obtendo status de exportação em lote", { batchId });
     
     // Implementação básica - em produção seria conectado a um sistema de filas
     return {
@@ -705,7 +705,7 @@ export class ReportsService {
    */
   static async createBatchExportJob(params: any): Promise<string> {
     const jobId = crypto.randomUUID();
-    ReportsService.loggerInstance.info("Criando job de exportação em lote", { jobId, params });
+    ReportsService.LoggerInstance.info("Criando job de exportação em lote", { jobId, params });
     
     // Implementação básica - em produção seria conectado a um sistema de filas
     return jobId;
@@ -717,7 +717,7 @@ export class ReportsService {
   static async generateAlerts(params: { userId: string; vehicleId?: string }) {
     const { userId, vehicleId } = params;
     
-    ReportsService.loggerInstance.info("Gerando alertas", { userId, vehicleId });
+    ReportsService.LoggerInstance.info("Gerando alertas", { userId, vehicleId });
     
     // Implementação básica de alertas
     return {
@@ -730,7 +730,7 @@ export class ReportsService {
    * Obtém progresso das metas
    */
   static async getGoalsProgress(userId: string, vehicleId?: string) {
-    ReportsService.loggerInstance.info("Obtendo progresso das metas", { userId, vehicleId });
+    ReportsService.LoggerInstance.info("Obtendo progresso das metas", { userId, vehicleId });
     
     // Implementação básica de progresso de metas
     return {

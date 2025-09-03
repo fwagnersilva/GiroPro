@@ -494,10 +494,10 @@ export class AdvancedAnalyticsController {
     }
   }
 
-  /**
+   /**
    * Comparativo entre veículos - NOVO MÉTODO
    */
-  static async getVehicleComparison(req: AuthenticatedRequest, res: Response) {
+  static async compareVehicles(req: AuthenticatedRequest, res: Response) {
     try {
       if (!req.user?.id) {
         throw new UnauthorizedError('Usuário não autenticado');
@@ -505,50 +505,63 @@ export class AdvancedAnalyticsController {
 
       const validation = vehicleIdsSchema.safeParse(req.body);
       if (!validation.success) {
-        throw new ValidationError('IDs de veículos inválidos', validation.error.errors);
+        throw new ValidationError('Parâmetros inválidos', validation.error.errors);
       }
 
       const { vehicleIds } = validation.data;
-      const { dataInicio, dataFim, periodo, timezone } = analyticsQuerySchema.parse(req.query);
-      const { startDate, endDate } = this.calculatePeriod(periodo, dataInicio, dataFim, timezone);
+      const { id: userId } = req.user;
 
       const comparisonData = [];
 
       for (const vehicleId of vehicleIds) {
-        if (!(await this.validateVehicleAccess(req.user.id, vehicleId))) {
+        if (!(await this.validateVehicleAccess(userId, vehicleId))) {
           throw new NotFoundError(`Veículo com ID ${vehicleId} não encontrado ou sem acesso`);
         }
 
-        const [fuelings, journeys] = await this.fetchVehicleData(req.user.id, vehicleId, startDate, endDate);
+        const [fuelings, journeys] = await this.fetchVehicleData(userId, vehicleId, new Date(0), new Date());
         const metrics = this.calculateVehicleMetrics(fuelings, journeys);
-
-        comparisonData.push({ 
-          vehicleId, 
-          ...metrics 
-        });
+        const vehicle = await db.select().from(veiculos).where(eq(veiculos.id, vehicleId));
+        comparisonData.push({ ...vehicle[0], ...metrics });
       }
 
       return res.json({
         success: true,
-        data: {
-          comparativo: comparisonData,
-          periodo: {
-            dataInicio: startDate.toISOString(),
-            dataFim: endDate.toISOString(),
-            descricao: this.getPeriodDescription(startDate, endDate),
-            timezone: timezone
-          }
-        }
+        data: comparisonData,
       });
-
     } catch (error: any) {
-      console.error('Erro na comparação de veículos:', error);
+      console.error('Erro ao comparar veículos:', error);
       if (error instanceof ValidationError || error instanceof UnauthorizedError || error instanceof NotFoundError) {
         throw error;
       }
       throw new Error('Erro interno do servidor ao comparar veículos');
     }
   }
+
+
+
+
+
+
+
+
+
+
+
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 

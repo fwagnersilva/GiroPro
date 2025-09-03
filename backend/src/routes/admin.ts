@@ -3,7 +3,7 @@ import { authMiddleware } from '../middlewares/auth';
 import { backupService } from '../services/backupService';
 import { performanceService } from '../services/performanceService';
 import { cacheService } from '../services/cacheService';
-import { Logger } from "../utils/Logger";
+import { Logger } from "../utils/logger";
 
 const router = Router();
 

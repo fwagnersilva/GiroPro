@@ -1,7 +1,7 @@
 import { Response } from 'express';
 import { z } from 'zod';
 import { AuthenticatedRequest } from '../types/auth';
-import { Logger } from '../utils/Logger';
+import { Logger } from '../utils/logger';
 import { cacheService } from '../utils/cache';
 import { AppError } from '../utils/customErrors';
 import { asyncHandler } from '../utils/asyncHandler';

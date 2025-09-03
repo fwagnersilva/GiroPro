@@ -78,15 +78,28 @@ Esta seção registra as tarefas que foram concluídas, com um breve resumo do q
 - [ ] **Aprimoramento da Documentação de Setup**
   - **Descrição:** Atualizar o `docs/01_tutoriais/01_setup_completo.md` para refletir as correções e os problemas identificados, incluindo uma seção de troubleshooting para o problema da "Tela Branca" no frontend.
 
-### Oportunidades de Melhoria - AddFuelingScreen
-- [ ] **Reorganizar Hierarquia de Campos**
-  - **Descrição:** Otimizar a disposição dos campos no formulário para seguir um fluxo lógico e intuitivo de preenchimento, reduzindo a carga cognitiva do usuário.
-- [ ] **Implementar Design System Consistente**
-  - **Descrição:** Aplicar os tokens de design definidos no projeto para garantir uma identidade visual coesa e facilitar a manutenção e escalabilidade da interface.
-- [ ] **Adicionar Validação em Tempo Real**
-  - **Descrição:** Fornecer feedback imediato e claro ao usuário sobre a validade dos dados inseridos, prevenindo erros e guiando o preenchimento correto do formulário.
-- [ ] **Melhorar Feedback Visual e Microinterações**
-  - **Descrição:** Tornar a interface mais dinâmica e responsiva através de animações e microinterações, melhorando a percepção de fluidez e a experiência do usuário.
+### Oportunidades de Melhoria - Complexidade Baixa
+
+- [ ] **Reorganizar Hierarquia de Campos:** Otimizar a disposição dos campos no formulário para seguir um fluxo lógico e intuitivo de preenchimento, reduzindo a carga cognitiva do usuário.
+- [ ] **Implementar Design System Consistente:** Aplicar os tokens de design definidos no projeto para garantir uma identidade visual coesa e facilitar a manutenção e escalabilidade da interface.
+- [ ] **Adicionar Validação em Tempo Real:** Fornecer feedback imediato e claro ao usuário sobre a validade dos dados inseridos, prevenindo erros e guiando o preenchimento correto do formulário.
+- [ ] **Melhorar Feedback Visual e Microinterações:** Tornar a interface mais dinâmica e responsiva através de animações e microinterações, melhorando a percepção de fluidez e a experiência do usuário.
+
+### Oportunidades de Melhoria - Complexidade Média
+
+- [ ] **Ícones e Elementos Visuais:** Tornar a interface mais informativa e agradável visualmente com o uso de ícones e outros elementos gráficos.
+- [ ] **Cores e Contraste:** Garantir que a paleta de cores seja esteticamente agradável, funcional e acessível.
+- [ ] **Layout e Espaçamento:** Criar um layout bem estruturado e responsivo que se adapte a diferentes tamanhos de tela.
+- [ ] **Animações e Transições:** Adicionar movimento à interface para torná-la mais dinâmica e engajante.
+
+### Oportunidades de Melhoria - Complexidade Alta
+
+- [ ] **Feedback Háptico (Mobile):** Utilizar a vibração do dispositivo para fornecer feedback físico em interações importantes.
+- [ ] **Estados Interativos:** Fornecer feedback visual claro para todas as interações do usuário.
+- [ ] **Adaptações por Plataforma:** Otimizar a experiência do usuário para as convenções de design de cada plataforma (iOS, Android, Web).
+- [ ] **Implementar Testes Automatizados:** Garantir a qualidade do código e prevenir regressões futuras com a criação de testes automatizados.
+- [ ] **Otimizar Performance:** Garantir que o aplicativo seja rápido e responsivo, mesmo em dispositivos mais antigos.
+- [ ] **Documentar Componentes e Padrões:** Facilitar a manutenção e a colaboração no projeto com uma documentação clara e abrangente.
 
 ## 🟢 Prioridade Baixa
 
