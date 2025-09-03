@@ -45,7 +45,10 @@ const FormInput: React.FC<FormInputProps> = React.memo(({
       onChangeText(text);
     }
     // Limpa o erro local ao digitar, a validação ocorrerá no blur
-    if (localError) {
+    if (validation) {
+      const validationError = validation(text);
+      setLocalError(validationError);
+    } else if (localError) {
       setLocalError(null);
     }
   }, [onChangeText, localError]);
@@ -249,6 +252,5 @@ const styles = StyleSheet.create({
 });
 
 export default FormInput;
-
 
 
