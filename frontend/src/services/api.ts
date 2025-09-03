@@ -432,6 +432,10 @@ export const dashboardService = {
 };
 
 export default api;
+export { api };
+
+// Alias para compatibilidade
+export const userService = authService;
 
 
 // Serviços de relatórios

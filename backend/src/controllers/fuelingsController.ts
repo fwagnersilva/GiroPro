@@ -263,7 +263,11 @@ export const getPriceHistory = asyncHandler(async (req: Request, res: Response) 
     }
 
     // Calcular estatísticas otimizadas
-    const statistics = FuelPricesService.calculatePriceStatistics(historyData.historico);
+    const statistics = await FuelPricesService.getPriceStatistics({
+      periodo: params.periodoDias || 30,
+      tipoCombustivel: params.tipoCombustivel,
+      incluirTendencia: true
+    });
 
     return sendResponse(
       res,
@@ -462,7 +466,9 @@ export const getNearbyPrices = asyncHandler(async (req: Request, res: Response) 
       tipoCombustivel: locationQuery.tipoCombustivel
     };
     
-    const nearbyPrices = await FuelPricesService.getNearbyPrices(nearbyQuery);
+    // TODO: Implementar método getNearbyPrices no FuelPricesService
+    // const nearbyPrices = await FuelPricesService.getNearbyPrices(nearbyQuery);
+    const nearbyPrices = []; // Fallback temporário
 
     return sendResponse(
       res,

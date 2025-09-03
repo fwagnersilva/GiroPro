@@ -1,6 +1,8 @@
 import Redis from 'ioredis';
 import { Logger } from '../utils/logger';
 
+const logger = new Logger();
+
 class CacheService {
   private redis: Redis | null = null;
   private isConnected = false;

@@ -6,6 +6,8 @@ import { Cache } from '../utils/cache';
 import { z } from 'zod';
 import { performance } from 'perf_hooks';
 
+const logger = new Logger();
+
 // ===============================
 // TIPOS E INTERFACES OTIMIZADAS
 // ===============================
