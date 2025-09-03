@@ -98,7 +98,7 @@ Esta seção registra as tarefas que foram concluídas, com um breve resumo do q
 ### Oportunidades de Melhoria - Complexidade Alta
 
 - [>] **Feedback Háptico (Mobile):** Utilizar a vibração do dispositivo para fornecer feedback físico em interações importantes.
-  - **Progresso:** `expo-haptics` instalado e utilitário `src/utils/haptics.ts` criado para encapsular a lógica de feedback háptico.
+  - **Progresso:** `expo-haptics` instalado e utilitário `src/utils/haptics.ts` criado para encapsular a lógica de feedback háptico. Próximo passo é mapear as interações chave na UI onde o feedback háptico seria mais benéfico (ex: cliques em botões críticos, sucesso/falha de operações, confirmações).
 - [ ] **Estados Interativos:** Fornecer feedback visual claro para todas as interações do usuário.
 - [ ] **Adaptações por Plataforma:** Otimizar a experiência do usuário para as convenções de design de cada plataforma (iOS, Android, Web).
 - [ ] **Implementar Testes Automatizados:** Garantir a qualidade do código e prevenir regressões futuras com a criação de testes automatizados.
