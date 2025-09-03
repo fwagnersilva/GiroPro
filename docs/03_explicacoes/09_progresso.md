@@ -93,6 +93,9 @@ Esta seção registra as tarefas que foram concluídas, com um breve resumo do q
 
 ### Oportunidades de Melhoria - Complexidade Baixa
 
+- [ ] **Integrar Componentes Interativos nos Formulários:** Substituir componentes básicos pelos novos componentes interativos (InteractiveButton, InteractiveToggle) nos formulários existentes para melhorar a experiência do usuário.
+- [ ] **Aplicar Novos Tokens de Tema:** Migrar componentes existentes para usar os tokens de tema melhorados (enhancedTokens.ts) com melhor contraste e acessibilidade.
+- [ ] **Implementar Ícones Vetoriais:** Substituir ícones emoji pelos novos ícones vetoriais (EnhancedIcons.tsx) em toda a aplicação para melhor qualidade visual.
 - [ ] **Reorganizar Hierarquia de Campos:** Otimizar a disposição dos campos no formulário para seguir um fluxo lógico e intuitivo de preenchimento, reduzindo a carga cognitiva do usuário.
 - [ ] **Implementar Design System Consistente:** Aplicar os tokens de design definidos no projeto para garantir uma identidade visual coesa e facilitar a manutenção e escalabilidade da interface.
 - [ ] **Adicionar Validação em Tempo Real:** Fornecer feedback imediato e claro ao usuário sobre a validade dos dados inseridos, prevenindo erros e guiando o preenchimento correto do formulário.
@@ -100,6 +103,9 @@ Esta seção registra as tarefas que foram concluídas, com um breve resumo do q
 
 ### Oportunidades de Melhoria - Complexidade Média
 
+- [ ] **Implementar Sistema de Animações:** Integrar os componentes animados (AnimatedComponents.tsx) nas telas principais para melhorar a fluidez da interface.
+- [ ] **Aplicar Layout Responsivo:** Utilizar o sistema de estilos responsivos (responsiveStyles.ts) para otimizar a experiência em diferentes tamanhos de tela.
+- [ ] **Testar Componentes Interativos:** Validar o funcionamento dos novos componentes interativos em diferentes dispositivos e plataformas.
 - [ ] **Ícones e Elementos Visuais:** Tornar a interface mais informativa e agradável visualmente com o uso de ícones e outros elementos gráficos.
 - [ ] **Cores e Contraste:** Garantir que a paleta de cores seja esteticamente agradável, funcional e acessível.
 - [ ] **Layout e Espaçamento:** Criar um layout bem estruturado e responsivo que se adapte a diferentes tamanhos de tela.
@@ -107,9 +113,13 @@ Esta seção registra as tarefas que foram concluídas, com um breve resumo do q
 
 ### Oportunidades de Melhoria - Complexidade Alta
 
-- [>] **Feedback Háptico (Mobile):** Utilizar a vibração do dispositivo para fornecer feedback físico em interações importantes.
-  - **Progresso:** `expo-haptics` instalado e utilitário `src/utils/haptics.ts` criado para encapsular a lógica de feedback háptico. **Próximo passo:** Mapear as interações chave na UI onde o feedback háptico seria mais benéfico (ex: cliques em botões críticos, sucesso/falha de operações, confirmações).
-- [ ] **Estados Interativos:** Fornecer feedback visual claro para todas as interações do usuário.
+- [ ] **Implementar Adaptações por Plataforma:** Criar variações específicas dos componentes para iOS, Android e Web seguindo as diretrizes de design de cada plataforma.
+- [ ] **Otimizar Performance das Animações:** Garantir que as animações sejam fluidas e não impactem a performance, especialmente em dispositivos mais antigos.
+- [ ] **Criar Sistema de Temas Dinâmico:** Implementar alternância entre tema claro e escuro com persistência de preferência do usuário.
+- [x] **Feedback Háptico (Mobile):** Utilizar a vibração do dispositivo para fornecer feedback físico em interações importantes.
+  - **Concluído:** Sistema completo de feedback háptico implementado com `hapticFeedback.ts` e integrado nos componentes interativos.
+- [x] **Estados Interativos:** Fornecer feedback visual claro para todas as interações do usuário.
+  - **Concluído:** Componentes interativos implementados com estados visuais (hover, pressed, disabled) e animações de feedback.
 - [ ] **Adaptações por Plataforma:** Otimizar a experiência do usuário para as convenções de design de cada plataforma (iOS, Android, Web).
 - [ ] **Implementar Testes Automatizados:** Garantir a qualidade do código e prevenir regressões futuras com a criação de testes automatizados.
 - [ ] **Otimizar Performance:** Garantir que o aplicativo seja rápido e responsivo, mesmo em dispositivos mais antigos.
@@ -143,7 +153,7 @@ Esta seção registra as tarefas que foram concluídas, com um breve resumo do q
 
 ---
 
-**Última Atualização:** 03 de Setembro de 2025 - 19:20
+**Última Atualização:** 03 de Setembro de 2025 - 20:00
 
 
 
