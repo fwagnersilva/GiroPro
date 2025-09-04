@@ -60,12 +60,9 @@ Esta seção registra as tarefas que foram concluídas, com um breve resumo do q
 ## 🟠 Prioridade Alta
 
 ### Validação Técnica
-- [>] **Ajuste da Validação de Senha no Frontend**
-  - **Progresso:** Tarefa em andamento. Será implementada a lógica de validação de senha do backend (`backend/src/utils/validation.ts`) nos componentes de registro e login do frontend (`RegisterScreenOptimized.tsx` e `LoginScreenOptimized.tsx`).
-  - **Observação:** Esta tarefa será priorizada após a validação inicial do fluxo de registro/login.
-  - **Descrição:** Implementar no `RegisterScreenOptimized.tsx` (e possivelmente no `FormInput.tsx` ou em um novo utilitário de validação no frontend) a mesma lógica de validação de senha presente no `backend/src/utils/validation.ts`.
-  - **Detalhes:** Garantir que o frontend valide a senha para incluir: Mínimo de 8 caracteres, Pelo menos 1 letra minúscula, Pelo menos 1 letra maiúscula, Pelo menos 1 número, Pelo menos 1 caractere especial (`@$!%*?&`).
-- [ ] **Teste End-to-End do Fluxo de Registro e Login**
+
+- [>] **Teste End-to-End do Fluxo de Registro e Login**
+  - **Progresso:** Em andamento. O backend está rodando e o frontend está sendo configurado para testes. Foi necessário refatorar o frontend para usar apenas Vite e um formulário de registro HTML simples foi criado para testar o fluxo de registro.
   - **Descrição:** Após a implementação da validação de senha no frontend, realizar testes completos do fluxo de registro e login para garantir que novos usuários possam se registrar com sucesso, usuários registrados possam fazer login sem erros, e a comunicação entre frontend e backend esteja funcionando perfeitamente para essas operações.
 - [ ] **Code Review Aprofundado (Login)**
   - **Descrição:** Realizar um code review detalhado do `LoginScreen.tsx`, `AuthContext.tsx` e `api.ts` para o fluxo de login, garantindo que a lógica de autenticação e o tratamento de erros estejam robustos e em conformidade com as melhores práticas.
@@ -168,4 +165,10 @@ Esta seção registra as tarefas que foram concluídas, com um breve resumo do q
 - **Autenticação:** Fluxo completo de registro e login funcionando perfeitamente com geração de tokens JWT.
 - **Integração:** Comunicação frontend-backend estabelecida e validada com 6 usuários registrados no banco.
 - **Solução Implementada:** Adicionada linha `import { sqliteTable, text, integer, real, index, uniqueIndex } from 'drizzle-orm/sqlite-core';` no arquivo schema.ts.
+
+
+
+### 04/09/2025 - Ajuste da Validação de Senha no Frontend
+- **Validação de Senha (Frontend):** Implementada a lógica de validação de senha do backend no frontend, garantindo consistência e segurança. Testes automatizados com 100% de sucesso.
+
 

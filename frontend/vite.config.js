@@ -30,6 +30,7 @@ export default defineConfig({
   server: {
     port: 19006,
     host: true,
+    allowedHosts: ["19006-i7hahpvmfuj1sd6yj17bl-9f1fa913.manusvm.computer"],
     hmr: {
       overlay: false
     }
