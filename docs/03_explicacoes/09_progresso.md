@@ -89,7 +89,6 @@ Esta seção registra as tarefas que foram concluídas, com um breve resumo do q
 
 ### Oportunidades de Melhoria - Complexidade Baixa
 
-- [ ] **Configurar Vite Dev Mode Adequadamente:** Investigar e corrigir a configuração do Vite para que o modo de desenvolvimento funcione corretamente, permitindo hot reload e evitando a necessidade de build estático para testes.
 - [ ] **Resolver Vulnerabilidades de Segurança Restantes:** Investigar e resolver as 7 vulnerabilidades restantes no frontend (2 moderadas, 5 altas) relacionadas a dependências do Expo SDK.
 - [ ] **Integrar Componentes Interativos nos Formulários:** Substituir componentes básicos pelos novos componentes interativos (InteractiveButton, InteractiveToggle) nos formulários existentes para melhorar a experiência do usuário.
 - [ ] **Aplicar Novos Tokens de Tema:** Migrar componentes existentes para usar os tokens de tema melhorados (enhancedTokens.ts) com melhor contraste e acessibilidade.
