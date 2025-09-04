@@ -1,0 +1,9 @@
+# Pastas de dependências
+node_modules/
+
+# Pastas de build
+dist/
+build/
+
+# Arquivos de log
+*.log
