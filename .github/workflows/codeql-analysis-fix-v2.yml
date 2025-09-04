@@ -39,7 +39,7 @@ jobs:
         node-version: 18
 
     - name: Install backend dependencies
-      run: npm ci || npm install
+      run: npm ci --legacy-peer-deps || npm install --legacy-peer-deps
       working-directory: backend
 
     - name: Build backend
@@ -47,7 +47,7 @@ jobs:
       working-directory: backend
 
     - name: Install frontend dependencies
-      run: npm ci || npm install
+      run: npm ci --legacy-peer-deps || npm install --legacy-peer-deps
       working-directory: frontend
 
     - name: Build frontend
