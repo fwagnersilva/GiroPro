@@ -1,0 +1,48 @@
+# Guia de Desenvolvimento do Front-end do GiroPro
+
+Este documento serve como a referência técnica principal para o desenvolvimento do front-end do GiroPro. Ele detalha o design system, os componentes reutilizáveis e os padrões de código que devem ser seguidos para garantir consistência, qualidade e escalabilidade.
+
+## 🎨 Padrões do Design System
+
+### 1. Cores (`enhancedTokens.colors`)
+Use os tokens de cores para garantir consistência visual e acessibilidade.
+
+- **Primary:** `#359CF1` (azul principal)
+- **Secondary:** `#B592FF` (roxo complementar)
+- **Success:** `#42C17A` (verde acessível)
+- **Warning:** `#FFC72C` (amarelo contrastante)
+- **Error:** `#E53E3E` (vermelho acessível)
+- **Neutros:** 11 tons de cinza (`gray.0` a `gray.1000`)
+
+### 2. Tipografia (`enhancedTokens.typography`)
+Siga os tokens de tipografia para uma hierarquia visual clara.
+
+- **Tamanhos:** `xs` (12px) a `6xl` (60px)
+- **Pesos:** `light` (300) a `extrabold` (800)
+- **Altura de linha:** `xs` (16px) a `6xl` (72px)
+
+### 3. Espaçamentos (`enhancedTokens.spacing`)
+Utilize a escala de espaçamento para margens, paddings e layouts consistentes.
+
+- **Sistema:** `0` (0px) a `96` (384px)
+- **Incrementos:** `0.5` (2px), `1` (4px), `2` (8px), etc.
+
+## 🧱 Componentes Interativos
+
+Utilize os componentes reutilizáveis sempre que possível para acelerar o desenvolvimento e manter a consistência.
+
+### `InteractiveButton`
+- **Variantes:** `primary`, `secondary`, `outline`, `ghost`, `destructive`
+- **Tamanhos:** `sm` (36px), `md` (48px), `lg` (56px)
+- **Funcionalidades:** Animações, feedback háptico, estados de `loading`.
+
+**Exemplo de Uso:**
+```typescript
+// Código padronizado
+<InteractiveButton
+  variant="primary"
+  size="md"
+  onPress={handlePress}
+>
+  Confirmar Ação
+</InteractiveButton>
