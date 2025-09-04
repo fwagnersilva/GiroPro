@@ -102,14 +102,15 @@ const AddFuelingScreen: React.FC<AddFuelingScreenProps> = ({ navigation, route }
             }
           }
         ]
-      );    } catch (error: any) {
-      console.error(\'Erro ao registrar abastecimento:\', error);
+      );
+    } catch (error: any) {
+      console.error('Erro ao registrar abastecimento:', error);
       Alert.alert(
-        \'Erro\',
-        error.message || \'Não foi possível registrar o abastecimento\',
+        'Erro',
+        error.message || 'Não foi possível registrar o abastecimento',
         [
           {
-            text: \'OK\',
+            text: 'OK',
             onPress: () => {
               handleHapticFeedback();
             }

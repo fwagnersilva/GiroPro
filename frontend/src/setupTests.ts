@@ -26,18 +26,18 @@ jest.mock('react-native-vector-icons/MaterialCommunityIcons', () => 'Icon');
 jest.mock('react-native-vector-icons/FontAwesome', () => 'Icon');
 jest.mock('react-native-vector-icons/Ionicons', () => 'Icon');
 jest.mock('@expo/vector-icons', () => ({
-  Ionicons: (props: any) => <React.Fragment {...props} />,
-  MaterialIcons: (props: any) => <React.Fragment {...props} />,
-  FontAwesome: (props: any) => <React.Fragment {...props} />,
-  AntDesign: (props: any) => <React.Fragment {...props} />,
-  Entypo: (props: any) => <React.Fragment {...props} />,
-  EvilIcons: (props: any) => <React.Fragment {...props} />,
-  Feather: (props: any) => <React.Fragment {...props} />,
-  Foundation: (props: any) => <React.Fragment {...props} />,
-  MaterialCommunityIcons: (props: any) => <React.Fragment {...props} />,
-  Octicons: (props: any) => <React.Fragment {...props} />,
-  SimpleLineIcons: (props: any) => <React.Fragment {...props} />,
-  Zocial: (props: any) => <React.Fragment {...props} />,
+  Ionicons: 'Icon',
+  MaterialIcons: 'Icon',
+  FontAwesome: 'Icon',
+  AntDesign: 'Icon',
+  Entypo: 'Icon',
+  EvilIcons: 'Icon',
+  Feather: 'Icon',
+  Foundation: 'Icon',
+  MaterialCommunityIcons: 'Icon',
+  Octicons: 'Icon',
+  SimpleLineIcons: 'Icon',
+  Zocial: 'Icon',
 }));
 
 // Mock para react-native-gesture-handler

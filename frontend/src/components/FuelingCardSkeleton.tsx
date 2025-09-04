@@ -12,7 +12,7 @@ interface SkeletonItemProps {
 const SkeletonItem: React.FC<SkeletonItemProps> = ({
   width = '100%',
   height = 16,
-  borderRadius: borderRadius.sm,
+  borderRadius = 4,
   style,
 }) => {
   const shimmerAnim = useRef(new Animated.Value(0)).current;
