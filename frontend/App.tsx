@@ -5,4 +5,6 @@ export default function App() {
   return <SimpleRegister />;
 }
 
+// Teste de hot reload: Nova linha adicionada
+
 
