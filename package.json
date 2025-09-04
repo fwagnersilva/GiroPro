@@ -1,0 +1,12 @@
+{
+  "name": "giropro-root-tools",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Ferramentas de desenvolvimento para o projeto GiroPro",
+  "scripts": {
+    "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,css,md}\""
+  },
+  "devDependencies": {
+    "prettier": "^3.0.0"
+  }
+}
