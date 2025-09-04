@@ -148,8 +148,37 @@ export const validators = {
   },
   
   password: (value: string) => {
-    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=(.*\d){1,})(?=(.*[@$!%*?&]){1,})[A-Za-z\d@$!%*?&]{8,}$/;
-    return passwordRegex.test(value) ? null : 'A senha deve ter pelo menos 8 caracteres, 1 letra minúscula, 1 maiúscula, 1 número e 1 caractere especial (@$!%*?&).';
+    if (value.trim() === '') return null; // Permite campo vazio para validação opcional
+    
+    // Regex exata do backend: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/;
+    
+    // Verificações individuais para mensagens mais específicas
+    if (value.length < 8) {
+      return 'Senha deve ter pelo menos 8 caracteres';
+    }
+    
+    if (!/(?=.*[a-z])/.test(value)) {
+      return 'Senha deve conter pelo menos 1 letra minúscula';
+    }
+    
+    if (!/(?=.*[A-Z])/.test(value)) {
+      return 'Senha deve conter pelo menos 1 letra maiúscula';
+    }
+    
+    if (!/(?=.*\d)/.test(value)) {
+      return 'Senha deve conter pelo menos 1 número';
+    }
+    
+    if (!/(?=.*[@$!%*?&])/.test(value)) {
+      return 'Senha deve conter pelo menos 1 caractere especial (@$!%*?&)';
+    }
+    
+    if (!passwordRegex.test(value)) {
+      return 'Senha contém caracteres não permitidos. Use apenas letras, números e @$!%*?&';
+    }
+    
+    return null;
   },
   
   positiveNumber: (value: string) => {

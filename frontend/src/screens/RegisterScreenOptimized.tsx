@@ -168,6 +168,7 @@ const RegisterScreenOptimized: React.FC<Props> = ({ navigation }) => {
           />
 
           <FormInput
+            label="Senha"
             placeholder="Senha"
             value={senha}
             onChangeText={setSenha}
@@ -178,14 +179,12 @@ const RegisterScreenOptimized: React.FC<Props> = ({ navigation }) => {
             required
             validation={combineValidators(
               validators.required,
-              validators.password,
-              (value) => {
-                return value.length >= 8 ? null : 'A senha deve ter pelo menos 8 caracteres.';
-              }
+              validators.password
             )}
           />
 
           <FormInput
+            label="Confirmar Senha"
             placeholder="Confirmar senha"
             value={confirmarSenha}
             onChangeText={setConfirmarSenha}
