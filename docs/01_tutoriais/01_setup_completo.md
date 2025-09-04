@@ -5,21 +5,24 @@
 O GiroPro é uma aplicação para gestão financeira de motoristas de aplicativo, composta por:
 - **Backend**: API REST em Node.js/TypeScript com Express.js
 - **Frontend**: Aplicação React Native/Expo
-- **Banco de Dados**: SQLite com Drizzle ORM
+- **Banco de Dados**: PostgreSQL com Drizzle ORM
 
 ## Pré-requisitos
 
 ### Ferramentas Necessárias
 - **Node.js**: versão 18+ (recomendado: 20.x)
-- **npm**: versão 8+ (incluído com Node.js)
+- **npm** ou **Yarn**: Gerenciadores de pacotes para Node.js.
 - **Git**: para controle de versão
+- **Docker**: Para a execução do banco de dados PostgreSQL e, opcionalmente, para conteinerizar o backend.
+- **Docker Compose**: Ferramenta para definir e executar aplicativos Docker multi-contêineres.
+- **Expo CLI**: Ferramenta de linha de comando para desenvolvimento com Expo/React Native.
 - **Editor de código**: VS Code (recomendado)
 
 ### Extensões VS Code Recomendadas
 - TypeScript and JavaScript Language Features
 - ESLint
 - Prettier - Code formatter
-- SQLite Viewer
+- SQLite Viewer (se ainda usar SQLite em algum contexto)
 - React Native Tools
 
 ## Configuração do Ambiente
@@ -31,73 +34,59 @@ git clone https://github.com/fwagnersilva/GiroPro.git
 cd GiroPro
 ```
 
-### 2. Configuração do Backend
+### 2. Configuração do Banco de Dados com Docker Compose
 
-#### 2.1. Instalação das Dependências
+O projeto GiroPro utiliza PostgreSQL como banco de dados e Docker/Docker Compose para orquestração dos serviços.
+
+- **Tipo:** PostgreSQL
+- **Versão:** `16-alpine` (conforme `docker-compose.yml`)
+- **Nome do Banco de Dados (padrão):** `giropro_db`
+- **Usuário (padrão):** `user`
+- **Senha (padrão):** `password`
+
+O banco de dados é configurado para persistir os dados em um volume Docker (`postgres_data`), garantindo que os dados não sejam perdidos ao reiniciar os contêineres.
+
+Navegue até o diretório raiz do projeto (`GiroPro`) e inicie o contêiner do PostgreSQL:
+```bash
+docker-compose up -d postgres_db
+```
+Aguarde alguns segundos para que o banco de dados seja inicializado completamente. Você pode verificar o status com `docker-compose ps`.
+
+### 3. Configuração do Backend
+
+O backend do GiroPro é construído utilizando Node.js e TypeScript, fornecendo uma API RESTful para comunicação com o frontend e persistência de dados.
+
+#### 3.1. Instalação das Dependências
 ```bash
 cd backend
 npm install
 ```
 
-#### 2.2. Configuração do Ambiente
-```bash
-# Copiar arquivo de configuração
-cp giropro.env .env
+#### 3.2. Configuração do Ambiente
 
-# Editar as configurações se necessário
-nano .env
-```
-
-#### 2.3. Configurações Principais (.env)
+Crie um arquivo `.env` na raiz do diretório `backend` com as variáveis de ambiente necessárias. Um exemplo pode ser:
 ```env
-# Banco de Dados
-DB_TYPE=sqlite
-SQLITE_DB_PATH=./giropro.db
-
-# Servidor
+DATABASE_URL="postgresql://user:password@localhost:5432/giropro_db"
+JWT_SECRET="seu_segredo_jwt_aqui"
 PORT=3000
-HOST=0.0.0.0
-NODE_ENV=development
-
-# API
-API_VERSION=v1
-API_PREFIX=/api
-
-# Segurança
-JWT_SECRET=sua_chave_secreta_muito_forte_aqui
-JWT_REFRESH_SECRET=sua_refresh_secret_diferente_aqui
-JWT_EXPIRES_IN=7d
-ALLOWED_ORIGINS=http://localhost:3000,http://localhost:19006,http://localhost:8081
-
-# Features
-COMPRESSION_ENABLED=true
-LOG_LEVEL=info
-
-# Cache (opcional para desenvolvimento)
-REDIS_URL=redis://localhost:6379
 ```
+*Ajuste `DATABASE_URL` se seu banco de dados não estiver rodando em `localhost:5432` ou se as credenciais forem diferentes.*
 
-**Importante**: 
-- Certifique-se de que o arquivo `.env` seja adicionado ao seu `.gitignore`
-- Para gerar uma chave JWT segura, use: `node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"`
+**Importante**: Certifique-se de que o arquivo `.env` seja adicionado ao seu `.gitignore` para evitar que suas credenciais sejam versionadas.
 
-#### 2.4. Configuração do Banco de Dados
+#### 3.3. Configuração do Banco de Dados (Migrações)
 
-Execute o script de setup do SQLite:
-
+Execute as migrações do banco de dados para criar as tabelas:
 ```bash
-./setup_sqlite.sh
+npm run db:migrate
 ```
 
-**ATENÇÃO - Interatividade do Script**: Durante a execução do `setup_sqlite.sh` e `npm run db:migrate`, o script pode solicitar confirmação no terminal (ex: `Is historicoPrecoCombustivel table created or renamed from another table?`). **É crucial observar o terminal e responder com `+` (para criar) ou a opção apropriada para continuar a migração.** A falta de resposta pode fazer o script parecer travado.
+**ATENÇÃO - Interatividade do Script**: Durante a execução de `npm run db:migrate`, o script pode solicitar confirmação no terminal (ex: `Is historicoPrecoCombustivel table created or renamed from another table?`). **É crucial observar o terminal e responder com `+` (para criar) ou a opção apropriada para continuar a migração.** A falta de resposta pode fazer o script parecer travado.
 
-Comandos de migração disponíveis:
+Comandos de migração adicionais disponíveis:
 ```bash
 # Gerar arquivos de migração baseados nas mudanças no schema
 npm run db:generate
-
-# Aplicar migrações ao banco de dados
-npm run db:migrate
 
 # Verificar o status das migrações
 npm run db:check
@@ -106,33 +95,33 @@ npm run db:check
 npm run db:studio
 ```
 
-#### 2.5. Compilação e Execução
+#### 3.4. Compilação e Execução
+
+Inicie o servidor backend em modo de desenvolvimento:
 ```bash
-# Compilar TypeScript
-npm run build
-
-# Executar em modo desenvolvimento
 npm run dev
+```
+O backend estará disponível em `http://localhost:3000` (ou na porta configurada).
 
-# Ou executar versão compilada
+Para compilar e executar em modo de produção:
+```bash
+npm run build
 npm start
 ```
 
-### 3. Configuração do Frontend
+### 4. Configuração do Frontend
 
-#### 3.1. Instalação das Dependências
+O frontend do GiroPro é um aplicativo móvel/web desenvolvido com React Native e Expo, permitindo uma experiência de usuário consistente em diferentes plataformas.
+
+#### 4.1. Instalação das Dependências
 ```bash
 cd ../frontend
 npm install
 ```
 
-#### 3.2. Configuração do Ambiente
-```bash
-# Criar arquivo de configuração .env no diretório frontend
-touch .env
-```
+#### 4.2. Configuração do Ambiente
 
-Configure o arquivo `.env` com as seguintes variáveis, garantindo que a URL da API aponte para o backend local (porta 3000):
+Crie um arquivo `.env` no diretório `frontend` com as seguintes variáveis, garantindo que a URL da API aponte para o backend local (porta 3000):
 ```env
 REACT_APP_API_URL=http://localhost:3000/api/v1
 EXPO_PUBLIC_API_URL=http://localhost:3000/api/v1
@@ -140,7 +129,7 @@ EXPO_PUBLIC_API_URL=http://localhost:3000/api/v1
 
 **Importante**: Certifique-se de que o arquivo `.env` seja adicionado ao seu `.gitignore` para evitar que suas credenciais sejam versionadas.
 
-#### 3.3. Execução do Frontend
+#### 4.3. Execução do Frontend
 
 Para desenvolvimento web com Vite (recomendado):
 ```bash
@@ -159,6 +148,8 @@ npm run ios
 ```
 
 ## Estrutura do Projeto
+
+O repositório `GiroPro` possui a seguinte estrutura de diretórios relevante para a configuração do ambiente:
 
 ### Backend (`/backend`)
 ```
@@ -194,6 +185,12 @@ frontend/
 └── app.json
 ```
 
+### Outros Diretórios Relevantes
+
+- `docker-compose.yml`: Arquivo de configuração para orquestração de contêineres Docker.
+- `docs/`: Documentação adicional do projeto.
+- `scripts/`: Scripts de auxílio para configuração e execução.
+
 ## Scripts Disponíveis
 
 ### Backend
@@ -202,21 +199,31 @@ frontend/
 | `npm run dev` | Executar em modo desenvolvimento |
 | `npm run build` | Compilar TypeScript |
 | `npm start` | Executar versão compilada |
-| `npm test` | Executar testes |
-| `npm run lint` | Verificar código com ESLint |
-| `npm run format` | Formatar código com Prettier |
-| `npm run db:generate` | Gerar migrações |
-| `npm run db:migrate` | Aplicar migrações |
-| `npm run db:studio` | Abrir Drizzle Studio |
+| `npm test` | Executar todos os testes unitários e de integração |
+| `npm run test:watch` | Executar testes e os observar para mudanças |
+| `npm run test:coverage` | Executar testes e gerar um relatório de cobertura de código |
+| `npm run test:integration` | Executar apenas testes de integração |
+| `npm run test:e2e` | Executar apenas testes end-to-end |
+| `npm run test:ci` | Executar testes para integração contínua |
+| `npm run lint` | Executar o linter para verificar a qualidade do código |
+| `npm run format` | Formatar o código automaticamente |
+| `npm run db:generate` | Gerar migrações do banco de dados com Drizzle ORM |
+| `npm run db:migrate` | Aplicar as migrações ao banco de dados |
+| `npm run db:check` | Verificar a consistência do esquema do banco de dados |
+| `npm run db:studio` | Iniciar a interface de estúdio do Drizzle ORM |
 
 ### Frontend
 | Script | Descrição |
 |--------|-----------|
-| `npm start` | Iniciar Expo (mobile) |
-| `npm run android` | Executar no Android |
-| `npm run ios` | Executar no iOS |
-| `npm run web-vite` | Executar na web com Vite (recomendado) |
-| `npm run web` | Executar na web com Expo (legado) |
+| `npm start` | Iniciar o servidor de desenvolvimento do Expo |
+| `npm run android` | Constrói e executa o aplicativo no emulador/dispositivo Android |
+| `npm run ios` | Constrói e executa o aplicativo no simulador/dispositivo iOS |
+| `npm run web` | Iniciar o aplicativo no navegador web (legado) |
+| `npm run web-vite` | Iniciar o aplicativo no navegador web com Vite (recomendado) |
+| `npm test` | Executar todos os testes unitários e de integração |
+| `npm run test:watch` | Executar testes e os observar para mudanças |
+| `npm run test:coverage` | Executar testes e gerar um relatório de cobertura de código |
+| `npm run test:ci` | Executar testes para integração contínua |
 
 ## Endpoints da API
 
@@ -246,21 +253,21 @@ curl http://localhost:3000/api/test
 - [ ] Node.js (LTS) instalado
 - [ ] npm instalado
 - [ ] Git instalado
+- [ ] Docker Desktop (inclui Docker Engine e Docker Compose) instalado
+- [ ] Expo CLI instalado
 - [ ] VS Code (opcional)
 
 ### Backend
 - [ ] `cd backend`
 - [ ] `npm install`
-- [ ] `cp giropro.env .env`
-- [ ] Editar `.env` com configurações apropriadas
-- [ ] `./setup_sqlite.sh`
+- [ ] Criar e configurar `.env`
+- [ ] `npm run db:migrate`
 - [ ] `npm run dev`
 
 ### Frontend
 - [ ] `cd ../frontend`
 - [ ] `npm install`
-- [ ] `cp .env.example .env` (se existir)
-- [ ] Configurar `REACT_APP_API_URL` no `.env`
+- [ ] Criar e configurar `.env`
 - [ ] `npm run web-vite` (para web) ou `npm start` (para mobile)
 
 ### Verificação
@@ -285,11 +292,14 @@ npx tsc --noEmit
 
 **Problemas de Migração**:
 ```bash
-# Verificar se giropro.env existe
-ls -la giropro.env
+# Verificar se o banco de dados Docker está rodando
+docker-compose ps
 
-# Reinstalar dependências do SQLite
-npm install better-sqlite3
+# Verificar logs do contêiner do banco de dados
+docker-compose logs postgres_db
+
+# Reinstalar dependências do Drizzle ORM e driver PG
+npm install drizzle-orm pg
 ```
 
 **Porta já em uso**:
@@ -327,7 +337,7 @@ npm install
 **Problemas de Permissão** (Linux/macOS):
 ```bash
 # Tornar script executável
-chmod +x setup_sqlite.sh
+chmod +x setup_sqlite.sh (se ainda usar)
 
 # Configurar npm para diretório local (evitar sudo)
 npm config set prefix ~/.npm-global
@@ -396,6 +406,8 @@ npm run build-vite
 - **Express.js**: https://expressjs.com/
 - **React Native**: https://reactnative.dev/
 - **Expo**: https://expo.dev/
+- **Docker**: https://www.docker.com/
+- **PostgreSQL**: https://www.postgresql.org/
 
 ### Ferramentas de Debug
 - **Drizzle Studio**: Interface visual para o banco
@@ -421,6 +433,7 @@ Para dúvidas ou problemas:
 
 ---
 
-**Última atualização**: 03/09/2025
-**Versão do guia**: 2.0
+**Última atualização**: 04/09/2025
+**Versão do guia**: 2.1
+
 
