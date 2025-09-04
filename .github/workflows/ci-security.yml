@@ -51,10 +51,8 @@ jobs:
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
-          args: test --severity-threshold=high
           command: test
-          project: backend
-        working-directory: backend
+          args: --severity-threshold=high --file=backend/package.json
 
       # ---------- SNYK (FRONTEND) ----------
       - name: Snyk Test (frontend)
@@ -62,10 +60,8 @@ jobs:
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
-          args: test --severity-threshold=high
           command: test
-          project: frontend
-        working-directory: frontend
+          args: --severity-threshold=high --file=frontend/package.json
 
       # (Opcional) Enviar “monitor” pro dashboard do Snyk sem quebrar o build
       - name: Snyk Monitor (backend)
@@ -76,7 +72,7 @@ jobs:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
           command: monitor
-        working-directory: backend
+          args: --file=backend/package.json
 
       - name: Snyk Monitor (frontend)
         if: always()
@@ -86,4 +82,4 @@ jobs:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
           command: monitor
-        working-directory: frontend
+          args: --file=frontend/package.json
