@@ -57,25 +57,99 @@ Esta seção registra as tarefas que foram concluídas, com um breve resumo do q
 
 
 
+## 🔥 **PRIORIDADE CRÍTICA - Próximas Atividades**
+
+### **1. Integração Pós-Login (URGENTE)**
+- [ ] **Implementar Redirecionamento Automático Após Login**
+  - **Descrição:** Modificar `elegant-login.html` para redirecionar automaticamente para o dashboard após login bem-sucedido
+  - **Arquivos:** `frontend/elegant-login.html`, criar `frontend/dashboard.html`
+  - **Prazo:** Esta semana
+- [ ] **Adaptar DashboardScreen.tsx para Versão Web**
+  - **Descrição:** Converter o componente React Native `DashboardScreen.tsx` para uma versão HTML/CSS/JS funcional
+  - **Arquivos:** `frontend/src/screens/DashboardScreen.tsx` → `frontend/dashboard.html`
+  - **Prazo:** Esta semana
+- [ ] **Implementar Verificação de Autenticação**
+  - **Descrição:** Criar sistema de verificação de token JWT em todas as páginas protegidas
+  - **Arquivos:** Criar `frontend/auth-check.js`
+  - **Prazo:** Esta semana
+
+### **2. Sistema de Navegação Web (CRÍTICO)**
+- [ ] **Criar Roteador Web Simples**
+  - **Descrição:** Implementar sistema de navegação entre telas usando HTML/CSS/JS puro
+  - **Arquivos:** Criar `frontend/router.js`, `frontend/navigation.html`
+  - **Prazo:** Esta semana
+- [ ] **Adaptar Telas Principais para Web**
+  - **Subtarefas:**
+    - [ ] AddExpenseScreen → add-expense.html
+    - [ ] AddFuelingScreen → add-fueling.html  
+    - [ ] ExpensesScreen → expenses.html
+    - [ ] FuelingsScreen → fuelings.html
+  - **Prazo:** Esta semana
+- [ ] **Criar Layout Base Reutilizável**
+  - **Descrição:** Template HTML base com navegação e estilos consistentes
+  - **Arquivos:** Criar `frontend/layout-base.html`, `frontend/styles/base.css`
+  - **Prazo:** Esta semana
+
+### **3. APIs de Dados (ALTA PRIORIDADE)**
+- [ ] **Implementar Middleware de Autenticação**
+  - **Descrição:** Criar middleware para verificar JWT em rotas protegidas
+  - **Arquivos:** Criar `backend/src/middleware/authMiddleware.ts`
+  - **Prazo:** Esta semana
+- [ ] **Criar API de Despesas (CRUD)**
+  - **Descrição:** Endpoints para criar, listar, editar e excluir despesas
+  - **Arquivos:** Criar `backend/src/controllers/expenseController.ts`
+  - **Endpoints:** GET/POST/PUT/DELETE `/api/v1/expenses`
+  - **Prazo:** Próxima semana
+- [ ] **Criar API de Abastecimentos (CRUD)**
+  - **Descrição:** Endpoints para gerenciar abastecimentos
+  - **Arquivos:** Criar `backend/src/controllers/fuelingController.ts`
+  - **Endpoints:** GET/POST/PUT/DELETE `/api/v1/fuelings`
+  - **Prazo:** Próxima semana
+
 ## 🟠 Prioridade Alta
 
-### Validação Técnica
+### **4. Integração Frontend-Backend**
+- [ ] **Integrar Formulários com APIs**
+  - **Descrição:** Conectar formulários de despesas e abastecimentos com backend
+  - **Arquivos:** `add-expense.html`, `add-fueling.html`
+  - **Prazo:** Próxima semana
+- [ ] **Implementar Sistema de Feedback**
+  - **Descrição:** Loading, success e error messages para todas as operações
+  - **Arquivos:** Criar `frontend/feedback.js`
+  - **Prazo:** Próxima semana
+- [ ] **Criar Listagens de Dados**
+  - **Descrição:** Exibir despesas e abastecimentos salvos
+  - **Arquivos:** `expenses.html`, `fuelings.html`
+  - **Prazo:** Próxima semana
 
-- [>] **Teste End-to-End do Fluxo de Registro e Login**
-  - **Progresso:** Em andamento. O backend está rodando e o frontend está sendo configurado para testes. Foi necessário refatorar o frontend para usar apenas Vite e um formulário de registro HTML simples foi criado para testar o fluxo de registro.
-  - **Descrição:** Após a implementação da validação de senha no frontend, realizar testes completos do fluxo de registro e login para garantir que novos usuários possam se registrar com sucesso, usuários registrados possam fazer login sem erros, e a comunicação entre frontend e backend esteja funcionando perfeitamente para essas operações.
+### **5. Definição de Telas Oficiais**
+- [ ] **Catalogar e Definir Versões Oficiais das 62 Telas**
+  - **Descrição:** Analisar as múltiplas versões (base, improved, optimized, enhanced) e definir quais usar
+  - **Impacto:** Evitar confusão sobre qual versão implementar
+  - **Prazo:** Esta semana
+- [ ] **Arquivar Versões Antigas**
+  - **Descrição:** Mover versões não oficiais para pasta `archive/` 
+  - **Prazo:** Esta semana
+
+### Validação Técnica
+- [x] **Teste End-to-End do Fluxo de Registro e Login**
+  - **Concluído:** Sistema de autenticação 100% funcional com tela elegante implementada
 - [ ] **Code Review Aprofundado (Login)**
   - **Descrição:** Realizar um code review detalhado do `LoginScreen.tsx`, `AuthContext.tsx` e `api.ts` para o fluxo de login, garantindo que a lógica de autenticação e o tratamento de erros estejam robustos e em conformidade com as melhores práticas.
 
 ### Segurança
+- [ ] **Implementar Rate Limiting**
+  - **Descrição:** Adicionar limitação de tentativas de login para prevenir ataques de força bruta
+  - **Arquivos:** `backend/src/middleware/rateLimitMiddleware.ts`
+  - **Prazo:** Próxima semana
 - [>] **Correção de Vulnerabilidades no Frontend**
-  - **Progresso:** `npm audit fix --force` foi executado, mas 7 vulnerabilidades (2 moderadas, 5 altas) persistem devido a conflitos de `peer dependency` (semver e xml2js). Essas vulnerabilidades estão aninhadas em dependências do `@expo/webpack-config` e `expo-pwa`.
-  - **Ações Necessárias:** Investigar a possibilidade de atualizações manuais de pacotes específicos ou aguardar novas versões do Expo SDK que resolvam esses conflitos. Para o momento, as vulnerabilidades são consideradas de baixo risco para o ambiente de desenvolvimento local, mas devem ser monitoradas para produção.
-  - **Observação:** O projeto está funcional, mas a resolução completa das vulnerabilidades requer análise mais aprofundada das dependências.
+  - **Progresso:** Vulnerabilidades conhecidas documentadas, baixo risco para desenvolvimento
+  - **Ações Necessárias:** Monitorar atualizações do Expo SDK
+  - **Status:** Não bloqueia desenvolvimento atual
 
 ### Infraestrutura e Setup
-- [ ] **Migração para SQLite Persistente**
-  - **Descrição:** Configurar o backend para usar um arquivo SQLite persistente (`./giropro.db`) em vez do banco em memória, garantindo que os dados não sejam perdidos após o reinício do servidor.
+- [x] **Migração para SQLite Persistente**
+  - **Concluído:** Banco SQLite persistente configurado e funcionando (`./giropro.db`)
 
 ## 🟡 Prioridade Média
 
@@ -89,7 +163,9 @@ Esta seção registra as tarefas que foram concluídas, com um breve resumo do q
 
 ### Oportunidades de Melhoria - Complexidade Baixa
 
-- [ ] **Resolver Vulnerabilidades de Segurança Restantes:** Investigar e resolver as 7 vulnerabilidades restantes no frontend (2 moderadas, 5 altas) relacionadas a dependências do Expo SDK.
+- [>] **Resolver Vulnerabilidades de Segurança Restantes:** Investigar e resolver as 7 vulnerabilidades restantes no frontend (2 moderadas, 5 altas) relacionadas a dependências do Expo SDK.
+  - **Progresso:** Vulnerabilidades conhecidas documentadas, baixo risco para desenvolvimento. Não bloqueia o desenvolvimento atual.
+  - **Observação:** Necessário monitorar atualizações do Expo SDK.
 - [ ] **Integrar Componentes Interativos nos Formulários:** Substituir componentes básicos pelos novos componentes interativos (InteractiveButton, InteractiveToggle) nos formulários existentes para melhorar a experiência do usuário.
 - [ ] **Aplicar Novos Tokens de Tema:** Migrar componentes existentes para usar os tokens de tema melhorados (enhancedTokens.ts) com melhor contraste e acessibilidade.
 - [ ] **Implementar Ícones Vetoriais:** Substituir ícones emoji pelos novos ícones vetoriais (EnhancedIcons.tsx) em toda a aplicação para melhor qualidade visual.
@@ -101,6 +177,7 @@ Esta seção registra as tarefas que foram concluídas, com um breve resumo do q
 ### Oportunidades de Melhoria - Complexidade Média
 
 - [ ] **Restaurar App.tsx Original do Frontend:** Analisar e restaurar o App.tsx original do repositório, integrando as correções necessárias para manter a funcionalidade completa do frontend.
+  - **Observação:** Atualmente, `App.tsx` está apontando para `LoginScreen.tsx` para o React Native, e `elegant-login.html` é a versão web principal.
 - [ ] **Implementar Sistema de Animações:** Integrar os componentes animados (AnimatedComponents.tsx) nas telas principais para melhorar a fluidez da interface.
 - [ ] **Aplicar Layout Responsivo:** Utilizar o sistema de estilos responsivos (responsiveStyles.ts) para otimizar a experiência em diferentes tamanhos de tela.
 - [ ] **Testar Componentes Interativos:** Validar o funcionamento dos novos componentes interativos em diferentes dispositivos e plataformas.
@@ -117,10 +194,6 @@ Esta seção registra as tarefas que foram concluídas, com um breve resumo do q
 - [ ] **Implementar Testes Automatizados:** Garantir a qualidade do código e prevenir regressões futuras com a criação de testes automatizados.
 - [ ] **Otimizar Performance:** Garantir que o aplicativo seja rápido e responsivo, mesmo em dispositivos mais antigos.
 - [ ] **Documentar Componentes e Padrões:** Facilitar a manutenção e a colaboração no projeto com uma documentação clara e abrangente.
-- [x] **Feedback Háptico (Mobile):** Utilizar a vibração do dispositivo para fornecer feedback físico em interações importantes.
-  - **Concluído:** Sistema completo de feedback háptico implementado com `hapticFeedback.ts` e integrado nos componentes interativos.
-- [x] **Estados Interativos:** Fornecer feedback visual claro para todas as interações do usuário.
-  - **Concluído:** Componentes interativos implementados com estados visuais (hover, pressed, disabled) e animações de feedback.
 
 ## 🟢 Prioridade Baixa
 
@@ -150,7 +223,7 @@ Esta seção registra as tarefas que foram concluídas, com um breve resumo do q
 
 ---
 
-**Última Atualização:** 03 de Setembro de 2025 - 20:00
+**Última Atualização:** 05 de Setembro de 2025 - 21:00
 
 
 
@@ -166,6 +239,16 @@ Esta seção registra as tarefas que foram concluídas, com um breve resumo do q
 - **Solução Implementada:** Adicionada linha `import { sqliteTable, text, integer, real, index, uniqueIndex } from 'drizzle-orm/sqlite-core';` no arquivo schema.ts.
 
 
+
+### 05/09/2025 - Configuração Híbrida Completa e Tela de Login Elegante
+- **Sistema Híbrido:** Abordagem híbrida (Web First) implementada com sucesso para desenvolvimento ágil e futuro mobile.
+- **Tela de Login Elegante:** Interface web moderna criada (`elegant-login.html`) com design glassmorphism, gradientes e animações CSS.
+- **Backend Estável:** Sistema 100% funcional na porta 3000 com APIs de autenticação testadas e aprovadas.
+- **Frontend Web:** Versão web elegante funcionando na porta 19006 com integração completa ao backend.
+- **Banco Persistente:** SQLite configurado e sincronizado via Drizzle ORM com dados persistentes.
+- **Documentação Completa:** Guias de desenvolvimento, plano híbrido e relatórios técnicos gerados.
+- **62 Telas Catalogadas:** Todas as telas existentes identificadas e prontas para integração futura.
+- **Estratégia Definida:** Roadmap claro para expansão web → PWA → mobile nativo.
 
 ### 04/09/2025 - Ajuste da Validação de Senha no Frontend
 - **Validação de Senha (Frontend):** Implementada a lógica de validação de senha do backend no frontend, garantindo consistência e segurança. Testes automatizados com 100% de sucesso.

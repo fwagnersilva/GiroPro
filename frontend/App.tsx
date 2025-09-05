@@ -1,10 +1,8 @@
 import React from 'react';
-import SimpleRegister from './SimpleRegister';
+import LoginScreen from './src/screens/LoginScreen';
 
 export default function App() {
-  return <SimpleRegister />;
+  return <LoginScreen navigation={null} />;
 }
-
-// Teste de hot reload: Nova linha adicionada
 
 
