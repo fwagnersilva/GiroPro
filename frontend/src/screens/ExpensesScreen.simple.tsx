@@ -3,10 +3,10 @@ import { useAuth } from '../contexts/AuthContext.web';
 
 interface Expense {
   id: string;
-  id_veiculo?: string;
-  data_despesa: string;
-  tipo_despesa: 'Manutencao' | 'Pneus' | 'Seguro' | 'Outros';
-  valor_despesa: number; // em centavos
+  idVeiculo?: string;
+  dataDespesa: string;
+  tipoDespesa: 'manutencao' | 'pneus' | 'seguro' | 'outros';
+  valorDespesa: number; // em centavos
   descricao?: string;
   veiculo?: string; // nome do veículo para exibição
 }
@@ -16,10 +16,10 @@ const ExpensesScreenSimple: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [formData, setFormData] = useState({
-    id_veiculo: '',
-    data_despesa: new Date().toISOString().split('T')[0],
-    tipo_despesa: 'Manutencao' as 'Manutencao' | 'Pneus' | 'Seguro' | 'Outros',
-    valor_despesa: '',
+    idVeiculo: '',
+    dataDespesa: new Date().toISOString().split('T')[0],
+    tipoDespesa: 'manutencao' as 'manutencao' | 'pneus' | 'seguro' | 'outros',
+    valorDespesa: '',
     descricao: ''
   });
   const { user } = useAuth();
@@ -28,47 +28,47 @@ const ExpensesScreenSimple: React.FC = () => {
   const mockExpenses: Expense[] = [
     {
       id: '1',
-      id_veiculo: '1',
-      data_despesa: '2025-09-05',
-      tipo_despesa: 'Manutencao',
-      valor_despesa: 12000, // R$ 120,00 em centavos
+      idVeiculo: '1',
+      dataDespesa: '2025-09-05',
+      tipoDespesa: 'manutencao',
+      valorDespesa: 12000, // R$ 120,00 em centavos
       descricao: 'Troca de óleo e filtros',
       veiculo: 'Toyota Corolla'
     },
     {
       id: '2',
-      id_veiculo: '2',
-      data_despesa: '2025-09-03',
-      tipo_despesa: 'Pneus',
-      valor_despesa: 45000, // R$ 450,00 em centavos
+      idVeiculo: '2',
+      dataDespesa: '2025-09-03',
+      tipoDespesa: 'pneus',
+      valorDespesa: 45000, // R$ 450,00 em centavos
       descricao: 'Troca de 4 pneus',
       veiculo: 'Honda Civic'
     },
     {
       id: '3',
-      id_veiculo: '1',
-      data_despesa: '2025-09-01',
-      tipo_despesa: 'Seguro',
-      valor_despesa: 85000, // R$ 850,00 em centavos
+      idVeiculo: '1',
+      dataDespesa: '2025-09-01',
+      tipoDespesa: 'seguro',
+      valorDespesa: 85000, // R$ 850,00 em centavos
       descricao: 'Seguro anual do veículo',
       veiculo: 'Toyota Corolla'
     },
     {
       id: '4',
-      id_veiculo: '3',
-      data_despesa: '2025-08-30',
-      tipo_despesa: 'Outros',
-      valor_despesa: 2500, // R$ 25,00 em centavos
+      idVeiculo: '3',
+      dataDespesa: '2025-08-30',
+      tipoDespesa: 'outros',
+      valorDespesa: 2500, // R$ 25,00 em centavos
       descricao: 'Lavagem completa',
       veiculo: 'Volkswagen Gol'
     }
   ];
 
   const tiposDespesa = [
-    { value: 'Manutencao', label: 'Manutenção', color: '#FF9500', icon: '🔧' },
-    { value: 'Pneus', label: 'Pneus', color: '#34C759', icon: '🛞' },
-    { value: 'Seguro', label: 'Seguro', color: '#007AFF', icon: '🛡️' },
-    { value: 'Outros', label: 'Outros', color: '#8E8E93', icon: '📋' }
+    { value: 'manutencao', label: 'Manutenção', color: '#FF9500', icon: '🔧' },
+    { value: 'pneus', label: 'Pneus', color: '#34C759', icon: '🛞' },
+    { value: 'seguro', label: 'Seguro', color: '#007AFF', icon: '🛡️' },
+    { value: 'outros', label: 'Outros', color: '#8E8E93', icon: '📋' }
   ];
 
   useEffect(() => {
@@ -91,12 +91,12 @@ const ExpensesScreenSimple: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!formData.descricao || !formData.valor_despesa) {
+    if (!formData.descricao || !formData.valorDespesa) {
       alert('Preencha todos os campos obrigatórios');
       return;
     }
 
-    const valor = parseFloat(formData.valor_despesa);
+    const valor = parseFloat(formData.valorDespesa);
     if (isNaN(valor) || valor <= 0) {
       alert('Valor deve ser um número positivo');
       return;
@@ -110,20 +110,20 @@ const ExpensesScreenSimple: React.FC = () => {
       
       const newExpense: Expense = {
         id: Date.now().toString(),
-        id_veiculo: formData.id_veiculo || undefined,
-        data_despesa: formData.data_despesa,
-        tipo_despesa: formData.tipo_despesa,
-        valor_despesa: Math.round(valor * 100), // Converter para centavos
+        idVeiculo: formData.idVeiculo || undefined,
+        dataDespesa: formData.dataDespesa,
+        tipoDespesa: formData.tipoDespesa,
+        valorDespesa: Math.round(valor * 100), // Converter para centavos
         descricao: formData.descricao,
-        veiculo: formData.id_veiculo ? 'Veículo Selecionado' : undefined
+        veiculo: formData.idVeiculo ? 'Veículo Selecionado' : undefined
       };
       
       setExpenses([newExpense, ...expenses]);
       setFormData({
-        id_veiculo: '',
-        data_despesa: new Date().toISOString().split('T')[0],
-        tipo_despesa: 'Manutencao',
-        valor_despesa: '',
+        idVeiculo: '',
+        dataDespesa: new Date().toISOString().split('T')[0],
+        tipoDespesa: 'manutencao',
+        valorDespesa: '',
         descricao: ''
       });
       setShowForm(false);
@@ -166,7 +166,7 @@ const ExpensesScreenSimple: React.FC = () => {
     return new Date(dateString + 'T00:00:00').toLocaleDateString('pt-BR');
   };
 
-  const totalExpenses = expenses.reduce((sum, expense) => sum + expense.valor_despesa, 0);
+  const totalExpenses = expenses.reduce((sum, expense) => sum + expense.valorDespesa, 0);
 
   return (
     <div style={{
@@ -259,7 +259,7 @@ const ExpensesScreenSimple: React.FC = () => {
                       fontSize: '16px',
                       boxSizing: 'border-box'
                     }}
-                    placeholder="Ex: Abastecimento Posto Shell"
+                    placeholder="Ex: Troca de óleo e filtros"
                   />
                 </div>
                 
@@ -271,8 +271,8 @@ const ExpensesScreenSimple: React.FC = () => {
                     type="number"
                     step="0.01"
                     min="0"
-                    value={formData.valor}
-                    onChange={(e) => setFormData({...formData, valor: e.target.value})}
+                    value={formData.valorDespesa}
+                    onChange={(e) => setFormData({...formData, valorDespesa: e.target.value})}
                     style={{
                       width: '100%',
                       padding: '12px',
@@ -287,11 +287,11 @@ const ExpensesScreenSimple: React.FC = () => {
                 
                 <div>
                   <label style={{ display: 'block', marginBottom: '8px', fontWeight: '600' }}>
-                    Categoria
+                    Tipo de Despesa
                   </label>
                   <select
-                    value={formData.categoria}
-                    onChange={(e) => setFormData({...formData, categoria: e.target.value})}
+                    value={formData.tipoDespesa}
+                    onChange={(e) => setFormData({...formData, tipoDespesa: e.target.value as any})}
                     style={{
                       width: '100%',
                       padding: '12px',
@@ -301,8 +301,8 @@ const ExpensesScreenSimple: React.FC = () => {
                       boxSizing: 'border-box'
                     }}
                   >
-                    {categorias.map(cat => (
-                      <option key={cat.value} value={cat.value}>{cat.label}</option>
+                    {tiposDespesa.map(tipo => (
+                      <option key={tipo.value} value={tipo.value}>{tipo.label}</option>
                     ))}
                   </select>
                 </div>
@@ -313,8 +313,8 @@ const ExpensesScreenSimple: React.FC = () => {
                   </label>
                   <input
                     type="date"
-                    value={formData.data}
-                    onChange={(e) => setFormData({...formData, data: e.target.value})}
+                    value={formData.dataDespesa}
+                    onChange={(e) => setFormData({...formData, dataDespesa: e.target.value})}
                     style={{
                       width: '100%',
                       padding: '12px',
@@ -332,8 +332,8 @@ const ExpensesScreenSimple: React.FC = () => {
                   </label>
                   <input
                     type="text"
-                    value={formData.veiculo}
-                    onChange={(e) => setFormData({...formData, veiculo: e.target.value})}
+                    value={formData.idVeiculo}
+                    onChange={(e) => setFormData({...formData, idVeiculo: e.target.value})}
                     style={{
                       width: '100%',
                       padding: '12px',
@@ -401,31 +401,31 @@ const ExpensesScreenSimple: React.FC = () => {
                 gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
                 gap: '12px'
               }}>
-                {categorias.map(categoria => {
-                  const totalCategoria = expenses
-                    .filter(e => e.categoria === categoria.value)
-                    .reduce((sum, e) => sum + e.valor, 0);
+                {tiposDespesa.map(tipo => {
+                  const totalTipo = expenses
+                    .filter(e => e.tipoDespesa === tipo.value)
+                    .reduce((sum, e) => sum + e.valorDespesa, 0);
                   
-                  if (totalCategoria === 0) return null;
+                  if (totalTipo === 0) return null;
                   
                   return (
                     <div
-                      key={categoria.value}
+                      key={tipo.value}
                       style={{
-                        backgroundColor: categoria.color + '20',
-                        border: `2px solid ${categoria.color}`,
+                        backgroundColor: tipo.color + '20',
+                        border: `2px solid ${tipo.color}`,
                         padding: '12px',
                         borderRadius: '8px',
                         textAlign: 'center'
                       }}
                     >
                       <p style={{ 
-                        color: categoria.color, 
+                        color: tipo.color, 
                         fontWeight: 'bold', 
                         margin: '0 0 4px 0',
                         fontSize: '14px'
                       }}>
-                        {categoria.label}
+                        {tipo.label}
                       </p>
                       <p style={{ 
                         color: '#333', 
@@ -433,7 +433,7 @@ const ExpensesScreenSimple: React.FC = () => {
                         margin: '0',
                         fontSize: '16px'
                       }}>
-                        {formatCurrency(totalCategoria)}
+                        {formatCurrency(totalTipo)}
                       </p>
                     </div>
                   );
@@ -448,9 +448,9 @@ const ExpensesScreenSimple: React.FC = () => {
               gap: '12px'
             }}>
               {expenses
-                .sort((a, b) => new Date(b.data).getTime() - new Date(a.data).getTime())
+                .sort((a, b) => new Date(b.dataDespesa).getTime() - new Date(a.dataDespesa).getTime())
                 .map((expense) => {
-                  const categoriaInfo = getCategoriaInfo(expense.categoria);
+                  const tipoInfo = getTipoInfo(expense.tipoDespesa);
                   return (
                     <div
                       key={expense.id}
@@ -470,7 +470,7 @@ const ExpensesScreenSimple: React.FC = () => {
                             style={{
                               width: '12px',
                               height: '12px',
-                              backgroundColor: categoriaInfo.color,
+                              backgroundColor: tipoInfo.color,
                               borderRadius: '50%',
                               marginRight: '8px'
                             }}

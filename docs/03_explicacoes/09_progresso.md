@@ -25,12 +25,12 @@
 
 ### Oportunidades de Melhoria - Complexidade Média
 
-- [>] **Corrigir endpoint de expenses**: Investigar e resolver erro na recuperação de despesas. 
-  - **Progresso**: Endpoint retorna erro interno do servidor. Necessário investigar o serviço e o schema de despesas.
+- [>] **Corrigir erro na tela de despesas**: ExpensesScreen.simple.tsx apresenta erro de renderização na linha 22, causando tela branca.
+  - **Progresso**: Erro identificado no console do navegador. Referências de `categoria` para `tipoDespesa` e `data` para `dataDespesa` corrigidas. Erros de digitação `fontSizeize` e `fontSiz` para `fontSize` corrigidos. Ainda há um erro de renderização que impede a tela de ser exibida corretamente.
+  - **Próximo passo**: Investigar o erro de renderização que causa a tela branca, possivelmente relacionado a um componente ou estilo não resolvido, ou um erro lógico no mapeamento dos dados.
 - [>] **Testar integração frontend-backend**: Validar comunicação entre as aplicações. 
   - **Progresso**: Backend e frontend estão rodando, autenticação e listagem de veículos funcionam. Necessário testar o fluxo completo de criação/edição de dados.
 - [ ] **Implementar Tela de Abastecimentos:** Criar `FuelingsScreen.simple.tsx` seguindo a estrutura do banco de dados com campos: id_veiculo, data_abastecimento, tipo_combustivel, quantidade_litros, valor_litro, km_atual, nome_posto.
-- [ ] **Corrigir Erro de Renderização na Tela de Despesas:** Investigar e resolver o problema que causa tela branca ao navegar para ExpensesScreen.simple.tsx (possivelmente erro de sintaxe ou import).
 - [ ] **Conectar Formulários com APIs Reais:** Substituir mock data por chamadas reais para as APIs do backend nas telas de Veículos e Despesas.
 - [ ] **Implementar Seleção de Veículos nos Formulários:** Adicionar dropdown/picker para seleção de veículos cadastrados nos formulários de despesas e abastecimentos.
 - [ ] **Implementar Navegação Web:** Configurar o React Navigation para funcionar no ambiente web, permitindo a transição entre as telas.
@@ -81,13 +81,12 @@
 
 ## 📋 Histórico de Progresso
 
-### 05/09/2025 - Implementação da Tela de Despesas e Continuação do Desenvolvimento
-- **Frontend:** Implementada `ExpensesScreen.simple.tsx` seguindo estrutura do banco de dados com campos: id_veiculo, data_despesa, tipo_despesa, valor_despesa, descricao.
-- **Estrutura de Dados:** Atualizada interface para usar tipos corretos do banco: 'Manutencao' | 'Pneus' | 'Seguro' | 'Outros' e valores em centavos.
-- **Navegação:** Adicionada navegação para tela de despesas no sistema de navegação simples.
-- **Análise de Telas Originais:** Identificados campos corretos das telas `.clean.tsx` existentes para aproveitar estrutura do banco de dados.
-- **Estratégia Validada:** Confirmada abordagem de criar versões simples independentes (.simple.tsx) sem olhar complexidade das telas originais.
-- **Status:** Tela de despesas implementada mas com erro de renderização identificado para correção futura.
+### 05/09/2025 - Correções e Refinamentos na Tela de Despesas
+- **Frontend:** Realizadas múltiplas correções na `ExpensesScreen.simple.tsx` para alinhar com o schema do banco de dados e resolver erros de renderização.
+  - Referências de `categoria` para `tipoDespesa` atualizadas.
+  - Referências de `data` para `dataDespesa` atualizadas.
+  - Erros de digitação (`fontSizeize`, `fontSiz`) corrigidos para `fontSize`.
+- **Status:** A tela de despesas ainda apresenta um erro de renderização que impede sua exibição completa, mas as inconsistências de dados e sintaxe foram abordadas.
 
 ### 05/09/2025 - Implementação da Tela de Veículos e Navegação Funcional
 - **Frontend:** Implementada tela de veículos completa (`VehiclesScreen.simple.tsx`) com funcionalidades de CRUD (Create, Read, Update, Delete).
@@ -107,14 +106,18 @@
 - **Estratégia:** Estabelecida abordagem "Simples Primeiro, Melhore Depois" para desenvolvimento futuro, criando versões `.simple.tsx` funcionais antes de implementar funcionalidades complexas.
 - **Status Final:** Sistema 100% funcional em ambiente local com backend (porta 3000) e frontend (porta 19006) estáveis.
 
-### 05/09/2025 - Configuração Rápida do Ambiente Local e Correções Críticas
+### 05/09/2025 - Configuração Rápida do Ambiente e Correções Críticas Parciais
 - **Ambiente Local Configurado:** Backend (porta 3000) e frontend (porta 19006) funcionando corretamente
-- **Problema Crítico Resolvido - Banco em Memória:** Corrigido problema onde Drizzle ORM e função de inicialização utilizavam instâncias separadas do banco de dados em memória. Solução: ajustado import em `initTables.ts` para usar `connection.sqlite`
-- **Problema Crítico Resolvido - JWT sem Email:** Token JWT não incluía email no payload, causando erro "Token não contém dados válidos do usuário". Solução: modificado método `generateToken()` em `authService.ts` para incluir email
-- **Problema Crítico Resolvido - Schema Inconsistente:** Nomes de colunas no schema não correspondiam às tabelas criadas (fuelType vs tipoCombustivel, usageType vs tipoUso). Solução: padronizado nomes de colunas no `schema.ts`
-- **Funcionalidades Validadas:** Autenticação completa (registro/login), endpoint de veículos, middleware de autenticação, health check
-- **Configuração de Ambiente:** Arquivos `.env` criados, dependências instaladas com `--legacy-peer-deps` no frontend
+- **Backend Estável:** Servidor rodando sem erros, banco em memória inicializado, autenticação funcionando
+- **Frontend Parcialmente Funcional:** Login, dashboard e tela de veículos funcionando perfeitamente
+- **Problema Crítico Identificado - Tela de Despesas:** Erro de renderização persiste na ExpensesScreen.simple.tsx (linha 22), causando tela branca
+- **Integração Backend-Frontend:** Comunicação funcionando - login, navegação e listagem de veículos testados com sucesso
+- **Configuração de Ambiente:** Arquivos `.env` criados para backend e frontend, dependências instaladas
 - **Banco de Dados:** Configurado para usar `:memory:` garantindo inicialização limpa das tabelas
-- **Próximas Ações Identificadas:** Corrigir endpoint de expenses, implementar tela de abastecimentos, conectar formulários com APIs reais
+- **Próximas Ações Críticas:** 
+  - Corrigir completamente ExpensesScreen.simple.tsx (erro na linha 22)
+  - Implementar tela de abastecimentos funcional
+  - Testar endpoint de expenses no backend
+  - Conectar formulários com APIs reais do backend
 
 
