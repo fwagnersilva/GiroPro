@@ -6,6 +6,7 @@ import { userRoutes } from './routes/users';
 import { vehicleRoutes } from './routes/vehicles';
 import { journeyRoutes } from './routes/journeys';
 import { fuelingRoutes } from './routes/fuelings';
+import { fuelPricesRoutes } from './routes/fuelPrices';
 import { expenseRoutes } from './routes/expenses';
 import { errorHandler } from './middlewares/errorHandler';
 import { requestLogger } from './middlewares/requestLogger';

@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   TextInputProps,
 } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import Icon from './Icon';
 
 interface FormInputProps extends TextInputProps {
   label: string;
@@ -85,8 +85,8 @@ const FormInput: React.FC<FormInputProps> = React.memo(({
         testID="form-input-container"
       >
         {leftIcon && (
-          <Ionicons
-            name={leftIcon as any}
+          <Icon
+            name={leftIcon}
             size={20}
             color={hasError ? '#FF3B30' : isFocused ? '#007AFF' : '#8E8E93'}
             style={styles.leftIcon}
@@ -115,8 +115,8 @@ const FormInput: React.FC<FormInputProps> = React.memo(({
             style={styles.rightIconContainer}
             testID="right-icon-button"
           >
-            <Ionicons
-              name={rightIcon as any}
+            <Icon
+              name={rightIcon}
               size={20}
               color={hasError ? '#FF3B30' : isFocused ? '#007AFF' : '#8E8E93'}
             />

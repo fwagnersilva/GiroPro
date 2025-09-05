@@ -4,18 +4,18 @@ import {
   Text,
   TouchableOpacity,
   StyleSheet,
-  Alert,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
   Animated,
 } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '../contexts/AuthContext';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../types';
 import FormInput, { validators, combineValidators } from '../components/FormInput';
 import LoadingSpinner from '../components/LoadingSpinner';
+import Icon from '../components/Icon';
+import Alert from '../utils/alert';
 
 type LoginScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Login'>;
 
@@ -136,9 +136,9 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
                 onPress={() => setRememberMe(!rememberMe)}
               >
                 {rememberMe ? (
-                  <Ionicons name="checkbox-outline" size={24} color="#007AFF" />
+                  <Icon name="checkmark-outline" size={24} color="#007AFF" />
                 ) : (
-                  <Ionicons name="square-outline" size={24} color="#8E8E93" />
+                  <Icon name="square-outline" size={24} color="#8E8E93" />
                 )}
                 <Text style={styles.rememberMeText}>Lembrar-me</Text>
               </TouchableOpacity>

@@ -1,139 +1,45 @@
-import { Request, Response, NextFunction } from 'express';
+import { Response, Request, NextFunction } from 'express';
+import { AuthenticatedRequest, CreateFuelingRequest, UpdateFuelingRequest } from '../types/index';
+import { FuelingService } from '../services/fuelingService';
 import { z } from 'zod';
-import { AuthenticatedRequest } from '../types';
 
-import { FuelPricesService } from "../services/fuel_prices_service";
-import { cacheService } from "../services/cacheService";
-import { Logger } from "../utils/logger";
-
-const logger = new Logger();
-
-// ========== SCHEMAS DE VALIDAÇÃO ==========
-
-const fuelPricesQuerySchema = z.object({
-  estado: z.string()
-    .length(2, "Estado deve ter 2 caracteres")
-    .regex(/^[A-Z]{2}$/, "Estado deve estar em maiúsculas")
-    .optional(),
-  cidade: z.string()
-    .min(2, "Cidade deve ter pelo menos 2 caracteres")
-    .max(100, "Nome da cidade muito longo")
-    .optional(),
-  tipoCombustivel: z.enum(["gasolina", "etanol", "diesel", "gnv", "flex"])
-    .optional(),
-  limite: z.coerce.number()
-    .int()
-    .min(1)
-    .max(100)
-    .default(20)
-    .optional()
+// Schemas de validação com Zod
+const createFuelingSchema = z.object({
+  id_veiculo: z.string().uuid('ID do veículo inválido').optional(),
+  data_abastecimento: z.string().datetime('Data de abastecimento inválida').or(z.date()).optional(),
+  tipo_combustivel: z.enum(['Gasolina', 'Etanol', 'Diesel', 'GNV', 'Flex'], { message: 'Tipo de combustível inválido' }),
+  quantidade_litros: z.number().positive('Quantidade de litros deve ser positiva'),
+  valor_litro: z.number().positive('Valor por litro deve ser positivo'),
+  km_atual: z.number().int().positive('KM atual deve ser um número inteiro positivo').optional(),
+  nome_posto: z.string().min(1, 'Nome do posto é obrigatório').max(255, 'Nome do posto muito longo').optional(),
 });
 
-const priceHistoryQuerySchema = z.object({
-  estado: z.string()
-    .length(2, "Estado deve ter 2 caracteres")
-    .regex(/^[A-Z]{2}$/, "Estado deve estar em maiúsculas"),
-  cidade: z.string()
-    .min(2, "Cidade deve ter pelo menos 2 caracteres")
-    .max(100, "Nome da cidade muito longo"),
-  tipoCombustivel: z.enum(['gasolina', 'etanol', 'diesel', 'gnv', 'flex']),
-  periodoDias: z.coerce.number()
-    .int()
-    .min(1, "Período mínimo é 1 dia")
-    .max(365, "Período máximo é 365 dias")
-    .default(30)
+const updateFuelingSchema = createFuelingSchema.partial();
+
+const idParamSchema = z.object({
+  id: z.string().uuid('ID deve ser um UUID válido')
 });
 
-const regionalComparisonSchema = z.object({
-  tipoCombustivel: z.enum(['gasolina', 'etanol', 'diesel', 'gnv', 'flex'])
-    .default('gasolina'),
-  estados: z.string()
-    .optional()
-    .transform(str => {
-      if (!str) return ['SP', 'RJ', 'MG', 'RS', 'PR'];
-      const estadosArray = str.split(',').map(e => e.trim().toUpperCase());
-      if (estadosArray.length > 10) {
-        throw new Error('Máximo de 10 estados permitidos');
-      }
-      return estadosArray;
-    }),
-  incluirTendencia: z.coerce.boolean().default(false)
-});
+// Middleware para extrair e validar userId
+const extractUserId = (req: Request): string => {
+  const userId = (req as AuthenticatedRequest).user?.id;
+  
+  if (!userId) {
+    throw new Error('UNAUTHORIZED');
+  }
+  
+  return userId;
+};
 
-const reportPriceSchema = z.object({
-  estado: z.string()
-    .length(2, "Estado deve ter 2 caracteres")
-    .regex(/^[A-Z]{2}$/, "Estado deve estar em maiúsculas"),
-  cidade: z.string()
-    .min(2, "Cidade deve ter pelo menos 2 caracteres")
-    .max(100, "Nome da cidade muito longo"),
-  tipoCombustivel: z.enum(['gasolina', 'etanol', 'diesel', 'gnv', 'flex']),
-  precoMedio: z.number()
-    .positive("Preço médio deve ser positivo")
-    .max(50, "Preço parece muito alto, verifique")
-    .refine(val => Number(val.toFixed(3)) === val, "Máximo 3 casas decimais"),
-  nomePosto: z.string()
-    .min(2, "Nome do posto é obrigatório")
-    .max(200, "Nome do posto muito longo")
-    .optional(),
-  endereco: z.string()
-    .max(300, "Endereço muito longo")
-    .optional(),
-  observacoes: z.string()
-    .max(500, "Observações muito longas")
-    .optional(),
-  fonte: z.string()
-    .min(1, "Fonte é obrigatória")
-    .default("Usuário"),
-  latitude: z.number().optional(),
-  longitude: z.number().optional()
-});
-
-// ========== TIPOS E INTERFACES ==========
-
-interface FuelPriceFilters {
-  estado?: string;
-  cidade?: string;
-  tipoCombustivel?: "gasolina" | "etanol" | "diesel" | "gnv" | "flex";
-  limite?: number;
-}
-
-interface PriceHistoryParams {
-  estado: string;
-  cidade: string;
-  tipoCombustivel: 'gasolina' | 'etanol' | 'diesel' | 'gnv' | 'flex';
-  periodoDias: number;
-}
-
-interface RegionalComparisonParams {
-  tipoCombustivel: 'gasolina' | 'etanol' | 'diesel' | 'gnv' | 'flex';
-  estados: string[];
-  incluirTendencia: boolean;
-}
-
-// ========== UTILITÁRIOS ==========
-
+// Wrapper para tratamento consistente de erros
 const asyncHandler = (fn: Function) => {
   return (req: Request, res: Response, next: NextFunction) => {
     Promise.resolve(fn(req, res, next)).catch(next);
   };
 };
 
-const extractUserId = (req: Request): string => {
-  const userId = (req as AuthenticatedRequest).user?.id;
-  if (!userId) {
-    throw new Error('UNAUTHORIZED');
-  }
-  return userId;
-};
-
-const sendResponse = (
-  res: Response, 
-  statusCode: number, 
-  data?: any, 
-  message?: string,
-  meta?: any
-) => {
+// Helper para respostas padronizadas
+const sendResponse = (res: Response, statusCode: number, data?: any, message?: string) => {
   const response: any = {
     success: statusCode < 400,
     timestamp: new Date().toISOString()
@@ -141,25 +47,25 @@ const sendResponse = (
 
   if (message) response.message = message;
   if (data !== undefined) response.data = data;
-  if (meta) response.meta = meta;
 
   return res.status(statusCode).json(response);
 };
 
+// Helper para tratamento de erros
 const handleError = (res: Response, error: any, defaultMessage: string = 'Erro interno do servidor') => {
-  console.error('FuelPricesController Error:', {
+  console.error('FuelingsController Error:', {
     message: error.message,
     stack: error.stack,
     timestamp: new Date().toISOString()
   });
 
+  // Mapeamento de erros conhecidos
   const errorMappings: Record<string, { status: number; message: string }> = {
     'UNAUTHORIZED': { status: 401, message: 'Usuário não autenticado' },
+    'FUELING_NOT_FOUND': { status: 404, message: 'Abastecimento não encontrado' },
+    'PERMISSION_DENIED': { status: 403, message: 'Sem permissão para esta operação' },
     'VALIDATION_ERROR': { status: 400, message: 'Dados inválidos' },
-    'NOT_FOUND': { status: 404, message: 'Dados não encontrados' },
-    'RATE_LIMITED': { status: 429, message: 'Muitas requisições, tente novamente em breve' },
-    'EXTERNAL_API_ERROR': { status: 502, message: 'Erro no serviço de preços externo' },
-    'CACHE_ERROR': { status: 503, message: 'Serviço temporariamente indisponível' }
+    'DUPLICATE_ENTRY': { status: 409, message: 'Abastecimento já existe' }
   };
 
   const errorInfo = errorMappings[error.message] || { 
@@ -170,14 +76,13 @@ const handleError = (res: Response, error: any, defaultMessage: string = 'Erro i
   return sendResponse(res, errorInfo.status, null, errorInfo.message);
 };
 
+// Validador de parâmetros de entrada
 const validateRequestData = (schema: z.ZodSchema, data: any) => {
   try {
     return schema.parse(data);
   } catch (error) {
     if (error instanceof z.ZodError) {
-      const errorMessage = error.errors
-        .map(err => `${err.path.join('.')}: ${err.message}`)
-        .join(', ');
+      const errorMessage = error.errors.map(err => `${err.path.join('.')}: ${err.message}`).join(', ');
       const validationError = new Error('VALIDATION_ERROR');
       validationError.message = `Dados inválidos: ${errorMessage}`;
       throw validationError;
@@ -186,308 +91,133 @@ const validateRequestData = (schema: z.ZodSchema, data: any) => {
   }
 };
 
-// ========== CONTROLADOR PRINCIPAL ==========
-
 /**
- * Obtém preços de combustível por região
- * @route GET /api/v1/fuel-prices
- * @query {string} [estado] - Código do estado (2 letras)
- * @query {string} [cidade] - Nome da cidade
- * @query {string} [tipoCombustivel] - Tipo de combustível
- * @query {number} [limite=20] - Número máximo de resultados
+ * Cria um novo abastecimento
+ * @route POST /api/v1/fuelings
  */
-export const getPrices = asyncHandler(async (req: Request, res: Response) => {
+export const createFueling = asyncHandler(async (req: Request, res: Response) => {
   const userId = extractUserId(req);
   
-  const filters = validateRequestData(fuelPricesQuerySchema, req.query) as FuelPriceFilters;
-  
-  // Gerar chave de cache baseada nos filtros
-  const cacheKey = `fuel-prices:${JSON.stringify(filters)}`;
+  // Validar dados de entrada
+  const validatedData = validateRequestData(createFuelingSchema, req.body);
   
   try {
-    // Tentar buscar do cache primeiro
-    let prices = await cacheService.get(cacheKey);
+    const newFueling = await FuelingService.createFueling(userId, validatedData as CreateFuelingRequest);
     
-    if (!prices) {
-      // Buscar do serviço se não estiver em cache
-      prices = await FuelPricesService.getPricesByRegion(filters);
-      
-      // Cachear por 5 minutos
-      await cacheService.set(cacheKey, prices, 300);
-    }
-
-    const meta = {
-      total_results: Array.isArray(prices) ? prices.length : 0,
-      cached: !!await cacheService.get(cacheKey),
-      filters_applied: Object.keys(filters).filter(key => filters[key as keyof FuelPriceFilters] !== undefined),
-      ultima_atualizacao: new Date().toISOString()
-    };
-
-    return sendResponse(
-      res, 
-      200, 
-      {
-        precos: prices,
-        filtros: filters
-      },
-      'Preços recuperados com sucesso',
-      meta
-    );
-
+    return sendResponse(res, 201, newFueling, 'Abastecimento criado com sucesso');
   } catch (error: any) {
-    return handleError(res, error, 'Erro ao buscar preços de combustível');
+    return handleError(res, error, 'Erro ao criar abastecimento');
   }
 });
 
 /**
- * Obtém histórico de preços de combustível
- * @route GET /api/v1/fuel-prices/history
- * @query {string} estado - Código do estado (obrigatório)
- * @query {string} cidade - Nome da cidade (obrigatório)
- * @query {string} tipoCombustivel - Tipo de combustível (obrigatório)
- * @query {number} [periodo_dias=30] - Período em dias
+ * Lista todos os abastecimentos do usuário
+ * @route GET /api/v1/fuelings
  */
-export const getPriceHistory = asyncHandler(async (req: Request, res: Response) => {
+export const getFuelings = asyncHandler(async (req: Request, res: Response) => {
   const userId = extractUserId(req);
   
-  const params = validateRequestData(priceHistoryQuerySchema, req.query) as PriceHistoryParams;
-  
-  const cacheKey = `price-history:${JSON.stringify(params)}`;
-  
+  // Parâmetros de query opcionais para filtros
+  const {
+    page = '1',
+    limit = '10',
+    tipoCombustivel,
+    vehicleId,
+    startDate,
+    endDate
+  } = req.query;
+
+  const filters = {
+    page: parseInt(page as string, 10),
+    limit: Math.min(parseInt(limit as string, 10), 100), // Máximo 100 registros
+    tipoCombustivel: tipoCombustivel as string,
+    vehicleId: vehicleId as string,
+    startDate: startDate as string,
+    endDate: endDate as string
+  };
+
   try {
-    let historyData = await cacheService.get(cacheKey) as any;
+    const fuelings = await FuelingService.getFuelingsByUserId(userId);
     
-    if (!historyData) {
-      historyData = await FuelPricesService.getPriceHistory(params);
-      await cacheService.set(cacheKey, historyData, 600); // Cache por 10 minutos
-    }
-
-    // Calcular estatísticas otimizadas
-    const statistics = await FuelPricesService.getPriceStatistics({
-      periodo: params.periodoDias || 30,
-      tipoCombustivel: params.tipoCombustivel,
-      incluirTendencia: true
-    });
-
-    return sendResponse(
-      res,
-      200,
-      {
-        historico: historyData.historico,
-        parametros: params,
-        estatisticas: statistics,
-        tendencia: historyData.tendencia
-      },
-      'Histórico recuperado com sucesso',
-      {
-        periodo_analisado: `${params.periodoDias} dias`,
-        pontos_dados: historyData.historico.length
-      }
-    );
-
+    return sendResponse(res, 200, fuelings, 'Abastecimentos recuperados com sucesso');
   } catch (error: any) {
-    return handleError(res, error, 'Erro ao buscar histórico de preços');
+    return handleError(res, error, 'Erro ao recuperar abastecimentos');
   }
 });
 
 /**
- * Obtém comparativo de preços entre regiões
- * @route GET /api/v1/fuel-prices/regional-comparison
- * @query {string} [tipoCombustivel=Gasolina] - Tipo de combustível
- * @query {string} [estados] - Estados separados por vírgula
- * @query {boolean} [incluir_tendencia=false] - Incluir análise de tendência
+ * Busca um abastecimento específico por ID
+ * @route GET /api/v1/fuelings/:id
  */
-export const getRegionalComparison = asyncHandler(async (req: Request, res: Response) => {
+export const getFuelingById = asyncHandler(async (req: Request, res: Response) => {
   const userId = extractUserId(req);
   
-  const params = validateRequestData(regionalComparisonSchema, req.query) as RegionalComparisonParams;
-  
-  const cacheKey = `regional-comparison:${JSON.stringify(params)}`;
+  // Validar parâmetro ID
+  const { id } = validateRequestData(idParamSchema, req.params);
   
   try {
-    let comparisonData = await cacheService.get(cacheKey) as any;
+    const fueling = await FuelingService.getFuelingById(id, userId);
     
-    if (!comparisonData) {
-      comparisonData = await FuelPricesService.getRegionalComparison(params);
-      await cacheService.set(cacheKey, comparisonData, 900); // Cache por 15 minutos
+    if (!fueling) {
+      throw new Error('FUELING_NOT_FOUND');
     }
-
-    // Análise de ranking - usando dados já calculados no comparativo
-    const rankings = comparisonData.comparativo || [];
-
-    return sendResponse(
-      res,
-      200,
-      {
-        tipoCombustivel: params.tipoCombustivel,
-        comparativo: comparisonData.comparativo,
-        estatisticas: comparisonData.estatisticas,
-        rankings,
-        ...(params.incluirTendencia && { tendencias: comparisonData.tendencias })
-      },
-      'Comparativo regional gerado com sucesso',
-      {
-        estados_analisados: params.estados.length,
-        incluiu_tendencia: params.incluirTendencia
-      }
-    );
-
+    
+    return sendResponse(res, 200, fueling, 'Abastecimento encontrado');
   } catch (error: any) {
-    return handleError(res, error, 'Erro ao gerar comparativo regional');
+    return handleError(res, error, 'Erro ao buscar abastecimento');
   }
 });
 
 /**
- * Registra um preço de combustível observado pelo usuário
- * @route POST /api/v1/fuel-prices/report
- * @body {object} - Dados do preço observado
+ * Atualiza um abastecimento existente
+ * @route PUT /api/v1/fuelings/:id
  */
-export const reportPrice = asyncHandler(async (req: Request, res: Response) => {
+export const updateFueling = asyncHandler(async (req: Request, res: Response) => {
   const userId = extractUserId(req);
   
-  const priceData = validateRequestData(reportPriceSchema, req.body);
+  // Validar parâmetro ID e dados de atualização
+  const { id } = validateRequestData(idParamSchema, req.params);
+  const validatedData = validateRequestData(updateFuelingSchema, req.body);
+  
+  // Verificar se há dados para atualizar
+  if (Object.keys(validatedData).length === 0) {
+    return sendResponse(res, 400, null, 'Nenhum dado válido fornecido para atualização');
+  }
   
   try {
-    // Verificar rate limiting por usuário
-    const rateLimitKey = `price-report:${userId}`;
-    const recentReports = (await cacheService.get(rateLimitKey) as number) || 0;
+    const updatedFueling = await FuelingService.updateFueling(id, userId, validatedData as UpdateFuelingRequest);
     
-    if (recentReports >= 10) { // Máximo 10 reports por hora
-      throw new Error('RATE_LIMITED');
+    if (!updatedFueling) {
+      throw new Error('FUELING_NOT_FOUND');
     }
-
-    // Validar se o preço é razoável comparado aos dados existentes
-    const isReasonablePrice = await FuelPricesService.validateReportedPrice(priceData);
     
-    if (!isReasonablePrice.valid) {
-      return sendResponse(
-        res,
-        422,
-        {
-          price_data: priceData,
-          validation_warnings: isReasonablePrice.warnings
-        },
-        'Preço reportado parece incomum. Confirme os dados.',
-        {
-          requires_confirmation: true
-        }
-      );
-    }
-
-    // Salvar o report
-    const reportedPrice = await FuelPricesService.savePriceReport(userId, priceData);
-    
-    // Atualizar rate limiting
-    await cacheService.set(rateLimitKey, recentReports + 1, 3600);
-    
-    // Invalidar caches relacionados
-    await cacheService.delPattern(`fuel-prices:*${priceData.estado}*`);
-
-    return sendResponse(
-      res,
-      201,
-      reportedPrice,
-      'Preço reportado com sucesso! Obrigado por contribuir com a comunidade.',
-      {
-        status_validacao: reportedPrice.status,
-        contribuicoes_usuario: await FuelPricesService.getUserContributionCount(userId)
-      }
-    );
-
+    return sendResponse(res, 200, updatedFueling, 'Abastecimento atualizado com sucesso');
   } catch (error: any) {
-    return handleError(res, error, 'Erro ao reportar preço');
+    return handleError(res, error, 'Erro ao atualizar abastecimento');
   }
 });
 
 /**
- * Obtém estatísticas de preços agregadas
- * @route GET /api/v1/fuel-prices/stats
- * @query {string} [periodo=week] - Período para estatísticas
- * @query {string} [tipoCombustivel] - Filtrar por tipo
+ * Remove um abastecimento
+ * @route DELETE /api/v1/fuelings/:id
  */
-export const getPriceStats = asyncHandler(async (req: Request, res: Response) => {
+export const deleteFueling = asyncHandler(async (req: Request, res: Response) => {
   const userId = extractUserId(req);
   
-  const statsQuery = z.object({
-    periodo: z.enum(['day', 'week', 'month', 'quarter', 'year']).default('week'),
-    tipoCombustivel: z.enum(['Gasolina', 'Etanol', 'Diesel', 'GNV']).optional(),
-    incluir_projecoes: z.coerce.boolean().default(false)
-  }).parse(req.query);
-
-  const cacheKey = `price-stats:${JSON.stringify(statsQuery)}`;
-
-  try {
-    let stats = await cacheService.get(cacheKey);
-
-    if (!stats) {
-      stats = await FuelPricesService.getPriceStatistics(statsQuery);
-      await cacheService.set(cacheKey, stats, 1800); // Cache por 30 minutos
-    }
-
-    return sendResponse(
-      res,
-      200,
-      stats,
-      'Estatísticas de preços recuperadas com sucesso',
-      {
-        periodo_analisado: statsQuery.periodo,
-        data_calculo: new Date().toISOString()
-      }
-    );
-
-  } catch (error: any) {
-    return handleError(res, error, 'Erro ao gerar estatísticas');
-  }
-});
-
-/**
- * Busca postos próximos com preços
- * @route GET /api/v1/fuel-prices/nearby
- * @query {number} latitude - Latitude
- * @query {number} longitude - Longitude
- * @query {number} [raio=10] - Raio em km
- */
-export const getNearbyPrices = asyncHandler(async (req: Request, res: Response) => {
-  const userId = extractUserId(req);
+  // Validar parâmetro ID
+  const { id } = validateRequestData(idParamSchema, req.params);
   
-  const locationQuery = z.object({
-    latitude: z.coerce.number().min(-90).max(90),
-    longitude: z.coerce.number().min(-180).max(180),
-    raio: z.coerce.number().min(1).max(50).default(10),
-    tipoCombustivel: z.enum(['gasolina', 'etanol', 'diesel', 'gnv']).optional()
-  }).parse(req.query);
-
   try {
-    // Garantir que as propriedades obrigatórias estejam presentes
-    const nearbyQuery = {
-      latitude: locationQuery.latitude,
-      longitude: locationQuery.longitude,
-      raio: locationQuery.raio,
-      tipoCombustivel: locationQuery.tipoCombustivel
-    };
+    const deleted = await FuelingService.deleteFueling(id, userId);
     
-    // TODO: Implementar método getNearbyPrices no FuelPricesService
-    // const nearbyPrices = await FuelPricesService.getNearbyPrices(nearbyQuery);
-    const nearbyPrices = []; // Fallback temporário
-
-    return sendResponse(
-      res,
-      200,
-      {
-        postos: nearbyPrices,
-        centro_busca: {
-          latitude: locationQuery.latitude,
-          longitude: locationQuery.longitude
-        },
-        raio_km: locationQuery.raio
-      },
-      'Postos próximos encontrados',
-      {
-        total_postos: nearbyPrices.length
-      }
-    );
-
+    if (!deleted) {
+      throw new Error('FUELING_NOT_FOUND');
+    }
+    
+    return sendResponse(res, 200, null, 'Abastecimento removido com sucesso');
   } catch (error: any) {
-    return handleError(res, error, 'Erro ao buscar postos próximos');
+    return handleError(res, error, 'Erro ao remover abastecimento');
   }
 });
+
+
