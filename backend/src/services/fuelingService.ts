@@ -384,6 +384,121 @@ export class FuelingService {
       };
     }
   }
-}
 
+  /**
+   * ✏️ Atualizar abastecimento existente
+   */
+  static async updateFueling(
+    id: string,
+    userId: string,
+    updateData: UpdateFuelingRequest
+  ): Promise<ServiceResult<FuelingData | null>> {
+    try {
+      // Verificar se o abastecimento existe e pertence ao usuário
+      const existingFueling = await this.getFuelingById(id, userId);
+      
+      if (!existingFueling.success || !existingFueling.data) {
+        return {
+          success: false,
+          error: 'Abastecimento não encontrado ou não pertence ao usuário'
+        };
+      }
+
+      // Preparar dados para atualização
+      const updateFields: any = {
+        updatedAt: new Date()
+      };
+
+      if (updateData.vehicleId) {
+        // Verificar se o veículo existe e pertence ao usuário
+        const vehicleExists = await db
+          .select({ id: veiculos.id })
+          .from(veiculos)
+          .where(and(
+            eq(veiculos.id, updateData.vehicleId),
+            eq(veiculos.idUsuario, userId)
+          ))
+          .limit(1);
+
+        if (vehicleExists.length === 0) {
+          return {
+            success: false,
+            error: 'Veículo não encontrado ou não pertence ao usuário'
+          };
+        }
+        updateFields.idVeiculo = updateData.vehicleId;
+      }
+
+      if (updateData.data) {
+        updateFields.dataAbastecimento = new Date(updateData.data);
+      }
+
+      if (updateData.quilometragem !== undefined) {
+        if (!Number.isFinite(updateData.quilometragem) || updateData.quilometragem < 0) {
+          return {
+            success: false,
+            error: 'Quilometragem deve ser um número válido e positivo'
+          };
+        }
+        updateFields.kmAtual = updateData.quilometragem;
+      }
+
+      if (updateData.quantidadeLitros !== undefined) {
+        if (!Number.isFinite(updateData.quantidadeLitros) || updateData.quantidadeLitros <= 0) {
+          return {
+            success: false,
+            error: 'Quantidade de litros deve ser um número válido e positivo'
+          };
+        }
+        updateFields.quantidadeLitros = updateData.quantidadeLitros;
+      }
+
+      if (updateData.precoPorLitro !== undefined) {
+        if (!Number.isFinite(updateData.precoPorLitro) || updateData.precoPorLitro <= 0) {
+          return {
+            success: false,
+            error: 'Preço por litro deve ser um número válido e positivo'
+          };
+        }
+        updateFields.valorLitro = FuelingUtils.priceToCents(updateData.precoPorLitro);
+        
+        // Recalcular valor total se quantidade de litros também foi fornecida ou usar a existente
+        const litros = updateData.quantidadeLitros || existingFueling.data.quantidadeLitros;
+        updateFields.valorTotal = FuelingUtils.priceToCents(litros * updateData.precoPorLitro);
+      }
+
+      if (updateData.posto !== undefined) {
+        updateFields.nomePosto = updateData.posto?.trim() || null;
+      }
+
+      if (updateData.tipoCombustivel) {
+        updateFields.tipoCombustivel = FuelingUtils.validateFuelType(updateData.tipoCombustivel);
+      }
+
+      // Atualizar no banco
+      const [updatedFueling] = await db
+        .update(abastecimentos)
+        .set(updateFields)
+        .where(and(
+          eq(abastecimentos.id, id),
+          eq(abastecimentos.idUsuario, userId)
+        ))
+        .returning();
+
+      return {
+        success: true,
+        data: updatedFueling || null
+      };
+
+    } catch (error) {
+      console.error('[FuelingService.updateFueling]', error);
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'Erro ao atualizar abastecimento'
+      };
+    }
+  }
+
+
+}
 

@@ -12,4 +12,4 @@ router.post('/prices/report', authMiddleware, reportPrice);
 router.get('/prices/stats', authMiddleware, getPriceStats);
 router.get('/prices/nearby', authMiddleware, getNearbyPrices);
 
-export const fuelingRoutes = router;
+export const fuelPricesRoutes = router;

@@ -154,7 +154,7 @@ export interface UpdateFuelingRequest {
   vehicleId?: string;
   data?: string;
   quilometragem?: number;
-  litros?: number;
+  quantidadeLitros?: number;
   precoPorLitro?: number;
   posto?: string;
   tipoCombustivel?: string;

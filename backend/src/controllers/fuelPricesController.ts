@@ -491,3 +491,15 @@ export const getNearbyPrices = asyncHandler(async (req: Request, res: Response) 
     return handleError(res, error, 'Erro ao buscar postos próximos');
   }
 });
+
+
+// Export da classe para compatibilidade com fuel-prices.ts
+export const FuelPricesController = {
+  getPrices,
+  getPriceHistory,
+  getRegionalComparison,
+  reportPrice,
+  getPriceStats,
+  getNearbyPrices
+};
+

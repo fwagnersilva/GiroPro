@@ -22,13 +22,17 @@ backend/
 ### **Frontend (`/frontend`):**
 ```
 frontend/
-├── src/screens/        # Telas React Native
-├── elegant-login.html  # 🌟 TELA PRINCIPAL (Web)
-├── test.html          # Interface de testes
-├── ElegantLogin.tsx   # Componente React elegante
-├── App.tsx            # Componente raiz
+├── src/
+│   ├── screens/        # Telas React Native
+│   ├── contexts/       # Contextos (AuthContext.web.tsx)
+│   └── components/     # Componentes reutilizáveis
+├── App.tsx            # Componente raiz (React Navigation)
+├── App.simple.tsx     # 🌟 VERSÃO FUNCIONAL ATUAL (Web)
+├── index.ts           # Ponto de entrada
 └── package.json       # Dependências
 ```
+
+**Status Atual:** Sistema funcionando com `App.simple.tsx` - versão estável sem React Navigation.
 
 ---
 
