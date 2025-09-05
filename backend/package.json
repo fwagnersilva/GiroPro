@@ -43,7 +43,7 @@
     "jsonwebtoken": "^9.0.0",
     "pg": "^8.11.3",
     "ts-node": "^10.9.2",
-    "typescript": "^5.8.3",
+    "typescript": "^5.9.2",
     "uuid": "^11.1.0",
     "zod": "^3.22.4"
   },
