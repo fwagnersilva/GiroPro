@@ -8,7 +8,8 @@ const modulesToTranspile = [
   'expo',
   '@expo',
   '@react-navigation',
-  '@tanstack'
+  '@tanstack',
+  'react-native-web'
 ];
 
 const exclude = new RegExp(`/node_modules/(?!${modulesToTranspile.join('|')})`);

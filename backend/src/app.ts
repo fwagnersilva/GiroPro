@@ -9,6 +9,7 @@ import { fuelingRoutes } from './routes/fuelings';
 import { expenseRoutes } from './routes/expenses';
 import { errorHandler } from './middlewares/errorHandler';
 import { requestLogger } from './middlewares/requestLogger';
+import { initializeTables } from './db/initTables';
 
 import helmet from 'helmet';
 
@@ -70,11 +71,14 @@ app.use('*', (req, res) => {
 });
 
 // Configurar para escutar em todas as interfaces
-app.listen(PORT, '0.0.0.0', () => {
+app.listen(PORT, '0.0.0.0', async () => {
   console.log(`🚀 Servidor GiroPro rodando na porta ${PORT}`);
   console.log(`📊 Health check: http://localhost:${PORT}/health`);
   console.log(`🔧 Test endpoint: http://localhost:${PORT}/api/test`);
   console.log(`🌐 Acessível externamente em: http://0.0.0.0:${PORT}`);
+  
+  // Inicializar tabelas no banco em memória
+  await initializeTables();
 });
 
 export default app;

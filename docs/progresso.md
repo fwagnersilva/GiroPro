@@ -12,6 +12,26 @@
 - ✅ Estratégia híbrida (Web First) definida
 - ✅ 62 telas existentes catalogadas
 
+### **🎯 DECISÃO ESTRATÉGICA - Banco de Dados (05/09/2025)**
+**IMPORTANTE:** Para os próximos meses de desenvolvimento, será utilizado **banco em memória** (`:memory:`):
+
+**Configuração atual:**
+```env
+SQLITE_DB_PATH=:memory:
+```
+
+**Justificativas:**
+- ✅ **Velocidade**: Muito mais rápido para desenvolvimento
+- ✅ **Limpeza automática**: Recria do zero a cada reinicialização
+- ✅ **Sem conflitos**: Não há problemas de arquivo bloqueado/corrompido
+- ✅ **Ideal para testes**: Cada teste tem um banco limpo
+- ✅ **Sem configuração**: Não precisa gerenciar arquivos
+
+**Migração futura:**
+- 📅 **Quando**: Após estabilização das funcionalidades principais
+- 🎯 **Para**: SQLite persistente (`./giropro.db`)
+- 📋 **Ação**: Alterar `SQLITE_DB_PATH` no `.env`
+
 ---
 
 ## 🔥 **PRIORIDADE CRÍTICA - Próximas Atividades**

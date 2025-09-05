@@ -174,9 +174,9 @@ Esta seção registra as tarefas que foram concluídas, com um breve resumo do q
 - [>] **Resolver Vulnerabilidades de Segurança Restantes:** Investigar e resolver as 7 vulnerabilidades restantes no frontend (2 moderadas, 5 altas) relacionadas a dependências do Expo SDK.
   - **Progresso:** Vulnerabilidades conhecidas documentadas, baixo risco para desenvolvimento. Não bloqueia o desenvolvimento atual.
   - **Observação:** Necessário monitorar atualizações do Expo SDK.
+- [ ] **Implementar Ícones Vetoriais:** Substituir ícones emoji pelos novos ícones vetoriais (EnhancedIcons.tsx) em toda a aplicação para melhor qualidade visual.
 - [ ] **Integrar Componentes Interativos nos Formulários:** Substituir componentes básicos pelos novos componentes interativos (InteractiveButton, InteractiveToggle) nos formulários existentes para melhorar a experiência do usuário.
 - [ ] **Aplicar Novos Tokens de Tema:** Migrar componentes existentes para usar os tokens de tema melhorados (enhancedTokens.ts) com melhor contraste e acessibilidade.
-- [ ] **Implementar Ícones Vetoriais:** Substituir ícones emoji pelos novos ícones vetoriais (EnhancedIcons.tsx) em toda a aplicação para melhor qualidade visual.
 - [ ] **Reorganizar Hierarquia de Campos:** Otimizar a disposição dos campos no formulário para seguir um fluxo lógico e intuitivo de preenchimento, reduzindo a carga cognitiva do usuário.
 - [ ] **Implementar Design System Consistente:** Aplicar os tokens de design definidos no projeto para garantir uma identidade visual coesa e facilitar a manutenção e escalabilidade da interface.
 - [ ] **Adicionar Validação em Tempo Real:** Fornecer feedback imediato e claro ao usuário sobre a validade dos dados inseridos, prevenindo erros e guiando o preenchimento correto do formulário.
@@ -184,15 +184,17 @@ Esta seção registra as tarefas que foram concluídas, com um breve resumo do q
 
 ### Oportunidades de Melhoria - Complexidade Média
 
-- [ ] **Restaurar App.tsx Original do Frontend:** Analisar e restaurar o App.tsx original do repositório, integrando as correções necessárias para manter a funcionalidade completa do frontend.
-  - **Observação:** Atualmente, `App.tsx` está apontando para `LoginScreen.tsx` para o React Native, e `elegant-login.html` é a versão web principal.
-- [ ] **Implementar Sistema de Animações:** Integrar os componentes animados (AnimatedComponents.tsx) nas telas principais para melhorar a fluidez da interface.
-- [ ] **Aplicar Layout Responsivo:** Utilizar o sistema de estilos responsivos (responsiveStyles.ts) para otimizar a experiência em diferentes tamanhos de tela.
-- [ ] **Testar Componentes Interativos:** Validar o funcionamento dos novos componentes interativos em diferentes dispositivos e plataformas.
-- [ ] **Ícones e Elementos Visuais:** Tornar a interface mais informativa e agradável visualmente com o uso de ícones e outros elementos gráficos.
-- [ ] **Cores e Contraste:** Garantir que a paleta de cores seja esteticamente agradável, funcional e acessível.
-- [ ] **Layout e Espaçamento:** Criar um layout bem estruturado e responsivo que se adapte a diferentes tamanhos de tela.
-- [ ] **Animações e Transições:** Adicionar movimento à interface para torná-la mais dinâmica e engajante.
+- [>] **Corrigir Inicialização do Banco de Dados em Memória:** Garantir que o Drizzle ORM e a função de inicialização de tabelas utilizem a mesma instância do banco de dados em memória para que as tabelas sejam criadas corretamente.
+  - **Progresso:** Identificado que o problema de "no such table" ocorre devido a instâncias separadas do banco em memória.
+  - **Observação:** Prioridade alta para permitir o teste completo do sistema.
+- [>] **Configurar React Native Web para Renderização Completa:** Investigar e resolver a causa da tela branca no frontend, garantindo que os componentes do React Native sejam renderizados corretamente na web.
+  - **Progresso:** `babel.config.js` e `vite.config.js` atualizados, `AsyncStorage` polyfill implementado, mas a tela ainda está em branco. O problema parece ser na inicialização do React Native Web no `index.html` ou na forma como os componentes React Native são mapeados para a web.
+  - **Observação:** Pode envolver a inicialização do `AppRegistry` ou problemas de estilo/componentes.
+- [ ] **Substituir `Alert` do React Native por alternativa Web:** Implementar uma solução de alerta compatível com a web (ex: `window.alert` ou uma biblioteca de toasts).
+- [ ] **Configurar `@expo/vector-icons` para Web:** Garantir que os ícones sejam exibidos corretamente na versão web do aplicativo.
+- [ ] **Implementar Navegação Web:** Configurar o React Navigation para funcionar no ambiente web, permitindo a transição entre as telas.
+- [ ] **Refatorar Componentes Incompatíveis:** Adaptar ou criar versões web-compatíveis de componentes que usam elementos nativos do React Native (ex: `FormInput.tsx`).
+- [ ] **Testar Fluxo de Autenticação Completo na Web:** Validar o registro e login de usuários na interface web, garantindo a comunicação correta com o backend.
 
 ### Oportunidades de Melhoria - Complexidade Alta
 
@@ -248,13 +250,10 @@ Esta seção registra as tarefas que foram concluídas, com um breve resumo do q
 
 
 
-### 05/09/2025 - Configuração Híbrida Completa e Tela de Login Elegante
-- **Sistema Híbrido:** Abordagem híbrida (Web First) implementada com sucesso para desenvolvimento ágil e futuro mobile.
-- **Tela de Login Elegante:** Interface web moderna criada (`elegant-login.html`) com design glassmorphism, gradientes e animações CSS.
-- **Backend Estável:** Sistema 100% funcional na porta 3000 com APIs de autenticação testadas e aprovadas.
-- **Frontend Web:** Versão web elegante funcionando na porta 19006 com integração completa ao backend.
-- **Banco Persistente:** SQLite configurado e sincronizado via Drizzle ORM com dados persistentes.
-- **Documentação Completa:** Guias de desenvolvimento, plano híbrido e relatórios técnicos gerados.
+### 05/09/2025 - Configuração Inicial do Frontend Web
+- **Frontend Web:** Configuração inicial do React Native Web e Vite para renderização no navegador.
+- **AsyncStorage:** Polyfill para `AsyncStorage` implementado para compatibilidade web.
+- **Status Atual:** Frontend ainda apresenta tela em branco, indicando problemas mais profundos na renderização do React Native Web ou na inicialização do `App.tsx`.Guias de desenvolvimento, plano híbrido e relatórios técnicos gerados.
 - **62 Telas Catalogadas:** Todas as telas existentes identificadas e prontas para integração futura.
 - **Estratégia Definida:** Roadmap claro para expansão web → PWA → mobile nativo.
 

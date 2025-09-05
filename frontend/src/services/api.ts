@@ -1,5 +1,5 @@
 import axios from 'axios';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import AsyncStorage from '../utils/AsyncStorage.web';
 import { 
   AuthResponse, 
   LoginRequest, 
