@@ -11,11 +11,7 @@
 
 ### Oportunidades de Melhoria - Complexidade Baixa
 
-- [ ] **Implementar Tela de Abastecimentos:** Criar `FuelingsScreen.simple.tsx` seguindo a estrutura do banco de dados com campos: id_veiculo, data_abastecimento, tipo_combustivel, quantidade_litros, valor_litro, km_atual, nome_posto.
 - [ ] **Implementar Tela de Relatórios:** Criar `ReportsScreen.simple.tsx` com visualizações básicas de gastos por categoria, consumo de combustível e estatísticas mensais.
-- [ ] **Corrigir Erro de Renderização na Tela de Despesas:** Investigar e resolver o problema que causa tela branca ao navegar para ExpensesScreen.simple.tsx (possivelmente erro de sintaxe ou import).
-- [ ] **Conectar Formulários com APIs Reais:** Substituir mock data por chamadas reais para as APIs do backend nas telas de Veículos e Despesas.
-- [ ] **Implementar Seleção de Veículos nos Formulários:** Adicionar dropdown/picker para seleção de veículos cadastrados nos formulários de despesas e abastecimentos.
 - [ ] **Adicionar Validação de Campos Específicos:** Implementar validações específicas como formato de placa, valores monetários e datas nos formulários.
 - [ ] **Melhorar Feedback Visual:** Adicionar loading states, success messages e error handling mais robustos nas operações CRUD.
 - [ ] **Padronizar Nomenclatura de Arquivos:** Revisar e padronizar nomes de arquivos de documentação para seguir convenções consistentes.
@@ -29,15 +25,14 @@
 
 ### Oportunidades de Melhoria - Complexidade Média
 
-- [>] **Corrigir Inicialização do Banco de Dados em Memória:** Garantir que o Drizzle ORM e a função de inicialização de tabelas utilizem a mesma instância do banco de dados em memória para que as tabelas sejam criadas corretamente.
-  - **Progresso:** Identificado que o problema de "no such table" ocorre devido a instâncias separadas do banco em memória.
-  - **Observação:** Prioridade alta para permitir o teste completo do sistema.
-- [x] **Configurar React Native Web para Renderização Completa:** Investigar e resolver a causa da tela branca no frontend, garantindo que os componentes do React Native sejam renderizados corretamente na web.
-  - **Concluído:** Telas `.simple.tsx` criadas e funcionando como alternativa para renderização web.
-- [x] **Substituir `Alert` do React Native por alternativa Web:** Implementar uma solução de alerta compatível com a web (ex: `window.alert` ou uma biblioteca de toasts).
-  - **Concluído:** Usando `window.alert` nas telas simples.
-- [x] **Configurar `@expo/vector-icons` para Web:** Garantir que os ícones sejam exibidos corretamente na versão web do aplicativo.
-  - **Concluído:** Usando emojis nas telas simples como solução temporária.
+- [>] **Corrigir endpoint de expenses**: Investigar e resolver erro na recuperação de despesas. 
+  - **Progresso**: Endpoint retorna erro interno do servidor. Necessário investigar o serviço e o schema de despesas.
+- [>] **Testar integração frontend-backend**: Validar comunicação entre as aplicações. 
+  - **Progresso**: Backend e frontend estão rodando, autenticação e listagem de veículos funcionam. Necessário testar o fluxo completo de criação/edição de dados.
+- [ ] **Implementar Tela de Abastecimentos:** Criar `FuelingsScreen.simple.tsx` seguindo a estrutura do banco de dados com campos: id_veiculo, data_abastecimento, tipo_combustivel, quantidade_litros, valor_litro, km_atual, nome_posto.
+- [ ] **Corrigir Erro de Renderização na Tela de Despesas:** Investigar e resolver o problema que causa tela branca ao navegar para ExpensesScreen.simple.tsx (possivelmente erro de sintaxe ou import).
+- [ ] **Conectar Formulários com APIs Reais:** Substituir mock data por chamadas reais para as APIs do backend nas telas de Veículos e Despesas.
+- [ ] **Implementar Seleção de Veículos nos Formulários:** Adicionar dropdown/picker para seleção de veículos cadastrados nos formulários de despesas e abastecimentos.
 - [ ] **Implementar Navegação Web:** Configurar o React Navigation para funcionar no ambiente web, permitindo a transição entre as telas.
 - [ ] **Refatorar Componentes Incompatíveis:** Adaptar ou criar versões web-compatíveis de componentes que usam elementos nativos do React Native (ex: `FormInput.tsx`).
 - [ ] **Testar Fluxo de Autenticação Completo na Web:** Validar o registro e login de usuários na interface web, garantindo a comunicação correta com o backend.
@@ -111,4 +106,15 @@
 - **Ambiente:** Configurados arquivos `.env` para backend e frontend. Dependências instaladas com `--legacy-peer-deps` para resolver conflitos.
 - **Estratégia:** Estabelecida abordagem "Simples Primeiro, Melhore Depois" para desenvolvimento futuro, criando versões `.simple.tsx` funcionais antes de implementar funcionalidades complexas.
 - **Status Final:** Sistema 100% funcional em ambiente local com backend (porta 3000) e frontend (porta 19006) estáveis.
+
+### 05/09/2025 - Configuração Rápida do Ambiente Local e Correções Críticas
+- **Ambiente Local Configurado:** Backend (porta 3000) e frontend (porta 19006) funcionando corretamente
+- **Problema Crítico Resolvido - Banco em Memória:** Corrigido problema onde Drizzle ORM e função de inicialização utilizavam instâncias separadas do banco de dados em memória. Solução: ajustado import em `initTables.ts` para usar `connection.sqlite`
+- **Problema Crítico Resolvido - JWT sem Email:** Token JWT não incluía email no payload, causando erro "Token não contém dados válidos do usuário". Solução: modificado método `generateToken()` em `authService.ts` para incluir email
+- **Problema Crítico Resolvido - Schema Inconsistente:** Nomes de colunas no schema não correspondiam às tabelas criadas (fuelType vs tipoCombustivel, usageType vs tipoUso). Solução: padronizado nomes de colunas no `schema.ts`
+- **Funcionalidades Validadas:** Autenticação completa (registro/login), endpoint de veículos, middleware de autenticação, health check
+- **Configuração de Ambiente:** Arquivos `.env` criados, dependências instaladas com `--legacy-peer-deps` no frontend
+- **Banco de Dados:** Configurado para usar `:memory:` garantindo inicialização limpa das tabelas
+- **Próximas Ações Identificadas:** Corrigir endpoint de expenses, implementar tela de abastecimentos, conectar formulários com APIs reais
+
 

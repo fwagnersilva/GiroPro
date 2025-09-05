@@ -1,4 +1,4 @@
-import { db } from './connection';
+import { db } from './connection.sqlite';
 import { sql } from 'drizzle-orm';
 
 export async function initializeTables() {
@@ -32,9 +32,12 @@ export async function initializeTables() {
         modelo TEXT NOT NULL,
         ano INTEGER NOT NULL,
         placa TEXT NOT NULL,
+        tipoCombustivel TEXT NOT NULL,
         tipoUso TEXT DEFAULT 'proprio' NOT NULL,
-        consumoMedio REAL,
-        createdAt INTEGER DEFAULT (unixepoch()) NOT NULL,
+        valorAluguel INTEGER,
+        valorPrestacao INTEGER,
+        mediaConsumo REAL,
+        dataCadastro INTEGER DEFAULT (unixepoch()) NOT NULL,
         updatedAt INTEGER DEFAULT (unixepoch()) NOT NULL,
         deletedAt INTEGER,
         FOREIGN KEY (idUsuario) REFERENCES usuarios(id)

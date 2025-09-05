@@ -54,7 +54,7 @@ export class AuthService {
         });
 
       // Gerar tokens
-      const token = this.generateToken(newUser.id);
+      const token = this.generateToken(newUser.id, newUser.email);
       const refreshToken = this.generateRefreshToken(newUser.id);
 
       return {
@@ -112,7 +112,7 @@ export class AuthService {
       await this.updateLastActivity(user.id);
 
       // Gerar tokens
-      const token = this.generateToken(user.id);
+      const token = this.generateToken(user.id, user.email);
       const refreshToken = this.generateRefreshToken(user.id);
 
       return {
@@ -142,7 +142,7 @@ export class AuthService {
       }
 
       // Gerar novos tokens
-      const newToken = this.generateToken(user.id);
+      const newToken = this.generateToken(user.id, user.email);
       const newRefreshToken = this.generateRefreshToken(user.id);
 
       return {
@@ -282,7 +282,7 @@ export class AuthService {
     }
   }
 
-  private static generateToken(userId: string): string {
+  private static generateToken(userId: string, email?: string): string {
     if (!process.env.JWT_SECRET) {
       throw new Error('JWT_SECRET não configurado');
     }
@@ -290,6 +290,7 @@ export class AuthService {
     return jwt.sign(
       { 
         userId,
+        email,
         type: 'access',
         iat: Math.floor(Date.now() / 1000),
       },

@@ -6,8 +6,8 @@ import { relations, sql } from 'drizzle-orm';
 // ===============================
 
 export const accountStatus = text("statusConta").$type<"ativo" | "inativo" | "suspenso">().notNull();
-export const fuelType = text("fuelType").$type<"gasolina" | "etanol" | "diesel" | "gnv" | "flex">().notNull();
-export const usageType = text("usageType").$type<"proprio" | "alugado" | "financiado">().notNull();
+export const fuelType = text("tipoCombustivel").$type<"gasolina" | "etanol" | "diesel" | "gnv" | "flex">().notNull();
+export const usageType = text("tipoUso").$type<"proprio" | "alugado" | "financiado">().notNull();
 export const expenseType = text("expenseType").$type<"manutencao" | "pneus" | "seguro" | "outros">().notNull();
 export const goalType = text("goalType").$type<"faturamento" | "quilometragem" | "jornadas" | "economia" | "lucro">().notNull();
 export const goalPeriod = text("goalPeriod").$type<"semanal" | "mensal" | "trimestral" | "anual">().notNull();
