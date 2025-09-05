@@ -59,38 +59,32 @@ Esta seção registra as tarefas que foram concluídas, com um breve resumo do q
 
 ## 🔥 **PRIORIDADE CRÍTICA - Próximas Atividades**
 
-### **1. Integração Pós-Login (URGENTE)**
-- [ ] **Implementar Redirecionamento Automático Após Login**
-  - **Descrição:** Modificar `elegant-login.html` para redirecionar automaticamente para o dashboard após login bem-sucedido
-  - **Arquivos:** `frontend/elegant-login.html`, criar `frontend/dashboard.html`
+### **1. Identificação e Priorização das Telas Existentes (URGENTE)**
+- [>] **Catalogar Telas Principais para Web First**
+  - **Descrição:** Identificar as telas mais críticas das 62 existentes para adaptação web
+  - **Progresso:** Analisando LoginScreen.tsx e DashboardScreen.tsx como ponto de partida
+  - **Telas Prioritárias:** LoginScreen, DashboardScreen, AddExpenseScreen, AddFuelingScreen, ExpensesScreen, FuelingsScreen
   - **Prazo:** Esta semana
-- [ ] **Adaptar DashboardScreen.tsx para Versão Web**
-  - **Descrição:** Converter o componente React Native `DashboardScreen.tsx` para uma versão HTML/CSS/JS funcional
-  - **Arquivos:** `frontend/src/screens/DashboardScreen.tsx` → `frontend/dashboard.html`
-  - **Prazo:** Esta semana
-- [ ] **Implementar Verificação de Autenticação**
-  - **Descrição:** Criar sistema de verificação de token JWT em todas as páginas protegidas
-  - **Arquivos:** Criar `frontend/auth-check.js`
+- [ ] **Definir Versões Oficiais das Telas**
+  - **Descrição:** Escolher entre versões (base, improved, optimized, enhanced) para cada tela principal
+  - **Arquivos:** Analisar múltiplas versões e definir padrão oficial
   - **Prazo:** Esta semana
 
-### **2. Sistema de Navegação Web (CRÍTICO)**
-- [ ] **Criar Roteador Web Simples**
-  - **Descrição:** Implementar sistema de navegação entre telas usando HTML/CSS/JS puro
-  - **Arquivos:** Criar `frontend/router.js`, `frontend/navigation.html`
+### **2. Correção das Telas Existentes para Web (CRÍTICO)**
+- [ ] **Adaptar LoginScreen.tsx para Web**
+  - **Descrição:** Corrigir imports React Native para funcionar na web via React Native Web
+  - **Arquivos:** `frontend/src/screens/LoginScreen.tsx`
   - **Prazo:** Esta semana
-- [ ] **Adaptar Telas Principais para Web**
-  - **Subtarefas:**
-    - [ ] AddExpenseScreen → add-expense.html
-    - [ ] AddFuelingScreen → add-fueling.html  
-    - [ ] ExpensesScreen → expenses.html
-    - [ ] FuelingsScreen → fuelings.html
+- [ ] **Adaptar DashboardScreen.tsx para Web**
+  - **Descrição:** Converter componentes React Native para versão web-compatível
+  - **Arquivos:** `frontend/src/screens/DashboardScreen.tsx`
   - **Prazo:** Esta semana
-- [ ] **Criar Layout Base Reutilizável**
-  - **Descrição:** Template HTML base com navegação e estilos consistentes
-  - **Arquivos:** Criar `frontend/layout-base.html`, `frontend/styles/base.css`
+- [ ] **Corrigir Dependências e Imports**
+  - **Descrição:** Resolver imports de React Native que não funcionam na web
+  - **Arquivos:** Todas as telas principais
   - **Prazo:** Esta semana
 
-### **3. APIs de Dados (ALTA PRIORIDADE)**
+### **3. Integração com Backend (ALTA PRIORIDADE)**
 - [ ] **Implementar Middleware de Autenticação**
   - **Descrição:** Criar middleware para verificar JWT em rotas protegidas
   - **Arquivos:** Criar `backend/src/middleware/authMiddleware.ts`
@@ -108,21 +102,35 @@ Esta seção registra as tarefas que foram concluídas, com um breve resumo do q
 
 ## 🟠 Prioridade Alta
 
-### **4. Integração Frontend-Backend**
+### **4. Correção e Validação das Telas Web**
+- [ ] **Testar LoginScreen.tsx na Web**
+  - **Descrição:** Verificar se a tela de login funciona corretamente no navegador
+  - **Arquivos:** `frontend/src/screens/LoginScreen.tsx`
+  - **Prazo:** Esta semana
+- [ ] **Testar DashboardScreen.tsx na Web**
+  - **Descrição:** Verificar se o dashboard carrega e exibe dados corretamente
+  - **Arquivos:** `frontend/src/screens/DashboardScreen.tsx`
+  - **Prazo:** Esta semana
+- [ ] **Implementar Sistema de Navegação entre Telas**
+  - **Descrição:** Criar navegação funcional entre as telas principais
+  - **Arquivos:** Configurar React Navigation para web
+  - **Prazo:** Esta semana
+
+### **5. Integração Frontend-Backend**
 - [ ] **Integrar Formulários com APIs**
   - **Descrição:** Conectar formulários de despesas e abastecimentos com backend
-  - **Arquivos:** `add-expense.html`, `add-fueling.html`
+  - **Arquivos:** `AddExpenseScreen.tsx`, `AddFuelingScreen.tsx`
   - **Prazo:** Próxima semana
 - [ ] **Implementar Sistema de Feedback**
   - **Descrição:** Loading, success e error messages para todas as operações
-  - **Arquivos:** Criar `frontend/feedback.js`
+  - **Arquivos:** Componentes de feedback existentes
   - **Prazo:** Próxima semana
 - [ ] **Criar Listagens de Dados**
   - **Descrição:** Exibir despesas e abastecimentos salvos
-  - **Arquivos:** `expenses.html`, `fuelings.html`
+  - **Arquivos:** `ExpensesScreen.tsx`, `FuelingsScreen.tsx`
   - **Prazo:** Próxima semana
 
-### **5. Definição de Telas Oficiais**
+### **6. Definição de Telas Oficiais**
 - [ ] **Catalogar e Definir Versões Oficiais das 62 Telas**
   - **Descrição:** Analisar as múltiplas versões (base, improved, optimized, enhanced) e definir quais usar
   - **Impacto:** Evitar confusão sobre qual versão implementar
