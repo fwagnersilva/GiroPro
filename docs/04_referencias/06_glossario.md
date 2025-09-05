@@ -1,6 +1,6 @@
-# Glossário de Termos do GiroPro
+# Glossário do GiroPro
 
-Este glossário expande os termos técnicos e de negócio utilizados no projeto GiroPro, incluindo definições detalhadas e contexto específico do projeto.
+Este documento consolida os termos técnicos e de negócio utilizados no projeto GiroPro, fornecendo definições detalhadas e contexto específico.
 
 ## Termos Técnicos
 
@@ -94,7 +94,7 @@ Este glossário expande os termos técnicos e de negócio utilizados no projeto 
 
 -   **REAL (Tipo de Dado):** Tipo de dado numérico em bancos de dados usado para armazenar números de ponto flutuante, que podem ter casas decimais. Utilizado no GiroPro para campos como `mediaConsumo` e `quantidadeLitros`.
 
--   **UUID (Universally Unique Identifier):** Um número de 128 bits usado para identificar informações em sistemas de computador. É projetado para ser único em todos os sistemas e em todos os momentos. Amplamente utilizado como chave primária no GiroPro.
+-   **UUID (Universally Unique Identifier):** Um número de 128 bits usado para identificar informações em sistemas de computador. É projetado para ser único em todos os sistemas e em todos os tempos. Amplamente utilizado como chave primária no GiroPro.
 
 -   **Timestamp:** Um valor que indica o momento em que um determinado evento ocorreu, geralmente expresso como o número de segundos ou milissegundos desde o Unix Epoch. Utilizado no GiroPro para registrar datas de criação, atualização e exclusão.
 
@@ -186,34 +186,6 @@ Este glossário expande os termos técnicos e de negócio utilizados no projeto 
 
 -   **Serviços de Pagamento:** Plataformas ou sistemas que processam transações financeiras, permitindo pagamentos e recebimentos. Pode ser uma integração futura no GiroPro.
 
--   **Plataformas de Notificação:** Serviços que permitem o envio de mensagens e alertas para usuários através de diferentes canais (ex: push notifications, SMS). Utilizado no GiroPro para enviar notificações aos motoristas.
-
--   **ANP (Agência Nacional do Petróleo, Gás Natural e Biocombustíveis):** Órgão regulador brasileiro responsável pela fiscalização e regulação das atividades da indústria de petróleo, gás natural e biocombustíveis no Brasil. Frequentemente fonte de dados de preços de combustível, que podem ser utilizados no GiroPro.
-
--   **Resumo Financeiro:** Seção do dashboard do GiroPro que apresenta um compilado das informações financeiras do motorista, como ganho total, gasto total e lucro líquido no mês.
-
--   **Estatísticas Veículo:** Seção do dashboard do GiroPro que exibe dados relacionados ao desempenho do veículo, como quilometragem total no mês, consumo médio e custo por km.
-
--   **Jornadas Recentes:** Seção do dashboard do GiroPro que lista as últimas viagens ou corridas registradas pelo motorista.
-
--   **RootStackParamList:** Tipo TypeScript utilizado no frontend do GiroPro (React Native) para definir os parâmetros de navegação entre as diferentes telas da aplicação, garantindo a segurança de tipo.
-
--   **ApiResponse:** Interface TypeScript genérica utilizada no frontend do GiroPro para padronizar as respostas recebidas da API do backend, incluindo status de sucesso, dados e informações de erro.
-
--   **LoginRequest:** Interface TypeScript que define a estrutura dos dados esperados para uma requisição de login no GiroPro, contendo campos como `email` e `senha`.
-
--   **RegisterRequest:** Interface TypeScript que define a estrutura dos dados esperados para uma requisição de registro de novo usuário no GiroPro, contendo campos como `nome`, `email` e `senha`.
-
--   **User:** Interface TypeScript que representa o modelo de dados de um usuário no frontend do GiroPro, incluindo `id`, `nome`, `email`, `status_conta` e `data_cadastro`.
-
--   **Vehicle:** Interface TypeScript que representa o modelo de dados de um veículo no frontend do GiroPro, incluindo `id`, `id_usuario`, `marca`, `modelo`, `ano`, `placa`, `tipo_combustivel`, `tipo_uso`, entre outros.
-
--   **Journey:** Interface TypeScript que representa o modelo de dados de uma jornada (viagem) no frontend do GiroPro, incluindo `id`, `id_usuario`, `id_veiculo`, `data_inicio`, `km_inicio`, entre outros.
-
--   **Fueling:** Interface TypeScript que representa o modelo de dados de um abastecimento no frontend do GiroPro, incluindo `id`, `id_usuario`, `id_veiculo`, `data_abastecimento`, `tipo_combustivel`, `quantidade_litros`, `valor_total`, entre outros.
-
--   **Expense:** Interface TypeScript que representa o modelo de dados de uma despesa no frontend do GiroPro, incluindo `id`, `id_usuario`, `data_despesa`, `tipo_despesa`, `valor_despesa`, entre outros.
-
--   **DashboardData:** Interface TypeScript que define a estrutura dos dados exibidos no dashboard do GiroPro, agregando `resumoFinanceiro`, `estatisticasVeiculo` e `jornadasRecentes`.
+-   **Plataformas de Notificação:** Serviços que permitem o envio de mensagens e alertas para usuários através de diferentes canais (ex: push notifications, SMS, e-mail). Pode ser uma integração futura no GiroPro.
 
 

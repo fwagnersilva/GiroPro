@@ -1,37 +1,6 @@
 # 🛠️ GiroPro - Guia de Desenvolvimento
 
-## 🚀 **Como Iniciar o Desenvolvimento**
-
-### **Pré-requisitos:**
-- Node.js 20+ instalado
-- NPM ou Yarn
-- Git configurado
-
-### **Configuração Inicial:**
-```bash
-# 1. Clonar o repositório
-git clone https://github.com/fwagnersilva/GiroPro.git
-cd GiroPro
-
-# 2. Configurar Backend
-cd backend
-npm install
-cp giropro.env .env
-npm start
-# Backend rodará na porta 3000
-
-# 3. Configurar Frontend (Nova aba/terminal)
-cd ../frontend
-npm install --legacy-peer-deps
-npm run web-vite
-# Frontend rodará na porta 19006
-```
-
-### **Acessos:**
-- **Tela de Login Elegante:** http://localhost:19006/elegant-login.html
-- **Interface de Testes:** http://localhost:19006/test.html
-- **API Backend:** http://localhost:3000
-- **Health Check:** http://localhost:3000/health
+Para um setup completo do ambiente de desenvolvimento, consulte o [Guia de Setup Completo](docs/01_tutoriais/01_setup_completo.md).
 
 ---
 
@@ -106,55 +75,10 @@ font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 
 ## 🔧 **APIs Disponíveis**
 
-### **Autenticação:**
-```javascript
-// Registro de usuário
-POST /api/v1/auth/register
-{
-  "nome": "Nome Completo",
-  "email": "email@exemplo.com",
-  "senha": "MinhaSenh@123"
-}
+Para a documentação completa das APIs, consulte:
 
-// Login de usuário
-POST /api/v1/auth/login
-{
-  "email": "email@exemplo.com",
-  "senha": "MinhaSenh@123"
-}
-
-// Resposta de sucesso
-{
-  "success": true,
-  "message": "Login bem-sucedido",
-  "accessToken": "jwt_token_aqui",
-  "refreshToken": "refresh_token_aqui",
-  "user": {
-    "id": "uuid",
-    "nome": "Nome",
-    "email": "email@exemplo.com",
-    "statusConta": "ativo"
-  }
-}
-```
-
-### **Utilitários:**
-```javascript
-// Health check
-GET /health
-{
-  "status": "OK",
-  "timestamp": "2025-09-05T00:00:00.000Z",
-  "message": "GiroPro Backend está funcionando!"
-}
-
-// Teste de conectividade
-GET /api/test
-{
-  "message": "API funcionando!",
-  "timestamp": "2025-09-05T00:00:00.000Z"
-}
-```
+- [Documentação da API](docs/04_referencias/02_api_documentation.md)
+- [API Endpoints](docs/04_referencias/02_api_endpoints.md)
 
 ---
 

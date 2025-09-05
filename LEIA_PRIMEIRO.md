@@ -2,20 +2,7 @@
 
 ## ⚡ Configuração Rápida
 
-### 1. Backend (Porta 3000)
-```bash
-cd backend
-npm install
-npm run build
-npm start
-```
-
-### 2. Frontend (Porta 19006)
-```bash
-cd frontend
-npm install --legacy-peer-deps
-npm run web-vite
-```
+Para um setup completo do ambiente de desenvolvimento, incluindo backend e frontend, por favor, consulte o [Guia de Setup Completo](docs/01_tutoriais/01_setup_completo.md).
 
 ## 🎯 DECISÃO ESTRATÉGICA - Banco de Dados
 
@@ -43,24 +30,16 @@ Quando necessário, alterar no `.env`:
 SQLITE_DB_PATH=./giropro.db
 ```
 
-## 📊 Status Atual
 
-### ✅ Funcionando
-- Backend na porta 3000
-- Frontend na porta 19006
-- APIs de autenticação
-- Banco em memória com tabelas
 
-### ❌ Problemas Conhecidos
-- Tela branca no frontend (React Native Web)
-- Banco SQLite persistente (será resolvido futuramente)
+
 
 ## 📚 Documentação
 
-- **Progresso**: `docs/progresso.md`
-- **Arquitetura**: `docs/03_explicacoes/01_arquitetura_geral.md`
-- **Setup Completo**: `docs/01_tutoriais/01_setup_completo.md`
-- **Problemas Conhecidos**: `docs/03_explicacoes/00_problemas_comuns_e_licoes_aprendidas.md`
+- **Progresso**: [Progresso do Projeto](docs/03_explicacoes/09_progresso.md)
+- **Arquitetura**: [Arquitetura Geral do Sistema](docs/03_explicacoes/01_arquitetura_geral.md)
+- **Setup Completo**: [Guia de Setup Completo](docs/01_tutoriais/01_setup_completo.md)
+- **Problemas Conhecidos**: [Problemas Comuns e Lições Aprendidas](docs/03_explicacoes/00_problemas_comuns_e_licoes_aprendidas.md)
 
 ## 🔗 URLs Importantes
 

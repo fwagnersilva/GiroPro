@@ -36,15 +36,11 @@ Esta documentação está organizada de acordo com o framework Diátaxis, que ca
     *   [Princípios Arquiteturais](docs/03_explicacoes/03_principios_arquiteturais.md)
 
 *   **04. Referências**
-    *   [Dicionário de Dados (Schemas do Banco de Dados)](docs/04_referencias/01_dicionario_dados.md)
-    *   [Documentação do Banco de Dados](docs/04_referencias/01_documentacao_banco_dados.md)
-    *   [Glossário Completo](docs/04_referencias/06_glossario_completo.md)
+    *   [Documentação e Dicionário de Dados (Schemas do Banco de Dados)](docs/04_referencias/01_documentacao_e_dicionario_de_dados.md)
+    
+    *   [Glossário](docs/04_referencias/06_glossario.md)
     *   [Documentação de Testes](docs/04_referencias/02_documentacao_testes.md)
     *   [Documentação da API](docs/04_referencias/02_api_documentation.md)
-    *   [API Endpoints](docs/04_referencias/02_api_endpoints.md)
+    
     *   [Guia de Deploy](docs/04_referencias/03_guia_deploy.md)
-    *   [Funcionalidades Implementadas](docs/04_referencias/05_funcionalidades_implementadas.md)
-
-## Setup Rápido
-
-Para configurar o ambiente de desenvolvimento, siga as instruções detalhadas no [Tutorial de Setup Inicial](docs/01_tutoriais/01_setup_completo.md).
+    *   [Funcionalidades Implementadas](docs/04_referencias/05_funcionalidades_implementadas.m

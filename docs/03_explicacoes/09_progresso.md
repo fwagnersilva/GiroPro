@@ -171,6 +171,9 @@ Esta seção registra as tarefas que foram concluídas, com um breve resumo do q
 
 ### Oportunidades de Melhoria - Complexidade Baixa
 
+- [ ] **Consolidar Documentação de Testes:** Unificar informações de testes espalhadas em múltiplos arquivos em um documento central de referência.
+- [ ] **Padronizar Nomenclatura de Arquivos:** Revisar e padronizar nomes de arquivos de documentação para seguir convenções consistentes.
+- [ ] **Otimizar Estrutura de Links:** Revisar e corrigir links quebrados ou redundantes na documentação após as consolidações realizadas.
 - [>] **Resolver Vulnerabilidades de Segurança Restantes:** Investigar e resolver as 7 vulnerabilidades restantes no frontend (2 moderadas, 5 altas) relacionadas a dependências do Expo SDK.
   - **Progresso:** Vulnerabilidades conhecidas documentadas, baixo risco para desenvolvimento. Não bloqueia o desenvolvimento atual.
   - **Observação:** Necessário monitorar atualizações do Expo SDK.
@@ -233,7 +236,7 @@ Esta seção registra as tarefas que foram concluídas, com um breve resumo do q
 
 ---
 
-**Última Atualização:** 05 de Setembro de 2025 - 21:00
+**Última Atualização:** 05 de Setembro de 2025 - 22:30
 
 
 
@@ -250,10 +253,20 @@ Esta seção registra as tarefas que foram concluídas, com um breve resumo do q
 
 
 
+### 05/09/2025 - Consolidação e Organização da Documentação
+- **Documentação:** Consolidação completa da documentação redundante do projeto.
+- **Dicionário de Dados:** Unificação de `01_dicionario_dados.md` e `01_documentacao_banco_dados.md` em `01_documentacao_e_dicionario_de_dados.md`.
+- **Glossário:** Consolidação de `06_glossario_completo.md` e `06_glossario_tecnico.md` em `06_glossario.md`.
+- **API Documentation:** Fusão de `02_api_documentation.md` e `02_api_endpoints.md` em um documento único e abrangente.
+- **Estrutura de Setup:** Remoção de redundâncias nas instruções de setup entre README.md, LEIA_PRIMEIRO.md e GUIA_DESENVOLVIMENTO.md.
+- **Links e Referências:** Atualização de todas as referências para apontar para os novos arquivos consolidados.
+- **Arquivos Removidos:** Limpeza de arquivos redundantes (`documentation.md`, `documentation_summary.md`) e versões duplicadas.
+
 ### 05/09/2025 - Configuração Inicial do Frontend Web
 - **Frontend Web:** Configuração inicial do React Native Web e Vite para renderização no navegador.
 - **AsyncStorage:** Polyfill para `AsyncStorage` implementado para compatibilidade web.
-- **Status Atual:** Frontend ainda apresenta tela em branco, indicando problemas mais profundos na renderização do React Native Web ou na inicialização do `App.tsx`.Guias de desenvolvimento, plano híbrido e relatórios técnicos gerados.
+- **Status Atual:** Frontend ainda apresenta tela em branco, indicando problemas mais profundos na renderização do React Native Web ou na inicialização do `App.tsx`.
+- **Guias de Desenvolvimento:** Plano híbrido e relatórios técnicos gerados.
 - **62 Telas Catalogadas:** Todas as telas existentes identificadas e prontas para integração futura.
 - **Estratégia Definida:** Roadmap claro para expansão web → PWA → mobile nativo.
 
