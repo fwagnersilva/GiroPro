@@ -1,6 +1,4 @@
-# Progresso do Projeto GiroPro - Organizado para Lançamento Comercial
-
-Este documento detalha o progresso do desenvolvimento do aplicativo GiroPro, com uma organização que combina a categorização por complexidade com o agrupamento por tela e plataforma, focando na preparação para o lançamento comercial. Isso permite uma visão clara do estado de cada funcionalidade em diferentes níveis de maturidade, desde a funcionalidade básica até o polimento e otimizações, com ênfase na viabilidade comercial.
+# Progresso do Projeto GiroPro
 
 ## Visão Geral da Nova Estrutura
 
