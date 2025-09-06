@@ -241,3 +241,78 @@ Esta seção contém tarefas de polimento, otimização e melhorias de longo pra
     *   [ ] **Geral:** Facilitar a manutenção e a colaboração no projeto com uma documentação clara e abrangente.
 
 
+
+
+### Correções de Bugs Críticos
+*   [ ] **Corrigir ExpensesScreen.simple.tsx**: Erro na linha 22 com propriedade `valor` vs `valorDespesa`
+*   [ ] **Padronizar schema do banco**: Resolver inconsistências entre snake_case e camelCase
+*   [ ] **Corrigir erros de TypeScript**: Resolver problemas de tipagem que impedem build
+*   [ ] **Validar integração frontend-backend**: Testar fluxo completo de autenticação e CRUD
+
+### Configuração de Ambiente
+*   [ ] **Atualizar scripts de setup**: Corrigir problemas no setup.sh e get-docker.sh
+*   [ ] **Documentar dependências**: Criar guia detalhado de instalação
+*   [ ] **Configurar variáveis de ambiente**: Padronizar .env para desenvolvimento e produção
+*   [ ] **Testar Docker**: Resolver problemas de containerização
+
+
+
+## 🟡 PRIORIDADE ALTA - Funcionalidades Essenciais
+
+### Implementação de Navegação Web
+*   [ ] **Configurar React Navigation para Web**: Adaptar navegação mobile para ambiente web
+*   [ ] **Criar componentes web-específicos**: Adaptar componentes nativos para web
+*   [ ] **Implementar roteamento**: Configurar rotas para todas as telas
+*   [ ] **Testar responsividade**: Validar layout em diferentes resoluções
+
+### Validação de Telas Principais
+*   [ ] **LoginScreen/RegisterScreen**: Validar autenticação completa
+*   [ ] **DashboardScreen**: Verificar integração com todas as APIs
+*   [ ] **AddExpenseScreen/AddFuelingScreen**: Testar formulários e validações
+*   [ ] **VehiclesScreen**: Validar CRUD completo de veículos
+*   [ ] **ReportsScreen**: Verificar geração de relatórios
+
+### Melhorias de UX/UI
+*   [ ] **Implementar seleção de veículos**: Adicionar dropdown nos formulários
+*   [ ] **Adicionar validações em tempo real**: Feedback imediato nos formulários
+*   [ ] **Melhorar feedback visual**: Loading states, success/error messages
+*   [ ] **Implementar estados vazios**: Telas informativas quando não há dados
+
+
+
+## 🟢 PRIORIDADE MÉDIA - Funcionalidades Complementares
+
+### Otimizações de Performance
+*   [ ] **Implementar lazy loading**: Carregamento sob demanda de componentes
+*   [ ] **Otimizar renderização**: React.memo, useCallback, useMemo
+*   [ ] **Implementar cache**: Estratégias de cache para APIs
+*   [ ] **Otimizar imagens**: Compressão e formatos otimizados
+
+### Testes e Qualidade
+*   [ ] **Expandir cobertura de testes**: Testes unitários para todos os componentes
+*   [ ] **Implementar testes de integração**: Validar fluxos completos
+*   [ ] **Configurar testes E2E**: Playwright ou Cypress para testes automatizados
+*   [ ] **Implementar CI/CD**: Pipeline de integração contínua
+
+### Funcionalidades Avançadas
+*   [ ] **Sistema de notificações**: Push notifications e in-app notifications
+*   [ ] **Exportação de dados**: PDF, CSV, Excel
+*   [ ] **Backup e sincronização**: Estratégias de backup de dados
+*   [ ] **Modo offline**: Funcionalidades críticas offline
+
+
+
+## 🔵 PRIORIDADE BAIXA - Melhorias e Polimento
+
+### Acessibilidade e Inclusão
+*   [ ] **Implementar ARIA labels**: Suporte a screen readers
+*   [ ] **Melhorar contraste**: Conformidade WCAG 2.1 AA
+*   [ ] **Suporte a temas**: Modo claro/escuro
+*   [ ] **Internacionalização**: Suporte a múltiplos idiomas
+
+### Animações e Microinterações
+*   [ ] **Implementar animações**: Transições suaves entre telas
+*   [ ] **Adicionar microinterações**: Feedback visual em interações
+*   [ ] **Haptic feedback**: Vibração em dispositivos móveis
+*   [ ] **Loading animations**: Animações de carregamento personalizadas
+
