@@ -1,41 +1,24 @@
-Progresso de Refatoração e Otimização - Projeto GiroPro
+# Guia de Refatoração e Otimização - Projeto GiroPro
 
+Este documento serve como um guia conciso para a refatoração e otimização do projeto GiroPro. Ele detalha o processo de análise de código *realizada pelo Google AI Studio* e as tarefas subsequentes para um agente.
 
-
-
-Instruções para Continuação
+## Instruções
 
 Para continuar o processo de refatoração, siga os passos abaixo:
 
-1.
-Identifique o próximo arquivo não marcado na seção Lista de Arquivos para Análise no Google AI Studio.
+1.  Identifique o próximo arquivo não marcado na seção "Lista de Arquivos para Análise".
+2.  Copie o conteúdo do arquivo correspondente no projeto.
+3.  Use o prompt abaixo no Google AI Studio, substituindo `[NOME_DO_ARQUIVO]` e `[TIPO_DE_RECURSO]` pelos valores corretos.
+4.  Cole o código do arquivo após o prompt no Google AI Studio.
+5.  Receba o feedback da análise.
+6.  Com base no feedback do Google AI Studio, adicione as novas tarefas detalhadas ao final deste documento, seguindo o formato das seções de tarefas existentes, tarefas existentes, existentes. Estas tarefas serão executadas posteriormente por um agente.
+7.  Marque o arquivo como analisado na lista (ex: `[x]`).
 
-2.
-Copie o conteúdo do arquivo correspondente no projeto.
+## Prompt para o Google AI Studio
 
-3.
-Use o prompt abaixo no Google AI Studio, substituindo [NOME_DO_ARQUIVO] e [TIPO_DE_RECURSO] pelos valores corretos.
-
-4.
-Cole o código do arquivo após o prompt no Google AI Studio.
-
-5.
-Receba o feedback da análise.
-
-6.
-Adicione as novas tarefas detalhadas ao final deste documento (progressorefatora.md), seguindo o formato das seções anteriores.
-
-7.
-Marque o arquivo como analisado na lista (ex: [x]).
-
-Prompt para o Google AI Studio
-
-Plain Text
-
-
-O código abaixo é um arquivo de rotas de: [NOME_DO_ARQUIVO]
-para um aplicativo de gestão financeira. Ele define rotas para operações CRUD de: [TIPO_DE_RECURSO],
-todas protegidas por um middleware de autenticação e um rate limiter. Por favor, analise-o e forneça feedback sobre otimização, melhorias de performance, segurança e boas práticas de código, especialmente no contexto de gestão de recursos e proteção de dados. Inclua sugestões de refatoração, se aplicável.
+```plaintext
+O código abaixo é um arquivo de rotas de: [NOME_DO_ARQUIVO] para um aplicativo de gestão financeira. Ele define rotas para operações CRUD de: [TIPO_DE_RECURSO], todas protegidas por um middleware de autenticação e um rate limiter. Por favor, analise-o e forneça feedback sobre otimização, melhorias de performance, segurança e boas práticas de código, especialmente no contexto de gestão de recursos e proteção de dados. Inclua sugestões de refatoração, se aplicável.
+```
 
 
 
