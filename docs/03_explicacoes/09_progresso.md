@@ -18,18 +18,6 @@ Esta seção abrange as tarefas mais críticas e de menor complexidade, focadas 
 
 *   [ ] **Desenvolvimento Frontend:** Implementar `LoginScreen.tsx` com a funcionalidade básica de UI/UX para Android, iOS e Web, garantindo responsividade e feedback visual essencial (loading, sucesso, erro).
 *   [ ] **Integração com Backend:** Conectar a tela de login à API de autenticação existente (`src/services/api.ts`), implementando tratamento de sucesso e erro e gerenciamento de tokens.
-*   [x] **Validações Essenciais:** Adicionar validação de campos (email, senha) e mensagens de erro claras.
-
-### RegisterScreen
-
-*   [x] **Desenvolvimento Frontend:** Implementar `RegisterScreen.tsx` com a funcionalidade básica de UI/UX para Android, iOS e Web, garantindo responsividade e feedback visual essencial.
-*   [x] **Integração com Backend:** Conectar a tela de registro à API de registro de usuários, implementando tratamento de sucesso e erro.
-*   [x] **Validações Essenciais:** Adicionar validação de campos (email, senha, confirmação de senha) e mensagens de erro claras.
-
-### DashboardScreen
-
-*   [x] **Desenvolvimento Frontend:** Implementar `DashboardScreen.tsx` com a funcionalidade básica de UI/UX para Android, iOS e Web, exibindo os dados mais relevantes.
-*   [x] **Integração com Backend:** Conectar a tela de dashboard às APIs de dados (veículos, despesas, abastecimentos, etc.), implementando carregamento assíncrono e tratamento de erros.
 
 ### AddExpenseScreen
 
@@ -78,10 +66,6 @@ Esta seção abrange as tarefas mais críticas e de menor complexidade, focadas 
 
 *   [ ] **Desenvolvimento Frontend:** Implementar `JourneysScreen.tsx` com a funcionalidade básica de UI/UX para Android, iOS e Web, permitindo o registro e gestão de viagens.
 *   [ ] **Integração com Backend:** Conectar a tela de viagens à API de viagens, implementando listagem, adição, edição e remoção.
-
-### LoadingScreen
-
-*   [x] **Desenvolvimento Frontend:** Implementar `LoadingScreen.tsx` com a funcionalidade básica de UI/UX para Android, iOS e Web, exibindo um indicador de carregamento.
 
 ### MultiVehicleScreen
 
