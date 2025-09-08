@@ -2,17 +2,24 @@
 
 Este documento serve como um guia conciso para a refatoração e otimização do projeto GiroPro. Ele detalha o processo de análise de código *realizada pelo Google AI Studio* e as tarefas subsequentes para um agente.
 
-## Instruções
+## Instruções para Análise e Organização de Dados de Refatoração
 
-Para continuar o processo de refatoração, siga os passos abaixo:
+É crucial seguir estas instruções de forma rigorosa para garantir a coleta e organização adequadas dos dados de refatoração. O Manus (eu) não executará refatoramento ou atividades de refatoração diretamente, mas se concentrará em coletar e organizar os dados para posterior refatoração.
 
-1.  Identifique o próximo arquivo não marcado na seção "Lista de Arquivos para Análise".
-2.  Copie o conteúdo do arquivo correspondente no projeto.
-3.  Use o prompt abaixo no Google AI Studio, substituindo `[NOME_DO_ARQUIVO]` e `[TIPO_DE_RECURSO]` pelos valores corretos.
-4.  Cole o código do arquivo após o prompt no Google AI Studio.
-5.  Receba o feedback da análise.
-6.  Com base no feedback do Google AI Studio, adicione as novas tarefas detalhadas ao final deste documento, seguindo o formato das seções de tarefas existentes, tarefas existentes, existentes. Estas tarefas serão executadas posteriormente por um agente.
-7.  Marque o arquivo como analisado na lista (ex: `[x]`).
+**Passo 1: Ler o que está escrito**
+Leia atentamente o conteúdo deste arquivo e as instruções fornecidas.
+
+**Passo 2: Seguir o que está escrito**
+Execute as ações conforme detalhado nas instruções.
+
+**Passo 3: Criar um prompt com o próximo arquivo a ser analisado**
+Formule um prompt claro e conciso indicando o próximo arquivo ou seção de código a ser analisado para refatoração. Este prompt será usado para solicitar a análise do Google (ou outra ferramenta de IA).
+
+**Passo 4: Esperar retorno do Google (ou outra IA)**
+Aguarde o retorno da análise do Google (ou da IA utilizada). Uma vez recebido, copie integralmente o que for entregue, incluindo o arquivo analisado, o prompt utilizado e a resposta detalhada da IA.
+
+**Passo 5: Com o recebimento do retorno, crie tarefas no arquivo obedecendo a classificação**
+Com base no retorno da análise, crie tarefas detalhadas neste arquivo, classificando-as de acordo com a natureza da refatoração (ex: melhoria de legibilidade, otimização de desempenho, correção de bugs, etc.). As tarefas devem ser claras e acionáveis, servindo como um guia para futuras ações de refatoração.
 
 ## Prompt para o Google AI Studio
 
