@@ -15,6 +15,7 @@ export class AuthService {
 
   static async register(data: RegisterRequest): Promise<AuthResponse> {
     try {
+      
       // Validações básicas
       this.validateEmail(data.email);
       this.validatePassword(data.senha);
@@ -75,6 +76,7 @@ export class AuthService {
 
   static async login(data: LoginRequest): Promise<AuthResponse> {
     try {
+      
       // Buscar usuário por email
       const [user] = await db
         .select()
@@ -156,6 +158,7 @@ export class AuthService {
 
   static async getUserById(userId: string) {
     try {
+      
       const [user] = await db
         .select({
           id: usuarios.id,
@@ -182,6 +185,7 @@ export class AuthService {
 
   static async changePassword(userId: string, currentPassword: string, newPassword: string): Promise<void> {
     try {
+      
       // Buscar usuário
       const [user] = await db
         .select({ senhaHash: usuarios.senhaHash })
@@ -222,6 +226,7 @@ export class AuthService {
 
   static async deactivateAccount(userId: string): Promise<void> {
     try {
+      
       await db
         .update(usuarios)
         .set({ 
@@ -237,6 +242,7 @@ export class AuthService {
 
   static async requestPasswordReset(email: string): Promise<void> {
     try {
+      
       const [user] = await db.select().from(usuarios).where(eq(usuarios.email, email)).limit(1);
 
       if (!user) {
@@ -258,6 +264,7 @@ export class AuthService {
 
   static async resetPassword(token: string, newPassword: string): Promise<void> {
     try {
+      
       const decoded = jwt.verify(token, process.env.JWT_SECRET!) as { userId: string };
       const userId = decoded.userId;
 
@@ -352,6 +359,7 @@ export class AuthService {
   }
 
   private static async incrementLoginAttempts(userId: string): Promise<void> {
+    
     await db
       .update(usuarios)
       .set({
@@ -362,6 +370,7 @@ export class AuthService {
   }
 
   private static async resetLoginAttempts(userId: string): Promise<void> {
+    
     await db
       .update(usuarios)
       .set({
@@ -372,6 +381,7 @@ export class AuthService {
   }
 
   private static async updateLastActivity(userId: string): Promise<void> {
+    
     await db
       .update(usuarios)
       .set({ ultimaAtividade: new Date() })

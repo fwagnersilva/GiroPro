@@ -1,2 +1,3 @@
-export { createDatabaseConnection, checkDatabaseConnection } from './connection.factory';
+// Exportar a conexão SQLite diretamente
+export { db } from './connection.sqlite';
 export * from './schema';

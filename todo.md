@@ -17,6 +17,17 @@
 - [ ] **Reverter o `App.tsx`** para usar a `LoginScreen.tsx` original do projeto.
 - [ ] **Focar na correção e integração das 62 telas existentes**.
 
+### Fase 4: Correções Críticas Aplicadas
+- [x] **Corrigir importações do banco de dados:** Substituir `import { db }` por `import { getDb }` em todos os arquivos.
+- [x] **Corrigir authService:** Atualizar todos os métodos para usar `getDb()` ao invés de `db` diretamente.
+- [x] **Instalar dependências:** Backend e frontend instalados com sucesso.
+- [x] **Identificar arquivos problemáticos:** vehiclesController, reportsController, etc.
+- [ ] **Finalizar correções nos controllers:** Ainda há erros de compilação TypeScript nos controllers.
+
+### Fase 5: Commit e Documentação
+- [ ] **Commit das alterações realizadas**
+- [ ] **Atualizar documentação de progresso**
+
 
 
 
@@ -61,4 +72,43 @@
 - [ ] Revisar toda a documentação para garantir consistência e clareza.
 - [ ] Gerar um relatório final das correções realizadas.
 - [ ] Apresentar os resultados ao usuário.
+
+
+
+# Tarefas Críticas e Oportunidades de Melhoria
+
+## 🔴 Prioridade Alta - Funcionalidade Essencial para Lançamento
+
+- [ ] **LoginScreen:** Implementar frontend e integração com backend.
+- [ ] **AddExpenseScreen:** Implementar frontend e integração com backend.
+- [ ] **AddFuelingScreen:** Implementar frontend e integração com backend.
+- [ ] **VehiclesScreen:** Implementar frontend e integração com backend.
+- [ ] **ExpensesScreen:** Implementar frontend e integração com backend.
+- [ ] **FuelingsScreen:** Implementar frontend e integração com backend.
+- [ ] **GoalsScreen:** Implementar frontend e integração com backend.
+- [ ] **InsightsScreen:** Implementar frontend e integração com backend.
+- [ ] **JourneyHistoryScreen:** Implementar frontend e integração com backend.
+- [ ] **JourneysScreen:** Implementar frontend e integração com backend.
+- [ ] **MultiVehicleScreen:** Implementar frontend e integração com backend.
+- [ ] **OnboardingScreen:** Implementar frontend.
+- [ ] **ProfileScreen:** Implementar frontend e integração com backend.
+- [ ] **ReportsScreen:** Implementar frontend e integração com backend.
+- [ ] **FuelPricesScreen:** Implementar frontend e integração com backend.
+- [ ] **ExpenseHistoryScreen:** Implementar frontend e integração com backend.
+- [ ] **FuelingHistoryScreen:** Implementar frontend e integração com backend.
+- [ ] **AchievementsScreen:** Implementar frontend e integração com backend.
+- [ ] **ChangePasswordScreen:** Implementar frontend e integração com backend.
+- [ ] **PasswordValidationTest:** Implementar frontend.
+- [ ] **TestRefactoredComponents:** Implementar frontend.
+
+## 🟡 Prioridade Média - Funcionalidade Complementar
+
+- [ ] **ExpensesScreen:** Corrigir erro de renderização que causa tela branca.
+- [ ] **AddExpenseScreen / AddFuelingScreen:** Implementar seleção de veículos nos formulários.
+- [ ] **Geral (Integração e Navegação):**
+    - [ ] Testar integração frontend-backend.
+    - [ ] Implementar Navegação Web.
+    - [ ] Refatorar Componentes Incompatíveis com a Web.
+    - [ ] Testar Fluxo de Autenticação Completo na Web.
+
 
