@@ -18,11 +18,11 @@ Esta seção abrange as tarefas mais críticas e de menor complexidade, focadas 
 
 *   [ ] **Desenvolvimento Frontend:** Implementar `LoginScreen.tsx` com a funcionalidade básica de UI/UX para Android, iOS e Web, garantindo responsividade e feedback visual essencial (loading, sucesso, erro).
 *   [ ] **Integração com Backend:** Conectar a tela de login à API de autenticação existente (`src/services/api.ts`), implementando tratamento de sucesso e erro e gerenciamento de tokens.
-*   [ ] **Validações Essenciais:** Adicionar validação de campos (email, senha) e mensagens de erro claras.
+*   [x] **Validações Essenciais:** Adicionar validação de campos (email, senha) e mensagens de erro claras.
 
 ### RegisterScreen
 
-*   [ ] **Desenvolvimento Frontend:** Implementar `RegisterScreen.tsx` com a funcionalidade básica de UI/UX para Android, iOS e Web, garantindo responsividade e feedback visual essencial.
+*   [x] **Desenvolvimento Frontend:** Implementar `RegisterScreen.tsx` com a funcionalidade básica de UI/UX para Android, iOS e Web, garantindo responsividade e feedback visual essencial.
 *   [ ] **Integração com Backend:** Conectar a tela de registro à API de registro de usuários, implementando tratamento de sucesso e erro.
 *   [ ] **Validações Essenciais:** Adicionar validação de campos (email, senha, confirmação de senha) e mensagens de erro claras.
 
