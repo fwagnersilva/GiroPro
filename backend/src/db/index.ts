@@ -1,2 +1,2 @@
-export { db } from './connection.sqlite'; // Mude para connection.sqlite
+export { createDatabaseConnection, checkDatabaseConnection } from './connection.factory';
 export * from './schema';

@@ -4,8 +4,8 @@
 
 O GiroPro é uma aplicação para gestão financeira de motoristas de aplicativo, composta por:
 - **Backend**: API REST em Node.js/TypeScript com Express.js
-- **Frontend**: Aplicação React Native/Expo
-- **Banco de Dados**: PostgreSQL com Drizzle ORM
+- **Frontend**: Aplicação React Native/Expo (Web, iOS, Android)
+- **Banco de Dados**: SQLite em memória (desenvolvimento) / PostgreSQL (produção)
 
 ## Pré-requisitos
 
@@ -34,23 +34,20 @@ git clone https://github.com/fwagnersilva/GiroPro.git
 cd GiroPro
 ```
 
-### 2. Configuração do Banco de Dados com Docker Compose
+### 2. Configuração do Banco de Dados
 
-O projeto GiroPro utiliza PostgreSQL como banco de dados e Docker/Docker Compose para orquestração dos serviços.
+O projeto GiroPro suporta múltiplas opções de banco de dados:
 
-- **Tipo:** PostgreSQL
-- **Versão:** `16-alpine` (conforme `docker-compose.yml`)
-- **Nome do Banco de Dados (padrão):** `giropro_db`
-- **Usuário (padrão):** `user`
-- **Senha (padrão):** `password`
+#### Opção 1: SQLite em Memória (Recomendado para Desenvolvimento)
+- **Vantagens**: Rápido, sem configuração adicional, ideal para testes
+- **Desvantagens**: Dados não persistem entre reinicializações
+- **Configuração**: Já configurado por padrão
 
-O banco de dados é configurado para persistir os dados em um volume Docker (`postgres_data`), garantindo que os dados não sejam perdidos ao reiniciar os contêineres.
+#### Opção 2: PostgreSQL (Produção)
+- **Vantagens**: Dados persistentes, robusto, escalável
+- **Configuração**: Requer Docker/PostgreSQL instalado
 
-Navegue até o diretório raiz do projeto (`GiroPro`) e inicie o contêiner do PostgreSQL:
-```bash
-docker-compose up -d postgres_db
-```
-Aguarde alguns segundos para que o banco de dados seja inicializado completamente. Você pode verificar o status com `docker-compose ps`.
+**Para desenvolvimento rápido, use SQLite em memória (padrão atual).**
 
 ### 3. Configuração do Backend
 
@@ -64,18 +61,46 @@ npm install
 
 #### 3.2. Configuração do Ambiente
 
-Crie um arquivo `.env` na raiz do diretório `backend` com as variáveis de ambiente necessárias. Um exemplo pode ser:
+Crie um arquivo `.env` na raiz do diretório `backend` com as variáveis de ambiente necessárias:
+
+**Para desenvolvimento com SQLite em memória (padrão):**
 ```env
-DATABASE_URL="postgresql://user:password@localhost:5432/giropro_db"
+# Configuração do Banco de Dados
+DB_TYPE=sqlite_memory
+SQLITE_DB_PATH=":memory:"
+
+# Configurações da API
 JWT_SECRET="seu_segredo_jwt_aqui"
+JWT_REFRESH_SECRET="seu_refresh_secret_aqui"
 PORT=3000
+NODE_ENV=development
+LOG_LEVEL=debug
+ALLOWED_ORIGINS="http://localhost:3000,http://localhost:19006,http://localhost:8081"
 ```
-*Ajuste `DATABASE_URL` se seu banco de dados não estiver rodando em `localhost:5432` ou se as credenciais forem diferentes.*
+
+**Para produção com PostgreSQL:**
+```env
+# Configuração do Banco de Dados
+DB_TYPE=postgresql
+DATABASE_URL="postgresql://user:password@localhost:5432/giropro_db"
+
+# Configurações da API
+JWT_SECRET="seu_segredo_jwt_aqui"
+JWT_REFRESH_SECRET="seu_refresh_secret_aqui"
+PORT=3000
+NODE_ENV=production
+LOG_LEVEL=error
+ALLOWED_ORIGINS="https://seudominio.com"
+```
 
 **Importante**: Certifique-se de que o arquivo `.env` seja adicionado ao seu `.gitignore` para evitar que suas credenciais sejam versionadas.
 
-#### 3.3. Configuração do Banco de Dados (Migrações)
+#### 3.3. Configuração do Banco de Dados
 
+**Para SQLite em memória (desenvolvimento):**
+As tabelas são criadas automaticamente na inicialização. Não são necessárias migrações.
+
+**Para PostgreSQL (produção):**
 Execute as migrações do banco de dados para criar as tabelas:
 ```bash
 npm run db:migrate
