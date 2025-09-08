@@ -1,8 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Alert } from 'react-native'; // Keep Alert for now, might need a web-specific alert later
-import { useAuth } from '../contexts/AuthContext';
-import FormInput, { validators, combineValidators } from '../components/FormInput';
-import LoadingSpinner from '../components/LoadingSpinner';
+import React, { useState } from 'react';
+import { useAuth } from '../contexts/AuthContext.web';
 
 // Web-specific styles (can be moved to a CSS file later)
 const webStyles = {
@@ -122,50 +119,65 @@ const webStyles = {
   },
 };
 
-const LoginScreenWeb: React.FC = () => {
+interface LoginScreenWebProps {
+  onNavigateToRegister?: () => void;
+}
+
+const LoginScreenWeb: React.FC<LoginScreenWebProps> = ({ onNavigateToRegister }) => {
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
+  const [errors, setErrors] = useState<{email?: string; senha?: string}>({});
   const { signIn } = useAuth();
 
-  // No need for Animated.Value or useEffect for animations in this simple web version
-  // CSS transitions/animations can be used directly in webStyles
+  const validateEmail = (email: string) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
 
-  const handleLogin = async () => {
+  const validateForm = () => {
+    const newErrors: {email?: string; senha?: string} = {};
+    
     if (!email.trim()) {
-      Alert.alert('Erro', 'Por favor, informe seu email');
-      return;
+      newErrors.email = 'Email é obrigatório';
+    } else if (!validateEmail(email)) {
+      newErrors.email = 'Email inválido';
     }
-
+    
     if (!senha.trim()) {
-      Alert.alert('Erro', 'Por favor, informe sua senha');
+      newErrors.senha = 'Senha é obrigatória';
+    } else if (senha.length < 6) {
+      newErrors.senha = 'Senha deve ter pelo menos 6 caracteres';
+    }
+    
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!validateForm()) {
       return;
     }
 
     try {
       setLoading(true);
       await signIn({ email: email.trim(), senha });
-      // TODO: Redirect to dashboard after successful login
-      Alert.alert('Sucesso', 'Login realizado com sucesso!');
     } catch (error: any) {
-      Alert.alert('Erro', error.message || 'Erro ao fazer login');
+      alert(error.message || 'Erro ao fazer login');
     } finally {
       setLoading(false);
     }
-  };
-
-  const navigateToRegister = () => {
-    // TODO: Implement web navigation to register page
-    Alert.alert('Navegação', 'Funcionalidade de cadastro em desenvolvimento para web.');
   };
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
 
-  const isFormValid = email.trim() !== '' && senha.trim() !== '';
+  const isFormValid = email.trim() !== '' && senha.trim() !== '' && Object.keys(errors).length === 0;
 
   return (
     <div style={webStyles.container}>
@@ -175,68 +187,146 @@ const LoginScreenWeb: React.FC = () => {
           <p style={webStyles.subtitle}>Gestão financeira para motoristas</p>
         </div>
 
-        <div style={webStyles.form}>
-          <FormInput
-            label="Email"
-            placeholder="Digite seu email"
-            value={email}
-            onChangeText={setEmail}
-            keyboardType="email-address"
-            autoCapitalize="none"
-            required
-            leftIcon="mail-outline"
-            validation={combineValidators(validators.required, validators.email)}
-            testID="email-input"
-          />
+        <form onSubmit={handleLogin} style={webStyles.form}>
+          {/* Email Input */}
+          <div style={{ marginBottom: '20px' }}>
+            <label style={{
+              display: 'block',
+              fontSize: '16px',
+              fontWeight: '600',
+              color: '#333',
+              marginBottom: '8px'
+            }}>
+              Email *
+            </label>
+            <input
+              type="email"
+              placeholder="Digite seu email"
+              value={email}
+              onChange={(e) => {
+                setEmail(e.target.value);
+                if (errors.email) {
+                  setErrors(prev => ({ ...prev, email: undefined }));
+                }
+              }}
+              style={{
+                width: '100%',
+                padding: '12px 16px',
+                fontSize: '16px',
+                border: errors.email ? '2px solid #FF3B30' : '2px solid #E5E5EA',
+                borderRadius: '8px',
+                outline: 'none',
+                transition: 'border-color 0.2s',
+                boxSizing: 'border-box'
+              }}
+            />
+            {errors.email && (
+              <p style={{
+                color: '#FF3B30',
+                fontSize: '14px',
+                margin: '4px 0 0 0'
+              }}>{errors.email}</p>
+            )}
+          </div>
 
-          <FormInput
-            label="Senha"
-            placeholder="Digite sua senha"
-            value={senha}
-            onChangeText={setSenha}
-            secureTextEntry={!showPassword}
-            required
-            leftIcon="lock-closed-outline"
-            rightIcon={showPassword ? "eye-off-outline" : "eye-outline"}
-            onRightIconPress={togglePasswordVisibility}
-            validation={validators.required}
-            testID="password-input"
-          />
+          {/* Password Input */}
+          <div style={{ marginBottom: '20px' }}>
+            <label style={{
+              display: 'block',
+              fontSize: '16px',
+              fontWeight: '600',
+              color: '#333',
+              marginBottom: '8px'
+            }}>
+              Senha *
+            </label>
+            <div style={{ position: 'relative' }}>
+              <input
+                type={showPassword ? 'text' : 'password'}
+                placeholder="Digite sua senha"
+                value={senha}
+                onChange={(e) => {
+                  setSenha(e.target.value);
+                  if (errors.senha) {
+                    setErrors(prev => ({ ...prev, senha: undefined }));
+                  }
+                }}
+                style={{
+                  width: '100%',
+                  padding: '12px 40px 12px 16px',
+                  fontSize: '16px',
+                  border: errors.senha ? '2px solid #FF3B30' : '2px solid #E5E5EA',
+                  borderRadius: '8px',
+                  outline: 'none',
+                  transition: 'border-color 0.2s',
+                  boxSizing: 'border-box'
+                }}
+              />
+              <button
+                type="button"
+                onClick={togglePasswordVisibility}
+                style={{
+                  position: 'absolute',
+                  right: '12px',
+                  top: '50%',
+                  transform: 'translateY(-50%)',
+                  background: 'none',
+                  border: 'none',
+                  cursor: 'pointer',
+                  fontSize: '16px',
+                  color: '#8E8E93'
+                }}
+              >
+                {showPassword ? '👁️' : '👁️‍🗨️'}
+              </button>
+            </div>
+            {errors.senha && (
+              <p style={{
+                color: '#FF3B30',
+                fontSize: '14px',
+                margin: '4px 0 0 0'
+              }}>{errors.senha}</p>
+            )}
+          </div>
 
           <div style={webStyles.optionsContainer}>
-            <div
-              style={webStyles.rememberMeContainer}
-              onClick={() => setRememberMe(!rememberMe)}
-            >
-              {rememberMe ? (
-                <span style={{ ...webStyles.icon, color: '#007AFF' }}>☑️</span>
-              ) : (
-                <span style={{ ...webStyles.icon, color: '#8E8E93' }}>⬜</span>
-              )}
+            <label style={webStyles.rememberMeContainer}>
+              <input
+                type="checkbox"
+                checked={rememberMe}
+                onChange={(e) => setRememberMe(e.target.checked)}
+                style={{ marginRight: '8px' }}
+              />
               <span style={webStyles.rememberMeText}>Lembrar-me</span>
-            </div>
+            </label>
 
             <button
-              style={webStyles.forgotPasswordText}
-              onClick={() => Alert.alert('Em breve', 'Funcionalidade em desenvolvimento')}
+              type="button"
+              onClick={() => alert('Funcionalidade em desenvolvimento')}
+              style={{
+                background: 'none',
+                border: 'none',
+                color: '#007AFF',
+                fontSize: '16px',
+                cursor: 'pointer',
+                textDecoration: 'underline'
+              }}
             >
               Esqueceu sua senha?
             </button>
           </div>
 
           <button
+            type="submit"
+            disabled={!isFormValid || loading}
             style={{
               ...webStyles.loginButton,
-              ...(!isFormValid && webStyles.loginButtonDisabled),
+              ...(!isFormValid || loading ? webStyles.loginButtonDisabled : {})
             }}
-            onClick={handleLogin}
-            disabled={!isFormValid}
           >
-            {loading ? (
-              <LoadingSpinner color="#FFFFFF" />
-            ) : (
-              <span style={webStyles.loginButtonText}>Entrar</span>
-            )}
+            <span style={webStyles.loginButtonText}>
+              {loading ? 'Entrando...' : 'Entrar'}
+            </span>
           </button>
 
           <div style={webStyles.dividerContainer}>
@@ -245,12 +335,16 @@ const LoginScreenWeb: React.FC = () => {
             <div style={webStyles.divider} />
           </div>
 
-          <button style={webStyles.registerButton} onClick={navigateToRegister}>
+          <button 
+            type="button" 
+            style={webStyles.registerButton} 
+            onClick={onNavigateToRegister}
+          >
             <span style={webStyles.registerButtonText}>
               Não tem conta? <span style={webStyles.registerLink}>Cadastre-se</span>
             </span>
           </button>
-        </div>
+        </form>
       </div>
     </div>
   );
