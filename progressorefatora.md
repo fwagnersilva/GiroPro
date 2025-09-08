@@ -11,9 +11,12 @@ Esta seção serve como um guia para a análise de arquivos do projeto GiroPro n
 
 *   [x] `backend/src/routes/users.ts` (Análise concluída)
 
-*   [ ] `backend/src/routes/vehicles.ts`
-*   [ ] `backend/src/routes/journeys.ts`
-*   [ ] `backend/src/routes/fuelings.ts`
+*   [x] `backend/src/routes/vehicles.ts` (Análise concluída)
+
+*   [ ] `backend/src/routes/journeys.ts` (Análise concluída)
+
+*   [x] `backend/src/routes/fuelings.ts` (Análise concluída)
+
 *   [ ] `backend/src/routes/expenses.ts`
 *   [ ] `backend/src/controllers/authController.ts`
 *   [ ] `backend/src/controllers/userController.ts`
@@ -243,23 +246,5 @@ Este documento detalha as tarefas de refatoração e otimização para o projeto
 **Localização no Código:** `backend/src/routes/users.ts` e novos middlewares de autorização.
 **Detalhes para o Agente:**
 *   Avaliar a necessidade de diferentes roles de usuário.
-*   Se necessário, criar um middleware de autorização que verifica a role do usuário autenticado.
-*   Aplicar este middleware a rotas que exigem permissões específicas (ex: `GET /api/v1/users/:id` para administradores).
-
-### Tarefas de Baixa Complexidade / Baixo Impacto
-
-#### 1. Filtragem de Dados Sensíveis no Retorno do Perfil
-**Descrição:** Garantir que a rota `GET /api/v1/users/profile` retorne apenas os dados do perfil que o usuário tem permissão para ver, excluindo informações sensíveis como senhas hashed ou chaves internas.
-**Localização no Código:** `backend/src/controllers/userController.ts` (método `getProfile`).
-**Detalhes para o Agente:**
-*   Revisar o método `getProfile` para filtrar explicitamente campos sensíveis antes de enviar a resposta ao cliente.
-*   Considerar o uso de projeções no ORM/ODM para excluir campos sensíveis diretamente na consulta ao banco de dados.
-
-#### 2. Garantia de Identidade do Usuário na Atualização
-**Descrição:** Assegurar que o usuário que está tentando acessar ou modificar o perfil é o mesmo usuário cujo ID está no token de autenticação.
-**Localização no Código:** `backend/src/controllers/userController.ts` (método `updateProfile`).
-**Detalhes para o Agente:**
-*   No método `updateProfile`, comparar o ID do usuário extraído do token (`req.user.id`) com o ID do perfil que está sendo solicitado para atualização (se aplicável).
-*   Retornar um erro 403 Forbidden se o usuário tentar modificar um perfil que não lhe pertence.
-
-
+*   Se necessário, criar um m
+(Content truncated due to size limit. Use page ranges or line ranges to read remaining content)
