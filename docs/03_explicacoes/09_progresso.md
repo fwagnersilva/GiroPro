@@ -23,7 +23,7 @@ Esta seção abrange as tarefas mais críticas e de menor complexidade, focadas 
 ### RegisterScreen
 
 *   [x] **Desenvolvimento Frontend:** Implementar `RegisterScreen.tsx` com a funcionalidade básica de UI/UX para Android, iOS e Web, garantindo responsividade e feedback visual essencial.
-*   [ ] **Integração com Backend:** Conectar a tela de registro à API de registro de usuários, implementando tratamento de sucesso e erro.
+*   [x] **Integração com Backend:** Conectar a tela de registro à API de registro de usuários, implementando tratamento de sucesso e erro.
 *   [x] **Validações Essenciais:** Adicionar validação de campos (email, senha, confirmação de senha) e mensagens de erro claras.
 
 ### DashboardScreen
