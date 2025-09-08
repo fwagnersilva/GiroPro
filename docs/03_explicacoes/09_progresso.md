@@ -81,7 +81,7 @@ Esta seção abrange as tarefas mais críticas e de menor complexidade, focadas 
 
 ### LoadingScreen
 
-*   [ ] **Desenvolvimento Frontend:** Implementar `LoadingScreen.tsx` com a funcionalidade básica de UI/UX para Android, iOS e Web, exibindo um indicador de carregamento.
+*   [x] **Desenvolvimento Frontend:** Implementar `LoadingScreen.tsx` com a funcionalidade básica de UI/UX para Android, iOS e Web, exibindo um indicador de carregamento.
 
 ### MultiVehicleScreen
 
