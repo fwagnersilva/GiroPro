@@ -28,7 +28,7 @@ Esta seção abrange as tarefas mais críticas e de menor complexidade, focadas 
 
 ### DashboardScreen
 
-*   [ ] **Desenvolvimento Frontend:** Implementar `DashboardScreen.tsx` com a funcionalidade básica de UI/UX para Android, iOS e Web, exibindo os dados mais relevantes.
+*   [x] **Desenvolvimento Frontend:** Implementar `DashboardScreen.tsx` com a funcionalidade básica de UI/UX para Android, iOS e Web, exibindo os dados mais relevantes.
 *   [ ] **Integração com Backend:** Conectar a tela de dashboard às APIs de dados (veículos, despesas, abastecimentos, etc.), implementando carregamento assíncrono e tratamento de erros.
 
 ### AddExpenseScreen
