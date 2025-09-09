@@ -45,11 +45,20 @@ Esta seção serve como um guia para a análise de arquivos do projeto GiroPro n
 *   `backend/src/routes/fuelings.ts` (Análise concluída)
 *   `backend/src/routes/expenses.ts` (Análise concluída)
 *   `backend/src/controllers/authController.ts` (Análise concluída)
-*   `backend/src/controllers/userController.ts`
-*   `backend/src/controllers/vehicleController.ts`
-*   `backend/src/controllers/journeyController.ts`
-*   `backend/src/controllers/fuelingController.ts`
-*   `backend/src/controllers/expenseController.ts`
+*   `backend/src/controllers/advancedAnalyticsController.ts`
+*   `backend/src/controllers/dashboardController.ts`
+*   `backend/src/controllers/expensesController.ts`
+*   `backend/src/controllers/fuelPricesController.ts`
+*   `backend/src/controllers/fuelingsController.ts`
+*   `backend/src/controllers/gamificationController_backup.ts`
+*   `backend/src/controllers/goalsController.ts`
+*   `backend/src/controllers/insightsController.ts`
+*   `backend/src/controllers/journeysController.ts`
+*   `backend/src/controllers/multiVehicleController.ts`
+*   `backend/src/controllers/notificationsController.ts`
+*   `backend/src/controllers/reportsController.ts`
+*   `backend/src/controllers/vehiclesController.ts`
+*   `backend/src/controllers/weeklyMonthlyReportsController.ts`
 *   `backend/src/db/initTables.ts`
 *   `backend/src/middlewares/errorHandler.ts`
 *   `backend/src/middlewares/requestLogger.ts`
@@ -187,77 +196,6 @@ Este documento detalha as tarefas de refatoração e otimização para o projeto
         *   Definir schemas de validação específicos para cada rota de autenticação (ex: `registerSchema`, `loginSchema`).
         *   Integrar a validação nas rotas, preferencialmente como um middleware antes de chamar o controller.
         *   Garantir que mensagens de erro de validação sejam claras e retornem status HTTP 400.
-
-### Tarefas de Média Complexidade / Médio Impacto
-
-1.  **Otimização dos Controladores de Autenticação**
-    *   **Descrição:** Otimizar os métodos dentro de `AuthController`, focando em eficiência no hashing de senhas, consultas ao banco de dados e geração de tokens.
-    *   **Localização no Código:** `backend/src/controllers/authController.ts`
-    *   **Detalhes para o Agente:**
-        *   Revisar o algoritmo de hashing de senhas (ex: `bcrypt`) para garantir um work factor adequado para segurança e performance.
-        *   Otimizar as consultas ao banco de dados realizadas pelos métodos do `AuthController`.
-        *   Garantir que a geração de tokens JWT seja eficiente.
-
-2.  **Tratamento de Erros Específicos em Controladores de Autenticação**
-    *   **Descrição:** Implementar tratamento de erros mais granular dentro dos controladores de autenticação para retornar respostas HTTP apropriadas (400, 401, 403) para cenários específicos (usuário não encontrado, senha incorreta, token inválido).
-    *   **Localização no Código:** `backend/src/controllers/authController.ts`
-    *   **Detalhes para o Agente:**
-        *   Identificar cenários de erro comuns em cada método do `AuthController`.
-        *   Implementar lógica `try/catch` ou usar o `asyncHandler` (se já implementado) para capturar erros e retornar respostas HTTP adequadas.
-        *   Garantir que as mensagens de erro para o cliente sejam genéricas para evitar vazamento de informações.
-
-### Tarefas de Baixa Complexidade / Baixo Impacto
-
-1.  **Geração de Chaves JWT Seguras**
-    *   **Descrição:** Assegurar que a chave secreta para assinatura de JWTs (`process.env.JWT_SECRET`) seja forte, longa e aleatória, e que nunca seja exposta no código-fonte ou em logs.
-    *   **Localização no Código:** Configuração de variáveis de ambiente (`.env`) e uso em `authMiddleware`.
-    *   **Detalhes para o Agente:**
-        *   Verificar a força da chave `JWT_SECRET` atual.
-        *   Se necessário, gerar uma nova chave forte (ex: usando `crypto.randomBytes(64).toString("hex")`).
-        *   Garantir que a chave seja carregada apenas via variáveis de ambiente.
-
-2.  **Revisão do Endpoint `/me`**
-    *   **Descrição:** Garantir que a rota `/me` (`GET /api/v1/auth/me`) não retorne informações sensíveis demais do usuário (ex: senha hash, segredos internos), apenas o perfil público ou dados necessários para o frontend.
-    *   **Localização no Código:** `backend/src/controllers/authController.ts` (método `me`).
-    *   **Detalhes para o Agente:**
-        *   Revisar o método `me` em `AuthController`.
-        *   Filtrar os dados do usuário para retornar apenas informações seguras e relevantes para o frontend.
-
-3.  **Mensagens de Erro Genéricas para Login/Registro**
-    *   **Descrição:** Modificar as mensagens de erro para as rotas `/register` e `/login` para serem genéricas, evitando que invasores descubram se um email existe ou se apenas a senha está errada.
-    *   **Localização no Código:** `backend/src/controllers/authController.ts` (métodos `register` e `login`).
-    *   **Detalhes para o Agente:**
-        *   Alterar as mensagens de erro para cenários como "email já em uso" ou "usuário não encontrado" para algo como "Credenciais inválidas" ou "Não foi possível completar a operação".
-
-## Tarefas de Refatoração e Otimização - `backend/src/controllers/authController.ts`
-
-### Tarefas de Alta Complexidade / Alto Impacto
-
-1.  **Centralização do Tratamento de Erros e Uso de Async Handler**
-    *   **Descrição:** Refatorar o tratamento de erros nos métodos do `AuthController` para usar um middleware de tratamento de erros centralizado e um `asyncHandler` para evitar blocos `try-catch` repetitivos. Isso tornará o código dos controladores mais limpo e focado na lógica de sucesso.
-    *   **Localização no Código:** `backend/src/controllers/authController.ts`, `backend/src/middlewares/errorHandler.ts` (aprimoramento), e possivelmente um novo `backend/src/utils/asyncHandler.ts`.
-    *   **Detalhes para o Agente:**
-        *   Criar ou aprimorar `backend/src/utils/asyncHandler.ts` com a função `asyncHandler`.
-        *   Atualizar `backend/src/controllers/authController.ts` para envolver os métodos com `asyncHandler`.
-        *   Aprimorar `backend/src/middlewares/errorHandler.ts` para lidar com `CustomErrors` e `z.ZodError` de forma consistente.
-        *   Remover os blocos `try-catch` repetitivos dos métodos do `AuthController`.
-        *   Testar todas as rotas para garantir que o tratamento de erros assíncronos e a formatação das respostas de erro funcionem corretamente.
-
-2.  **Remoção Segura de Senha do Objeto de Usuário Retornado**
-    *   **Descrição:** Garantir que o campo de senha (ou hash da senha) seja explicitamente removido do objeto de usuário antes de ser retornado em qualquer resposta da API, especialmente nos endpoints de registro e `me`.
-    *   **Localização no Código:** `backend/src/controllers/authController.ts` (métodos `register` e `me`), e possivelmente `backend/src/services/authService.ts`.
-    *   **Detalhes para o Agente:**
-        *   Modificar os métodos `register` e `me` no `AuthController` para filtrar o objeto `user` antes de enviá-lo na resposta.
-        *   Considerar implementar essa filtragem no `AuthService` para garantir que nenhuma lógica de negócios retorne dados sensíveis.
-        *   Testar os endpoints para confirmar que a senha não é exposta nas respostas.
-
-3.  **Gerenciamento Seguro de Refresh Tokens (Cookies HttpOnly e Secure)**
-    *   **Descrição:** Alterar a forma como os refresh tokens são enviados e armazenados, preferindo cookies `HttpOnly` e `Secure` em vez de retorná-los no corpo da resposta. Isso aumenta a segurança contra ataques XSS.
-    *   **Localização no Código:** `backend/src/controllers/authController.ts` (método `refreshToken`), e possivelmente `backend/src/services/authService.ts`.
-    *   **Detalhes para o Agente:**
-        *   Modificar o método `refreshToken` no `AuthController` para definir o `refreshToken` como um cookie `HttpOnly` e `Secure`.
-        *   Garantir que o frontend esteja configurado para enviar cookies automaticamente com as requisições.
-        *   Testar o fluxo de atualização de token para garantir que funcione corretamente com cookies.
 
 ### Tarefas de Média Complexidade / Médio Impacto
 
