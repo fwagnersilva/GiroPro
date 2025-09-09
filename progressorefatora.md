@@ -45,7 +45,7 @@ Esta seção serve como um guia para a análise de arquivos do projeto GiroPro n
 *   `backend/src/routes/fuelings.ts` (Análise concluída)
 *   `backend/src/routes/expenses.ts` (Análise concluída)
 *   `backend/src/controllers/authController.ts` (Análise concluída)
-*   `backend/src/controllers/advancedAnalyticsController.ts`
+*   `backend/src/controllers/advancedAnalyticsController.ts` (Análise concluída)
 *   `backend/src/controllers/dashboardController.ts`
 *   `backend/src/controllers/expensesController.ts`
 *   `backend/src/controllers/fuelPricesController.ts`
@@ -259,5 +259,107 @@ Este documento detalha as tarefas de refatoração e otimização para o projeto
         *   Definir um schema de validação específico para a rota `PUT /api/v1/users/profile`.
         *   Integrar a validação na rota, preferencialmente como um middleware antes de chamar o controller.
         *   Garantir que mensagens de erro de validação sejam claras e retornem status HTTP 400.
+
+
+
+
+## Tarefas de Refatoração e Otimização - `backend/src/controllers/advancedAnalyticsController.ts`
+
+
+
+
+### Tarefas de Alta Complexidade / Alto Impacto
+
+1.  **Centralização do Tratamento de Erros**
+    *   **Descrição:** Refatorar o tratamento de erros para usar um `asyncHandler` combinado com um middleware global de tratamento de erros, simplificando os blocos `try-catch` nos métodos do controller.
+    *   **Localização no Código:** `backend/src/controllers/advancedAnalyticsController.ts`, `backend/src/middlewares/errorHandler.ts` (aprimoramento), e possivelmente um novo `backend/src/utils/asyncHandler.ts`.
+    *   **Detalhes para o Agente:**
+        *   Criar ou aprimorar `backend/src/utils/asyncHandler.ts` com a função `asyncHandler`.
+        *   Atualizar `backend/src/controllers/advancedAnalyticsController.ts` para envolver os métodos com `asyncHandler`.
+        *   Aprimorar `backend/src/middlewares/errorHandler.ts` para lidar com `ValidationError`, `UnauthorizedError`, `NotFoundError` de forma consistente.
+        *   Remover os blocos `try-catch` repetitivos dos métodos do `AdvancedAnalyticsController`.
+        *   Testar todas as rotas para garantir que o tratamento de erros assíncronos e a formatação das respostas de erro funcionem corretamente.
+
+2.  **Otimização de Consultas Drizzle (Problema N+1)**
+    *   **Descrição:** Refatorar a lógica de busca de dados para evitar o problema N+1 Query no método `getConsumptionAnalysis`. Em vez de buscar dados individualmente para cada veículo, realizar uma única consulta agregada para todos os abastecimentos e jornadas de todos os veículos do usuário dentro do período, e depois agrupar/filtrar esses dados em memória.
+    *   **Localização no Código:** `backend/src/controllers/advancedAnalyticsController.ts` (métodos `fetchVehicleData` e `getConsumptionAnalysis`).
+    *   **Detalhes para o Agente:**
+        *   Modificar `getConsumptionAnalysis` para buscar todos os abastecimentos e jornadas do usuário em uma ou duas consultas principais.
+        *   Implementar lógica de agrupamento/filtragem em memória para associar os dados aos veículos corretos.
+        *   Remover a chamada `this.fetchVehicleData` dentro do loop de veículos.
+        *   Testar a performance e a correção dos dados após a otimização.
+
+3.  **Otimização de Consultas Drizzle (Agregação Direta no DB)**
+    *   **Descrição:** Para métricas como `totalLitros`, `totalKm`, `totalGastoCombustivel`, etc., utilizar as funções de agregação do Drizzle ORM (ou SQL direto) para realizar os cálculos diretamente no banco de dados, em vez de buscar todos os registros e somar em JavaScript.
+    *   **Localização no Código:** `backend/src/controllers/advancedAnalyticsController.ts` (método `calculateVehicleMetrics` e onde os dados são buscados).
+    *   **Detalhes para o Agente:**
+        *   Reescrever as consultas que alimentam `calculateVehicleMetrics` para incluir funções de agregação (`sum`, `count`, `avg`) diretamente no Drizzle.
+        *   Reduzir a quantidade de dados transferidos do banco de dados para o servidor.
+        *   Testar a precisão dos cálculos e a melhoria de performance.
+
+
+
+
+### Tarefas de Média Complexidade / Médio Impacto
+
+1.  **Extração de Lógica de Análise para um Serviço**
+    *   **Descrição:** Mover a lógica complexa de cálculo e interação com o Drizzle para um `AdvancedAnalyticsService` dedicado, deixando o controller mais enxuto e focado em orquestração.
+    *   **Localização no Código:** Criar `backend/src/services/advancedAnalyticsService.ts` e refatorar `backend/src/controllers/advancedAnalyticsController.ts`.
+    *   **Detalhes para o Agente:**
+        *   Criar o arquivo `backend/src/services/advancedAnalyticsService.ts`.
+        *   Mover as funções auxiliares (`calculatePeriod`, `getPeriodDescription`, `calculateGeneralSummary`, `validateVehicleAccess`, `fetchVehicleData`, `calculateVehicleMetrics`, `calculateEfficiencyHistory`, `calculateConsumptionTrend`, `calculateComparativeStats`) e a lógica principal de `getConsumptionAnalysis` para este novo serviço.
+        *   Atualizar `AdvancedAnalyticsController` para chamar os métodos do `AdvancedAnalyticsService`.
+        *   Testar todas as rotas para garantir que a funcionalidade permaneça inalterada.
+
+2.  **Consistência de Tipagem para `analysisData`**
+    *   **Descrição:** Criar uma interface para os itens de `analysisData` para evitar o uso de `any` e melhorar a robustez do código, especialmente no método `calculateGeneralSummary`.
+    *   **Localização no Código:** `backend/src/controllers/advancedAnalyticsController.ts` e `backend/src/types/common.ts`.
+    *   **Detalhes para o Agente:**
+        *   Definir uma interface `ConsumptionAnalysisItem` (ou nome similar) em `backend/src/types/common.ts` que represente a estrutura dos objetos dentro do array `consumptionAnalysis`.
+        *   Atualizar a tipagem do parâmetro `analysisData` em `calculateGeneralSummary` para `ConsumptionAnalysisItem[]`.
+        *   Revisar outras partes do código que manipulam `analysisData` para usar a nova tipagem.
+
+3.  **Refatorar `calculateComparativeStats`**
+    *   **Descrição:** Melhorar a robustez e precisão do método `calculateComparativeStats`, adicionando verificações para arrays vazios antes de chamar `Math.max`, `Math.min` e calcular a média, e ajustando a precisão do `custosPorKm`.
+    *   **Localização no Código:** `backend/src/controllers/advancedAnalyticsController.ts`.
+    *   **Detalhes para o Agente:**
+        *   Adicionar verificações para garantir que `consumoMedios`, `custosPorKm`, e `rois` não estejam vazios antes de realizar operações matemáticas para evitar `Infinity` ou `NaN`.
+        *   Ajustar o cálculo da média de `custosPorKm` para manter duas casas decimais, se necessário (`Math.round(..., 100) / 100`).
+        *   Garantir que `roiCombustivel` seja calculado e incluído em `VehicleMetrics` se for usado em `calculateComparativeStats`.
+
+
+
+
+### Tarefas de Baixa Complexidade / Baixo Impacto
+
+1.  **Consistência nas Mensagens de Erro**
+    *   **Descrição:** Garantir que as mensagens de erro enviadas ao cliente sejam genéricas e não vazem detalhes internos do servidor ou do banco de dados, especialmente em `console.error`.
+    *   **Localização no Código:** `backend/src/controllers/advancedAnalyticsController.ts`.
+    *   **Detalhes para o Agente:**
+        *   Revisar todas as mensagens de erro retornadas ao cliente para garantir que não contenham informações sensíveis.
+        *   Substituir `console.error` por uma biblioteca de logging mais robusta em ambientes de produção.
+
+2.  **Timezone Handling Consistente**
+    *   **Descrição:** Assegurar que o tratamento de timezone seja consistente em todo o aplicativo, especialmente ao armazenar e consultar datas no banco de dados (idealmente UTC) e ao exibir para o usuário.
+    *   **Localização no Código:** `backend/src/controllers/advancedAnalyticsController.ts` (métodos `calculatePeriod`, `getPeriodDescription`) e interações com o DB.
+    *   **Detalhes para o Agente:**
+        *   Verificar se as datas são armazenadas em UTC no banco de dados.
+        *   Garantir que a conversão para o timezone do usuário seja feita apenas para exibição.
+        *   Revisar o uso do parâmetro `timezone` em `analyticsQuerySchema` e `calculatePeriod` para consistência.
+
+3.  **Revisão do Endpoint `getProductivityAnalysis` (Incompleto)**
+    *   **Descrição:** Completar a implementação do método `getProductivityAnalysis`, aplicando as mesmas sugestões de otimização de consulta e segurança (autorização por recurso) que foram dadas para `getConsumptionAnalysis`.
+    *   **Localização no Código:** `backend/src/controllers/advancedAnalyticsController.ts`.
+    *   **Detalhes para o Agente:**
+        *   Implementar a lógica de busca e cálculo de produtividade.
+        *   Aplicar otimizações de consulta Drizzle para evitar N+1 e usar agregações diretas no DB.
+        *   Garantir validação de entrada e autorização por recurso.
+
+4.  **Verificação de Vazamento de Informações Sensíveis em `userVehicles`**
+    *   **Descrição:** Verificar se o objeto `userVehicles` (retornado do DB) não inclui quaisquer dados sensíveis que não deveriam ser expostos na API. O `db.select()` pode ser mais explícito aqui.
+    *   **Localização no Código:** `backend/src/controllers/advancedAnalyticsController.ts` (método `getConsumptionAnalysis`).
+    *   **Detalhes para o Agente:**
+        *   Revisar o `db.select()` que busca `userVehicles` para garantir que apenas os campos necessários sejam selecionados.
+        *   Filtrar o objeto `vehicle` antes de adicioná-lo ao `consumptionAnalysis` se contiver dados sensíveis.
 
 
