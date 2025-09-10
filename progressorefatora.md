@@ -2,28 +2,17 @@
 
 Este documento serve como um guia conciso para a refatoração e otimização do projeto GiroPro. Ele detalha o processo de análise de código *realizada pelo Google AI Studio* e as tarefas subsequentes para um agente.
 
-## Fluxo de Trabalho para Análise e Refatoração
+## Instruções
 
-Este documento guia o processo de análise de código com o Google AI Studio e a subsequente organização de tarefas de refatoração. Siga este fluxo de trabalho para garantir consistência e eficiência.
+Para continuar o processo de refatoração, siga os passos abaixo:
 
-**Seu Papel (Usuário):**
-
-1.  **Inicie o processo:** Simplesmente me diga para "continuar o trabalho no `progressorefatora.md`" ou algo semelhante.
-2.  **Use o prompt:** Copie o prompt completo que eu fornecer e cole-o no Google AI Studio.
-3.  **Forneça o feedback:** Copie o resultado completo do Google AI Studio e cole-o de volta para mim.
-
-**Meu Papel (Manus):**
-
-1.  **Identificar o próximo arquivo:** Eu lerei este arquivo para encontrar o próximo item na "Lista de Arquivos para Análise" que ainda não foi concluído.
-2.  **Gerar o prompt completo:** Eu lerei o conteúdo do arquivo a ser analisado e criarei um prompt detalhado para você usar no Google AI Studio. Este prompt incluirá:
-    *   Instruções claras para a IA.
-    *   O conteúdo completo do arquivo a ser analisado.
-    *   A exigência de que o feedback siga a estrutura de tarefas (Alta, Média, Baixa complexidade) e inclua uma contagem de tarefas.
-3.  **Aguardar seu feedback:** Ficarei aguardando você me enviar a análise gerada pelo Google AI Studio.
-4.  **Processar o feedback:** Ao receber o feedback, eu irei:
-    *   Adicionar as novas tarefas de refatoração neste documento, sob a categoria apropriada.
-    *   Atualizar a "Lista de Arquivos para Análise", marcando o arquivo como `(Análise concluída)`.
-    *   Confirmar o número de tarefas adicionadas em cada categoria.
+1.  Identifique o próximo arquivo não marcado na seção "Lista de Arquivos para Análise".
+2.  Copie o conteúdo do arquivo correspondente no projeto.
+3.  Use o prompt abaixo no Google AI Studio, substituindo `[NOME_DO_ARQUIVO]` e `[TIPO_DE_RECURSO]` pelos valores corretos.
+4.  Cole o código do arquivo após o prompt no Google AI Studio.
+5.  Receba o feedback da análise.
+6.  Com base no feedback do Google AI Studio, adicione as novas tarefas detalhadas ao final deste documento, seguindo o formato das seções de tarefas existentes, tarefas existentes, existentes. Estas tarefas serão executadas posteriormente por um agente.
+7.  Marque o arquivo como analisado na lista (ex: `[x]`).
 
 ## Prompt para o Google AI Studio
 
@@ -31,577 +20,376 @@ Este documento guia o processo de análise de código com o Google AI Studio e a
 O código abaixo é um arquivo de rotas de: [NOME_DO_ARQUIVO] para um aplicativo de gestão financeira. Ele define rotas para operações CRUD de: [TIPO_DE_RECURSO], todas protegidas por um middleware de autenticação e um rate limiter. Por favor, analise-o e forneça feedback sobre otimização, melhorias de performance, segurança e boas práticas de código, especialmente no contexto de gestão de recursos e proteção de dados. Inclua sugestões de refatoração, se aplicável.
 ```
 
-## Lista de Arquivos para Análise no Google AI Studio
-
-Esta seção serve como um guia para a análise de arquivos do projeto GiroPro no Google AI Studio. O objetivo é coletar feedback sobre cada arquivo e, a partir dele, criar tarefas de refatoração e otimização.
+## Lista de Arquivos para Análise
 
 ### Backend
 
-*   `backend/src/app.ts` (Análise concluída)
-*   `backend/src/routes/auth.ts` (Análise concluída)
-*   `backend/src/routes/users.ts` (Análise concluída)
-*   `backend/src/routes/vehicles.ts` (Análise concluída)
-*   `backend/src/routes/journeys.ts` (Análise concluída)
-*   `backend/src/routes/fuelings.ts` (Análise concluída)
-*   `backend/src/routes/expenses.ts` (Análise concluída)
-*   `backend/src/controllers/authController.ts` (Análise concluída)
-*   `backend/src/controllers/advancedAnalyticsController.ts` (Análise concluída)
-*   `backend/src/controllers/dashboardController.ts` (Análise concluída)
-*   `backend/src/controllers/expensesController.ts`
-*   `backend/src/controllers/fuelPricesController.ts`
-*   `backend/src/controllers/fuelingsController.ts`
-*   `backend/src/controllers/gamificationController_backup.ts`
-*   `backend/src/controllers/goalsController.ts`
-*   `backend/src/controllers/insightsController.ts`
-*   `backend/src/controllers/journeysController.ts`
-*   `backend/src/controllers/multiVehicleController.ts`
-*   `backend/src/controllers/notificationsController.ts`
-*   `backend/src/controllers/reportsController.ts`
-*   `backend/src/controllers/vehiclesController.ts`
-*   `backend/src/controllers/weeklyMonthlyReportsController.ts`
-*   `backend/src/db/initTables.ts`
-*   `backend/src/middlewares/errorHandler.ts`
-*   `backend/src/middlewares/requestLogger.ts`
+- [x] `backend/src/app.ts` (Análise concluída)
+- [x] `backend/src/routes/auth.ts` (Análise concluída)
+- [x] `backend/src/routes/users.ts` (Análise concluída)
+- [x] `backend/src/routes/vehicles.ts` (Análise concluída)
+- [x] `backend/src/routes/journeys.ts` (Análise concluída)
+- [x] `backend/src/routes/fuelings.ts` (Análise concluída)
+- [x] `backend/src/routes/expenses.ts`
+- [x] `backend/src/controllers/authController.ts` (Análise pendente de feedback do Google AI Studio.)
+- [ ] `backend/src/controllers/userController.ts`
+- [ ] `backend/src/controllers/vehicleController.ts`
+- [ ] `backend/src/controllers/journeyController.ts`
+- [ ] `backend/src/controllers/fuelingController.ts`
+- [ ] `backend/src/controllers/expenseController.ts`
+- [ ] `backend/src/db/initTables.ts`
+- [ ] `backend/src/middlewares/errorHandler.ts`
+- [ ] `backend/src/middlewares/requestLogger.ts`
 
 ### Frontend
 
-*   `frontend/src/App.tsx`
-*   `frontend/src/navigation/AppNavigator.tsx`
-*   `frontend/src/screens/HomeScreen.tsx`
-*   `frontend/src/screens/LoginScreen.tsx`
-*   `frontend/src/screens/RegisterScreen.tsx`
-*   `frontend/src/components/Button.tsx`
-*   `frontend/src/components/Input.tsx`
-*   `frontend/src/services/api.ts`
-*   `frontend/src/contexts/AuthContext.tsx`
-
-Este documento detalha as tarefas de refatoração e otimização para o projeto GiroPro, baseadas no feedback do Google AI Studio. As tarefas são categorizadas por complexidade e impacto, e são destinadas a serem executadas por um agente em um momento posterior.
-
-## Tarefas de Refatoração e Otimização - Geral
-
-### Tarefas de Alta Complexidade / Alto Impacto
-
-1.  **Refatoração do CORS para Produção**
-    *   **Descrição:** Alterar a configuração do CORS para não usar `origin: "*"` em produção. Isso envolve identificar os domínios de frontend permitidos e configurá-los dinamicamente (via variáveis de ambiente ou arquivo de configuração).
-    *   **Localização no Código:** `backend/src/app.ts`
-    *   **Detalhes para o Agente:**
-        *   Identificar os domínios de produção do frontend.
-        *   Modificar a configuração `cors` em `app.ts` para aceitar uma lista de origens permitidas.
-        *   Garantir que a lista de origens seja carregada de forma segura (ex: variável de ambiente `CORS_ORIGINS`).
-        *   Testar a aplicação para garantir que o frontend ainda consiga se comunicar com o backend após a mudança.
-
-2.  **Implementação de Validação de Entrada (Input Validation)**
-    *   **Descrição:** Adicionar validação rigorosa para todos os dados de entrada (corpo da requisição, query parameters, path parameters) em todas as rotas da API. Isso é crucial para a segurança e robustez da aplicação.
-    *   **Localização no Código:** Rotas e controllers em `backend/src/routes/` e `backend/src/controllers/`
-    *   **Detalhes para o Agente:**
-        *   Escolher uma biblioteca de validação (ex: `joi` ou `yup`).
-        *   Definir schemas de validação para cada tipo de dado de entrada esperado em cada rota.
-        *   Implementar a validação nos controllers antes de processar os dados.
-        *   Garantir que erros de validação retornem respostas HTTP 400 (Bad Request) com mensagens claras.
-
-3.  **Otimização do Banco de Dados e Queries**
-    *   **Descrição:** Analisar e otimizar as operações de banco de dados para melhorar a performance. Isso inclui a criação de índices, otimização de queries SQL (ou ORM) e revisão da configuração do banco de dados.
-    *   **Localização no Código:** `backend/src/db/` e controllers que interagem com o DB.
-    *   **Detalhes para o Agente:**
-        *   Identificar as queries mais lentas ou mais frequentemente executadas.
-        *   Analisar o schema do banco de dados para identificar oportunidades de indexação.
-        *   Otimizar queries existentes ou refatorar a forma como os dados são acessados.
-        *   Revisar a configuração do banco de dados (se aplicável) para garantir que esteja otimizada para o ambiente de produção.
-
-### Tarefas de Média Complexidade / Médio Impacto
-
-1.  **Implementação de Compressão (Gzip)**
-    *   **Descrição:** Adicionar middleware de compressão (Gzip) para reduzir o tamanho das respostas HTTP, melhorando o tempo de carregamento para os clientes.
-    *   **Localização no Código:** `backend/src/app.ts`
-    *   **Detalhes para o Agente:**
-        *   Instalar a dependência `compression` (`npm install compression`).
-        *   Importar e usar o middleware `compression()` em `app.ts` antes da definição das rotas.
-        *   Testar para garantir que as respostas estão sendo comprimidas corretamente.
-
-2.  **Implementação de Limitação de Taxa (Rate Limiting)**
-    *   **Descrição:** Adicionar rate limiting para proteger a API contra ataques de força bruta e abuso, especialmente em endpoints de autenticação.
-    *   **Localização no Código:** `backend/src/app.ts` ou rotas específicas.
-    *   **Detalhes para o Agente:**
-        *   Instalar a dependência `express-rate-limit` (`npm install express-rate-limit`).
-        *   Configurar um rate limiter com `windowMs` e `max` apropriados.
-        *   Aplicar o rate limiter globalmente (`app.use`) ou em rotas específicas (ex: `/api/v1/auth/login`).
-        *   Testar o comportamento do rate limiter para garantir que está funcionando conforme o esperado.
-
-3.  **Centralização de Configurações**
-    *   **Descrição:** Criar um arquivo `config.ts` para centralizar todas as configurações da aplicação, tornando-as mais fáceis de gerenciar e acessar.
-    *   **Localização no Código:** Criar `backend/src/config/config.ts` e refatorar `app.ts`.
-    *   **Detalhes para o Agente:**
-        *   Criar o arquivo `backend/src/config/config.ts`.
-        *   Mover configurações como `PORT`, `NODE_ENV`, `CORS_ORIGINS`, `JWT_SECRET` (se existirem) para este arquivo.
-        *   Exportar um objeto `config` com todas as variáveis.
-        *   Atualizar `app.ts` e outros arquivos que usam essas variáveis para importá-las do novo arquivo de configuração.
-
-4.  **Tratamento de Erros Assíncronos em Rotas (Async Handler)**
-    *   **Descrição:** Implementar um "wrapper" (`asyncHandler`) para lidar com erros em funções de controller assíncronas, evitando a repetição de blocos `try/catch`.
-    *   **Localização no Código:** Criar `backend/src/utils/asyncHandler.ts` e refatorar controllers.
-    *   **Detalhes para o Agente:**
-        *   Criar o arquivo `backend/src/utils/asyncHandler.ts` com a função `asyncHandler` fornecida no feedback.
-        *   Atualizar os controllers que usam funções assíncronas para envolvê-las com `asyncHandler`.
-        *   Testar as rotas para garantir que o tratamento de erros assíncronos continua funcionando corretamente.
-
-### Tarefas de Baixa Complexidade / Baixo Impacto
-
-1.  **Validação de Variáveis de Ambiente (PORT)**
-    *   **Descrição:** Adicionar validação explícita para a variável de ambiente `PORT` na inicialização da aplicação.
-    *   **Localização no Código:** `backend/src/app.ts`
-    *   **Detalhes para o Agente:**
-        *   Implementar o bloco de código fornecido no feedback para validar `process.env.PORT`.
-        *   Garantir que a aplicação encerre com um erro claro se a variável não for válida.
-
-2.  **Organização de Imports**
-    *   **Descrição:** Reorganizar os imports em `app.ts` (e outros arquivos, se aplicável) agrupando-os por tipo para melhorar a legibilidade.
-    *   **Localização no Código:** `backend/src/app.ts`
-    *   **Detalhes para o Agente:**
-        *   Seguir a sugestão de agrupamento: módulos externos, rotas, middlewares, configurações/DB.
-        *   Aplicar a mesma lógica a outros arquivos `.ts` no projeto, se necessário.
-
-3.  **Remoção/Desabilitação do Endpoint `/api/test` em Produção**
-    *   **Descrição:** Modificar o `app.ts` para que o endpoint `/api/test` seja desabilitado ou removido em ambientes de produção.
-    *   **Localização no Código:** `backend/src/app.ts`
-    *   **Detalhes para o Agente:**
-        *   Usar uma condição baseada em `process.env.NODE_ENV` para incluir ou excluir a rota `/api/test`.
-        *   Garantir que o endpoint não esteja acessível quando `NODE_ENV` for `production`.
-
-4.  **Verificação e Uso de `fuelPricesRoutes`**
-    *   **Descrição:** Verificar se a rota `fuelPricesRoutes` é realmente necessária e, se for, garantir que esteja sendo usada. Caso contrário, remover a importação e o código relacionado.
-    *   **Localização no Código:** `backend/src/app.ts`
-    *   **Detalhes para o Agente:**
-        *   Confirmar a necessidade da rota `fuelPricesRoutes`.
-        *   Se necessária, adicionar `app.use("/api/v1/fuelPrices", fuelPricesRoutes);`.
-        *   Se não for necessária, remover a importação e qualquer referência a ela.
-
-## Tarefas de Refatoração e Otimização - `backend/src/routes/auth.ts`
-
-### Tarefas de Alta Complexidade / Alto Impacto
-
-1.  **Refatoração do `authMiddleware` e Tipagem**
-    *   **Descrição:** Ajustar o `authMiddleware` para que ele popule o objeto `req` com as informações do usuário autenticado (`req.user`), eliminando a necessidade de `as unknown as AuthenticatedRequest` nos controllers. Isso envolve aprimorar a tipagem do `AuthenticatedRequest`.
-    *   **Localização no Código:** `backend/src/middlewares/auth.ts`, `backend/src/types/common.ts`, e controllers que utilizam `authMiddleware`.
-    *   **Detalhes para o Agente:**
-        *   Modificar `middlewares/auth.ts` para que `authMiddleware` decodifique o token JWT e atribua o payload do usuário (ex: `id`, `email`, `roles`) a `req.user`.
-        *   Atualizar a interface `AuthenticatedRequest` em `types/common.ts` para incluir a propriedade `user` com a tipagem correta do payload.
-        *   Remover todos os `as unknown as AuthenticatedRequest` das rotas e controllers que utilizam o `authMiddleware`.
-        *   Testar todas as rotas protegidas para garantir que a autenticação e o acesso aos dados do usuário funcionem corretamente.
-
-2.  **Implementação de Validação de Entrada para Rotas de Autenticação**
-    *   **Descrição:** Adicionar validação rigorosa para os corpos das requisições (`/register`, `/login`, `/request-password-reset`, `/reset-password`, `/change-password`) usando uma biblioteca de validação (ex: Joi ou Yup).
-    *   **Localização no Código:** `backend/src/routes/auth.ts` e possivelmente um novo middleware de validação.
-    *   **Detalhes para o Agente:**
-        *   Escolher e instalar uma biblioteca de validação (se ainda não estiver instalada).
-        *   Definir schemas de validação específicos para cada rota de autenticação (ex: `registerSchema`, `loginSchema`).
-        *   Integrar a validação nas rotas, preferencialmente como um middleware antes de chamar o controller.
-        *   Garantir que mensagens de erro de validação sejam claras e retornem status HTTP 400.
-
-### Tarefas de Média Complexidade / Médio Impacto
-
-1.  **Otimização dos Controladores de Autenticação**
-    *   **Descrição:** Otimizar os métodos dentro de `AuthController`, focando em eficiência no hashing de senhas, consultas ao banco de dados e geração de tokens.
-    *   **Localização no Código:** `backend/src/controllers/authController.ts`
-    *   **Detalhes para o Agente:**
-        *   Revisar o algoritmo de hashing de senhas (ex: `bcrypt`) para garantir um work factor adequado para segurança e performance.
-        *   Otimizar as consultas ao banco de dados realizadas pelos métodos do `AuthController`.
-        *   Garantir que a geração de tokens JWT seja eficiente.
-
-2.  **Tratamento de Erros Específicos em Controladores de Autenticação**
-    *   **Descrição:** Implementar tratamento de erros mais granular dentro dos controladores de autenticação para retornar respostas HTTP apropriadas (400, 401, 403) para cenários específicos (usuário não encontrado, senha incorreta, token inválido).
-    *   **Localização no Código:** `backend/src/controllers/authController.ts`
-    *   **Detalhes para o Agente:**
-        *   Identificar cenários de erro comuns em cada método do `AuthController`.
-        *   Implementar lógica `try/catch` ou usar o `asyncHandler` (se já implementado) para capturar erros e retornar respostas HTTP adequadas.
-        *   Garantir que as mensagens de erro para o cliente sejam genéricas para evitar vazamento de informações.
-
-### Tarefas de Baixa Complexidade / Baixo Impacto
-
-1.  **Geração de Chaves JWT Seguras**
-    *   **Descrição:** Assegurar que a chave secreta para assinatura de JWTs (`process.env.JWT_SECRET`) seja forte, longa e aleatória, e que nunca seja exposta no código-fonte ou em logs.
-    *   **Localização no Código:** Configuração de variáveis de ambiente (`.env`) e uso em `authMiddleware`.
-    *   **Detalhes para o Agente:**
-        *   Verificar a força da chave `JWT_SECRET` atual.
-        *   Se necessário, gerar uma nova chave forte (ex: usando `crypto.randomBytes(64).toString("hex")`).
-        *   Garantir que a chave seja carregada apenas via variáveis de ambiente.
-
-2.  **Revisão do Endpoint `/me`**
-    *   **Descrição:** Garantir que a rota `/me` (`GET /api/v1/auth/me`) não retorne informações sensíveis demais do usuário (ex: senha hash, segredos internos), apenas o perfil público ou dados necessários para o frontend.
-    *   **Localização no Código:** `backend/src/controllers/authController.ts` (método `me`).
-    *   **Detalhes para o Agente:**
-        *   Revisar o método `me` em `AuthController`.
-        *   Filtrar os dados do usuário para retornar apenas informações seguras e relevantes para o frontend.
-
-3.  **Mensagens de Erro Genéricas para Login/Registro**
-    *   **Descrição:** Modificar as mensagens de erro para as rotas `/register` e `/login` para serem genéricas, evitando que invasores descubram se um email existe ou se apenas a senha está errada.
-    *   **Localização no Código:** `backend/src/controllers/authController.ts` (métodos `register` e `login`).
-    *   **Detalhes para o Agente:**
-        *   Alterar as mensagens de erro para cenários como "email já em uso" ou "usuário não encontrado" para algo como "Credenciais inválidas" ou "Não foi possível completar a operação".
-
-## Tarefas de Refatoração e Otimização - `backend/src/routes/users.ts`
-
-### Tarefas de Alta Complexidade / Alto Impacto
-
-1.  **Criação e Implementação de UserController**
-    *   **Descrição:** Mover a lógica de negócios das rotas de usuário para um `UserController` dedicado, seguindo o padrão de separação de responsabilidades.
-    *   **Localização no Código:** Criar `backend/src/controllers/userController.ts` e refatorar `backend/src/routes/users.ts`.
-    *   **Detalhes para o Agente:**
-        *   Criar o arquivo `backend/src/controllers/userController.ts` com métodos estáticos para `getProfile` e `updateProfile`.
-        *   Mover a lógica de busca e atualização de perfil para esses métodos.
-        *   Atualizar `backend/src/routes/users.ts` para importar e usar os métodos do `UserController`.
-        *   Garantir que o `authMiddleware` preencha `req.user` com o ID do usuário autenticado para que o `UserController` possa utilizá-lo.
-
-2.  **Implementação de Validação de Entrada para PUT /profile**
-    *   **Descrição:** Adicionar validação rigorosa para os dados de entrada na rota `PUT /api/v1/users/profile` para garantir a integridade dos dados e prevenir ataques.
-    *   **Localização no Código:** `backend/src/routes/users.ts` e possivelmente um novo middleware de validação.
-    *   **Detalhes para o Agente:**
-        *   Escolher e instalar uma biblioteca de validação (ex: `joi` ou `yup`).
-        *   Definir um schema de validação específico para a rota `PUT /api/v1/users/profile`.
-        *   Integrar a validação na rota, preferencialmente como um middleware antes de chamar o controller.
-        *   Garantir que mensagens de erro de validação sejam claras e retornem status HTTP 400.
-
-
-
-
-## Tarefas de Refatoração e Otimização - `backend/src/controllers/advancedAnalyticsController.ts`
-
-
-
-
-### Tarefas de Alta Complexidade / Alto Impacto
-
-1.  **Centralização do Tratamento de Erros**
-    *   **Descrição:** Refatorar o tratamento de erros para usar um `asyncHandler` combinado com um middleware global de tratamento de erros, simplificando os blocos `try-catch` nos métodos do controller.
-    *   **Localização no Código:** `backend/src/controllers/advancedAnalyticsController.ts`, `backend/src/middlewares/errorHandler.ts` (aprimoramento), e possivelmente um novo `backend/src/utils/asyncHandler.ts`.
-    *   **Detalhes para o Agente:**
-        *   Criar ou aprimorar `backend/src/utils/asyncHandler.ts` com a função `asyncHandler`.
-        *   Atualizar `backend/src/controllers/advancedAnalyticsController.ts` para envolver os métodos com `asyncHandler`.
-        *   Aprimorar `backend/src/middlewares/errorHandler.ts` para lidar com `ValidationError`, `UnauthorizedError`, `NotFoundError` de forma consistente.
-        *   Remover os blocos `try-catch` repetitivos dos métodos do `AdvancedAnalyticsController`.
-        *   Testar todas as rotas para garantir que o tratamento de erros assíncronos e a formatação das respostas de erro funcionem corretamente.
-
-2.  **Otimização de Consultas Drizzle (Problema N+1)**
-    *   **Descrição:** Refatorar a lógica de busca de dados para evitar o problema N+1 Query no método `getConsumptionAnalysis`. Em vez de buscar dados individualmente para cada veículo, realizar uma única consulta agregada para todos os abastecimentos e jornadas de todos os veículos do usuário dentro do período, e depois agrupar/filtrar esses dados em memória.
-    *   **Localização no Código:** `backend/src/controllers/advancedAnalyticsController.ts` (métodos `fetchVehicleData` e `getConsumptionAnalysis`).
-    *   **Detalhes para o Agente:**
-        *   Modificar `getConsumptionAnalysis` para buscar todos os abastecimentos e jornadas do usuário em uma ou duas consultas principais.
-        *   Implementar lógica de agrupamento/filtragem em memória para associar os dados aos veículos corretos.
-        *   Remover a chamada `this.fetchVehicleData` dentro do loop de veículos.
-        *   Testar a performance e a correção dos dados após a otimização.
-
-3.  **Otimização de Consultas Drizzle (Agregação Direta no DB)**
-    *   **Descrição:** Para métricas como `totalLitros`, `totalKm`, `totalGastoCombustivel`, etc., utilizar as funções de agregação do Drizzle ORM (ou SQL direto) para realizar os cálculos diretamente no banco de dados, em vez de buscar todos os registros e somar em JavaScript.
-    *   **Localização no Código:** `backend/src/controllers/advancedAnalyticsController.ts` (método `calculateVehicleMetrics` e onde os dados são buscados).
-    *   **Detalhes para o Agente:**
-        *   Reescrever as consultas que alimentam `calculateVehicleMetrics` para incluir funções de agregação (`sum`, `count`, `avg`) diretamente no Drizzle.
-        *   Reduzir a quantidade de dados transferidos do banco de dados para o servidor.
-        *   Testar a precisão dos cálculos e a melhoria de performance.
-
-
-
-
-### Tarefas de Média Complexidade / Médio Impacto
-
-1.  **Extração de Lógica de Análise para um Serviço**
-    *   **Descrição:** Mover a lógica complexa de cálculo e interação com o Drizzle para um `AdvancedAnalyticsService` dedicado, deixando o controller mais enxuto e focado em orquestração.
-    *   **Localização no Código:** Criar `backend/src/services/advancedAnalyticsService.ts` e refatorar `backend/src/controllers/advancedAnalyticsController.ts`.
-    *   **Detalhes para o Agente:**
-        *   Criar o arquivo `backend/src/services/advancedAnalyticsService.ts`.
-        *   Mover as funções auxiliares (`calculatePeriod`, `getPeriodDescription`, `calculateGeneralSummary`, `validateVehicleAccess`, `fetchVehicleData`, `calculateVehicleMetrics`, `calculateEfficiencyHistory`, `calculateConsumptionTrend`, `calculateComparativeStats`) e a lógica principal de `getConsumptionAnalysis` para este novo serviço.
-        *   Atualizar `AdvancedAnalyticsController` para chamar os métodos do `AdvancedAnalyticsService`.
-        *   Testar todas as rotas para garantir que a funcionalidade permaneça inalterada.
-
-2.  **Consistência de Tipagem para `analysisData`**
-    *   **Descrição:** Criar uma interface para os itens de `analysisData` para evitar o uso de `any` e melhorar a robustez do código, especialmente no método `calculateGeneralSummary`.
-    *   **Localização no Código:** `backend/src/controllers/advancedAnalyticsController.ts` e `backend/src/types/common.ts`.
-    *   **Detalhes para o Agente:**
-        *   Definir uma interface `ConsumptionAnalysisItem` (ou nome similar) em `backend/src/types/common.ts` que represente a estrutura dos objetos dentro do array `consumptionAnalysis`.
-        *   Atualizar a tipagem do parâmetro `analysisData` em `calculateGeneralSummary` para `ConsumptionAnalysisItem[]`.
-        *   Revisar outras partes do código que manipulam `analysisData` para usar a nova tipagem.
-
-3.  **Refatorar `calculateComparativeStats`**
-    *   **Descrição:** Melhorar a robustez e precisão do método `calculateComparativeStats`, adicionando verificações para arrays vazios antes de chamar `Math.max`, `Math.min` e calcular a média, e ajustando a precisão do `custosPorKm`.
-    *   **Localização no Código:** `backend/src/controllers/advancedAnalyticsController.ts`.
-    *   **Detalhes para o Agente:**
-        *   Adicionar verificações para garantir que `consumoMedios`, `custosPorKm`, e `rois` não estejam vazios antes de realizar operações matemáticas para evitar `Infinity` ou `NaN`.
-        *   Ajustar o cálculo da média de `custosPorKm` para manter duas casas decimais, se necessário (`Math.round(..., 100) / 100`).
-        *   Garantir que `roiCombustivel` seja calculado e incluído em `VehicleMetrics` se for usado em `calculateComparativeStats`.
-
-
-
-
-### Tarefas de Baixa Complexidade / Baixo Impacto
-
-1.  **Consistência nas Mensagens de Erro**
-    *   **Descrição:** Garantir que as mensagens de erro enviadas ao cliente sejam genéricas e não vazem detalhes internos do servidor ou do banco de dados, especialmente em `console.error`.
-    *   **Localização no Código:** `backend/src/controllers/advancedAnalyticsController.ts`.
-    *   **Detalhes para o Agente:**
-        *   Revisar todas as mensagens de erro retornadas ao cliente para garantir que não contenham informações sensíveis.
-        *   Substituir `console.error` por uma biblioteca de logging mais robusta em ambientes de produção.
-
-2.  **Timezone Handling Consistente**
-    *   **Descrição:** Assegurar que o tratamento de timezone seja consistente em todo o aplicativo, especialmente ao armazenar e consultar datas no banco de dados (idealmente UTC) e ao exibir para o usuário.
-    *   **Localização no Código:** `backend/src/controllers/advancedAnalyticsController.ts` (métodos `calculatePeriod`, `getPeriodDescription`) e interações com o DB.
-    *   **Detalhes para o Agente:**
-        *   Verificar se as datas são armazenadas em UTC no banco de dados.
-        *   Garantir que a conversão para o timezone do usuário seja feita apenas para exibição.
-        *   Revisar o uso do parâmetro `timezone` em `analyticsQuerySchema` e `calculatePeriod` para consistência.
-
-3.  **Revisão do Endpoint `getProductivityAnalysis` (Incompleto)**
-    *   **Descrição:** Completar a implementação do método `getProductivityAnalysis`, aplicando as mesmas sugestões de otimização de consulta e segurança (autorização por recurso) que foram dadas para `getConsumptionAnalysis`.
-    *   **Localização no Código:** `backend/src/controllers/advancedAnalyticsController.ts`.
-    *   **Detalhes para o Agente:**
-        *   Implementar a lógica de busca e cálculo de produtividade.
-        *   Aplicar otimizações de consulta Drizzle para evitar N+1 e usar agregações diretas no DB.
-        *   Garantir validação de entrada e autorização por recurso.
-
-4.  **Verificação de Vazamento de Informações Sensíveis em `userVehicles`**
-    *   **Descrição:** Verificar se o objeto `userVehicles` (retornado do DB) não inclui quaisquer dados sensíveis que não deveriam ser expostos na API. O `db.select()` pode ser mais explícito aqui.
-    *   **Localização no Código:** `backend/src/controllers/advancedAnalyticsController.ts` (método `getConsumptionAnalysis`).
-    *   **Detalhes para o Agente:**
-        *   Revisar o `db.select()` que busca `userVehicles` para garantir que apenas os campos necessários sejam selecionados.
-        *   Filtrar o objeto `vehicle` antes de adicioná-lo ao `consumptionAnalysis` se contiver dados sensíveis.
-
-
-
-
-
-## Análise e Feedback - backend/src/controllers/dashboardController.ts
-
-### Análise e Feedback Detalhado
-
-#### 1. Otimização e Performance
-
-*   **Queries SQL Otimizadas (Já bem aplicado):** Você já faz um bom trabalho consolidando várias métricas em poucas queries (`calcularTodasMetricas`). O uso de `COALESCE` e funções agregadas `SUM`, `COUNT` diretamente no SQL é excelente para reduzir o número de viagens ao banco de dados e o processamento no backend.
-    *   **Sugestão:** Para cenários de alta concorrência ou grandes volumes de dados, considere criar **índices** apropriados nas colunas `idUsuario`, `idVeiculo`, `dataInicio`, `dataFim`, `dataAbastecimento`, `dataDespesa` e `deletedAt` nas tabelas `jornadas`, `abastecimentos`, `despesas` e `veiculos`. Isso é crucial para a performance das suas cláusulas `WHERE`.
-
-*   **Sistema de Cache (Bom começo, com melhorias):**
-    *   **Cache por Usuário e Parâmetros:** Seu cache já inclui `userId` na chave, o que é ótimo para evitar vazamento de dados entre usuários. As chaves de cache devem ser o mais específicas possível, incluindo todos os parâmetros da query (`periodo`, `dataInicio`, `dataFim`, `idVeiculo`, `granularidade`).
-    *   **Invalidação do Cache:** A invalidação `invalidateUser` é boa, mas pode ser mais granular. Se um veículo ou jornada for atualizado, apenas as chaves de cache que incluem aquele `idVeiculo` ou o período correspondente precisam ser invalidadas.
-        *   **Sugestão:** Implementar um mecanismo de invalidação baseado em eventos (ex: `onJornadaUpdated`, `onAbastecimentoDeleted`). Isso requer que os serviços que manipulam esses dados notifiquem o cache para invalidar chaves específicas. Para um MVP, sua solução atual é aceitável, mas pode levar a dados ligeiramente desatualizados até o TTL expirar ou a invalidação manual.
-    *   **Cache Distribuído:** Para um ambiente de produção com múltiplas instâncias do seu backend, o cache em memória (`DashboardCache.cache`) não será eficaz, pois cada instância terá seu próprio cache.
-        *   **Sugestão:** Considere usar um cache distribuído como **Redis** ou **Memcached**. Isso permitiria que todas as instâncias do seu aplicativo compartilhassem o mesmo cache e garantissem consistência.
-    *   **TTLs Dinâmicos:** Você já tem TTLs baseados no tipo de consulta, o que é inteligente. Continue ajustando-os com base nos padrões de uso e quão "frescos" os dados precisam ser.
-    *   **Hit/Miss Ratio:** Monitore o hit/miss ratio do seu cache para entender sua eficácia.
-
-*   **Otimização do `calcularDadosEvolucao`:**
-    *   **`Promise.all` em Batches (Ótima iniciativa):** A ideia de usar `Promise.all` em batches é excelente para paralelizar as chamadas ao DB e evitar sobrecarga, especialmente para períodos longos.
-    *   **Granularidade:** A forma como você define `intervaloDias` e `numeroPeriodos` é lógica. Certifique-se de que a lógica de cálculo das datas `dataInicio` e `dataFim` para cada ponto da evolução esteja 100% correta para cada granularidade (`diário`, `semanal`, `mensal`) para evitar lacunas ou sobreposições.
-        *   **Exemplo para "semana" granularidade "semanal":** `dataInicio` seria o início da semana (ex: segunda-feira) e `dataFim` o fim da semana (domingo). Sua implementação atual parece calcular um período de N dias retroativos, o que pode não se alinhar com "semana" ou "mês" calendáricos.
-        *   **Sugestão:** Ajuste a lógica de `dataInicio` e `dataFim` para cada iteração para realmente representar o início/fim de um dia, semana ou mês específico, em vez de apenas subtrair `intervaloDias`. Use funções como `startOfWeek`, `endOfWeek`, `startOfMonth`, `endOfMonth` de bibliotecas como `date-fns` para maior precisão e legibilidade.
-
-*   **Uso de `COALESCE` (Bem aplicado):** O uso de `COALESCE` para garantir que `SUM` retorne `0` em vez de `NULL` quando não há registros é uma boa prática e evita erros de `null / undefined`.
-
-#### 2. Segurança
-
-*   **Autenticação e Autorização (Boas práticas com um ponto de atenção):**
-    *   `AuthenticatedRequest`: A tipagem indica que você está usando um middleware de autenticação que anexa o `user` ao objeto `request`. Isso é fundamental.
-    *   **Controle de Acesso (RBAC/ABAC):** Assumo que o `userId` está sendo obtido de um token JWT ou sessão após a autenticação. É crucial que o `idUsuario` em todas as queries (`eq(table.idUsuario, userId)`) venha **sempre** do usuário autenticado e **nunca** de um parâmetro de entrada do cliente (ex: query string, body), para prevenir "Broken Access Control". Seu código já parece seguir essa premissa.
-    *   **Zod para Validação (Excelente):** A utilização de Zod é ótima para garantir que os inputs da API sejam válidos e para prevenir ataques de injeção e dados malformados.
-    *   **Proteção contra SQL Injection (Drizzle ORM):** Ao usar um ORM como Drizzle, você já tem uma boa camada de proteção contra SQL Injection, pois o ORM lida com a parametrização das queries.
-    *   **Rate Limiting:** Para endpoints de dashboard, especialmente os mais pesados, considere implementar rate limiting para prevenir ataques de DoS (Denial of Service) ou abusos.
-    *   **Validação de UUID:** Você usa `z.string().uuid().optional()` para `idVeiculo`, o que é excelente para garantir que apenas IDs de veículos válidos (e no formato UUID) sejam processados.
-    *   **Limitação de Período Personalizado:** A restrição de `diffDays > 730` para períodos personalizados é uma medida de segurança e performance importante para evitar que usuários solicitem relatórios de dados excessivamente grandes que poderiam sobrecarregar o banco de dados.
-
-#### 3. Boas Práticas de Código e Refatoração
-
-*   **Modularização (Bem aplicado):** A divisão em `DashboardCache`, `DashboardUtils` e `DashboardCalculations` é ótima para organização e separação de responsabilidades.
-*   **Tipagem (Forte):** O uso de interfaces e tipos (`DashboardMetrics`, `EvolutionDataPoint`, `ServiceResult`, `AuthenticatedRequest`) melhora significativamente a legibilidade, manutenibilidade e previne erros em tempo de desenvolvimento.
-    *   **`FastifyRequest` Interface:** Percebi que você está usando `express` (`import { Request, Response } => from 'express';`) mas a interface `FastifyRequest` está presente. Se for um projeto Express, essa interface não é necessária e pode ser removida. Se for Fastify, ajuste os imports para `FastifyRequest, FastifyReply` e use `FastifyRequest` no controller.
-*   **Nomeclatura:** Nomes de classes, métodos e variáveis são claros e descritivos.
-*   **Tratamento de Erros (Melhoria):**
-    *   Suas classes `UnauthorizedError` e `NotFoundError` são boas.
-    *   **Tratamento no Controller:** É fundamental que esses erros sejam capturados e tratados no controller (nos métodos `getDashboardSummary`, `getEvolutionData`, `getVehicleComparison`) de forma a retornar respostas HTTP apropriadas (ex: 401 Unauthorized, 404 Not Found, 400 Bad Request para validação Zod). Atualmente, as funções de cálculo podem lançar erros que não são explicitamente tratados no nível superior do controller.
-        *   **Sugestão:** Use blocos `try-catch` nos handlers das rotas para capturar exceções e enviar respostas padronizadas ao cliente.
-        ```typescript
-        // Exemplo no controller
-        export const getDashboardSummary = async (req: AuthenticatedRequest, res: Response) => {
-          try {
-            const { userId } = req.user!; // Assumindo que o middleware garante a existência
-            const { periodo, dataInicio, dataFim, idVeiculo, includeCache } = dashboardQuerySchema.parse(req.query);
-
-            const cacheKey = `dashboardSummary:${userId}:${periodo}:${dataInicio || ''}:${dataFim || ''}:${idVeiculo || ''}`;
-            if (includeCache) {
-              const cachedData = DashboardCache.get<DashboardMetrics>(cacheKey);
-              if (cachedData) {
-                return res.status(200).json(cachedData);
-              }
-            }
-
-            const { dataInicio: start, dataFim: end } = DashboardUtils.calcularPeriodo(periodo, dataInicio, dataFim);
-            const metrics = await DashboardCalculations.calcularTodasMetricas(userId, start, end, idVeiculo);
-            
-            // Determine o tipo de cache para TTL
-            const cacheType: keyof typeof DashboardCache.TTL_CONFIG = 
-              periodo === 'hoje' ? 'summaryToday' : 
-              periodo === 'semana' ? 'summaryWeek' : 
-              periodo === 'mes' ? 'summaryMonth' : 
-              periodo === 'ano' ? 'summaryYear' : 'summaryMonth'; // Default para personalizado ou outro
-
-            DashboardCache.set(cacheKey, metrics, cacheType);
-            
-            return res.status(200).json(metrics);
-          } catch (error) {
-            if (error instanceof z.ZodError) {
-              return res.status(400).json({ message: 'Parâmetros de entrada inválidos.', errors: error.errors });
-            }
-            if (error instanceof UnauthorizedError) {
-              return res.status(401).json({ message: error.message });
-            }
-            if (error instanceof NotFoundError) {
-              return res.status(404).json({ message: error.message });
-            }
-            console.error('Erro ao buscar dashboard summary:', error); // Log do erro
-            return res.status(500).json({ message: 'Erro interno do servidor.' });
-          }
-        };
-        ```
-*   **Logging:** Inclua logging adequado para erros e para monitorar o desempenho das queries e do cache.
-*   **Constantes para Strings Mágicas:** Para `periodo`, `granularidade` e chaves de cache, o uso de `enum` do Zod já ajuda. Para `tableName` em `buildBaseConditions`, você poderia usar um `type` ou um objeto de constantes para evitar erros de digitação.
-*   **Otimização de `DashboardUtils.buildBaseConditions`:**
-    *   O `and` com `isNull(table.deletedAt)` é crucial para o soft delete.
-    *   A condição `isNotNull(jornadas.dataFim)` para jornadas é uma boa otimização para garantir que apenas jornadas concluídas sejam consideradas.
-    *   **Refatoração:** `tableName` como um parâmetro string é um pouco propenso a erros. Você pode passar as tabelas diretamente para as funções, ou usar um objeto de mapeamento.
-        ```typescript
-        // Alternativa mais segura para buildBaseConditions
-        static buildBaseConditionsV2<T extends typeof jornadas | typeof abastecimentos | typeof despesas>(
-          table: T,
-          userId: string, 
-          dataInicio: Date, 
-          dataFim: Date, 
-          idVeiculo?: string
-        ) {
-          // ... lógica para determinar o campo de data com base no 'table' passado ...
-          const dateField = table === jornadas ? jornadas.dataFim :
-                            table === abastecimentos ? abastecimentos.dataAbastecimento :
-                            despesas.dataDespesa;
-
-          let conditions = and(
-            eq(table.idUsuario, userId),
-            gte(dateField, dataInicio),
-            lte(dateField, dataFim),
-            isNull(table.deletedAt)
-          );
-
-          if (table === jornadas) {
-            conditions = and(conditions, isNotNull(jornadas.dataFim));
-          }
-
-          if (idVeiculo) {
-            conditions = and(conditions, eq(table.idVeiculo, idVeiculo));
-          }
-          return conditions;
-        }
-        ```
-        Com essa refatoração, a chamada em `calcularTodasMetricas` seria:
-        ```typescript
-        const jornadasConditions = DashboardUtils.buildBaseConditionsV2(jornadas, userId, dataInicio, dataFim, idVeiculo);
-        ```
-*   **Tratamento de `number` em Drizzle:** Drizzle-orm pode retornar números como strings em algumas configurações ou bancos de dados específicos. Seu uso de `Number(...)` é uma precaução válida.
-*   **`formatCurrency`:** É bom ter isso centralizado, mas para exibição ao usuário, pode ser melhor formatar na camada de apresentação (frontend) usando `Intl.NumberFormat` para respeitar as localidades. Para cálculos internos, `Math.round(value * 100) / 100` é suficiente.
-
-#### 4. Gestão de Recursos
-
-*   **Conexões com Banco de Dados:** Drizzle-orm gerencia o pool de conexões, então você não precisa se preocupar diretamente com isso, mas certifique-se de que a configuração do pool de conexões (número máximo de conexões) esteja otimizada para seu ambiente.
-*   **Uso de Memória (Cache):** O cache em memória (`DashboardCache`) pode consumir uma quantidade significativa de RAM se o volume de dados cacheados for muito grande ou se o TTL for muito longo para dados grandes.
-    *   **Monitoramento:** Monitore o uso de memória do seu aplicativo. Se houver problemas, será um indicativo para ajustar os TTLs, invalidar o cache mais agressivamente ou migrar para um cache externo.
-    *   **Limitação:** Não há uma limitação explícita do tamanho do cache. Se o sistema escalar muito, isso pode ser um problema.
+- [ ] `frontend/src/App.tsx`
+- [ ] `frontend/src/navigation/AppNavigator.tsx`
+- [ ] `frontend/src/screens/HomeScreen.tsx`
+- [ ] `frontend/src/screens/LoginScreen.tsx`
+- [ ] `frontend/src/screens/RegisterScreen.tsx`
+- [ ] `frontend/src/components/Button.tsx`
+- [ ] `frontend/src/components/Input.tsx`
+- [ ] `frontend/src/services/api.ts`
+- [ ] `frontend/src/contexts/AuthContext.tsx`
 
 ---
 
-### Exemplo de Refatoração e Implementação de um Controller (Hipótese Express)
+## Tarefas Detalhadas para o Agente
 
-```typescript
-import { Request, Response, Router } from 'express';
-import { z } from 'zod';
-import { db } from '../db';
-import { jornadas, abastecimentos, despesas, veiculos } from '../db/schema';
-import { eq, and, isNull, isNotNull, sql, gte, lte, sum, count, inArray } from 'drizzle-orm';
-import { AuthenticatedRequest } from '../types/auth'; // Reajuste para Express se necessário
+As tarefas a seguir são baseadas no feedback do Google AI Studio e devem ser executadas por um agente. Elas são categorizadas por complexidade e impacto.
 
-// Classes de erro - Manter como estão
+### Tarefas de Alta Complexidade / Alto Impacto
 
-// Schemas de validação - Manter como estão
+#### 1. Refatoração do CORS para Produção
 
-// Interfaces - Manter como estão (remova FastifyRequest se for Express)
+**Descrição:** Alterar a configuração do CORS para não usar `origin: "*"` em produção. Isso envolve identificar os domínios de frontend permitidos e configurá-los dinamicamente (via variáveis de ambiente ou arquivo de configuração).
+**Localização no Código:** `backend/src/app.ts`
+**Detalhes para o Agente:**
 
-// DashboardCache - Manter como está, mas ter em mente a limitação para ambientes distribuídos.
+*   Identificar os domínios de produção do frontend.
+*   Modificar a configuração `cors` em `app.ts` para aceitar uma lista de origens permitidas.
+*   Garantir que a lista de origens seja carregada de forma segura (ex: variável de ambiente `CORS_ORIGINS`).
+*   Testar a aplicação para garantir que o frontend ainda consiga se comunicar com o backend após a mudança.
 
-// DashboardUtils - Manter como está, com a sugestão de refatorar buildBaseConditionsV2
+#### 2. Implementação de Validação de Entrada (Input Validation)
 
-// DashboardCalculations - Manter como está
+**Descrição:** Adicionar validação rigorosa para todos os dados de entrada (corpo da requisição, query parameters, path parameters) em todas as rotas da API. Isso é crucial para a segurança e robustez da aplicação.
+**Localização no Código:** Rotas e controllers em `backend/src/routes/` e `backend/src/controllers/`
+**Detalhes para o Agente:**
 
-// --- Controller de Dashboard ---
-const dashboardController = Router();
+*   Escolher uma biblioteca de validação (ex: `joi` ou `yup`).
+*   Definir schemas de validação para cada tipo de dado de entrada esperado em cada rota.
+*   Implementar a validação nos controllers antes de processar os dados.
+*   Garantir que erros de validação retornem respostas HTTP `400 (Bad Request)` com mensagens claras.
 
-// Middleware de autenticação (exemplo, precisa ser implementado)
-const authenticateUser = (req: Request, res: Response, next: Function) => {
-  // Implementar lógica de autenticação aqui (ex: verificar JWT)
-  // Se autenticado:
-  // req.user = { id: 'some-user-uuid', email: 'user@example.com' };
-  // next();
-  // Se não autenticado:
-  // return res.status(401).json({ message: 'Não autorizado' });
-  // Por simplicidade para a análise, vamos simular:
-  (req as AuthenticatedRequest).user = { id: 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', email: 'test@example.com' };
-  next();
-};
+#### 3. Otimização do Banco de Dados e Queries
 
-dashboardController.use(authenticateUser); // Aplica o middleware a todas as rotas do controller
+**Descrição:** Analisar e otimizar as operações de banco de dados para melhorar a performance. Isso inclui a criação de índices, otimização de queries SQL (ou ORM) e revisão da configuração do banco de dados.
+**Localização no Código:** `backend/src/db/` e controllers que interagem com o DB.
+**Detalhes para o Agente:**
 
-/**
- * @route GET /dashboard/summary
- * @desc Obtém o resumo das métricas do dashboard
- * @access Private
- */
-dashboardController.get('/summary', async (req: AuthenticatedRequest, res: Response) => {
-  try {
-    const userId = req.user?.id;
-    if (!userId) {
-      throw new UnauthorizedError('Usuário não autenticado.');
-    }
+*   Identificar as queries mais lentas ou mais frequentemente executadas.
+*   Analisar o schema do banco de dados para identificar oportunidades de indexação.
+*   Otimizar queries existentes ou refatorar a forma como os dados são acessados.
+*   Revisar a configuração do banco de dados (se aplicável) para garantir que esteja otimizada para o ambiente de produção.
 
-    const queryParams = dashboardQuerySchema.parse(req.query);
-    const { periodo, dataInicio, dataFim, idVeiculo, includeCache } = queryParams;
+### Tarefas de Média Complexidade / Médio Impacto
 
-    const cacheKey = `dashboardSummary:${userId}:${periodo}:${dataInicio || ''}:${dataFim || ''}:${idVeiculo || ''}`;
-    
-    if (includeCache) {
-      const cachedData = DashboardCache.get<DashboardMetrics>(cacheKey);
-      if (cachedData) {
-        console.log('Cache Hit: dashboardSummary', cacheKey);
-        return res.status(200).json(cachedData);
-      }
-      console.log('Cache Miss: dashboardSummary', cacheKey);
-    }
+#### 1. Implementação de Compressão (Gzip)
 
-    const { dataInicio: start, dataFim: end } = DashboardUtils.calcularPeriodo(periodo, dataInicio, dataFim);
-    const metrics = await DashboardCalculations.calcularTodasMetricas(userId, start, end, idVeiculo);
-    
-    // Determine o tipo de cache para TTL
-    const cacheType: keyof typeof DashboardCache.TTL_CONFIG = 
-      periodo === 'hoje' ? 'summaryToday' : 
-      periodo === 'semana' ? 'summaryWeek' : 
-      periodo === 'mes' ? 'summaryMonth' : 
-      periodo === 'ano' ? 'summaryYear' : 'summaryMonth'; // Default para personalizado ou outro
+**Descrição:** Adicionar middleware de compressão (Gzip) para reduzir o tamanho das respostas HTTP, melhorando o tempo de carregamento para os clientes.
+**Localização no Código:** `backend/src/app.ts`
+**Detalhes para o Agente:**
 
-    DashboardCache.set(cacheKey, metrics, cacheType);
-    
-    return res.status(200).json(metrics);
-  } catch (error) {
-    if (error instanceof z.ZodError) {
-      return res.status(400).json({ message: 'Parâmetros de entrada inválidos.', errors: error.errors });
-    }
-    if (error instanceof UnauthorizedError) {
-      return res.status(401).json({ message: error.message });
-    }
-    if (error instanceof NotFoundError) {
-      return res.status(404).json({ message: error.message });
-    }
-    console.error('Erro ao buscar dashboard summary:', error); // Log do erro
-    return res.status(500).json({ message: 'Erro interno do servidor.' });
-  }
-});
-```
+*   Instalar a dependência `compression` (`npm install compression`).
+*   Importar e usar o middleware `compression()` em `app.ts` antes da definição das rotas.
+*   Testar para garantir que as respostas estão sendo comprimidas corretamente.
+
+#### 2. Implementação de Limitação de Taxa (Rate Limiting)
+
+**Descrição:** Adicionar rate limiting para proteger a API contra ataques de força bruta e abuso, especialmente em endpoints de autenticação.
+**Localização no Código:** `backend/src/app.ts` ou rotas específicas.
+**Detalhes para o Agente:**
+
+*   Instalar a dependência `express-rate-limit` (`npm install express-rate-limit`).
+*   Configurar um rate limiter com `windowMs` e `max` apropriados.
+*   Aplicar o rate limiter globalmente (`app.use`) ou em rotas específicas (ex: `/api/v1/auth/login`).
+*   Testar o comportamento do rate limiter para garantir que está funcionando conforme o esperado.
+
+#### 3. Centralização de Configurações
+
+**Descrição:** Criar um arquivo `config.ts` para centralizar todas as configurações da aplicação, tornando-as mais fáceis de gerenciar e acessar.
+**Localização no Código:** Criar `backend/src/config/config.ts` e refatorar `app.ts`.
+**Detalhes para o Agente:**
+
+*   Criar o arquivo `backend/src/config/config.ts`.
+*   Mover configurações como `PORT`, `NODE_ENV`, `CORS_ORIGINS`, `JWT_SECRET` (se existirem) para este arquivo.
+*   Exportar um objeto `config` com todas as variáveis.
+*   Atualizar as referências a essas configurações em `app.ts` e outros arquivos relevantes.
+
+#### 4. Tratamento de Erros Assíncronos em Rotas (Async Handler)
+
+**Descrição:** Implementar um wrapper para lidar com erros em rotas assíncronas, evitando a repetição de blocos `try-catch` e centralizando o tratamento de exceções.
+**Localização no Código:** `backend/src/middlewares/errorHandler.ts` e rotas.
+**Detalhes para o Agente:**
+
+*   Criar uma função `asyncHandler` que encapsula as funções de rota assíncronas.
+*   Essa função deve capturar exceções e passá-las para o middleware de tratamento de erros.
+*   Aplicar `asyncHandler` a todas as rotas assíncronas existentes.
+
+### Tarefas de Baixa Complexidade / Baixo Impacto
+
+#### 1. Validação de Variáveis de Ambiente (PORT)
+
+**Descrição:** Adicionar validação para a variável de ambiente `PORT` para garantir que seja um número válido.
+**Localização no Código:** `backend/src/app.ts` ou `backend/src/config/config.ts`.
+**Detalhes para o Agente:**
+
+*   Verificar se `process.env.PORT` é um número válido.
+*   Definir um valor padrão se não for fornecido ou for inválido.
+*   Registrar um aviso ou erro se a variável `PORT` for inválida.
+
+#### 2. Organização de Imports
+
+**Descrição:** Padronizar a organização dos imports em todos os arquivos para melhorar a legibilidade e manutenção do código.
+**Localização no Código:** Todos os arquivos `.ts` no backend.
+**Detalhes para o Agente:**
+
+*   Definir uma ordem padrão para os imports (ex: módulos Node.js, módulos de terceiros, módulos locais).
+*   Usar ferramentas de linting (ex: ESLint com plugin `import/order`) para automatizar a organização.
+*   Aplicar a organização de imports em todos os arquivos existentes.
+
+#### 3. Remoção/Desabilitação do Endpoint `/api/test` em Produção
+
+**Descrição:** Remover ou desabilitar o endpoint `/api/test` em ambiente de produção para evitar exposição desnecessária de informações.
+**Localização no Código:** `backend/src/app.ts` ou `backend/src/routes/`.
+**Detalhes para o Agente:**
+
+*   Identificar o endpoint `/api/test`.
+*   Implementar uma lógica para que este endpoint só esteja ativo em ambiente de desenvolvimento (`NODE_ENV === \'development\'`).
+*   Remover completamente o endpoint se não houver necessidade de mantê-lo nem mesmo em desenvolvimento.
+
+#### 4. Verificação e Uso de `fuelPricesRoutes`
+
+**Descrição:** Verificar se `fuelPricesRoutes` está sendo utilizado corretamente e se é necessário. Se não for, remover.
+**Localização no Código:** `backend/src/app.ts` e `backend/src/routes/fuelPricesRoutes.ts`.
+**Detalhes para o Agente:**
+
+*   Analisar o código para determinar se `fuelPricesRoutes` é importado e utilizado em alguma parte da aplicação.
+*   Se não for utilizado, remover a importação e o arquivo `fuelPricesRoutes.ts`.
+*   Se for utilizado, garantir que está configurado corretamente e que suas rotas estão protegidas.
+
+### Tarefas de Refatoração e Otimização - `backend/src/routes/auth.ts`
+
+#### Tarefas de Alta Complexidade / Alto Impacto
+
+##### 1. Refatoração do `authMiddleware` e Tipagem
+
+**Descrição:** Refatorar o `authMiddleware` para ser mais robusto, com melhor tratamento de erros e tipagem explícita para o `Request` do Express, incluindo as informações do usuário autenticado.
+**Localização no Código:** `backend/src/middlewares/authMiddleware.ts` e `backend/src/routes/auth.ts`.
+**Detalhes para o Agente:**
+
+*   Criar uma interface para estender o objeto `Request` do Express, adicionando uma propriedade `user` com o tipo de dados do usuário autenticado.
+*   Atualizar o `authMiddleware` para usar essa interface e garantir que as informações do usuário sejam corretamente anexadas ao objeto `req`.
+*   Implementar tratamento de erros mais detalhado para tokens inválidos ou expirados.
+
+##### 2. Implementação de Validação de Entrada para Rotas de Autenticação
+
+**Descrição:** Adicionar validação rigorosa para os dados de entrada nas rotas de autenticação (registro, login, etc.) para garantir a integridade e segurança dos dados.
+**Localização no Código:** `backend/src/routes/auth.ts` e `backend/src/controllers/authController.ts`.
+**Detalhes para o Agente:**
+
+*   Definir schemas de validação (ex: com `joi` ou `yup`) para os payloads de registro e login.
+*   Aplicar esses schemas como middleware nas rotas `POST /register` e `POST /login`.
+*   Garantir que mensagens de erro claras sejam retornadas em caso de falha na validação.
+
+#### Tarefas de Média Complexidade / Médio Impacto
+
+##### 1. Otimização dos Controladores de Autenticação
+
+**Descrição:** Otimizar a lógica dentro dos controladores de autenticação para melhorar a performance e a legibilidade, possivelmente extraindo lógica de negócios para serviços separados.
+**Localização no Código:** `backend/src/controllers/authController.ts`.
+**Detalhes para o Agente:**
+
+*   Revisar a lógica de registro e login para identificar gargalos ou repetições.
+*   Considerar a criação de um serviço de autenticação (`authService.ts`) para encapsular a lógica de negócios (ex: criação de usuário, verificação de senha, geração de token).
+*   Garantir que as operações de banco de dados sejam eficientes.
+
+##### 2. Tratamento de Erros Específicos em Controladores de Autenticação
+
+**Descrição:** Implementar tratamento de erros mais específico nos controladores de autenticação, retornando mensagens de erro claras e códigos de status HTTP apropriados para diferentes cenários (ex: usuário já existe, credenciais inválidas).
+**Localização no Código:** `backend/src/controllers/authController.ts`.
+**Detalhes para o Agente:**
+
+*   Capturar erros específicos (ex: `UserAlreadyExistsError`, `InvalidCredentialsError`).
+*   Retornar respostas HTTP com status codes como `409 Conflict` para usuário existente e `401 Unauthorized` para credenciais inválidas.
+*   Fornecer mensagens de erro genéricas para falhas de login/registro para evitar vazamento de informações.
+
+#### Tarefas de Baixa Complexidade / Baixo Impacto
+
+##### 1. Geração de Chaves JWT Seguras
+
+**Descrição:** Garantir que a chave secreta JWT seja gerada de forma segura e armazenada corretamente (ex: em variáveis de ambiente).
+**Localização no Código:** `backend/src/config/config.ts` ou onde a chave JWT é acessada.
+**Detalhes para o Agente:**
+
+*   Verificar se a chave JWT está sendo carregada de uma variável de ambiente (`process.env.JWT_SECRET`).
+*   Recomendar o uso de uma chave com comprimento adequado e gerada criptograficamente segura.
+*   Adicionar um aviso ou erro se a chave não for segura ou não estiver configurada.
+
+##### 2. Revisão do Endpoint `/me`
+
+**Descrição:** Revisar o endpoint `/me` para garantir que ele retorne apenas as informações necessárias do usuário autenticado, evitando exposição de dados sensíveis.
+**Localização no Código:** `backend/src/routes/auth.ts` e `backend/src/controllers/authController.ts`.
+**Detalhes para o Agente:**
+
+*   Verificar quais dados do objeto `user` estão sendo retornados pelo endpoint `/me`.
+*   Filtrar quaisquer dados sensíveis (ex: senhas hash, tokens de sessão) antes de enviar a resposta.
+*   Garantir que apenas informações públicas ou necessárias para o frontend sejam expostas.
+
+##### 3. Mensagens de Erro Genéricas para Login/Registro
+
+**Descrição:** Assegurar que as mensagens de erro para falhas de login e registro sejam genéricas para evitar a enumeração de usuários ou outras vulnerabilidades de segurança.
+**Localização no Código:** `backend/src/controllers/authController.ts`.
+**Detalhes para o Agente:**
+
+*   Revisar as mensagens de erro retornadas para falhas de login e registro.
+*   Garantir que mensagens como "Usuário não encontrado" ou "Senha incorreta" sejam substituídas por uma mensagem genérica como "Credenciais inválidas".
+
+### Tarefas de Refatoração e Otimização - `backend/src/routes/users.ts`
+
+#### Tarefas de Alta Complexidade / Alto Impacto
+
+##### 1. Criação e Implementação de `UserController`
+
+**Descrição:** Criar um `UserController` para encapsular a lógica de negócios relacionada aos usuários, separando-a das rotas.
+**Localização no Código:** `backend/src/controllers/userController.ts` e `backend/src/routes/users.ts`.
+**Detalhes para o Agente:**
+
+*   Criar o arquivo `backend/src/controllers/userController.ts`.
+*   Mover a lógica de manipulação de usuários das rotas para métodos dentro do `UserController`.
+*   Atualizar as rotas em `backend/src/routes/users.ts` para chamar os métodos apropriados do `UserController`.
+
+##### 2. Implementação de Validação de Entrada para `PUT /profile`
+
+**Descrição:** Adicionar validação rigorosa para os dados de entrada na rota `PUT /profile` para garantir a integridade e segurança dos dados do perfil do usuário.
+**Localização no Código:** `backend/src/routes/users.ts` e `backend/src/controllers/userController.ts`.
+**Detalhes para o Agente:**
+
+*   Definir um schema de validação para o payload de atualização de perfil.
+*   Aplicar esse schema como middleware na rota `PUT /profile`.
+*   Garantir que mensagens de erro claras sejam retornadas em caso de falha na validação.
+
+#### Tarefas de Média Complexidade / Médio Impacto
+
+##### 1. Otimização dos Controladores de Usuário
+
+**Descrição:** Otimizar a lógica dentro dos controladores de usuário para melhorar a performance e a legibilidade, possivelmente extraindo lógica de negócios para serviços separados.
+**Localização no Código:** `backend/src/controllers/userController.ts`.
+**Detalhes para o Agente:**
+
+*   Revisar a lógica de busca e atualização de perfil para identificar gargalos ou repetições.
+*   Considerar a criação de um serviço de usuário (`userService.ts`) para encapsular a lógica de negócios (ex: busca de usuário, atualização de dados).
+*   Garantir que as operações de banco de dados sejam eficientes.
+
+##### 2. Implementação de Autorização (RBAC) para Rotas de Usuário (Futuro)
+
+**Descrição:** Considerar a implementação de um sistema de controle de acesso baseado em roles (RBAC) se houver diferentes tipos de usuários com permissões distintas (ex: admin vs. motorista).
+**Localização no Código:** `backend/src/routes/users.ts` e novos middlewares de autorização.
+**Detalhes para o Agente:**
+
+*   Avaliar a necessidade de diferentes roles de usuário.
+*   Se necessário, criar um middleware de autorização que verifica a role do usuário autenticado.
+*   Aplicar este middleware a rotas que exigem permissões específicas (ex: `GET /api/v1/users/:id` para administradores).
+
+### Tarefas de Baixa Complexidade / Baixo Impacto
+
+##### 1. Filtragem de Dados Sensíveis no Retorno do Perfil
+
+**Descrição:** Garantir que a rota `GET /api/v1/users/profile` retorne apenas os dados do perfil que o usuário tem permissão para ver, excluindo informações sensíveis como senhas hashed ou chaves internas.
+**Localização no Código:** `backend/src/controllers/userController.ts` (método `getProfile`).
+**Detalhes para o Agente:**
+
+*   Revisar o método `getProfile` para filtrar explicitamente campos sensíveis antes de enviar a resposta ao cliente.
+*   Considerar o uso de projeções no ORM/ODM para excluir campos sensíveis diretamente na consulta ao banco de dados.
+
+##### 2. Garantia de Identidade do Usuário na Atualização
+
+**Descrição:** Assegurar que o usuário que está tentando acessar ou modificar o perfil é o mesmo usuário cujo ID está no token de autenticação.
+**Localização no Código:** `backend/src/controllers/userController.ts` (método `updateProfile`).
+**Detalhes para o Agente:**
+
+*   No método `updateProfile`, comparar o ID do usuário extraído do token (`req.user.id`) com o ID do perfil que está sendo solicitado para atualização (se aplicável).
+*   Retornar um erro `403 Forbidden` se o usuário tentar modificar um perfil que não lhe pertence.
+
+### Tarefas de Refatoração e Otimização - `backend/src/routes/vehicles.ts`
+
+#### Tarefas de Alta Complexidade / Alto Impacto
+
+##### 1. Implementação de Validação de Entrada para Rotas de Veículos
+
+**Descrição:** Adicionar validação rigorosa para os dados de entrada nas rotas de veículos (criação e atualização) para garantir a integridade e segurança dos dados.
+**Localização no Código:** `backend/src/routes/vehicles.ts` e `backend/src/controllers/vehiclesController.ts`.
+**Detalhes para o Agente:**
+
+*   Definir schemas de validação (ex: com `joi` ou `yup`) para os payloads de criação e atualização de veículos.
+*   Aplicar esses schemas como middleware nas rotas `POST /vehicles` e `PUT /vehicles/:id`.
+*   Garantir que mensagens de erro claras sejam retornadas em caso de falha na validação.
+
+##### 2. Otimização das Operações CRUD de Veículos
+
+**Descrição:** Otimizar a lógica dentro dos controladores de veículos para melhorar a performance das operações CRUD, especialmente em relação às interações com o banco de dados.
+**Localização no Código:** `backend/src/controllers/vehiclesController.ts`.
+**Detalhes para o Agente:**
+
+*   Revisar as queries de banco de dados para `getAll`, `create`, `getById`, `update` e `delete`.
+*   Garantir o uso eficiente de índices e evitar N+1 queries.
+*   Considerar a paginação para `getAll` se a quantidade de veículos puder ser grande.
+
+### Tarefas de Média Complexidade / Médio Impacto
+
+##### 1. Tratamento de Erros Específicos em Controladores de Veículos
+
+**Descrição:** Implementar tratamento de erros mais específico nos controladores de veículos, retornando mensagens de erro claras e códigos de status HTTP apropriados para diferentes cenários (ex: veículo não encontrado, dados inválidos).
+**Localização no Código:** `backend/src/controllers/vehiclesController.ts`.
+**Detalhes para o Agente:**
+
+*   Capturar erros específicos (ex: `VehicleNotFoundException`, `InvalidVehicleDataException`).
+*   Retornar respostas HTTP com status codes como `404 Not Found` para veículos não encontrados e `400 Bad Request` para dados inválidos.
+*   Fornecer mensagens de erro genéricas para o cliente em produção.
+
+##### 2. Garantia de Propriedade do Veículo
+
+**Descrição:** Assegurar que um usuário só possa acessar, criar, atualizar ou deletar veículos que realmente pertencem a ele.
+**Localização no Código:** `backend/src/controllers/vehiclesController.ts`.
+**Detalhes para o Agente:**
+
+*   No `authMiddleware`, garantir que o ID do usuário autenticado esteja disponível em `req.user.id`.
+*   Em cada método do `VehiclesController` (exceto `create`), verificar se o `userId` do veículo corresponde ao `req.user.id`.
+*   Retornar um erro `403 Forbidden` se o usuário tentar acessar ou modificar um veículo que não lhe pertence.
+
+### Tarefas de Baixa Complexidade / Baixo Impacto
+
+##### 1. Refatoração de Mensagens de Resposta
+
+**Descrição:** Padronizar as mensagens de resposta da API para as operações de veículos, tornando-as mais consistentes e informativas.
+**Localização no Código:** `backend/src/controllers/vehiclesController.ts`.
+**Detalhes para o Agente:**
+
+*   Revisar as mensagens de sucesso e erro retornadas pelos métodos do `VehiclesController`.
+*   Garantir que as mensagens sejam claras, concisas e sigam um padrão.
+
+##### 2. Documentação de Rotas de Veículos
+
+**Descrição:** Adicionar comentários JSDoc ou usar uma ferramenta como Swagger/OpenAPI para documentar as rotas de veículos, seus parâmetros, e respostas esperadas.
+**Localização no Código:** `backend/src/routes/vehicles.ts` e `backend/src/controllers/vehiclesController.ts`.
+**Detalhes para o Agente:**
+
+*   Adicionar comentários JSDoc para cada rota e método do controller, descrevendo sua funcionalidade, parâmetros de entrada e estrutura de resposta.
+*   Considerar a integração com uma ferramenta de documentação automática (ex: Swagger) para gerar uma documentação interativa da API.
+
+
+
 
 
