@@ -30,13 +30,23 @@ O código abaixo é um arquivo de rotas de: [NOME_DO_ARQUIVO] para um aplicativo
 - [x] `backend/src/routes/vehicles.ts` (Análise concluída)
 - [x] `backend/src/routes/journeys.ts` (Análise concluída)
 - [x] `backend/src/routes/fuelings.ts` (Análise concluída)
-- [x] `backend/src/routes/expenses.ts`
-- [x] `backend/src/controllers/authController.ts` (Análise pendente de feedback do Google AI Studio.)
-- [ ] `backend/src/controllers/userController.ts`
-- [ ] `backend/src/controllers/vehicleController.ts`
-- [ ] `backend/src/controllers/journeyController.ts`
-- [ ] `backend/src/controllers/fuelingController.ts`
-- [ ] `backend/src/controllers/expenseController.ts`
+- [x] `backend/src/routes/expenses.ts` (Análise concluída)
+- [ ] `backend/src/controllers/authController.ts`
+- [ ] `backend/src/controllers/advancedAnalyticsController.ts`
+- [ ] `backend/src/controllers/dashboardController.ts`
+- [ ] `backend/src/controllers/expensesController.ts`
+- [ ] `backend/src/controllers/fuelPricesController.ts`
+- [ ] `backend/src/controllers/fuelingsController.ts`
+- [ ] `backend/src/controllers/gamificationController_backup.ts`
+- [ ] `backend/src/controllers/goalsController.ts`
+- [ ] `backend/src/controllers/insightsController.ts`
+- [x] `backend/src/controllers/journeysController.ts` (Análise concluída)
+
+- [ ] `backend/src/controllers/multiVehicleController.ts`
+- [ ] `backend/src/controllers/notificationsController.ts`
+- [ ] `backend/src/controllers/reportsController.ts`
+- [ ] `backend/src/controllers/vehiclesController.ts`
+- [ ] `backend/src/controllers/weeklyMonthlyReportsController.ts`
 - [ ] `backend/src/db/initTables.ts`
 - [ ] `backend/src/middlewares/errorHandler.ts`
 - [ ] `backend/src/middlewares/requestLogger.ts`
@@ -167,7 +177,7 @@ As tarefas a seguir são baseadas no feedback do Google AI Studio e devem ser ex
 **Detalhes para o Agente:**
 
 *   Identificar o endpoint `/api/test`.
-*   Implementar uma lógica para que este endpoint só esteja ativo em ambiente de desenvolvimento (`NODE_ENV === \'development\'`).
+*   Implementar uma lógica para que este endpoint só esteja ativo em ambiente de desenvolvimento (`NODE_ENV === 'development'`).
 *   Remover completamente o endpoint se não houver necessidade de mantê-lo nem mesmo em desenvolvimento.
 
 #### 4. Verificação e Uso de `fuelPricesRoutes`
@@ -180,9 +190,9 @@ As tarefas a seguir são baseadas no feedback do Google AI Studio e devem ser ex
 *   Se não for utilizado, remover a importação e o arquivo `fuelPricesRoutes.ts`.
 *   Se for utilizado, garantir que está configurado corretamente e que suas rotas estão protegidas.
 
-### Tarefas de Refatoração e Otimização - `backend/src/routes/auth.ts`
+## Tarefas de Refatoração e Otimização - `backend/src/routes/auth.ts`
 
-#### Tarefas de Alta Complexidade / Alto Impacto
+### Tarefas de Alta Complexidade / Alto Impacto
 
 ##### 1. Refatoração do `authMiddleware` e Tipagem
 
@@ -257,139 +267,104 @@ As tarefas a seguir são baseadas no feedback do Google AI Studio e devem ser ex
 *   Revisar as mensagens de erro retornadas para falhas de login e registro.
 *   Garantir que mensagens como "Usuário não encontrado" ou "Senha incorreta" sejam substituídas por uma mensagem genérica como "Credenciais inválidas".
 
-### Tarefas de Refatoração e Otimização - `backend/src/routes/users.ts`
+## Tarefas de Refatoração e Otimização - `backend/src/routes/users.ts`
 
-#### Tarefas de Alta Complexidade / Alto Impacto
+### Tarefas de Alta Complexidade / Alto Impacto
 
 ##### 1. Criação e Implementação de `UserController`
 
-**Descrição:** Criar um `UserController` para encapsular a lógica de negócios relacionada aos usuários, separando-a das rotas.
-**Localização no Código:** `backend/src/controllers/userController.ts` e `backend/src/routes/users.ts`.
+**Descrição:** Mover a lógica de negócios das rotas de usuário para um `UserController` dedicado, seguindo o padrão de separação de responsabilidades.
+**Localização no Código:** Criar `backend/src/controllers/userController.ts` e refatorar `backend/src/routes/users.ts`.
 **Detalhes para o Agente:**
 
-*   Criar o arquivo `backend/src/controllers/userController.ts`.
-*   Mover a lógica de manipulação de usuários das rotas para métodos dentro do `UserController`.
-*   Atualizar as rotas em `backend/src/routes/users.ts` para chamar os métodos apropriados do `UserController`.
+*   Criar o arquivo `backend/src/controllers/userController.ts` com métodos estáticos para `getProfile` e `updateProfile`.
+*   Mover a lógica de busca e atualização de perfil para esses métodos.
+*   Atualizar `backend/src/routes/users.ts` para importar e usar os métodos do `UserController`.
+*   Garantir que o `authMiddleware` preencha `req.user` com o ID do usuário autenticado para que o `UserController` possa utilizá-lo.
 
 ##### 2. Implementação de Validação de Entrada para `PUT /profile`
 
-**Descrição:** Adicionar validação rigorosa para os dados de entrada na rota `PUT /profile` para garantir a integridade e segurança dos dados do perfil do usuário.
-**Localização no Código:** `backend/src/routes/users.ts` e `backend/src/controllers/userController.ts`.
+**Descrição:** Adicionar validação rigorosa para os dados de entrada na rota `PUT /api/v1/users/profile` para garantir a integridade dos dados e prevenir ataques.
+**Localização no Código:** `backend/src/routes/users.ts` e possivelmente um novo middleware de validação.
 **Detalhes para o Agente:**
 
-*   Definir um schema de validação para o payload de atualização de perfil.
-*   Aplicar esse schema como middleware na rota `PUT /profile`.
-*   Garantir que mensagens de erro claras sejam retornadas em caso de falha na validação.
-
-#### Tarefas de Média Complexidade / Médio Impacto
-
-##### 1. Otimização dos Controladores de Usuário
-
-**Descrição:** Otimizar a lógica dentro dos controladores de usuário para melhorar a performance e a legibilidade, possivelmente extraindo lógica de negócios para serviços separados.
-**Localização no Código:** `backend/src/controllers/userController.ts`.
-**Detalhes para o Agente:**
-
-*   Revisar a lógica de busca e atualização de perfil para identificar gargalos ou repetições.
-*   Considerar a criação de um serviço de usuário (`userService.ts`) para encapsular a lógica de negócios (ex: busca de usuário, atualização de dados).
-*   Garantir que as operações de banco de dados sejam eficientes.
-
-##### 2. Implementação de Autorização (RBAC) para Rotas de Usuário (Futuro)
-
-**Descrição:** Considerar a implementação de um sistema de controle de acesso baseado em roles (RBAC) se houver diferentes tipos de usuários com permissões distintas (ex: admin vs. motorista).
-**Localização no Código:** `backend/src/routes/users.ts` e novos middlewares de autorização.
-**Detalhes para o Agente:**
-
-*   Avaliar a necessidade de diferentes roles de usuário.
-*   Se necessário, criar um middleware de autorização que verifica a role do usuário autenticado.
-*   Aplicar este middleware a rotas que exigem permissões específicas (ex: `GET /api/v1/users/:id` para administradores).
-
-### Tarefas de Baixa Complexidade / Baixo Impacto
-
-##### 1. Filtragem de Dados Sensíveis no Retorno do Perfil
-
-**Descrição:** Garantir que a rota `GET /api/v1/users/profile` retorne apenas os dados do perfil que o usuário tem permissão para ver, excluindo informações sensíveis como senhas hashed ou chaves internas.
-**Localização no Código:** `backend/src/controllers/userController.ts` (método `getProfile`).
-**Detalhes para o Agente:**
-
-*   Revisar o método `getProfile` para filtrar explicitamente campos sensíveis antes de enviar a resposta ao cliente.
-*   Considerar o uso de projeções no ORM/ODM para excluir campos sensíveis diretamente na consulta ao banco de dados.
-
-##### 2. Garantia de Identidade do Usuário na Atualização
-
-**Descrição:** Assegurar que o usuário que está tentando acessar ou modificar o perfil é o mesmo usuário cujo ID está no token de autenticação.
-**Localização no Código:** `backend/src/controllers/userController.ts` (método `updateProfile`).
-**Detalhes para o Agente:**
-
-*   No método `updateProfile`, comparar o ID do usuário extraído do token (`req.user.id`) com o ID do perfil que está sendo solicitado para atualização (se aplicável).
-*   Retornar um erro `403 Forbidden` se o usuário tentar modificar um perfil que não lhe pertence.
-
-### Tarefas de Refatoração e Otimização - `backend/src/routes/vehicles.ts`
-
-#### Tarefas de Alta Complexidade / Alto Impacto
-
-##### 1. Implementação de Validação de Entrada para Rotas de Veículos
-
-**Descrição:** Adicionar validação rigorosa para os dados de entrada nas rotas de veículos (criação e atualização) para garantir a integridade e segurança dos dados.
-**Localização no Código:** `backend/src/routes/vehicles.ts` e `backend/src/controllers/vehiclesController.ts`.
-**Detalhes para o Agente:**
-
-*   Definir schemas de validação (ex: com `joi` ou `yup`) para os payloads de criação e atualização de veículos.
-*   Aplicar esses schemas como middleware nas rotas `POST /vehicles` e `PUT /vehicles/:id`.
-*   Garantir que mensagens de erro claras sejam retornadas em caso de falha na validação.
-
-##### 2. Otimização das Operações CRUD de Veículos
-
-**Descrição:** Otimizar a lógica dentro dos controladores de veículos para melhorar a performance das operações CRUD, especialmente em relação às interações com o banco de dados.
-**Localização no Código:** `backend/src/controllers/vehiclesController.ts`.
-**Detalhes para o Agente:**
-
-*   Revisar as queries de banco de dados para `getAll`, `create`, `getById`, `update` e `delete`.
-*   Garantir o uso eficiente de índices e evitar N+1 queries.
-*   Considerar a paginação para `getAll` se a quantidade de veículos puder ser grande.
+*   Escolher e instalar uma biblioteca de validação (ex: `joi` ou `yup`).
+*   Definir um schema de validação para os campos permitidos na atualização do perfil (ex: `username`, `email`).
+*   Implementar a validação como um middleware antes de chamar o método `updateProfile` no `UserController`.
+*   Garantir que a validação rejeite campos não permitidos ou sensíveis (ex: `isAdmin`, `role`).
+*   Retornar respostas HTTP 400 (Bad Request) com mensagens claras em caso de falha na validação.
 
 ### Tarefas de Média Complexidade / Médio Impacto
 
-##### 1. Tratamento de Erros Específicos em Controladores de Veículos
+##### 1. Otimização de Consultas ao Banco de Dados para Perfil
 
-**Descrição:** Implementar tratamento de erros mais específico nos controladores de veículos, retornando mensagens de erro claras e códigos de status HTTP apropriados para diferentes cenários (ex: veículo não encontrado, dados inválidos).
-**Localização no Código:** `backend/src/controllers/vehiclesController.ts`.
+**Descrição:** Otimizar as consultas ao banco de dados para buscar e atualizar o perfil do usuário, garantindo eficiência e performance.
+**Localização no Código:** `backend/src/controllers/userController.ts` (métodos `getProfile` e `updateProfile`).
 **Detalhes para o Agente:**
 
-*   Capturar erros específicos (ex: `VehicleNotFoundException`, `InvalidVehicleDataException`).
-*   Retornar respostas HTTP com status codes como `404 Not Found` para veículos não encontrados e `400 Bad Request` para dados inválidos.
-*   Fornecer mensagens de erro genéricas para o cliente em produção.
+*   Revisar as queries de busca e atualização de perfil para garantir que sejam eficientes.
+*   Verificar a existência de índices apropriados nas tabelas de usuário.
+*   Garantir que apenas os campos necessários sejam selecionados nas consultas de leitura.
 
-##### 2. Garantia de Propriedade do Veículo
+##### 2. Implementação de Autorização (RBAC) para Rotas de Usuário (Futuro)
 
-**Descrição:** Assegurar que um usuário só possa acessar, criar, atualizar ou deletar veículos que realmente pertencem a ele.
-**Localização no Código:** `backend/src/controllers/vehiclesController.ts`.
+**Descrição:** Considerar a implementação de um sistema de control
+(Content truncated due to size limit. Use page ranges or line ranges to read remaining content)
+
+
+
+## Tarefas de Refatoração e Otimização - `backend/src/controllers/journeysController.ts`
+
+### Tarefas de Alta Complexidade / Alto Impacto
+
+#### 1. Migração do Cache para Redis
+**Descrição:** Mudar a implementação do cache em memória para um cache distribuído usando Redis para garantir a eficácia em ambientes de produção com múltiplas instâncias.
+**Localização no Código:** `backend/src/utils/cache.ts` e `backend/src/controllers/journeysController.ts`
 **Detalhes para o Agente:**
+*   Configurar uma conexão com o Redis no backend.
+*   Adaptar a classe `Cache` para usar o Redis como backend de armazenamento.
+*   Garantir que a invalidação do cache funcione corretamente com o Redis.
+*   Testar a performance do cache em um ambiente simulado de múltiplas instâncias.
 
-*   No `authMiddleware`, garantir que o ID do usuário autenticado esteja disponível em `req.user.id`.
-*   Em cada método do `VehiclesController` (exceto `create`), verificar se o `userId` do veículo corresponde ao `req.user.id`.
-*   Retornar um erro `403 Forbidden` se o usuário tentar acessar ou modificar um veículo que não lhe pertence.
+#### 2. Refatoração da Lógica de Negócio para o Serviço
+**Descrição:** Mover a validação de regras de negócio específica de jornadas (ex: `kmFim` > `kmInicio`) do controlador para o `JourneyService`.
+**Localização no Código:** `backend/src/controllers/journeysController.ts` e `backend/src/services/journeyService.ts`
+**Detalhes para o Agente:**
+*   Identificar todas as regras de negócio que atualmente residem no `journeysController.ts`.
+*   Criar métodos correspondentes no `JourneyService` para encapsular essa lógica.
+*   Atualizar o controlador para chamar os métodos do serviço, mantendo-o focado apenas na camada HTTP.
+
+### Tarefas de Média Complexidade / Médio Impacto
+
+#### 1. Granularidade da Invalidação de Cache
+**Descrição:** Refatorar a invalidação do cache para ser mais granular, invalidando apenas a chave específica de uma jornada (`journey:${userId}:detail:{id}`) e as chaves de lista/paginação (`journey:${userId}:list:*`, `journey:${userId}:stats:*`) após `updateJourney` ou `deleteJourney`.
+**Localização no Código:** `backend/src/controllers/journeysController.ts`
+**Detalhes para o Agente:**
+*   Modificar a lógica de invalidação de cache em `updateJourney` e `deleteJourney`.
+*   Implementar a invalidação de chaves específicas para detalhes e padrões para listas.
+*   Testar para garantir que o cache está sendo invalidado de forma eficiente e correta.
+
+#### 2. Tratamento de Erros com `handleControllerError`
+**Descrição:** Implementar e utilizar o `handleControllerError` para centralizar o tratamento de erros em todos os métodos do `journeysController.ts`, evitando repetição de código e padronizando as respostas de erro.
+**Localização no Código:** `backend/src/controllers/journeysController.ts` e `backend/src/utils/controllerErrorHandler.ts`
+**Detalhes para o Agente:**
+*   Garantir que `handleControllerError` esteja implementado conforme o exemplo fornecido.
+*   Substituir os blocos `try-catch` existentes nos métodos do controlador para usar `handleControllerError`.
+*   Garantir que as mensagens de erro e os códigos de status HTTP sejam apropriados para cada cenário.
 
 ### Tarefas de Baixa Complexidade / Baixo Impacto
 
-##### 1. Refatoração de Mensagens de Resposta
-
-**Descrição:** Padronizar as mensagens de resposta da API para as operações de veículos, tornando-as mais consistentes e informativas.
-**Localização no Código:** `backend/src/controllers/vehiclesController.ts`.
+#### 1. Tipagem Mais Específica para `error: any`
+**Descrição:** Refatorar o tratamento de erros nos blocos `catch` para usar tipagem mais específica (`unknown`) e verificar `instanceof Error` ou `instanceof z.ZodError`.
+**Localização no Código:** `backend/src/controllers/journeysController.ts`
 **Detalhes para o Agente:**
+*   Atualizar as assinaturas dos blocos `catch` para `catch (error: unknown)`.
+*   Adicionar verificações de tipo (`if (error instanceof Error)`) para lidar com diferentes tipos de erros de forma mais robusta.
 
-*   Revisar as mensagens de sucesso e erro retornadas pelos métodos do `VehiclesController`.
-*   Garantir que as mensagens sejam claras, concisas e sigam um padrão.
-
-##### 2. Documentação de Rotas de Veículos
-
-**Descrição:** Adicionar comentários JSDoc ou usar uma ferramenta como Swagger/OpenAPI para documentar as rotas de veículos, seus parâmetros, e respostas esperadas.
-**Localização no Código:** `backend/src/routes/vehicles.ts` e `backend/src/controllers/vehiclesController.ts`.
+#### 2. Consistência de `message` em `createErrorResponse`
+**Descrição:** Refatorar a função `createErrorResponse` para garantir que o campo `message` seja usado para a mensagem amigável ao usuário e, se necessário, adicionar um campo para um código de erro interno.
+**Localização no Código:** `backend/src/controllers/journeysController.ts` (ou arquivo de helpers)
 **Detalhes para o Agente:**
-
-*   Adicionar comentários JSDoc para cada rota e método do controller, descrevendo sua funcionalidade, parâmetros de entrada e estrutura de resposta.
-*   Considerar a integração com uma ferramenta de documentação automática (ex: Swagger) para gerar uma documentação interativa da API.
-
-
-
-
+*   Ajustar a assinatura e a implementação de `createErrorResponse` para alinhar com a sugestão.
+*   Atualizar todas as chamadas a `createErrorResponse` para refletir a nova estrutura.
 
