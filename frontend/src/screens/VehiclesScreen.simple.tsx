@@ -63,8 +63,20 @@ const VehiclesScreenSimple: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!formData.marca || !formData.modelo || !formData.placa) {
-      alert('Preencha todos os campos obrigatórios');
+    if (!formData.marca || formData.marca.trim() === "") {
+      alert("Por favor, insira a marca do veículo.");
+      return;
+    }
+    if (!formData.modelo || formData.modelo.trim() === "") {
+      alert("Por favor, insira o modelo do veículo.");
+      return;
+    }
+    if (!formData.placa || formData.placa.trim() === "" || formData.placa.trim().length < 7) {
+      alert("Por favor, insira uma placa válida (mínimo 7 caracteres).");
+      return;
+    }
+    if (formData.ano < 1900 || formData.ano > new Date().getFullYear() + 1) {
+      alert("Por favor, insira um ano válido para o veículo.");
       return;
     }
 

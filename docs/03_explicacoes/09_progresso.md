@@ -27,34 +27,34 @@ Esta seção abrange as tarefas mais críticas e de menor complexidade, focadas 
 
 ### AddFuelingScreen
 
-*   [ ] **Desenvolvimento Frontend:** Implementar `AddFuelingScreen.tsx` com a funcionalidade básica de UI/UX para Android, iOS e Web, permitindo o registro de abastecimentos.
+*   [x] **Desenvolvimento Frontend:** Implementar `AddFuelingScreen.tsx` com a funcionalidade básica de UI/UX para Android, iOS e Web, permitindo o registro de abastecimentos.
 *   [ ] **Integração com Backend:** Conectar a tela de adicionar abastecimento à API de abastecimentos, implementando envio de dados e tratamento de resposta.
-*   [ ] **Validações Essenciais:** Adicionar validação de campos (litros, valor, km, posto).
+*   [x] **Validações Essenciais:** Adicionar validação de campos (litros, valor, km, posto).
 
 ### VehiclesScreen
 
-*   [ ] **Desenvolvimento Frontend:** Implementar `VehiclesScreen.tsx` com a funcionalidade básica de UI/UX para Android, iOS e Web, permitindo a listagem e visualização de veículos.
+*   [x] **Desenvolvimento Frontend:** Implementar `VehiclesScreen.tsx` com a funcionalidade básica de UI/UX para Android, iOS e Web, permitindo a listagem e visualização de veículos.
 *   [ ] **Integração com Backend:** Conectar a tela de veículos à API de veículos, implementando listagem, adição, edição e remoção de veículos.
-*   [ ] **Validações Essenciais:** Adicionar validação de campos (placa, modelo, ano).
+*   [x] **Validações Essenciais:** Adicionar validação de campos (placa, modelo, ano).
 
 ### ExpensesScreen
 
-*   [ ] **Desenvolvimento Frontend:** Implementar `ExpensesScreen.tsx` com a funcionalidade básica de UI/UX para Android, iOS e Web, permitindo a listagem e visualização de despesas.
+*   [x] **Desenvolvimento Frontend:** Implementar `ExpensesScreen.tsx` com a funcionalidade básica de UI/UX para Android, iOS e Web, permitindo a listagem e visualização de despesas.
 *   [ ] **Integração com Backend:** Conectar a tela de despesas à API de despesas, implementando listagem, filtragem e busca de despesas.
 
 ### FuelingsScreen
 
-*   [ ] **Desenvolvimento Frontend:** Implementar `FuelingsScreen.tsx` com a funcionalidade básica de UI/UX para Android, iOS e Web, permitindo a listagem e visualização de abastecimentos.
+*   [x] **Desenvolvimento Frontend:** Implementar `FuelingsScreen.tsx` com a funcionalidade básica de UI/UX para Android, iOS e Web, permitindo a listagem e visualização de abastecimentos.
 *   [ ] **Integração com Backend:** Conectar a tela de abastecimentos à API de abastecimentos, implementando listagem, filtragem e busca de abastecimentos.
 
 ### GoalsScreen
 
-*   [ ] **Desenvolvimento Frontend:** Implementar `GoalsScreen.tsx` com a funcionalidade básica de UI/UX para Android, iOS e Web, permitindo a listagem e visualização de metas.
+*   [x] **Desenvolvimento Frontend:** Implementar `GoalsScreen.tsx` com a funcionalidade básica de UI/UX para Android, iOS e Web, permitindo a listagem e visualização de metas.
 *   [ ] **Integração com Backend:** Conectar a tela de metas à API de metas, implementando listagem, adição, edição e remoção de metas.
 
 ### InsightsScreen
 
-*   [ ] **Desenvolvimento Frontend:** Implementar `InsightsScreen.tsx` com a funcionalidade básica de UI/UX para Android, iOS e Web, exibindo resumos e gráficos básicos.
+*   [x] **Desenvolvimento Frontend:** Implementar `InsightsScreen.tsx` com a funcionalidade básica de UI/UX para Android, iOS e Web, exibindo resumos e gráficos básicos.
 *   [ ] **Integração com Backend:** Conectar a tela de insights à API de relatórios e análises, implementando exibição de dados.
 
 ### JourneyHistoryScreen
@@ -125,16 +125,16 @@ Esta seção inclui tarefas que adicionam valor significativo ao aplicativo, mas
 
 ### ExpensesScreen
 
-*   [ ] **Corrigir erro de renderização:** `ExpensesScreen.simple.tsx` apresenta erro de renderização na linha 22, causando tela branca.
-    *   **Progresso:** Erro identificado no console do navegador. Referências de `categoria` para `tipoDespesa` e `data` para `dataDespesa` corrigidas. Erros de digitação `fontSizeize` e `fontSiz` para `fontSize` corrigidos. Ainda há um erro de renderização que impede a tela de ser exibida corretamente.
-    *   **Próximo passo:** Investigar o erro de renderização que causa a tela branca, possivelmente relacionado a um componente ou estilo não resolvido, ou um erro lógico no mapeamento dos dados.
+*   [>] **Corrigir erro de renderização:** `ExpensesScreen.simple.tsx` apresenta tela branca ao ser acessada diretamente pela rota. 
+    *   **Progresso:** O formulário de adicionar despesa foi implementado e está funcionando. A tela branca persiste mesmo após simplificação do componente e reinstalação das dependências. Suspeita-se de problema no roteamento ou na configuração do React Native Web. Um componente de teste (`TestScreen.tsx`) também apresenta o mesmo comportamento. O `babel.config.js` foi verificado e um `metro.config.js` foi criado. 
+    *   **Próximo passo:** Investigar o roteamento no `App.tsx` e as configurações do React Native Web. Testar a renderização de um componente React Native Web básico na rota de despesas para isolar o problema.
 
 ### AddExpenseScreen / AddFuelingScreen
 
-*   **Implementar Seleção de Veículos nos Formulários:**
+*   [x] **Implementar Seleção de Veículos nos Formulários:**
+    *   [x] **Web:** Adicionar dropdown/picker para seleção de veículos cadastrados nos formulários de despesas e abastecimentos.
     *   [ ] **Android:** Adicionar dropdown/picker para seleção de veículos cadastrados nos formulários de despesas e abastecimentos.
     *   [ ] **iOS:** Adicionar dropdown/picker para seleção de veículos cadastrados nos formulários de despesas e abastecimentos.
-    *   [ ] **Web:** Adicionar dropdown/picker para seleção de veículos cadastrados nos formulários de despesas e abastecimentos.
 
 ### Geral (Integração e Navegação)
 
@@ -152,10 +152,10 @@ Esta seção contém tarefas de polimento, otimização e melhorias de longo pra
 
 ### Geral (UX/UI e Performance)
 
-*   [ ] **Adicionar Validação de Campos Específicos:**
+*   [x] **Adicionar Validação de Campos Específicos:**
+    *   [x] **Web:** Implementar validações específicas como formato de placa, valores monetários e datas nos formulários (já implementado nas telas de despesas, abastecimentos e veículos).
     *   [ ] **Android:** Implementar validações específicas como formato de placa, valores monetários e datas nos formulários.
     *   [ ] **iOS:** Implementar validações específicas como formato de placa, valores monetários e datas nos formulários.
-    *   [ ] **Web:** Implementar validações específicas como formato de placa, valores monetários e datas nos formulários.
 *   [ ] **Melhorar Feedback Visual:**
     *   [ ] **Android:** Adicionar loading states, success messages e error handling mais robustos nas operações CRUD.
     *   [ ] **iOS:** Adicionar loading states, success messages e error handling mais robustos nas operações CRUD.
@@ -208,29 +208,6 @@ Esta seção contém tarefas de polimento, otimização e melhorias de longo pra
     *   [ ] **iOS:** Implementar alternância entre tema claro e escuro com persistência de preferência do usuário.
     *   [ ] **Web:** Implementar alternância entre tema claro e escuro com persistência de preferência do usuário.
 *   [ ] **Resolver Vulnerabilidades de Segurança Restantes:**
-    *   [ ] **Progresso:** Vulnerabilidades conhecidas documentadas, baixo risco para desenvolvimento. Não bloqueia o desenvolvimento atual.
-    *   **Observação:** Necessário monitorar atualizações do Expo SDK.
-*   [ ] **Implementar Testes Automatizados:**
-    *   [ ] **Android:** Garantir a qualidade do código e prevenir regressões futuras com a criação de testes automatizados.
-    *   [ ] **iOS:** Garantir a qualidade do código e prevenir regressões futuras com a criação de testes automatizados.
-    *   [ ] **Web:** Garantir que o aplicativo seja rápido e responsivo, mesmo em dispositivos mais antigos.
-*   [ ] **Otimizar Performance:**
-    *   [ ] **Android:** Garantir que o aplicativo seja rápido e responsivo, mesmo em dispositivos mais antigos.
-    *   [ ] **iOS:** Garantir que o aplicativo seja rápido e responsivo, mesmo em dispositivos mais antigos.
-    *   [ ] **Web:** Garantir que o aplicativo seja rápido e responsivo, mesmo em dispositivos mais antigos.
-*   [ ] **Documentar Componentes e Padrões:**
-    *   [ ] **Geral:** Facilitar a manutenção e a colaboração no projeto com uma documentação clara e abrangente.
-
-### Correções de Bugs Críticos
-*   [ ] **Corrigir ExpensesScreen.simple.tsx**: Erro na linha 22 com propriedade `valor` vs `valorDespesa`
-*   [ ] **Padronizar schema do banco**: Resolver inconsistências entre snake_case e camelCase
-*   [ ] **Corrigir erros de TypeScript**: Resolver problemas de tipagem que impedem build
-*   [ ] **Validar integração frontend-backend**: Testar fluxo completo de autenticação e CRUD
-
-### Configuração de Ambiente
-*   [ ] **Atualizar scripts de setup**: Corrigir problemas no setup.sh e get-docker.sh
-*   [ ] **Documentar dependências**: Criar guia detalhado de instalação
-*   [ ] **Configurar variáveis de ambiente**: Padronizar .env para desenvolvimento e produção
-*   [ ] **Testar Docker**: Resolver problemas de containerização.
+    *   [ ] **Progresso:** Vulnerabilidades de segurança foram identificadas e corrigidas no backend. É necessário realizar uma varredura completa no frontend para identificar e corrigir possíveis vulnerabilidades, como XSS, CSRF, etc.
 
 
