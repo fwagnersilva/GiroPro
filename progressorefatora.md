@@ -46,7 +46,7 @@ Esta seção serve como um guia para a análise de arquivos do projeto GiroPro n
 *   `backend/src/routes/expenses.ts` (Análise concluída)
 *   `backend/src/controllers/authController.ts` (Análise concluída)
 *   `backend/src/controllers/advancedAnalyticsController.ts` (Análise concluída)
-*   `backend/src/controllers/dashboardController.ts`
+*   `backend/src/controllers/dashboardController.ts` (Análise concluída)
 *   `backend/src/controllers/expensesController.ts`
 *   `backend/src/controllers/fuelPricesController.ts`
 *   `backend/src/controllers/fuelingsController.ts`
@@ -361,5 +361,247 @@ Este documento detalha as tarefas de refatoração e otimização para o projeto
     *   **Detalhes para o Agente:**
         *   Revisar o `db.select()` que busca `userVehicles` para garantir que apenas os campos necessários sejam selecionados.
         *   Filtrar o objeto `vehicle` antes de adicioná-lo ao `consumptionAnalysis` se contiver dados sensíveis.
+
+
+
+
+
+## Análise e Feedback - backend/src/controllers/dashboardController.ts
+
+### Análise e Feedback Detalhado
+
+#### 1. Otimização e Performance
+
+*   **Queries SQL Otimizadas (Já bem aplicado):** Você já faz um bom trabalho consolidando várias métricas em poucas queries (`calcularTodasMetricas`). O uso de `COALESCE` e funções agregadas `SUM`, `COUNT` diretamente no SQL é excelente para reduzir o número de viagens ao banco de dados e o processamento no backend.
+    *   **Sugestão:** Para cenários de alta concorrência ou grandes volumes de dados, considere criar **índices** apropriados nas colunas `idUsuario`, `idVeiculo`, `dataInicio`, `dataFim`, `dataAbastecimento`, `dataDespesa` e `deletedAt` nas tabelas `jornadas`, `abastecimentos`, `despesas` e `veiculos`. Isso é crucial para a performance das suas cláusulas `WHERE`.
+
+*   **Sistema de Cache (Bom começo, com melhorias):**
+    *   **Cache por Usuário e Parâmetros:** Seu cache já inclui `userId` na chave, o que é ótimo para evitar vazamento de dados entre usuários. As chaves de cache devem ser o mais específicas possível, incluindo todos os parâmetros da query (`periodo`, `dataInicio`, `dataFim`, `idVeiculo`, `granularidade`).
+    *   **Invalidação do Cache:** A invalidação `invalidateUser` é boa, mas pode ser mais granular. Se um veículo ou jornada for atualizado, apenas as chaves de cache que incluem aquele `idVeiculo` ou o período correspondente precisam ser invalidadas.
+        *   **Sugestão:** Implementar um mecanismo de invalidação baseado em eventos (ex: `onJornadaUpdated`, `onAbastecimentoDeleted`). Isso requer que os serviços que manipulam esses dados notifiquem o cache para invalidar chaves específicas. Para um MVP, sua solução atual é aceitável, mas pode levar a dados ligeiramente desatualizados até o TTL expirar ou a invalidação manual.
+    *   **Cache Distribuído:** Para um ambiente de produção com múltiplas instâncias do seu backend, o cache em memória (`DashboardCache.cache`) não será eficaz, pois cada instância terá seu próprio cache.
+        *   **Sugestão:** Considere usar um cache distribuído como **Redis** ou **Memcached**. Isso permitiria que todas as instâncias do seu aplicativo compartilhassem o mesmo cache e garantissem consistência.
+    *   **TTLs Dinâmicos:** Você já tem TTLs baseados no tipo de consulta, o que é inteligente. Continue ajustando-os com base nos padrões de uso e quão "frescos" os dados precisam ser.
+    *   **Hit/Miss Ratio:** Monitore o hit/miss ratio do seu cache para entender sua eficácia.
+
+*   **Otimização do `calcularDadosEvolucao`:**
+    *   **`Promise.all` em Batches (Ótima iniciativa):** A ideia de usar `Promise.all` em batches é excelente para paralelizar as chamadas ao DB e evitar sobrecarga, especialmente para períodos longos.
+    *   **Granularidade:** A forma como você define `intervaloDias` e `numeroPeriodos` é lógica. Certifique-se de que a lógica de cálculo das datas `dataInicio` e `dataFim` para cada ponto da evolução esteja 100% correta para cada granularidade (`diário`, `semanal`, `mensal`) para evitar lacunas ou sobreposições.
+        *   **Exemplo para "semana" granularidade "semanal":** `dataInicio` seria o início da semana (ex: segunda-feira) e `dataFim` o fim da semana (domingo). Sua implementação atual parece calcular um período de N dias retroativos, o que pode não se alinhar com "semana" ou "mês" calendáricos.
+        *   **Sugestão:** Ajuste a lógica de `dataInicio` e `dataFim` para cada iteração para realmente representar o início/fim de um dia, semana ou mês específico, em vez de apenas subtrair `intervaloDias`. Use funções como `startOfWeek`, `endOfWeek`, `startOfMonth`, `endOfMonth` de bibliotecas como `date-fns` para maior precisão e legibilidade.
+
+*   **Uso de `COALESCE` (Bem aplicado):** O uso de `COALESCE` para garantir que `SUM` retorne `0` em vez de `NULL` quando não há registros é uma boa prática e evita erros de `null / undefined`.
+
+#### 2. Segurança
+
+*   **Autenticação e Autorização (Boas práticas com um ponto de atenção):**
+    *   `AuthenticatedRequest`: A tipagem indica que você está usando um middleware de autenticação que anexa o `user` ao objeto `request`. Isso é fundamental.
+    *   **Controle de Acesso (RBAC/ABAC):** Assumo que o `userId` está sendo obtido de um token JWT ou sessão após a autenticação. É crucial que o `idUsuario` em todas as queries (`eq(table.idUsuario, userId)`) venha **sempre** do usuário autenticado e **nunca** de um parâmetro de entrada do cliente (ex: query string, body), para prevenir "Broken Access Control". Seu código já parece seguir essa premissa.
+    *   **Zod para Validação (Excelente):** A utilização de Zod é ótima para garantir que os inputs da API sejam válidos e para prevenir ataques de injeção e dados malformados.
+    *   **Proteção contra SQL Injection (Drizzle ORM):** Ao usar um ORM como Drizzle, você já tem uma boa camada de proteção contra SQL Injection, pois o ORM lida com a parametrização das queries.
+    *   **Rate Limiting:** Para endpoints de dashboard, especialmente os mais pesados, considere implementar rate limiting para prevenir ataques de DoS (Denial of Service) ou abusos.
+    *   **Validação de UUID:** Você usa `z.string().uuid().optional()` para `idVeiculo`, o que é excelente para garantir que apenas IDs de veículos válidos (e no formato UUID) sejam processados.
+    *   **Limitação de Período Personalizado:** A restrição de `diffDays > 730` para períodos personalizados é uma medida de segurança e performance importante para evitar que usuários solicitem relatórios de dados excessivamente grandes que poderiam sobrecarregar o banco de dados.
+
+#### 3. Boas Práticas de Código e Refatoração
+
+*   **Modularização (Bem aplicado):** A divisão em `DashboardCache`, `DashboardUtils` e `DashboardCalculations` é ótima para organização e separação de responsabilidades.
+*   **Tipagem (Forte):** O uso de interfaces e tipos (`DashboardMetrics`, `EvolutionDataPoint`, `ServiceResult`, `AuthenticatedRequest`) melhora significativamente a legibilidade, manutenibilidade e previne erros em tempo de desenvolvimento.
+    *   **`FastifyRequest` Interface:** Percebi que você está usando `express` (`import { Request, Response } => from 'express';`) mas a interface `FastifyRequest` está presente. Se for um projeto Express, essa interface não é necessária e pode ser removida. Se for Fastify, ajuste os imports para `FastifyRequest, FastifyReply` e use `FastifyRequest` no controller.
+*   **Nomeclatura:** Nomes de classes, métodos e variáveis são claros e descritivos.
+*   **Tratamento de Erros (Melhoria):**
+    *   Suas classes `UnauthorizedError` e `NotFoundError` são boas.
+    *   **Tratamento no Controller:** É fundamental que esses erros sejam capturados e tratados no controller (nos métodos `getDashboardSummary`, `getEvolutionData`, `getVehicleComparison`) de forma a retornar respostas HTTP apropriadas (ex: 401 Unauthorized, 404 Not Found, 400 Bad Request para validação Zod). Atualmente, as funções de cálculo podem lançar erros que não são explicitamente tratados no nível superior do controller.
+        *   **Sugestão:** Use blocos `try-catch` nos handlers das rotas para capturar exceções e enviar respostas padronizadas ao cliente.
+        ```typescript
+        // Exemplo no controller
+        export const getDashboardSummary = async (req: AuthenticatedRequest, res: Response) => {
+          try {
+            const { userId } = req.user!; // Assumindo que o middleware garante a existência
+            const { periodo, dataInicio, dataFim, idVeiculo, includeCache } = dashboardQuerySchema.parse(req.query);
+
+            const cacheKey = `dashboardSummary:${userId}:${periodo}:${dataInicio || ''}:${dataFim || ''}:${idVeiculo || ''}`;
+            if (includeCache) {
+              const cachedData = DashboardCache.get<DashboardMetrics>(cacheKey);
+              if (cachedData) {
+                return res.status(200).json(cachedData);
+              }
+            }
+
+            const { dataInicio: start, dataFim: end } = DashboardUtils.calcularPeriodo(periodo, dataInicio, dataFim);
+            const metrics = await DashboardCalculations.calcularTodasMetricas(userId, start, end, idVeiculo);
+            
+            // Determine o tipo de cache para TTL
+            const cacheType: keyof typeof DashboardCache.TTL_CONFIG = 
+              periodo === 'hoje' ? 'summaryToday' : 
+              periodo === 'semana' ? 'summaryWeek' : 
+              periodo === 'mes' ? 'summaryMonth' : 
+              periodo === 'ano' ? 'summaryYear' : 'summaryMonth'; // Default para personalizado ou outro
+
+            DashboardCache.set(cacheKey, metrics, cacheType);
+            
+            return res.status(200).json(metrics);
+          } catch (error) {
+            if (error instanceof z.ZodError) {
+              return res.status(400).json({ message: 'Parâmetros de entrada inválidos.', errors: error.errors });
+            }
+            if (error instanceof UnauthorizedError) {
+              return res.status(401).json({ message: error.message });
+            }
+            if (error instanceof NotFoundError) {
+              return res.status(404).json({ message: error.message });
+            }
+            console.error('Erro ao buscar dashboard summary:', error); // Log do erro
+            return res.status(500).json({ message: 'Erro interno do servidor.' });
+          }
+        };
+        ```
+*   **Logging:** Inclua logging adequado para erros e para monitorar o desempenho das queries e do cache.
+*   **Constantes para Strings Mágicas:** Para `periodo`, `granularidade` e chaves de cache, o uso de `enum` do Zod já ajuda. Para `tableName` em `buildBaseConditions`, você poderia usar um `type` ou um objeto de constantes para evitar erros de digitação.
+*   **Otimização de `DashboardUtils.buildBaseConditions`:**
+    *   O `and` com `isNull(table.deletedAt)` é crucial para o soft delete.
+    *   A condição `isNotNull(jornadas.dataFim)` para jornadas é uma boa otimização para garantir que apenas jornadas concluídas sejam consideradas.
+    *   **Refatoração:** `tableName` como um parâmetro string é um pouco propenso a erros. Você pode passar as tabelas diretamente para as funções, ou usar um objeto de mapeamento.
+        ```typescript
+        // Alternativa mais segura para buildBaseConditions
+        static buildBaseConditionsV2<T extends typeof jornadas | typeof abastecimentos | typeof despesas>(
+          table: T,
+          userId: string, 
+          dataInicio: Date, 
+          dataFim: Date, 
+          idVeiculo?: string
+        ) {
+          // ... lógica para determinar o campo de data com base no 'table' passado ...
+          const dateField = table === jornadas ? jornadas.dataFim :
+                            table === abastecimentos ? abastecimentos.dataAbastecimento :
+                            despesas.dataDespesa;
+
+          let conditions = and(
+            eq(table.idUsuario, userId),
+            gte(dateField, dataInicio),
+            lte(dateField, dataFim),
+            isNull(table.deletedAt)
+          );
+
+          if (table === jornadas) {
+            conditions = and(conditions, isNotNull(jornadas.dataFim));
+          }
+
+          if (idVeiculo) {
+            conditions = and(conditions, eq(table.idVeiculo, idVeiculo));
+          }
+          return conditions;
+        }
+        ```
+        Com essa refatoração, a chamada em `calcularTodasMetricas` seria:
+        ```typescript
+        const jornadasConditions = DashboardUtils.buildBaseConditionsV2(jornadas, userId, dataInicio, dataFim, idVeiculo);
+        ```
+*   **Tratamento de `number` em Drizzle:** Drizzle-orm pode retornar números como strings em algumas configurações ou bancos de dados específicos. Seu uso de `Number(...)` é uma precaução válida.
+*   **`formatCurrency`:** É bom ter isso centralizado, mas para exibição ao usuário, pode ser melhor formatar na camada de apresentação (frontend) usando `Intl.NumberFormat` para respeitar as localidades. Para cálculos internos, `Math.round(value * 100) / 100` é suficiente.
+
+#### 4. Gestão de Recursos
+
+*   **Conexões com Banco de Dados:** Drizzle-orm gerencia o pool de conexões, então você não precisa se preocupar diretamente com isso, mas certifique-se de que a configuração do pool de conexões (número máximo de conexões) esteja otimizada para seu ambiente.
+*   **Uso de Memória (Cache):** O cache em memória (`DashboardCache`) pode consumir uma quantidade significativa de RAM se o volume de dados cacheados for muito grande ou se o TTL for muito longo para dados grandes.
+    *   **Monitoramento:** Monitore o uso de memória do seu aplicativo. Se houver problemas, será um indicativo para ajustar os TTLs, invalidar o cache mais agressivamente ou migrar para um cache externo.
+    *   **Limitação:** Não há uma limitação explícita do tamanho do cache. Se o sistema escalar muito, isso pode ser um problema.
+
+---
+
+### Exemplo de Refatoração e Implementação de um Controller (Hipótese Express)
+
+```typescript
+import { Request, Response, Router } from 'express';
+import { z } from 'zod';
+import { db } from '../db';
+import { jornadas, abastecimentos, despesas, veiculos } from '../db/schema';
+import { eq, and, isNull, isNotNull, sql, gte, lte, sum, count, inArray } from 'drizzle-orm';
+import { AuthenticatedRequest } from '../types/auth'; // Reajuste para Express se necessário
+
+// Classes de erro - Manter como estão
+
+// Schemas de validação - Manter como estão
+
+// Interfaces - Manter como estão (remova FastifyRequest se for Express)
+
+// DashboardCache - Manter como está, mas ter em mente a limitação para ambientes distribuídos.
+
+// DashboardUtils - Manter como está, com a sugestão de refatorar buildBaseConditionsV2
+
+// DashboardCalculations - Manter como está
+
+// --- Controller de Dashboard ---
+const dashboardController = Router();
+
+// Middleware de autenticação (exemplo, precisa ser implementado)
+const authenticateUser = (req: Request, res: Response, next: Function) => {
+  // Implementar lógica de autenticação aqui (ex: verificar JWT)
+  // Se autenticado:
+  // req.user = { id: 'some-user-uuid', email: 'user@example.com' };
+  // next();
+  // Se não autenticado:
+  // return res.status(401).json({ message: 'Não autorizado' });
+  // Por simplicidade para a análise, vamos simular:
+  (req as AuthenticatedRequest).user = { id: 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', email: 'test@example.com' };
+  next();
+};
+
+dashboardController.use(authenticateUser); // Aplica o middleware a todas as rotas do controller
+
+/**
+ * @route GET /dashboard/summary
+ * @desc Obtém o resumo das métricas do dashboard
+ * @access Private
+ */
+dashboardController.get('/summary', async (req: AuthenticatedRequest, res: Response) => {
+  try {
+    const userId = req.user?.id;
+    if (!userId) {
+      throw new UnauthorizedError('Usuário não autenticado.');
+    }
+
+    const queryParams = dashboardQuerySchema.parse(req.query);
+    const { periodo, dataInicio, dataFim, idVeiculo, includeCache } = queryParams;
+
+    const cacheKey = `dashboardSummary:${userId}:${periodo}:${dataInicio || ''}:${dataFim || ''}:${idVeiculo || ''}`;
+    
+    if (includeCache) {
+      const cachedData = DashboardCache.get<DashboardMetrics>(cacheKey);
+      if (cachedData) {
+        console.log('Cache Hit: dashboardSummary', cacheKey);
+        return res.status(200).json(cachedData);
+      }
+      console.log('Cache Miss: dashboardSummary', cacheKey);
+    }
+
+    const { dataInicio: start, dataFim: end } = DashboardUtils.calcularPeriodo(periodo, dataInicio, dataFim);
+    const metrics = await DashboardCalculations.calcularTodasMetricas(userId, start, end, idVeiculo);
+    
+    // Determine o tipo de cache para TTL
+    const cacheType: keyof typeof DashboardCache.TTL_CONFIG = 
+      periodo === 'hoje' ? 'summaryToday' : 
+      periodo === 'semana' ? 'summaryWeek' : 
+      periodo === 'mes' ? 'summaryMonth' : 
+      periodo === 'ano' ? 'summaryYear' : 'summaryMonth'; // Default para personalizado ou outro
+
+    DashboardCache.set(cacheKey, metrics, cacheType);
+    
+    return res.status(200).json(metrics);
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      return res.status(400).json({ message: 'Parâmetros de entrada inválidos.', errors: error.errors });
+    }
+    if (error instanceof UnauthorizedError) {
+      return res.status(401).json({ message: error.message });
+    }
+    if (error instanceof NotFoundError) {
+      return res.status(404).json({ message: error.message });
+    }
+    console.error('Erro ao buscar dashboard summary:', error); // Log do erro
+    return res.status(500).json({ message: 'Erro interno do servidor.' });
+  }
+});
+```
 
 
