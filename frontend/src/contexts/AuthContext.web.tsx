@@ -36,20 +36,32 @@ interface AuthProviderProps {
 // Mock auth service for web
 const mockAuthService = {
   async login(credentials: LoginRequest) {
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    if (credentials.email === 'test@test.com' && credentials.senha === '123456') {
+    // Usar API real
+    const response = await fetch('http://localhost:3000/api/v1/auth/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ email: credentials.email, senha: credentials.senha }),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || 'Erro ao fazer login');
+    }
+
+    if (data.success) {
       const user = {
-        id: '1',
-        nome: 'Usuário Teste',
-        email: credentials.email,
+        id: data.user.id,
+        nome: data.user.nome,
+        email: data.user.email,
       };
       localStorage.setItem('user', JSON.stringify(user));
-      localStorage.setItem('token', 'mock-jwt-token');
+      localStorage.setItem('token', data.accessToken);
       return { user };
     } else {
-      throw new Error('Email ou senha inválidos');
+      throw new Error(data.message || 'Erro ao fazer login');
     }
   },
 

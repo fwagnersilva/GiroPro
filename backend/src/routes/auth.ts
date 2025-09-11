@@ -9,7 +9,7 @@ import {
   requestPasswordResetSchema, 
   resetPasswordSchema, 
   changePasswordSchema 
-} from '../schemas/authSchemas';
+} from '../utils/validation';
 
 const router = Router();
 

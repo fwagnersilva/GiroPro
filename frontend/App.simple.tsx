@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { AuthProvider, useAuth } from './src/contexts/AuthContext.web';
-import VehiclesScreenSimple from './src/screens/VehiclesScreen.simple';
-import ExpensesScreenSimple from './src/screens/ExpensesScreen.simple';
+import VehiclesScreenSimple from './src/screens/VehiclesScreen.simple.tsx';
+import ExpensesScreenSimple from './src/screens/ExpensesScreen.simple.tsx';
 
 // Componente de Login simples
 const SimpleLogin = () => {
