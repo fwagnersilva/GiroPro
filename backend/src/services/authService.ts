@@ -14,9 +14,7 @@ export class AuthService {
   private static readonly LOCKOUT_TIME = 15; // minutos
 
   static async register(data: RegisterRequest): Promise<AuthResponse> {
-    try {
-      
-      // Validações básicas
+    // Validações básicas
       this.validateEmail(data.email);
       this.validatePassword(data.senha);
       this.validateName(data.nome);
@@ -68,16 +66,10 @@ export class AuthService {
           statusConta: newUser.statusConta,
         },
       };
-    } catch (error) {
-      console.error('Erro no registro:', error);
-      throw error;
-    }
   }
 
   static async login(data: LoginRequest): Promise<AuthResponse> {
-    try {
-      
-      // Buscar usuário por email
+// Buscar usuário por email
       const [user] = await db
         .select()
         .from(usuarios)
@@ -85,17 +77,17 @@ export class AuthService {
         .limit(1);
 
       if (!user) {
-        throw new Error('Credenciais inválidas');
+        throw new Error("Credenciais inválidas");
       }
 
       // Verificar se a conta está bloqueada
       if (await this.isAccountLocked(user)) {
-        throw new Error('Conta temporariamente bloqueada devido a muitas tentativas de login. Tente novamente em 15 minutos.');
+        throw new Error("Conta temporariamente bloqueada devido a muitas tentativas de login. Tente novamente em 15 minutos.");
       }
 
       // Verificar se a conta está ativa
-      if (user.statusConta !== 'ativo') {
-        throw new Error('Conta inativa ou suspensa');
+      if (user.statusConta !== "ativo") {
+        throw new Error("Conta inativa ou suspensa");
       }
 
       // Verificar senha
@@ -104,7 +96,7 @@ export class AuthService {
       if (!senhaValida) {
         // Incrementar tentativas de login
         await this.incrementLoginAttempts(user.id);
-        throw new Error('Credenciais inválidas');
+        throw new Error("Credenciais inválidas");
       }
 
       // Reset das tentativas de login em caso de sucesso
@@ -127,15 +119,10 @@ export class AuthService {
           statusConta: user.statusConta,
         },
       };
-    } catch (error) {
-      console.error('Erro no login:', error);
-      throw error;
-    }
   }
 
   static async refreshToken(refreshToken: string): Promise<{ token: string; refreshToken: string }> {
-    try {
-      const decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET!) as any;
+    const decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET!) as any;
       
       // Verificar se o usuário ainda existe e está ativo
       const user = await this.getUserById(decoded.userId);
@@ -151,15 +138,10 @@ export class AuthService {
         token: newToken,
         refreshToken: newRefreshToken,
       };
-    } catch (error) {
-      throw new Error('Refresh token inválido');
-    }
   }
 
   static async getUserById(userId: string) {
-    try {
-      
-      const [user] = await db
+const [user] = await db
         .select({
           id: usuarios.id,
           nome: usuarios.nome,
@@ -173,20 +155,14 @@ export class AuthService {
         .limit(1);
 
       if (!user) {
-        throw new Error('Usuário não encontrado');
+        throw new Error("Usuário não encontrado");
       }
 
       return user;
-    } catch (error) {
-      console.error('Erro ao buscar usuário:', error);
-      throw error;
-    }
   }
 
   static async changePassword(userId: string, currentPassword: string, newPassword: string): Promise<void> {
-    try {
-      
-      // Buscar usuário
+// Buscar usuário
       const [user] = await db
         .select({ senhaHash: usuarios.senhaHash })
         .from(usuarios)
@@ -194,13 +170,13 @@ export class AuthService {
         .limit(1);
 
       if (!user) {
-        throw new Error('Usuário não encontrado');
+        throw new Error("Usuário não encontrado");
       }
 
       // Verificar senha atual
       const senhaValida = await bcrypt.compare(currentPassword, user.senhaHash);
       if (!senhaValida) {
-        throw new Error('Senha atual inválida');
+        throw new Error("Senha atual inválida");
       }
 
       // Validar nova senha
@@ -217,33 +193,20 @@ export class AuthService {
           ultimaAtividade: new Date(),
         })
         .where(eq(usuarios.id, userId));
-
-    } catch (error) {
-      console.error('Erro ao alterar senha:', error);
-      throw error;
-    }
   }
 
   static async deactivateAccount(userId: string): Promise<void> {
-    try {
-      
-      await db
+    await db
         .update(usuarios)
         .set({ 
           statusConta: 'inativo',
           ultimaAtividade: new Date(),
         })
         .where(eq(usuarios.id, userId));
-    } catch (error) {
-      console.error('Erro ao desativar conta:', error);
-      throw error;
-    }
   }
 
   static async requestPasswordReset(email: string): Promise<void> {
-    try {
-      
-      const [user] = await db.select().from(usuarios).where(eq(usuarios.email, email)).limit(1);
+    const [user] = await db.select().from(usuarios).where(eq(usuarios.email, email)).limit(1);
 
       if (!user) {
         // Não informar se o email não existe por segurança
@@ -255,17 +218,10 @@ export class AuthService {
 
       // TODO: Enviar email com o link de redefinição de senha (contendo o resetToken)
       console.log(`Link de redefinição de senha para ${email}: http://localhost:3000/reset-password?token=${resetToken}`);
-
-    } catch (error) {
-      console.error('Erro ao solicitar redefinição de senha:', error);
-      throw error;
-    }
   }
 
   static async resetPassword(token: string, newPassword: string): Promise<void> {
-    try {
-      
-      const decoded = jwt.verify(token, process.env.JWT_SECRET!) as { userId: string };
+const decoded = jwt.verify(token, process.env.JWT_SECRET!) as { userId: string };
       const userId = decoded.userId;
 
       // Validar nova senha
@@ -282,11 +238,6 @@ export class AuthService {
           ultimaAtividade: new Date(),
         })
         .where(eq(usuarios.id, userId));
-
-    } catch (error) {
-      console.error('Erro ao redefinir senha:', error);
-      throw new Error('Token de redefinição de senha inválido ou expirado.');
-    }
   }
 
   private static generateToken(userId: string, email?: string): string {
@@ -323,27 +274,17 @@ export class AuthService {
   }
 
   static verifyToken(token: string): { userId: string } {
-    try {
-      if (!process.env.JWT_SECRET) {
-        throw new Error('JWT_SECRET não configurado');
-      }
-
-      const decoded = jwt.verify(token, process.env.JWT_SECRET) as any;
-      
-      if (decoded.type !== 'access') {
-        throw new Error('Tipo de token inválido');
-      }
-
-      return { userId: decoded.userId };
-    } catch (error) {
-      if (error instanceof jwt.TokenExpiredError) {
-        throw new Error('Token expirado');
-      } else if (error instanceof jwt.JsonWebTokenError) {
-        throw new Error('Token malformado');
-      } else {
-        throw new Error('Token inválido');
-      }
+if (!process.env.JWT_SECRET) {
+      throw new Error("JWT_SECRET não configurado");
     }
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET) as any;
+    
+    if (decoded.type !== "access") {
+      throw new Error("Tipo de token inválido");
+    }
+
+    return { userId: decoded.userId };
   }
 
   // Métodos auxiliares privados

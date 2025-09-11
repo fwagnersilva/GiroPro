@@ -46,16 +46,27 @@
 - [ ] **Implementar Seleção de Veículos nos Formulários:** Adicionar dropdown/picker para seleção de veículos cadastrados nos formulários de despesas e abastecimentos (Web, Android, iOS).
 - [ ] **Implementar Navegação Web Completa:** Configurar o React Navigation ou solução alternativa para funcionar no ambiente web, permitindo a transição entre as telas.
 - [ ] **Refatorar Componentes Incompatíveis:** Adaptar ou criar versões web-compatíveis de componentes que usam elementos nativos do React Native (ex: `FormInput.tsx`).
+- [x] **Refatoração do CORS para Produção:** (Mantido para desenvolvimento): Alterar a configuração do CORS para não usar `origin: "*"` em produção. Isso envolve identificar os domínios de frontend permitidos e configurá-los dinamicamente (via variáveis de ambiente ou arquivo de configuração).
+- [x] **Implementação de Validação de Entrada (Input Validation):** Adicionar validação rigorosa para todos os dados de entrada (corpo da requisição, query parameters, path parameters) em todas as rotas da API. Isso é crucial para a segurança e robustez da aplicação.
+- [ ] **Otimização do Banco de Dados e Queries:** Analisar e otimizar as operações de banco de dados para melhorar a performance. Isso inclui a criação de índices, otimização de queries SQL (ou ORM) e revisão da configuração do banco de dados.
 
-## 🟠 Oportunidades de Melhoria - Complexidade Média
+### Tarefas de Média Complexidade / Médio Impacto
 
+- [ ] **Implementação de Compressão (Gzip):** Adicionar middleware de compressão (Gzip) para reduzir o tamanho das respostas HTTP, melhorando o tempo de carregamento para os clientes.
+- [ ] **Implementação de Limitação de Taxa (Rate Limiting):** Adicionar rate limiting para proteger a API contra ataques de força bruta e abuso, especialmente em endpoints de autenticação.
+- [ ] **Centralização de Configurações:** Criar um arquivo `config.ts` para centralizar todas as configurações da aplicação, tornando-as mais fáceis de gerenciar e acessar.
+- [ ] **Tratamento de Erros Assíncronos em Rotas (Async Handler):** Implementar um wrapper para lidar com erros em rotas assíncronas, evitando a repetição de blocos `try-catch` e centralizando o tratamento de exceções.
 - [ ] **Validar Fluxo Completo de Autenticação na Web:** Testar registro e login de usuários na interface web, garantindo a comunicação correta com o backend e persistência de tokens.
 - [ ] **Implementar Funcionalidades Principais na Versão Web:** Expandir `web-app.tsx` com CRUD de veículos, despesas, abastecimentos e dashboard com gráficos e relatórios.
 - [ ] **Decidir Estratégia de Frontend:** Avaliar se manter duas versões (React Native para mobile + React para web) ou migrar completamente para React com React Native Web. Documentar decisão arquitetural.
 
-## 🟢 Oportunidades de Melhoria - Complexidade Baixa
+### Tarefas de Baixa Complexidade / Baixo Impacto
 
-- [ ] **Resolver problema de interatividade do frontend web:** Investigar por que elementos não são clicáveis no navegador, verificar configurações de CORS no backend, testar com diferentes navegadores e verificar conflitos de CSS ou JavaScript.
+- [>] **Resolver problema de interatividade do frontend web:** Investigar por que elementos não são clicáveis no navegador, verificar configurações de CORS no backend, testar com diferentes navegadores e verificar conflitos de CSS ou JavaScript. (Progresso: Corrigido o envio de credenciais de login/registro no `web-app.tsx`. O erro `400 Bad Request` durante o login/registro foi resolvido. Próximo passo é verificar a navegação após o login).
+- [x] **Validação de Variáveis de Ambiente (PORT):** Adicionar validação para a variável de ambiente `PORT` para garantir que seja um número válido.
+- [>] **Organização de Imports:** Padronizar a organização dos imports em todos os arquivos para melhorar a legibilidade e manutenção do código. (Progresso: Verificado que não há ESLint configurado para isso. Será necessário configurar o ESLint ou realizar manualmente.)
+- [ ] **Remoção/Desabilitação do Endpoint `/api/test` em Produção:** Remover ou desabilitar o endpoint `/api/test` em ambiente de produção para evitar exposição desnecessária de informações.
+- [ ] **Verificação e Uso de `fuelPricesRoutes`:** Verificar se `fuelPricesRoutes` está sendo utilizado corretamente e se é necessário. Se não for, remover.
 - [ ] **Adicionar Validação de Campos Específicos:** Implementar validações específicas como formato de placa, valores monetários e datas nos formulários (Android, iOS).
 - [ ] **Melhorar Feedback Visual:** Adicionar loading states, success messages e error handling mais robustos nas operações CRUD (Web, Android, iOS).
 - [ ] **Reorganizar Hierarquia de Campos:** Otimizar a disposição dos campos no formulário para seguir um fluxo lógico e intuitivo de preenchimento, priorizando campos obrigatórios e de maior impacto visual (Android, iOS).

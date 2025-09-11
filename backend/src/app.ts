@@ -17,7 +17,16 @@ import helmet from 'helmet';
 dotenv.config({ path: __dirname + '/../.env' });
 
 const app = express();
-const PORT = parseInt(process.env.PORT || '3000');
+
+const rawPort = process.env.PORT;
+let PORT: number;
+
+if (rawPort && !isNaN(parseInt(rawPort))) {
+  PORT = parseInt(rawPort);
+} else {
+  PORT = 3000;
+  console.warn(`⚠️ Variável de ambiente PORT inválida ou não definida. Usando a porta padrão: ${PORT}`);
+}
 
 // Middlewares
 app.use(helmet()); // Use Helmet para segurança
@@ -83,4 +92,5 @@ app.listen(PORT, '0.0.0.0', async () => {
 });
 
 export default app;
+
 

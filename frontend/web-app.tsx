@@ -43,7 +43,7 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(credentials),
+        body: JSON.stringify({ email: credentials.email, password: credentials.senha }),
       });
 
       const data = await response.json();
