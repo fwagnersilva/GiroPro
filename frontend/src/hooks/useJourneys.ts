@@ -6,102 +6,7 @@ import {
   UseJourneysReturn,
   JourneyMetrics 
 } from '../types/journey';
-
-// Mock data para demonstração
-const mockJourneys: Journey[] = [
-  {
-    id: '1',
-    title: 'Viagem de Negócios SP-RJ',
-    origin: 'São Paulo, SP',
-    destination: 'Rio de Janeiro, RJ',
-    distance: 485,
-    duration: '6h 30min',
-    fuelConsumption: 8.2,
-    cost: 245.50,
-    status: 'completed',
-    date: '28/08/2025 14:30',
-    vehicleId: 'vehicle-1',
-    driverId: 'driver-1',
-    notes: 'Reunião com cliente importante',
-    tags: ['negócios', 'longa-distância'],
-  },
-  {
-    id: '2',
-    title: 'Entrega Centro-Zona Sul',
-    origin: 'Centro, São Paulo',
-    destination: 'Zona Sul, São Paulo',
-    distance: 25,
-    duration: '45min',
-    fuelConsumption: 12.5,
-    cost: 18.75,
-    status: 'in_progress',
-    date: '30/08/2025 09:15',
-    vehicleId: 'vehicle-2',
-    notes: 'Entrega de documentos urgentes',
-    tags: ['entrega', 'urbano'],
-  },
-  {
-    id: '3',
-    title: 'Rota de Distribuição Matinal',
-    origin: 'Depósito Central',
-    destination: 'Múltiplos pontos - Zona Norte',
-    distance: 120,
-    duration: '3h 20min',
-    fuelConsumption: 9.8,
-    cost: 89.40,
-    status: 'paused',
-    date: '29/08/2025 16:45',
-    vehicleId: 'vehicle-1',
-    driverId: 'driver-2',
-    notes: 'Parada para almoço da equipe',
-    tags: ['distribuição', 'múltiplas-paradas'],
-  },
-  {
-    id: '4',
-    title: 'Viagem Interestadual',
-    origin: 'São Paulo, SP',
-    destination: 'Belo Horizonte, MG',
-    distance: 586,
-    duration: '7h 15min',
-    fuelConsumption: 7.8,
-    cost: 312.80,
-    status: 'completed',
-    date: '27/08/2025 08:00',
-    vehicleId: 'vehicle-3',
-    driverId: 'driver-1',
-    tags: ['interestadual', 'longa-distância'],
-  },
-  {
-    id: '5',
-    title: 'Coleta de Mercadorias',
-    origin: 'Fornecedor ABC',
-    destination: 'Depósito Central',
-    distance: 45,
-    duration: '1h 10min',
-    fuelConsumption: 11.2,
-    cost: 32.15,
-    status: 'completed',
-    date: '26/08/2025 14:20',
-    vehicleId: 'vehicle-2',
-    driverId: 'driver-3',
-    tags: ['coleta', 'fornecedor'],
-  },
-  {
-    id: '6',
-    title: 'Manutenção Preventiva',
-    origin: 'Garagem',
-    destination: 'Oficina Autorizada',
-    distance: 15,
-    duration: '25min',
-    fuelConsumption: 13.5,
-    cost: 12.50,
-    status: 'cancelled',
-    date: '25/08/2025 10:30',
-    vehicleId: 'vehicle-1',
-    notes: 'Cancelada - oficina fechada',
-    tags: ['manutenção'],
-  },
-];
+import { journeyService } from '../services/api';
 
 export const useJourneys = (initialFilter?: JourneyFilter): UseJourneysReturn => {
   const [allJourneys, setAllJourneys] = useState<Journey[]>([]);
@@ -113,20 +18,15 @@ export const useJourneys = (initialFilter?: JourneyFilter): UseJourneysReturn =>
     direction: 'desc',
   });
 
-  // Simular carregamento de dados da API
   const loadJourneys = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
-      
-      // Simular delay de API
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // Em uma implementação real, aqui seria uma chamada para a API
-      setAllJourneys(mockJourneys);
-    } catch (err) {
-      setError('Erro ao carregar jornadas. Tente novamente.');
-      console.error('Erro ao carregar jornadas:', err);
+      const response = await journeyService.getJourneys();
+      setAllJourneys(response.data);
+    } catch (err: any) {
+      setError(err.message || "Erro ao carregar jornadas. Tente novamente.");
+      console.error("Erro ao carregar jornadas:", err);
     } finally {
       setLoading(false);
     }

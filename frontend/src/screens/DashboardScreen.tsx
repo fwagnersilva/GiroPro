@@ -15,6 +15,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { DashboardCardSkeleton } from '../components/SkeletonLoader';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { journeyService, vehicleService } from '../services/api';
+import SimpleNavigationMenu from '../components/SimpleNavigationMenu';
 
 interface DashboardData {
   periodo: {
@@ -307,15 +308,27 @@ const DashboardScreen: React.FC = ({ navigation }: any) => {
   }
 
   return (
-    <ScrollView
-      style={styles.container}
-      refreshControl={
-        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-      }
-    >
+    <View style={{ flex: 1 }}>
+      <SimpleNavigationMenu navigation={navigation} />
+      <ScrollView
+        style={styles.container}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
+      >
       <View style={styles.header}>
-        <Text style={styles.greeting}>Olá, {user?.nome}!</Text>
-        <Text style={styles.subtitle}>{getPeriodLabel(selectedPeriod)}</Text>
+        <View style={styles.headerContent}>
+          <View>
+            <Text style={styles.greeting}>Olá, {user?.nome}!</Text>
+            <Text style={styles.subtitle}>{getPeriodLabel(selectedPeriod)}</Text>
+          </View>
+          <TouchableOpacity
+            style={styles.menuButton}
+            onPress={() => navigation.navigate('TestScreen')}
+          >
+            <Ionicons name="menu" size={24} color="#007AFF" />
+          </TouchableOpacity>
+        </View>
       </View>
 
       {/* Seletor de Período */}
@@ -523,7 +536,8 @@ const DashboardScreen: React.FC = ({ navigation }: any) => {
           )}
         </>
       )}
-    </ScrollView>
+      </ScrollView>
+    </View>
   );
 };
 
@@ -553,6 +567,16 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#FFFFFF',
     marginBottom: 4,
+  },
+  headerContent: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  menuButton: {
+    padding: 8,
+    borderRadius: 20,
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
   },
   subtitle: {
     fontSize: 16,

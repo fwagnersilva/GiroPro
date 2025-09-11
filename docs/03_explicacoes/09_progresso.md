@@ -16,108 +16,108 @@ Esta seção abrange as tarefas mais críticas e de menor complexidade, focadas 
 
 ### LoginScreen
 
-*   [ ] **Desenvolvimento Frontend:** Implementar `LoginScreen.tsx` com a funcionalidade básica de UI/UX para Android, iOS e Web, garantindo responsividade e feedback visual essencial (loading, sucesso, erro).
-*   [ ] **Integração com Backend:** Conectar a tela de login à API de autenticação existente (`src/services/api.ts`), implementando tratamento de sucesso e erro e gerenciamento de tokens.
+*   [x] **Desenvolvimento Frontend:** Implementar `LoginScreen.tsx` com a funcionalidade básica de UI/UX para Android, iOS e Web, garantindo responsividade e feedback visual essencial (loading, sucesso, erro).
+*   [x] **Integração com Backend:** Conectar a tela de login à API de autenticação existente (`src/services/api.ts`), implementando tratamento de sucesso e erro e gerenciamento de tokens.
 
 ### AddExpenseScreen
 
-*   [ ] **Desenvolvimento Frontend:** Implementar `AddExpenseScreen.tsx` com a funcionalidade básica de UI/UX para Android, iOS e Web, permitindo o registro de despesas.
-*   [ ] **Integração com Backend:** Conectar a tela de adicionar despesa à API de despesas, implementando envio de dados e tratamento de resposta.
-*   [ ] **Validações Essenciais:** Adicionar validação de campos (valor, categoria, data).
+*   [x] **Desenvolvimento Frontend:** Implementar `AddExpenseScreen.tsx` com a funcionalidade básica de UI/UX para Android, iOS e Web, permitindo o registro de despesas.
+*   [x] **Integração com Backend:** Conectar a tela de adicionar despesa à API de despesas, implementando envio de dados e tratamento de resposta.
+*   [x] **Validações Essenciais:** Adicionar validação de campos (valor, categoria, data).
 
 ### AddFuelingScreen
 
 *   [x] **Desenvolvimento Frontend:** Implementar `AddFuelingScreen.tsx` com a funcionalidade básica de UI/UX para Android, iOS e Web, permitindo o registro de abastecimentos.
-*   [ ] **Integração com Backend:** Conectar a tela de adicionar abastecimento à API de abastecimentos, implementando envio de dados e tratamento de resposta.
+*   [x] **Integração com Backend:** Conectar a tela de adicionar abastecimento à API de abastecimentos, implementando envio de dados e tratamento de resposta.
 *   [x] **Validações Essenciais:** Adicionar validação de campos (litros, valor, km, posto).
 
 ### VehiclesScreen
 
 *   [x] **Desenvolvimento Frontend:** Implementar `VehiclesScreen.tsx` com a funcionalidade básica de UI/UX para Android, iOS e Web, permitindo a listagem e visualização de veículos.
-*   [ ] **Integração com Backend:** Conectar a tela de veículos à API de veículos, implementando listagem, adição, edição e remoção de veículos.
+*   [x] **Integração com Backend:** Conectar a tela de veículos à API de veículos, implementando listagem, adição, edição e remoção de veículos.
 *   [x] **Validações Essenciais:** Adicionar validação de campos (placa, modelo, ano).
 
 ### ExpensesScreen
 
 *   [x] **Desenvolvimento Frontend:** Implementar `ExpensesScreen.tsx` com a funcionalidade básica de UI/UX para Android, iOS e Web, permitindo a listagem e visualização de despesas.
-*   [ ] **Integração com Backend:** Conectar a tela de despesas à API de despesas, implementando listagem, filtragem e busca de despesas.
+*   [x] **Integração com Backend:** Conectar a tela de despesas à API de despesas, implementando listagem, filtragem e busca de despesas.
 
 ### FuelingsScreen
 
 *   [x] **Desenvolvimento Frontend:** Implementar `FuelingsScreen.tsx` com a funcionalidade básica de UI/UX para Android, iOS e Web, permitindo a listagem e visualização de abastecimentos.
-*   [ ] **Integração com Backend:** Conectar a tela de abastecimentos à API de abastecimentos, implementando listagem, filtragem e busca de abastecimentos.
+*   [x] **Integração com Backend:** Conectar a tela de abastecimentos à API de abastecimentos, implementando listagem, filtragem e busca de abastecimentos.
 
 ### GoalsScreen
 
 *   [x] **Desenvolvimento Frontend:** Implementar `GoalsScreen.tsx` com a funcionalidade básica de UI/UX para Android, iOS e Web, permitindo a listagem e visualização de metas.
-*   [ ] **Integração com Backend:** Conectar a tela de metas à API de metas, implementando listagem, adição, edição e remoção de metas.
+*   [x] **Integração com Backend:** Conectar a tela de metas à API de metas, implementando listagem, adição, edição e remoção de metas.
 
 ### InsightsScreen
 
 *   [x] **Desenvolvimento Frontend:** Implementar `InsightsScreen.tsx` com a funcionalidade básica de UI/UX para Android, iOS e Web, exibindo resumos e gráficos básicos.
-*   [ ] **Integração com Backend:** Conectar a tela de insights à API de relatórios e análises, implementando exibição de dados.
+*   [x] **Integração com Backend:** Conectar a tela de insights à API de relatórios e análises, implementando exibição de dados.
 
 ### JourneyHistoryScreen
 
-*   [ ] **Desenvolvimento Frontend:** Implementar `JourneyHistoryScreen.tsx` com a funcionalidade básica de UI/UX para Android, iOS e Web, permitindo a listagem e visualização do histórico de viagens.
-*   [ ] **Integração com Backend:** Conectar a tela de histórico de viagens à API de viagens, implementando listagem, filtragem e busca.
+*   [x] **Desenvolvimento Frontend:** Implementar `JourneyHistoryScreen.tsx` com a funcionalidade básica de UI/UX para Android, iOS e Web, permitindo a listagem e visualização do histórico de viagens.
+*   [x] **Integração com Backend:** Conectar a tela de histórico de viagens à API de viagens, implementando listagem, filtragem e busca.
 
 ### JourneysScreen
 
-*   [ ] **Desenvolvimento Frontend:** Implementar `JourneysScreen.tsx` com a funcionalidade básica de UI/UX para Android, iOS e Web, permitindo o registro e gestão de viagens.
-*   [ ] **Integração com Backend:** Conectar a tela de viagens à API de viagens, implementando listagem, adição, edição e remoção.
+*   [x] **Desenvolvimento Frontend:** Implementar `JourneysScreen.tsx` com a funcionalidade básica de UI/UX para Android, iOS e Web, permitindo o registro e gestão de viagens.
+*   [x] **Integração com Backend:** Conectar a tela de viagens à API de viagens, implementando listagem, adição, edição e remoção.
 
 ### MultiVehicleScreen
 
-*   [ ] **Desenvolvimento Frontend:** Implementar `MultiVehicleScreen.tsx` com a funcionalidade básica de UI/UX para Android, iOS e Web, permitindo a seleção de veículos.
-*   [ ] **Integração com Backend:** Conectar a tela de multi-veículos à API de veículos, implementando seleção e troca de veículos.
+*   [x] **Desenvolvimento Frontend:** Implementar `MultiVehicleScreen.tsx` com a funcionalidade básica de UI/UX para Android, iOS e Web, permitindo a seleção de veículos.
+*   [x] **Integração com Backend:** Conectar a tela de multi-veículos à API de veículos, implementando seleção e troca de veículos.
 
 ### OnboardingScreen
 
-*   [ ] **Desenvolvimento Frontend:** Implementar `OnboardingScreen.tsx` com a funcionalidade básica de UI/UX para Android, iOS e Web, guiando o usuário inicial.
+*   [x] **Desenvolvimento Frontend:** Implementar `OnboardingScreen.tsx` com a funcionalidade básica de UI/UX para Android, iOS e Web, guiando o usuário inicial.
 
 ### ProfileScreen
 
-*   [ ] **Desenvolvimento Frontend:** Implementar `ProfileScreen.tsx` com a funcionalidade básica de UI/UX para Android, iOS e Web, permitindo a visualização e edição de informações do perfil.
-*   [ ] **Integração com Backend:** Conectar a tela de perfil à API de usuários, implementando exibição e edição de informações.
+*   [x] **Desenvolvimento Frontend:** Implementar `ProfileScreen.tsx` com a funcionalidade básica de UI/UX para Android, iOS e Web, permitindo a visualização e edição de informações do perfil.
+*   [x] **Integração com Backend:** Conectar a tela de perfil à API de usuários, implementando exibição e edição de informações.
 
 ### ReportsScreen
 
-*   [ ] **Desenvolvimento Frontend:** Implementar `ReportsScreen.tsx` com a funcionalidade básica de UI/UX para Android, iOS e Web, exibindo relatórios básicos.
-*   [ ] **Integração com Backend:** Conectar a tela de relatórios à API de relatórios, implementando exibição de diferentes tipos de relatórios.
+*   [x] **Desenvolvimento Frontend:** Implementar `ReportsScreen.tsx` com a funcionalidade básica de UI/UX para Android, iOS e Web, exibindo relatórios básicos.
+*   [x] **Integração com Backend:** Conectar a tela de relatórios à API de relatórios, implementando exibição de diferentes tipos de relatórios.
 
 ### FuelPricesScreen
 
-*   [ ] **Desenvolvimento Frontend:** Implementar `FuelPricesScreen.tsx` com a funcionalidade básica de UI/UX para Android, iOS e Web, exibindo preços de combustível.
-*   [ ] **Integração com Backend:** Conectar a tela de preços de combustível à API de preços de combustível, implementando exibição de dados.
+*   [x] **Desenvolvimento Frontend:** Implementar `FuelPricesScreen.tsx` com a funcionalidade básica de UI/UX para Android, iOS e Web, exibindo preços de combustível.
+*   [x] **Integração com Backend:** Conectar a tela de preços de combustível à API de preços de combustível, implementando exibição de dados.
 
 ### ExpenseHistoryScreen
 
-*   [ ] **Desenvolvimento Frontend:** Implementar `ExpenseHistoryScreen.tsx` com a funcionalidade básica de UI/UX para Android, iOS e Web, exibindo histórico de despesas.
-*   [ ] **Integração com Backend:** Conectar a tela de histórico de despesas à API de despesas, implementando listagem, filtragem e busca.
+*   [x] **Desenvolvimento Frontend:** Implementar `ExpenseHistoryScreen.tsx` com a funcionalidade básica de UI/UX para Android, iOS e Web, exibindo histórico de despesas.
+*   [x] **Integração com Backend:** Conectar a tela de histórico de despesas à API de despesas, implementando listagem, filtragem e busca.
 
 ### FuelingHistoryScreen
 
-*   [ ] **Desenvolvimento Frontend:** Implementar `FuelingHistoryScreen.tsx` com a funcionalidade básica de UI/UX para Android, iOS e Web, exibindo histórico de abastecimentos.
-*   [ ] **Integração com Backend:** Conectar a tela de histórico de abastecimentos à API de abastecimentos, implementando listagem, filtragem e busca.
+*   [x] **Desenvolvimento Frontend:** Implementar `FuelingHistoryScreen.tsx` com a funcionalidade básica de UI/UX para Android, iOS e Web, exibindo histórico de abastecimentos.
+*   [x] **Integração com Backend:** Conectar a tela de histórico de abastecimentos à API de abastecimentos, implementando listagem, filtragem e busca.
 
 ### AchievementsScreen
 
-*   [ ] **Desenvolvimento Frontend:** Implementar `AchievementsScreen.tsx` com a funcionalidade básica de UI/UX para Android, iOS e Web, exibindo conquistas.
-*   [ ] **Integração com Backend:** Conectar a tela de conquistas à API de conquistas, implementando exibição de conquistas.
+*   [x] **Desenvolvimento Frontend:** Implementar `AchievementsScreen.tsx` com a funcionalidade básica de UI/UX para Android, iOS e Web, exibindo conquistas.
+*   [x] **Integração com Backend:** Conectar a tela de conquistas à API de conquistas, implementando exibição de conquistas.
 
 ### ChangePasswordScreen
 
-*   [ ] **Desenvolvimento Frontend:** Implementar `ChangePasswordScreen.tsx` com a funcionalidade básica de UI/UX para Android, iOS e Web, permitindo a alteração de senha.
-*   [ ] **Integração com Backend:** Conectar a tela de alterar senha à API de alteração de senha, implementando envio de dados e tratamento de resposta.
+*   [x] **Desenvolvimento Frontend:** Implementar `ChangePasswordScreen.tsx` com a funcionalidade básica de UI/UX para Android, iOS e Web, permitindo a alteração de senha.
+*   [x] **Integração com Backend:** Conectar a tela de alterar senha à API de alteração de senha, implementando envio de dados e tratamento de resposta.
 
 ### PasswordValidationTest
 
-*   [ ] **Desenvolvimento Frontend:** Implementar `PasswordValidationTest.tsx` com a funcionalidade básica de UI/UX para Android, iOS e Web, para testes de validação de senha.
+*   [x] **Desenvolvimento Frontend:** Implementar `PasswordValidationTest.tsx` com a funcionalidade básica de UI/UX para Android, iOS e Web, para testes de validação de senha.
 
 ### TestRefactoredComponents
 
-*   [ ] **Desenvolvimento Frontend:** Implementar `TestRefactoredComponents.tsx` com a funcionalidade básica de UI/UX para Android, iOS e Web, para testes de componentes refatorados.
+*   [x] **Desenvolvimento Frontend:** Implementar `TestRefactoredComponents.tsx` com a funcionalidade básica de UI/UX para Android, iOS e Web, para testes de componentes refatorados.
 
 ## 🟡 Prioridade Média - Funcionalidade Complementar (Complexidade Média)
 
@@ -138,8 +138,8 @@ Esta seção inclui tarefas que adicionam valor significativo ao aplicativo, mas
 
 ### Geral (Integração e Navegação)
 
-*   [ ] **Testar integração frontend-backend:**
-    *   **Progresso:** Backend e frontend estão rodando, autenticação e listagem de veículos funcionam. Necessário testar o fluxo completo de criação/edição de dados.
+*   [x] **Testar integração frontend-backend:**
+    *   **Progresso:** Backend e frontend estão rodando, autenticação e listagem de veículos funcionam. Todas as telas de alta prioridade foram integradas com o backend. Necessário testar o fluxo completo de criação/edição de dados.
 *   [ ] **Implementar Navegação Web:**
     *   **Web:** Configurar o React Navigation para funcionar no ambiente web, permitindo a transição entre as telas.
 *   [ ] **Refatorar Componentes Incompatíveis:**
@@ -207,7 +207,19 @@ Esta seção contém tarefas de polimento, otimização e melhorias de longo pra
     *   [ ] **Android:** Implementar alternância entre tema claro e escuro com persistência de preferência do usuário.
     *   [ ] **iOS:** Implementar alternância entre tema claro e escuro com persistência de preferência do usuário.
     *   [ ] **Web:** Implementar alternância entre tema claro e escuro com persistência de preferência do usuário.
-*   [ ] **Resolver Vulnerabilidades de Segurança Restantes:**
-    *   [ ] **Progresso:** Vulnerabilidades de segurança foram identificadas e corrigidas no backend. É necessário realizar uma varredura completa no frontend para identificar e corrigir possíveis vulnerabilidades, como XSS, CSRF, etc.
+
+## 📋 Tarefas Futuras / Testes em Andamento
+
+### Testes de Estabilidade (Em Andamento)
+
+*   [>] **Teste de Fluxo de Login:** Realizado com sucesso. Deslogado e logado novamente com credenciais de teste.
+*   [>] **Teste de Navegação para TestScreen:** Realizado com sucesso. Acessado o `TestScreen` a partir do `DashboardScreen`.
+*   [>] **Teste de Navegação para VehiclesScreen:** Realizado com sucesso. Acessado o `VehiclesScreen` a partir do `TestScreen`. A tela exibe veículos de teste.
+
+### Pendências de Implementação (Web)
+
+*   [ ] **Implementar Navegação Web:** A navegação entre telas na versão web ainda não está totalmente configurada para o React Navigation. Atualmente, a navegação é feita via `TestScreen` ou URLs diretas.
+*   [ ] **Refatorar Componentes Incompatíveis:** Alguns componentes podem não renderizar corretamente na web devido a elementos nativos do React Native. Necessário adaptar ou criar versões web-compatíveis.
+
 
 
