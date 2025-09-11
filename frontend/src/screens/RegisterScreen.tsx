@@ -1,0 +1,228 @@
+import React, { useState, useCallback, useMemo } from 'react';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  Alert,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+} from 'react-native';
+import { useAuth } from '../contexts/AuthContext';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { RootStackParamList } from '../types';
+import FormInput, { validators, combineValidators } from '../components/FormInput';
+
+type RegisterScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Register'>;
+
+interface Props {
+  navigation: RegisterScreenNavigationProp;
+}
+
+const RegisterScreen: React.FC<Props> = ({ navigation }) => {
+  const [nome, setNome] = useState('');
+  const [email, setEmail] = useState('');
+  const [senha, setSenha] = useState('');
+  const [confirmarSenha, setConfirmarSenha] = useState('');
+  const [loading, setLoading] = useState(false);
+  const { signUp } = useAuth();
+
+  const handleRegister = useCallback(async () => {
+    if (!nome.trim() || !email.trim() || !senha.trim() || !confirmarSenha.trim()) {
+      Alert.alert('Erro', 'Por favor, preencha todos os campos');
+      return;
+    }
+
+    if (senha !== confirmarSenha) {
+      Alert.alert('Erro', 'As senhas não coincidem');
+      return;
+    }
+
+    if (senha.length < 8) {
+      Alert.alert('Erro', 'A senha deve ter pelo menos 8 caracteres');
+      return;
+    }
+
+    setLoading(true);
+    try {
+      await signUp({ nome, email, senha });
+    } catch (error: any) {
+      Alert.alert('Erro', error.message || 'Erro ao criar conta');
+    } finally {
+      setLoading(false);
+    }
+  }, [nome, email, senha, confirmarSenha, signUp]);
+
+  const navigateToLogin = useCallback(() => {
+    navigation.navigate('Login');
+  }, [navigation]);
+
+  const isFormValid = useMemo(() => 
+    nome.trim() !== '' && 
+    email.trim() !== '' && 
+    senha.trim() !== '' && 
+    confirmarSenha.trim() !== '' && 
+    senha === confirmarSenha && 
+    senha.length >= 8,
+    [nome, email, senha, confirmarSenha]
+  );
+
+  return (
+    <KeyboardAvoidingView
+      style={styles.container}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+    >
+      <ScrollView contentContainerStyle={styles.scrollContainer}>
+        <View style={styles.header}>
+          <Text style={styles.title}>Criar Conta</Text>
+          <Text style={styles.subtitle}>Cadastre-se no GiroPro</Text>
+        </View>
+
+        <View style={styles.form}>
+          <FormInput
+            label="Nome completo"
+            placeholder="Nome completo"
+            value={nome}
+            onChangeText={setNome}
+            autoCapitalize="words"
+            autoCorrect={false}
+            leftIcon="person-outline"
+            validation={validators.required}
+            required
+          />
+
+          <FormInput
+            label="Email"
+            placeholder="Email"
+            value={email}
+            onChangeText={setEmail}
+            keyboardType="email-address"
+            autoCapitalize="none"
+            autoCorrect={false}
+            leftIcon="mail-outline"
+            validation={combineValidators(validators.required, validators.email)}
+            required
+          />
+
+          <FormInput
+            label="Senha"
+            placeholder="Senha"
+            value={senha}
+            onChangeText={setSenha}
+            secureTextEntry
+            autoCapitalize="none"
+            autoCorrect={false}
+            leftIcon="lock-closed-outline"
+            validation={combineValidators(validators.required, validators.minLength(8))}
+            required
+          />
+
+          <FormInput
+            label="Confirmar senha"
+            placeholder="Confirmar senha"
+            value={confirmarSenha}
+            onChangeText={setConfirmarSenha}
+            secureTextEntry
+            autoCapitalize="none"
+            autoCorrect={false}
+            leftIcon="lock-closed-outline"
+            validation={(value: string) =>
+              value.trim() === ''
+                ? 'Este campo é obrigatório'
+                : value !== senha
+                ? 'As senhas não coincidem'
+                : null
+            }
+            required
+          />
+
+          <TouchableOpacity
+            style={[styles.button, (!isFormValid || loading) && styles.buttonDisabled]}
+            onPress={handleRegister}
+            disabled={!isFormValid || loading}
+          >
+            <Text style={styles.buttonText}>
+              {loading ? 'Criando conta...' : 'Criar conta'}
+            </Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.linkButton}
+            onPress={navigateToLogin}
+          >
+            <Text style={styles.linkText}>
+              Já tem conta? Faça login
+            </Text>
+          </TouchableOpacity>
+        </View>
+      </ScrollView>
+    </KeyboardAvoidingView>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#FFFFFF',
+  },
+  scrollContainer: {
+    flexGrow: 1,
+    justifyContent: 'center',
+    padding: 20,
+  },
+  header: {
+    alignItems: 'center',
+    marginBottom: 40,
+  },
+  title: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    color: '#007AFF',
+    marginBottom: 8,
+  },
+  subtitle: {
+    fontSize: 16,
+    color: '#8E8E93',
+    textAlign: 'center',
+  },
+  form: {
+    width: '100%',
+  },
+  input: { // Este estilo não será mais usado diretamente pelos TextInputs, mas pode ser mantido para referência ou para outros elementos
+    borderWidth: 1,
+    borderColor: '#E5E5EA',
+    borderRadius: 8,
+    padding: 16,
+    fontSize: 16,
+    marginBottom: 16,
+    backgroundColor: '#F9F9F9',
+  },
+  button: {
+    backgroundColor: '#007AFF',
+    borderRadius: 8,
+    padding: 16,
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  buttonDisabled: {
+    backgroundColor: '#B0B0B0',
+  },
+  buttonText: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  linkButton: {
+    alignItems: 'center',
+    padding: 8,
+  },
+  linkText: {
+    color: '#007AFF',
+    fontSize: 16,
+  },
+});
+
+export default RegisterScreen;
+
+
