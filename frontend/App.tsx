@@ -21,7 +21,7 @@ import AchievementsScreen from './src/screens/AchievementsScreen';
 import ChangePasswordScreen from './src/screens/ChangePasswordScreen';
 import GoalsScreen from './src/screens/GoalsScreen';
 import InsightsScreen from './src/screens/InsightsScreen';
-import TestScreen from './src/screens/TestScreen';
+
 
 const Stack = createStackNavigator();
 
@@ -49,7 +49,7 @@ const App: React.FC = () => {
         <Stack.Screen name="ChangePassword" component={ChangePasswordScreen} />
         <Stack.Screen name="Goals" component={GoalsScreen} />
         <Stack.Screen name="Insights" component={InsightsScreen} />
-        <Stack.Screen name="TestScreen" component={TestScreen} />
+
       </Stack.Navigator>
     </NavigationContainer>
   );

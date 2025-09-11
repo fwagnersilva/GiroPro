@@ -119,6 +119,31 @@ const AddExpenseScreen: React.FC<AddExpenseScreenProps> = ({ navigation, route }
 
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
         <View style={styles.form}>
+          {/* Valor da Despesa */}
+          <View style={styles.inputGroup}>
+            <Text style={styles.label}>Valor (R$) <Text style={{ color: 'red' }}>*</Text></Text>
+            <TextInput
+              style={styles.input}
+              value={formData.valor_despesa}
+              onChangeText={(text) => {
+                setFormData(prev => ({ ...prev, valor_despesa: text }));
+                if (parseFloat(text) <= 0 || isNaN(parseFloat(text))) {
+                  setValorDespesaError('Informe um valor válido para a despesa');
+                } else {
+                  setValorDespesaError(null);
+                }
+              }}
+              placeholder="Ex: 150.00"
+              keyboardType="decimal-pad"
+            />
+            {formData.valor_despesa && (
+              <Text style={styles.valuePreview}>
+                {formatCurrency(formData.valor_despesa)}
+              </Text>
+            )}
+            {valorDespesaError && <Text style={styles.errorText}>{valorDespesaError}</Text>}
+          </View>
+
           {/* Tipo de Despesa */}
           <View style={styles.inputGroup}>
             <Text style={styles.label}>Tipo de Despesa <Text style={{ color: 'red' }}>*</Text></Text>
@@ -164,31 +189,6 @@ const AddExpenseScreen: React.FC<AddExpenseScreenProps> = ({ navigation, route }
               placeholder="YYYY-MM-DD"
               keyboardType="numeric"
             />
-          </View>
-
-          {/* Valor da Despesa */}
-          <View style={styles.inputGroup}>
-            <Text style={styles.label}>Valor (R$) <Text style={{ color: 'red' }}>*</Text></Text>
-            <TextInput
-              style={styles.input}
-              value={formData.valor_despesa}
-              onChangeText={(text) => {
-                setFormData(prev => ({ ...prev, valor_despesa: text }));
-                if (parseFloat(text) <= 0 || isNaN(parseFloat(text))) {
-                  setValorDespesaError('Informe um valor válido para a despesa');
-                } else {
-                  setValorDespesaError(null);
-                }
-              }}
-              placeholder="Ex: 150.00"
-              keyboardType="decimal-pad"
-            />
-            {formData.valor_despesa && (
-              <Text style={styles.valuePreview}>
-                {formatCurrency(formData.valor_despesa)}
-              </Text>
-            )}
-            {valorDespesaError && <Text style={styles.errorText}>{valorDespesaError}</Text>}
           </View>
 
           {/* Seleção de Veículo (Opcional) */}

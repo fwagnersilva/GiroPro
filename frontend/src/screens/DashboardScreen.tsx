@@ -397,8 +397,7 @@ const DashboardScreen: React.FC = ({ navigation }: any) => {
 
           <TouchableOpacity
             style={[styles.quickActionButton, styles.fuelingButton]}
-            onPress={() => navigation.navigate('AddFueling')}
-          >
+            onPress={() => navigation.navigate(\'Fuelings\')}         >
             <Ionicons name="car" size={24} color="#FFF" />
             <Text style={styles.quickActionText}>Abastecimento</Text>
             <Text style={styles.quickActionSubtext}>Registrar combustível</Text>
@@ -406,8 +405,7 @@ const DashboardScreen: React.FC = ({ navigation }: any) => {
 
           <TouchableOpacity
             style={[styles.quickActionButton, styles.expenseButton]}
-            onPress={() => navigation.navigate('AddExpense')}
-          >
+           onPress={() => navigation.navigate(\'Expenses\')}          >
             <Ionicons name="receipt" size={24} color="#FFF" />
             <Text style={styles.quickActionText}>Nova Despesa</Text>
             <Text style={styles.quickActionSubtext}>Adicionar gasto</Text>

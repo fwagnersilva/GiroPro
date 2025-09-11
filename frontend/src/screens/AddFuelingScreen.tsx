@@ -176,20 +176,6 @@ const AddFuelingScreen: React.FC<AddFuelingScreenProps> = ({ navigation, route }
             </View>
           </View>
 
-          {/* Data do Abastecimento */}
-          <View style={styles.inputGroup}>
-            <Text style={styles.label}>Data *</Text>
-            <TextInput
-              style={[styles.input, focusedField === 'data_abastecimento' && styles.inputFocused]}
-              value={formData.data_abastecimento}
-              onChangeText={(text) => setFormData(prev => ({ ...prev, data_abastecimento: text }))}
-              placeholder="YYYY-MM-DD"
-              keyboardType="numeric"
-              onFocus={() => setFocusedField('data_abastecimento')}
-              onBlur={() => setFocusedField(null)}
-            />
-          </View>
-
           {/* Tipo de Combustível */}
           <View style={styles.inputGroup}>
             <Text style={styles.label}>Tipo de Combustível *</Text>
@@ -246,6 +232,20 @@ const AddFuelingScreen: React.FC<AddFuelingScreenProps> = ({ navigation, route }
               <Text style={styles.totalValue}>{formatCurrency(valorTotal)}</Text>
             </View>
           )}
+
+          {/* Data do Abastecimento */}
+          <View style={styles.inputGroup}>
+            <Text style={styles.label}>Data *</Text>
+            <TextInput
+              style={[styles.input, focusedField === 'data_abastecimento' && styles.inputFocused]}
+              value={formData.data_abastecimento}
+              onChangeText={(text) => setFormData(prev => ({ ...prev, data_abastecimento: text }))}
+              placeholder="YYYY-MM-DD"
+              keyboardType="numeric"
+              onFocus={() => setFocusedField('data_abastecimento')}
+              onBlur={() => setFocusedField(null)}
+            />
+          </View>
 
           {/* KM Atual (Opcional) */}
           <View style={styles.inputGroup}>

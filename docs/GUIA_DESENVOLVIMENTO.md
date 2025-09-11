@@ -27,12 +27,11 @@ frontend/
 │   ├── contexts/       # Contextos (AuthContext.web.tsx)
 │   └── components/     # Componentes reutilizáveis
 ├── App.tsx            # Componente raiz (React Navigation)
-├── App.simple.tsx     # 🌟 VERSÃO FUNCIONAL ATUAL (Web)
 ├── index.ts           # Ponto de entrada
 └── package.json       # Dependências
 ```
 
-**Status Atual:** Sistema funcionando com `App.simple.tsx` - versão estável sem React Navigation.
+**Status Atual:** Sistema funcionando com `App.tsx` - versão estável com React Navigation.
 
 ---
 

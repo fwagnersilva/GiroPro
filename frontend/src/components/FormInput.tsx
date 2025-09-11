@@ -126,7 +126,7 @@ const FormInput: React.FC<FormInputProps> = React.memo(({
       
       {hasError && (
         <View style={styles.errorContainer}>
-          <Ionicons name="alert-circle" size={16} color="#FF3B30" />
+          <Icon name="alert-circle-outline" size={16} color="#FF3B30" />
           <Text style={styles.errorText}>{displayError}</Text>
         </View>
       )}

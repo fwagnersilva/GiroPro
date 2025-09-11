@@ -6,6 +6,8 @@ module.exports = function(api) {
       // O plugin do Reanimated DEVE ser o último da lista de plugins.
       'react-native-reanimated/plugin',
       ['react-native-web', { module: 'react-native-web' }],
+      'react-native-web-refresh-control',
     ],
+
   };
 };
