@@ -55,7 +55,14 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
       if (data.success) {
         localStorage.setItem('token', data.accessToken);
         localStorage.setItem('user', JSON.stringify(data.user));
-        setUser(data.user);
+        if (data.user) {
+          setUser(data.user);
+        } else {
+          // Tratar caso onde data.user é null ou undefined, mas o login foi bem-sucedido
+          // Isso pode acontecer se a API retornar sucesso mas sem dados de usuário
+          console.warn("Login bem-sucedido, mas sem dados de usuário na resposta.");
+          setUser({ id: 'unknown', nome: 'Usuário', email: credentials.email }); // Fallback
+        }
       } else {
         throw new Error(data.message || 'Erro ao fazer login');
       }
