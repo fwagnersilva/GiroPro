@@ -1,0 +1,115 @@
+
+> frontend@1.0.0 web
+> expo start --web
+
+env: load .env
+env: export REACT_APP_API_URL EXPO_PUBLIC_API_URL
+Starting project at /home/ubuntu/GiroPro/frontend
+Starting Metro Bundler
+The following packages should be updated for best compatibility with the installed expo version:
+  expo@53.0.20 - expected version: 53.0.22
+Your project may not work correctly until you install the expected versions of the packages.
+Waiting on http://localhost:8081
+Logs for your project will appear below.
+/home/ubuntu/GiroPro/frontend/node_modules/@expo/cli/build/src/utils/errors.js:130
+    throw error;
+    ^
+
+Error: ENOENT: no such file or directory, watch '/home/ubuntu/GiroPro/frontend/node_modules/.plist-91j47ACV/dist'
+    at FSWatcher.<computed> (node:internal/fs/watchers:247:19)
+    at Object.watch (node:fs:2550:36)
+    at FallbackWatcher._watchdir (/home/ubuntu/GiroPro/frontend/node_modules/metro-file-map/src/watchers/FallbackWatcher.js:88:24)
+    at /home/ubuntu/GiroPro/frontend/node_modules/metro-file-map/src/watchers/FallbackWatcher.js:185:22
+    at Walker.<anonymous> (/home/ubuntu/GiroPro/frontend/node_modules/metro-file-map/src/watchers/FallbackWatcher.js:322:31)
+    at Walker.emit (node:events:524:28)
+    at /home/ubuntu/GiroPro/frontend/node_modules/walker/lib/walker.js:69:16
+    at FSReqCallback.oncomplete (node:fs:188:23) {
+  errno: -2,
+  syscall: 'watch',
+  code: 'ENOENT',
+  path: '/home/ubuntu/GiroPro/frontend/node_modules/.plist-91j47ACV/dist',
+  filename: '/home/ubuntu/GiroPro/frontend/node_modules/.plist-91j47ACV/dist'
+}
+
+Node.js v22.13.0
+
+  #  Node.js[6737]: void node::ResetStdio() at ../src/node.cc:760
+  #  Assertion failed: !(err != 0) || (err == -1 && (*__errno_location ()) == 1)
+
+----- Native stack trace -----
+
+ 1: 0xf95cf7 node::Assert(node::AssertionInfo const&) [node]
+ 2: 0xf42264  [node]
+ 3: 0x7f60b7a45495  [/lib/x86_64-linux-gnu/libc.so.6]
+ 4: 0x7f60b7a45610 on_exit [/lib/x86_64-linux-gnu/libc.so.6]
+ 5: 0xe98a4f node::DefaultProcessExitHandlerInternal(node::Environment*, node::ExitCode) [node]
+ 6: 0xf01e4f node::Environment::Exit(node::ExitCode) [node]
+ 7: 0xf99481 node::errors::TryCatchScope::~TryCatchScope() [node]
+ 8: 0xf99a9e node::errors::TriggerUncaughtException(v8::Isolate*, v8::Local<v8::Value>, v8::Local<v8::Message>, bool) [node]
+ 9: 0x13f347b v8::internal::MessageHandler::ReportMessageNoExceptions(v8::internal::Isolate*, v8::internal::MessageLocation const*, v8::internal::Handle<v8::internal::Object>, v8::Local<v8::Value>) [node]
+10: 0x13f367e v8::internal::MessageHandler::ReportMessage(v8::internal::Isolate*, v8::internal::MessageLocation const*, v8::internal::Handle<v8::internal::JSMessageObject>) [node]
+11: 0x13dfb75 v8::internal::Isolate::ReportPendingMessages(bool) [node]
+12: 0x13c32b1  [node]
+13: 0x13c42e5 v8::internal::Execution::Call(v8::internal::Isolate*, v8::internal::Handle<v8::internal::Object>, v8::internal::Handle<v8::internal::Object>, int, v8::internal::Handle<v8::internal::Object>*) [node]
+14: 0x12747d6 v8::Object::CallAsFunction(v8::Local<v8::Context>, v8::Local<v8::Value>, int, v8::Local<v8::Value>*) [node]
+15: 0xe9192b node::InternalMakeCallback(node::Environment*, v8::Local<v8::Object>, v8::Local<v8::Object>, v8::Local<v8::Function>, int, v8::Local<v8::Value>*, node::async_context, v8::Local<v8::Value>) [node]
+16: 0xeab372 node::AsyncWrap::MakeCallback(v8::Local<v8::Function>, int, v8::Local<v8::Value>*) [node]
+17: 0xf9b83a node::fs::FSReqCallback::Resolve(v8::Local<v8::Value>) [node]
+18: 0xfafb6e node::fs::AfterScanDir(uv_fs_s*) [node]
+19: 0xf89a4b node::MakeLibuvRequestCallback<uv_fs_s, void (*)(uv_fs_s*)>::Wrapper(uv_fs_s*) [node]
+20: 0x1d48e2d  [node]
+21: 0x1d4c803  [node]
+22: 0x1d62374  [node]
+23: 0x1d4d527 uv_run [node]
+24: 0xe926d6 node::SpinEventLoopInternal(node::Environment*) [node]
+25: 0xfe7cc1 node::NodeMainInstance::Run() [node]
+26: 0xf49dcb node::Start(int, char**) [node]
+27: 0x7f60b7a29d90  [/lib/x86_64-linux-gnu/libc.so.6]
+28: 0x7f60b7a29e40 __libc_start_main [/lib/x86_64-linux-gnu/libc.so.6]
+29: 0xe8e4fe _start [node]
+
+  #  Node.js[6737]: void node::ResetStdio() at ../src/node.cc:760
+  #  Assertion failed: !(err != 0) || (err == -1 && (*__errno_location ()) == 1)
+
+----- Native stack trace -----
+
+ 1: 0xf95cf7 node::Assert(node::AssertionInfo const&) [node]
+ 2: 0xf42264  [node]
+ 3: 0xf42982 node::TrapWebAssemblyOrContinue(int, siginfo_t*, void*) [node]
+ 4: 0x7f60b7a42520  [/lib/x86_64-linux-gnu/libc.so.6]
+Aborted
+
+  #  Node.js[6725]: void node::ResetStdio() at ../src/node.cc:760
+  #  Assertion failed: !(err != 0) || (err == -1 && (*__errno_location ()) == 1)
+
+----- Native stack trace -----
+
+ 1: 0xf95cf7 node::Assert(node::AssertionInfo const&) [npm run web]
+ 2: 0xf42264  [npm run web]
+ 3: 0x7f9b35c45495  [/lib/x86_64-linux-gnu/libc.so.6]
+ 4: 0x7f9b35c45610 on_exit [/lib/x86_64-linux-gnu/libc.so.6]
+ 5: 0xe98a4f node::DefaultProcessExitHandlerInternal(node::Environment*, node::ExitCode) [npm run web]
+ 6: 0xf01e4f node::Environment::Exit(node::ExitCode) [npm run web]
+ 7: 0x1d755e2  [npm run web]
+
+  #  Node.js[6725]: void node::ResetStdio() at ../src/node.cc:760
+  #  Assertion failed: !(err != 0) || (err == -1 && (*__errno_location ()) == 1)
+
+----- Native stack trace -----
+
+ 1: 0xf95cf7 node::Assert(node::AssertionInfo const&) [npm run web]
+ 2: 0xf42264  [npm run web]
+ 3: 0xf42982 node::TrapWebAssemblyOrContinue(int, siginfo_t*, void*) [npm run web]
+ 4: 0x7f9b35c42520  [/lib/x86_64-linux-gnu/libc.so.6]
+ 5: 0x1929140 v8::internal::tracing::TraceEventHelper::GetTracingController() [npm run web]
+ 6: 0x13dc745 v8::internal::Isolate::CaptureDetailedStackTrace(int, v8::StackTrace::StackTraceOptions) [npm run web]
+ 7: 0x126a133 v8::StackTrace::CurrentStackTrace(v8::Isolate*, int, v8::StackTrace::StackTraceOptions) [npm run web]
+ 8: 0xf95c46 node::GetCurrentStackTrace(v8::Isolate*, int) [npm run web]
+ 9: 0xee0c8b node::DumpJavaScriptBacktrace(_IO_FILE*) [npm run web]
+10: 0xf95d03 node::Assert(node::AssertionInfo const&) [npm run web]
+11: 0xf42264  [npm run web]
+12: 0x7f9b35c45495  [/lib/x86_64-linux-gnu/libc.so.6]
+13: 0x7f9b35c45610 on_exit [/lib/x86_64-linux-gnu/libc.so.6]
+14: 0xe98a4f node::DefaultProcessExitHandlerInternal(node::Environment*, node::ExitCode) [npm run web]
+15: 0xf01e4f node::Environment::Exit(node::ExitCode) [npm run web]
+16: 0x1d755e2  [npm run web]

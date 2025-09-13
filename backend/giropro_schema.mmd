@@ -1,0 +1,164 @@
+erDiagram
+
+    USUARIOS ||--o{ ABASTECIMENTOS : "tem"
+    VEICULOS ||--o{ ABASTECIMENTOS : "tem"
+    USUARIOS ||--o{ DESPESAS : "tem"
+    VEICULOS ||--o{ DESPESAS : "tem"
+    USUARIOS ||--o{ JORNADAS : "tem"
+    VEICULOS ||--o{ JORNADAS : "tem"
+    USUARIOS ||--o{ LOGS_ATIVIDADES : "tem"
+    USUARIOS ||--o{ METAS : "tem"
+    VEICULOS ||--o{ METAS : "tem"
+    METAS ||--o{ PROGRESSO_METAS : "tem"
+    USUARIOS ||--o{ VEICULOS : "tem"
+    USUARIOS ||--o{ NOTIFICACOES : "tem"
+
+    ABASTECIMENTOS {
+        text id PK
+        text idUsuario FK
+        text idVeiculo FK
+        integer dataAbastecimento
+        text tipoCombustivel
+        real quantidadeLitros
+        real valorLitro
+        real valorTotal
+        integer kmAtual
+        text nomePosto
+        integer createdAt
+        integer updatedAt
+        integer deletedAt
+    }
+
+    DESPESAS {
+        text id PK
+        text idUsuario FK
+        text idVeiculo FK
+        integer dataDespesa
+        text tipoDespesa
+        real valorDespesa
+        text descricao
+        integer createdAt
+        integer updatedAt
+        integer deletedAt
+    }
+
+    HISTORICO_PRECO_COMBUSTIVEL {
+        text id PK
+        text cidade
+        text estado
+        text tipoCombustivel
+        real precoMedio
+        integer dataRegistro
+        text fonte
+        integer createdAt
+        integer deletedAt
+    }
+
+    JORNADAS {
+        text id PK
+        text idUsuario FK
+        text idVeiculo FK
+        integer dataInicio
+        integer kmInicio
+        integer dataFim
+        integer kmFim
+        real ganhoBruto
+        integer kmTotal
+        integer tempoTotal
+        text observacoes
+        integer createdAt
+        integer updatedAt
+        integer deletedAt
+    }
+
+    LOGS_ATIVIDADES {
+        text id PK
+        text idUsuario FK
+        text tipoAcao
+        text descricao
+        text metadados
+        integer dataAcao
+        integer deletedAt
+    }
+
+    METAS {
+        text id PK
+        text idUsuario FK
+        text idVeiculo FK
+        text titulo
+        text descricao
+        text tipoMeta
+        text periodoMeta
+        real valorObjetivo
+        integer dataInicio
+        integer dataFim
+        text statusMeta
+        real valorAtual
+        real percentualConcluido
+        integer dataConclusao
+        integer notificacaoEnviada
+        integer createdAt
+        integer updatedAt
+        integer deletedAt
+    }
+
+    PROGRESSO_METAS {
+        text id PK
+        text idMeta FK
+        integer dataRegistro
+        real valorAnterior
+        real valorAtual
+        real incremento
+        integer percentualAnterior
+        integer percentualAtual
+        text observacoes
+        integer createdAt
+    }
+
+    USUARIOS {
+        text id PK
+        text nome
+        text email
+        text senhaHash
+        text statusConta
+        integer dataCadastro
+        integer pontosTotal
+        text nivelUsuario
+        integer conquistasDesbloqueadas
+        integer updatedAt
+        integer deletedAt
+        integer tentativasLogin
+        integer ultimoLoginFalhado
+        integer ultimaAtividade
+    }
+
+    VEICULOS {
+        text id PK
+        text idUsuario FK
+        text marca
+        text modelo
+        integer ano
+        text placa
+        text tipoCombustivel
+        text tipoUso
+        integer valorAluguel
+        integer valorPrestacao
+        real mediaConsumo
+        integer dataCadastro
+        integer updatedAt
+        integer deletedAt
+    }
+
+    NOTIFICACOES {
+        text id PK
+        text idUsuario FK
+        text tipoNotificacao
+        text titulo
+        text mensagem
+        text dadosExtras
+        integer lida
+        integer dataEnvio
+        integer dataLeitura
+        integer deletedAt
+    }
+
