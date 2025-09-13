@@ -46,7 +46,7 @@
     "ts-node": "^10.9.2",
     "typescript": "^5.8.3",
     "uuid": "^11.1.0",
-    "zod": "^3.22.4"
+    "zod": "^4.1.8"
   },
   "devDependencies": {
     "@playwright/test": "^1.54.1",
