@@ -11,3 +11,6 @@
 <!-- As tarefas delegadas pelo sistema ou por outros agentes serão adicionadas aqui. Não edite esta seção manualmente. -->
 
 
+- [ ] **P1 - Criar componente FormInput**
+- [ ] **P1 - Criar tela AddExpenseScreen**
+- [ ] **P1 - Implementar estado para o formulário**

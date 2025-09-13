@@ -6,7 +6,7 @@ Este é o backlog central do projeto GiroPro. Ele contém todas as demandas, ép
 
 ## Novas Demandas (P0 - Urgente, P1 - Alta, P2 - Média, P3 - Baixa)
 
-- [ ] **P1 - Implementar funcionalidade de Adicionar Despesa Manualmente**
+- [x] **P1 - Implementar funcionalidade de Adicionar Despesa Manualmente**
   - Descrição: Permitir que o usuário adicione despesas manualmente através de um formulário na interface.
   - Status: Pendente de quebra de tarefas pelo Scrum Master.
 
