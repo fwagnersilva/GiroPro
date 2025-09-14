@@ -10,6 +10,7 @@ import { fuelPricesRoutes } from './routes/fuelPrices';
 import { expenseRoutes } from './routes/expenses';
 import { errorHandler } from './middlewares/errorHandler';
 import { requestLogger } from './middlewares/requestLogger';
+import compression from 'compression';
 import { initializeTables } from './db/initTables';
 
 import helmet from 'helmet';
@@ -38,6 +39,7 @@ app.use(cors({
 }));
 app.use(express.json());
 app.use(requestLogger);
+app.use(compression());
 
 // Routes básicas
 app.use('/api/v1/auth', authRoutes);
