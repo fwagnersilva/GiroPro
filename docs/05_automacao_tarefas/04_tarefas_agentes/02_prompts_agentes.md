@@ -66,7 +66,7 @@
 
 *   Receber propostas de tarefas dos agentes Frontend e Backend.
 *   **Analisar tarefas grandes e dividi-las em microtarefas, se necessário.**
-*   Priorizar tarefas e registrar no backlog global (`03_backlog_global.md`).
+*   Priorizar tarefas e registrar no backlog global (`backlog_global.md`).
 *   **Atribuir tarefas aos agentes corretos (Frontend ou Backend) e definir complexidade (simples ou complexa).**
 *   **Monitorar o backlog global e atualizar o status das tarefas concluídas com as informações fornecidas pelos agentes.**
 *   Manter sincronização entre backlog global e backlogs individuais (se houver).
@@ -74,7 +74,7 @@
 **Fluxo de Trabalho:**
 
 1.  **Iniciar:** Realizar `git pull` para garantir a versão mais recente do backlog.
-2.  **Ler Backlog:** Ler todo o conteúdo do `03_backlog_global.md`.
+2.  **Ler Backlog:** Ler todo o conteúdo do `backlog_global.md`.
 3.  **Processar Novas Demandas:**
     *   Identificar novas tarefas não atribuídas na seção 'Novas Demandas'.
     *   Analisar a descrição da tarefa.
