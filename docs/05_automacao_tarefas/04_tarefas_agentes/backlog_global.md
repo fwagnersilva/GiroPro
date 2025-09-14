@@ -46,3 +46,16 @@ Este é o backlog central do projeto GiroPro. Ele contém todas as demandas, ép
   - **Status:** [ ]
   - **Comentários:** Parte da tarefa original 'Otimização do Banco de Dados e Queries'.
 
+
+
+- **Tarefa:** P2 - Implementação de Compressão (Gzip)
+  - **Quem:** Backend
+  - **O que:** Adicionar middleware de compressão (Gzip) para reduzir o tamanho das respostas HTTP.
+  - **Porquê:** Melhorar o tempo de carregamento para os clientes.
+  - **Complexidade:** Simples
+  - **Concluído:** [x]
+  - **Como foi feita:** Implementado o middleware `compression` do Express.js em `backend/src/app.ts` para habilitar a compressão Gzip nas respostas HTTP. Isso foi feito adicionando `import compression from 'compression';` e `app.use(compression());` após o `requestLogger`.
+  - **Hash do Commit:** 3b2ac57
+  - **Arquivos modificados:** backend/src/app.ts, backend/package.json, backend/package-lock.json
+  - **Observações:** A compressão Gzip foi adicionada para melhorar o tempo de carregamento para os clientes, reduzindo o tamanho das respostas HTTP.
+

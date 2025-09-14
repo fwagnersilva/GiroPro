@@ -8,17 +8,6 @@
   - **Porquê:** Isso inclui a criação de índices, otimização de queries SQL (ou ORM) e revisão da configuração do banco de dados.
   - **Complexidade:** Complexa
   - **Status:** [pendente divisão]
-  - **Comentários:**
-  - **Hash do Commit:**
-
-- **Tarefa:** P2 - Implementação de Compressão (Gzip)
-  - **Quem:** Backend
-  - **O que:** Adicionar middleware de compressão (Gzip) para reduzir o tamanho das respostas HTTP.
-  - **Porquê:** Melhorar o tempo de carregamento para os clientes.
-  - **Complexidade:** Simples
-  - **Status:** [Em Execução]
-  - **Comentários:**
-  - **Hash do Commit:**
 
 - **Tarefa:** P2 - Implementação de Limitação de Taxa (Rate Limiting)
   - **Quem:** Backend
@@ -26,8 +15,6 @@
   - **Porquê:** Aumentar a segurança da aplicação, especialmente em endpoints de autenticação.
   - **Complexidade:** Complexa
   - **Concluído:** [ ]
-  - **Comentários:**
-  - **Hash do Commit:**
 
 - **Tarefa:** P2 - Centralização de Configurações
   - **Quem:** Backend
@@ -35,8 +22,6 @@
   - **Porquê:** Tornar as configurações mais fáceis de gerenciar e acessar.
   - **Complexidade:** Simples
   - **Concluído:** [ ]
-  - **Comentários:**
-  - **Hash do Commit:**
 
 - **Tarefa:** P2 - Tratamento de Erros Assíncronos em Rotas (Async Handler)
   - **Quem:** Backend
@@ -44,8 +29,6 @@
   - **Porquê:** Evitar a repetição de blocos `try-catch` e centralizar o tratamento de exceções.
   - **Complexidade:** Complexa
   - **Concluído:** [ ]
-  - **Comentários:**
-  - **Hash do Commit:**
 
 - **Tarefa:** P3 - Remoção/Desabilitação do Endpoint `/api/test` em Produção
   - **Quem:** Backend
@@ -53,8 +36,6 @@
   - **Porquê:** Evitar exposição desnecessária de informações.
   - **Complexidade:** Simples
   - **Concluído:** [ ]
-  - **Comentários:**
-  - **Hash do Commit:**
 
 - **Tarefa:** P3 - Verificação e Uso de `fuelPricesRoutes`
   - **Quem:** Backend
@@ -62,8 +43,6 @@
   - **Porquê:** Manter o código limpo e remover rotas não utilizadas.
   - **Complexidade:** Simples
   - **Concluído:** [ ]
-  - **Comentários:**
-  - **Hash do Commit:**
 
 - **Tarefa:** P3 - Organização de Imports
   - **Quem:** Backend
@@ -71,8 +50,6 @@
   - **Porquê:** Melhorar a legibilidade e manutenção do código.
   - **Complexidade:** Simples
   - **Concluído:** [ ]
-  - **Comentários:**
-  - **Hash do Commit:**
 
 - **Tarefa:** P1 - Implementar funcionalidade de Adicionar Despesa Manualmente
   - **Quem:** Backend/Frontend
