@@ -500,3 +500,30 @@ Esta seção detalha cada endpoint da API, incluindo seu propósito, método HTT
 ### 2.5. Abastecimentos
 
 
+
+
+
+# Documentação da API de Autenticação (Atualizada)
+
+Esta documentação descreve os endpoints da API de autenticação, incluindo as melhorias implementadas.
+
+## Melhorias
+
+- **Middleware de Tratamento de Erros Assíncronos:** Adicionado um middleware para capturar e tratar erros em rotas assíncronas de forma centralizada.
+- **Remoção do Endpoint `/api/test`:** O endpoint de teste foi removido por não ser mais necessário.
+- **Reorganização de Imports:** Os imports foram reorganizados para melhorar a legibilidade e manutenção do código.
+- **Remoção de Rotas Não Utilizadas:** Rotas que não estavam sendo utilizadas foram removidas para limpar o código.
+
+## Endpoints
+
+...
+
+## Changelog
+
+- **v1.1.0:**
+  - Adicionado middleware de tratamento de erros assíncronos.
+  - Removido o endpoint `/api/test`.
+  - Reorganização de imports.
+  - Remoção de rotas não utilizadas.
+
+
