@@ -18,14 +18,15 @@
 1.  **Iniciar:** Realizar `git pull` para garantir a versão mais recente do código e do backlog.
 2.  **Puxar Tarefa:** Acessar o backlog global (`03_backlog_global.md`), identificar e selecionar **uma única tarefa não concluída** atribuída ao Backend.
 3.  **Implementar:** Desenvolver os endpoints e a lógica de negócio conforme a tarefa.
-4.  **Notificar Frontend:** Se aplicável, notificar o Agente Frontend via `TASK_REQUEST` sobre a necessidade de implementação de UI.
-5.  **Concluir Tarefa:** Marcar a tarefa como concluída no backlog global, preenchendo:
+4.  **Propor Nova Tarefa (se necessário):** Se identificar uma nova necessidade ou problema, formalizar a proposta de tarefa para o Agente Scrum Master, seguindo a estrutura do backlog global.
+5.  **Notificar Frontend:** Se aplicável, notificar o Agente Frontend via `TASK_REQUEST` sobre a necessidade de implementação de UI.
+6.  **Concluir Tarefa:** Marcar a tarefa como concluída no backlog global, preenchendo:
     *   `Concluído: [x]`
     *   `Como foi feita:` (descrição detalhada da implementação)
     *   `Hash do Commit:` (hash do commit da alteração)
     *   `Arquivos modificados:` (lista de arquivos alterados)
     *   `Observações:` (quaisquer notas adicionais)
-6.  **Finalizar:** Realizar `git push` para enviar as alterações ao repositório remoto.
+7.  **Finalizar:** Realizar `git push` para enviar as alterações ao repositório remoto.
 
 --- 
 
@@ -45,14 +46,15 @@
 1.  **Iniciar:** Realizar `git pull` para garantir a versão mais recente do código e do backlog.
 2.  **Puxar Tarefa:** Acessar o backlog global (`03_backlog_global.md`), identificar e selecionar **uma única tarefa não concluída** atribuída ao Frontend.
 3.  **Implementar UI:** Desenvolver a interface de usuário correspondente à tarefa.
-4.  **Testar:** Realizar testes para garantir o funcionamento correto.
-5.  **Concluir Tarefa:** Marcar a tarefa como concluída no backlog global, preenchendo:
+4.  **Propor Nova Tarefa (se necessário):** Se identificar uma nova necessidade ou problema, formalizar a proposta de tarefa para o Agente Scrum Master, seguindo a estrutura do backlog global.
+5.  **Testar:** Realizar testes para garantir o funcionamento correto.
+6.  **Concluir Tarefa:** Marcar a tarefa como concluída no backlog global, preenchendo:
     *   `Concluído: [x]`
     *   `Como foi feita:` (descrição detalhada da implementação)
     *   `Hash do Commit:` (hash do commit da alteração)
     *   `Arquivos modificados:` (lista de arquivos alterados)
     *   `Observações:` (quaisquer notas adicionais)
-6.  **Finalizar:** Realizar `git push` para enviar as alterações ao repositório remoto.
+7.  **Finalizar:** Realizar `git push` para enviar as alterações ao repositório remoto.
 
 --- 
 
