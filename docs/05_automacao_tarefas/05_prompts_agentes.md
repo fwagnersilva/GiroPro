@@ -8,7 +8,6 @@
 ```
 # Prompt Agente Backend - GiroPro
 # Repositório: https://github.com/fwagnersilva/GiroPro.git
-# PAT: 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
 
 INSTRUÇÕES GERAIS:
 - Execute `git pull origin main` SEMPRE antes de qualquer ação
@@ -35,7 +34,6 @@ COMUNICAÇÃO:
 ```
 # Prompt Agent_01 - Setup Master - GiroPro
 # Repositório: https://github.com/fwagnersilva/GiroPro.git
-# PAT: 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
 
 INSTRUÇÕES:
 - Execute `git pull origin main` antes de qualquer ação
@@ -76,7 +74,6 @@ git add . && git commit -m "Agent_01: [P1-SIMPLES] Título da tarefa" && git pus
 ```
 # Prompt Agent_05 - Database Guardian - GiroPro
 # Repositório: https://github.com/fwagnersilva/GiroPro.git
-# PAT: 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
 
 INSTRUÇÕES:
 - Execute `git pull origin main` antes de qualquer ação
@@ -120,7 +117,6 @@ git add . && git commit -m "Agent_05: [P1-SIMPLES] Título da tarefa" && git pus
 ```
 # Prompt Agente Frontend - GiroPro
 # Repositório: https://github.com/fwagnersilva/GiroPro.git
-# PAT: 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
 
 INSTRUÇÕES GERAIS:
 - Execute `git pull origin main` SEMPRE antes de qualquer ação
@@ -152,7 +148,6 @@ COMUNICAÇÃO:
 ```
 # Prompt Agent_11 - Component Builder - GiroPro
 # Repositório: https://github.com/fwagnersilva/GiroPro.git
-# PAT: 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
 
 INSTRUÇÕES:
 - Execute `git pull origin main` antes de qualquer ação
@@ -206,7 +201,6 @@ git add . && git commit -m "Agent_11: [P1-SIMPLES] Criar componente X" && git pu
 ```
 # Prompt Agente Testes - GiroPro
 # Repositório: https://github.com/fwagnersilva/GiroPro.git
-# PAT: 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
 
 INSTRUÇÕES GERAIS:
 - Execute `git pull origin main` SEMPRE antes de qualquer ação
@@ -237,7 +231,6 @@ COMUNICAÇÃO:
 ```
 # Prompt Agent_19 - Unit Test Simple - GiroPro
 # Repositório: https://github.com/fwagnersilva/GiroPro.git
-# PAT: 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
 
 INSTRUÇÕES:
 - Execute `git pull origin main` antes de qualquer ação
@@ -286,7 +279,6 @@ git add . && git commit -m "Agent_19: [P1-SIMPLES] Adicionar testes para X" && g
 ```
 # Prompt Agente DevOps - GiroPro
 # Repositório: https://github.com/fwagnersilva/GiroPro.git
-# PAT: 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
 
 INSTRUÇÕES GERAIS:
 - Execute `git pull origin main` SEMPRE antes de qualquer ação
@@ -317,7 +309,7 @@ COMUNICAÇÃO:
 ```
 # Prompt Agent_31 - Build Simple - GiroPro
 # Repositório: https://github.com/fwagnersilva/GiroPro.git
-# PAT: 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
+
 
 INSTRUÇÕES:
 - Execute `git pull origin main` antes de qualquer ação
@@ -359,7 +351,7 @@ git add . && git commit -m "Agent_31: [P1-SIMPLES] Build bem-sucedido" && git pu
 ```
 # Prompt Agent_XX - [NOME] - GiroPro
 # Repositório: https://github.com/fwagnersilva/GiroPro.git
-# PAT: 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
+
 
 INSTRUÇÕES OBRIGATÓRIAS:
 1. Execute `git pull origin main` SEMPRE antes de qualquer ação
