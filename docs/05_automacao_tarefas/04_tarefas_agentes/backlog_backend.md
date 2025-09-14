@@ -16,7 +16,7 @@
   - **O que:** Criar um arquivo `config.ts` para centralizar todas as configurações da aplicação.
   - **Porquê:** Tornar as configurações mais fáceis de gerenciar e acessar.
   - **Complexidade:** Simples
-  - **Concluído:** [ ]
+  - **Status:** [Em Execução]
 
 - **Tarefa:** P2 - Tratamento de Erros Assíncronos em Rotas (Async Handler)
   - **Quem:** Backend
@@ -51,7 +51,7 @@
   - **O que:** Desenvolver a funcionalidade para que os usuários possam adicionar despesas manualmente através de um formulário na aplicação.
   - **Porquê:** Permitir que os usuários registrem despesas que não são automaticamente capturadas.
   - **Complexidade:** Complexa
-  - **Status:** [Em Execução]
+  - **Status:** [pendente divisão]
   - **Comentários:** 
   - **Hash do Commit:**
 

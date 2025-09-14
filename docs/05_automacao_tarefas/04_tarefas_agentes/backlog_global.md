@@ -6,6 +6,28 @@ Este é o backlog central do projeto GiroPro. Ele contém todas as demandas, ép
 
 ## Novas Tarefas
 
+- **Tarefa:** P1 - Criar endpoint para adicionar despesa manualmente
+  - **Quem:** Backend
+  - **O que:** Desenvolver um endpoint RESTful para receber dados de despesa (valor, descrição, categoria, data) e persistir no banco de dados.
+  - **Porquê:** Permitir a inserção de despesas pelo frontend.
+  - **Complexidade:** Média
+  - **Status:** [ ]
+
+- **Tarefa:** P1 - Validar dados de entrada para adicionar despesa
+  - **Quem:** Backend
+  - **O que:** Implementar validação de dados para o endpoint de adição de despesa (e.g., valor numérico, descrição não vazia, categoria válida).
+  - **Porquê:** Garantir a integridade dos dados e prevenir erros na aplicação.
+  - **Complexidade:** Simples
+  - **Status:** [ ]
+
+- **Tarefa:** P1 - Integrar com o serviço de autenticação para adicionar despesa
+  - **Quem:** Backend
+  - **O que:** Assegurar que apenas usuários autenticados possam adicionar despesas e que a despesa seja associada ao usuário correto.
+  - **Porquê:** Manter a segurança e a privacidade dos dados do usuário.
+  - **Complexidade:** Média
+  - **Status:** [ ]
+
+
 ## Backlog Frontend
 
 ## Backlog Backend
