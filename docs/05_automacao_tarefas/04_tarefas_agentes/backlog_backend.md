@@ -4,26 +4,16 @@
 
 
 
-- **Tarefa:** P2 - Implementação de Limitação de Taxa (Rate Limiting)
-  - **Quem:** Backend
-  - **O que:** Adicionar rate limiting para proteger a API contra ataques de força bruta e abuso.
-  - **Porquê:** Aumentar a segurança da aplicação, especialmente em endpoints de autenticação.
-  - **Complexidade:** Complexa
-  - **Status:** [Em Execução]
 
-- **Tarefa:** P2 - Centralização de Configurações
-  - **Quem:** Backend
-  - **O que:** Criar um arquivo `config.ts` para centralizar todas as configurações da aplicação.
-  - **Porquê:** Tornar as configurações mais fáceis de gerenciar e acessar.
-  - **Complexidade:** Simples
-  - **Status:** [pendente divisão]
+
+
 
 - **Tarefa:** P2 - Tratamento de Erros Assíncronos em Rotas (Async Handler)
   - **Quem:** Backend
   - **O que:** Implementar um wrapper para lidar com erros em rotas assíncronas.
   - **Porquê:** Evitar a repetição de blocos `try-catch` e centralizar o tratamento de exceções.
   - **Complexidade:** Complexa
-  - **Concluído:** [ ]
+  - **Status:** [Em Execução]
 
 - **Tarefa:** P3 - Remoção/Desabilitação do Endpoint `/api/test` em Produção
   - **Quem:** Backend
