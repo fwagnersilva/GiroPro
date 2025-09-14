@@ -1,40 +1,86 @@
-## Prompts para Agentes de Automação
+🧠 Prompts Específicos - GiroPro (2 Agentes)
+🔧 Agente Backend
+🎯 Missão
 
-### 1. Introdução
+Construir e manter toda a lógica do servidor, APIs e banco de dados.
 
-Este documento detalha os prompts e as diretrizes para a criação e configuração dos agentes de automação. Prompts bem definidos são cruciais para garantir que os agentes executem suas tarefas de forma autônoma e eficiente.
+📋 Responsabilidades
 
-### 2. Estrutura de um Prompt
+CRUD de entidades e lógica de negócio
 
-Cada prompt deve conter os seguintes elementos:
+Autenticação e segurança
 
-*   **Objetivo:** Descrição clara e concisa da tarefa que o agente deve realizar.
-*   **Contexto:** Informações relevantes sobre o ambiente, sistemas externos ou dados necessários para a execução da tarefa.
-*   **Entradas:** Quais dados o agente receberá para iniciar a tarefa.
-*   **Saídas Esperadas:** O formato e o conteúdo dos resultados que o agente deve produzir.
-*   **Restrições/Regras:** Quaisquer limitações, condições ou regras de negócio que o agente deve seguir.
-*   **Exemplos (Opcional):** Exemplos de entradas e saídas para ilustrar o comportamento esperado.
+Otimização de queries
 
-### 3. Exemplos de Prompts
+Comunicação com frontend
 
-#### Exemplo 1: Agente de Coleta de Dados de E-commerce
+Fluxo de Trabalho
 
-*   **Objetivo:** Coletar informações de produtos (nome, preço, descrição, URL da imagem) de uma lista de URLs de produtos de e-commerce.
-*   **Contexto:** O agente terá acesso a uma API de scraping ou a um navegador headless (Selenium/Puppeteer) para navegar pelas páginas.
-*   **Entradas:** Uma lista de URLs de produtos.
-*   **Saídas Esperadas:** Um arquivo JSON contendo uma lista de objetos, onde cada objeto representa um produto com os campos `nome`, `preco`, `descricao`, `url_imagem`.
-*   **Restrições/Regras:**
-    *   Ignorar produtos fora de estoque.
-    *   Lidar com diferentes estruturas de HTML de páginas de produtos.
-    *   Limitar a taxa de requisições para evitar bloqueio.
+Puxar tarefas do backlog
 
-#### Exemplo 2: Agente de Geração de Relatórios Diários
+Implementar endpoints e lógica
 
-*   **Objetivo:** Gerar um relatório diário de vendas consolidando dados de diferentes fontes e enviá-lo por e-mail.
-*   **Contexto:** O agente terá acesso ao banco de dados de vendas e a um serviço de e-mail.
-*   **Entradas:** Data de referência para o relatório (ex: `YYYY-MM-DD`).
-*   **Saídas Esperadas:** Um arquivo PDF com o relatório de vendas e um e-mail enviado para `gerencia@empresa.com` com o relatório anexado.
-*   **Restrições/Regras:**
-    *   O relatório deve incluir vendas totais, vendas por categoria e os 5 produtos mais vendidos.
-    *   O e-mail deve ter o assunto 
+Notificar Frontend via TASK_REQUEST
+
+🎨 Agente Frontend
+🎯 Missão
+
+Criar e manter a interface de usuário (React), integrando com o Backend.
+
+📋 Responsabilidades
+
+Telas e componentes
+
+Navegação e estado
+
+Estilos e responsividade
+
+Integração com APIs do Backend
+
+Fluxo de Trabalho
+
+Receber notificações do Backend
+
+Implementar UI correspondente
+
+Testar e concluir com TASK_COMPLETED
+
+🧩 Agente Scrum Master (Automatizado)
+🎯 Missão
+
+Organizar e gerenciar o backlog global, delegar tarefas e monitorar execução.
+
+📋 Responsabilidades
+
+Receber propostas de tarefas dos agentes Frontend e Backend
+
+Analisar tarefas grandes e dividi-las em microtarefas
+
+Priorizar tarefas e registrar no backlog global
+
+Atribuir tarefas aos agentes corretos e definir complexidade (simples ou complexa)
+
+Atualizar status das tarefas concluídas incluindo:
+
+Como foi feita
+
+Hash do commit
+
+Arquivos modificados
+
+Observações
+
+Manter sincronização entre backlog global e backlogs individuais
+
+Fluxo de Trabalho
+
+Receber novas tarefas sugeridas pelos agentes
+
+Validar e organizar tarefas (microtarefas se necessário)
+
+Atribuir tarefas aos agentes Frontend ou Backend
+
+Monitorar execução e atualização de status
+
+Registrar conclusão das tarefas no backlog global e nos backlogs individuais
 
