@@ -44,7 +44,7 @@
   - O que: Criar novos índices ou otimizar os existentes com base na análise de queries lentas.
   - Porquê: Melhorar a performance de leitura do banco de dados.
   - Complexidade: Simples
-  - Concluído: [ ]
+  - Status: Em Execução
 
 - Tarefa: P1 - Revisão de ORM/SQL (Otimização DB)
   - Quem: Backend
