@@ -6,36 +6,6 @@ Este é o backlog central do projeto GiroPro. Ele contém todas as demandas, ép
 
 ## Novas Tarefas
 
-- **Tarefa:** P1 - Criar endpoint para adicionar despesa manualmente
-  - **Quem:** Backend
-  - **O que:** Desenvolver um endpoint RESTful para receber dados de despesa (valor, descrição, categoria, data) e persistir no banco de dados.
-  - **Porquê:** Permitir a inserção de despesas pelo frontend.
-  - **Complexidade:** Média
-  - **Status:** [ ]
-
-- **Tarefa:** P1 - Validar dados de entrada para adicionar despesa
-  - **Quem:** Backend
-  - **O que:** Implementar validação de dados para o endpoint de adição de despesa (e.g., valor numérico, descrição não vazia, categoria válida).
-  - **Porquê:** Garantir a integridade dos dados e prevenir erros na aplicação.
-  - **Complexidade:** Simples
-  - **Status:** [ ]
-
-- **Tarefa:** P1 - Integrar com o serviço de autenticação para adicionar despesa
-  - **Quem:** Backend
-  - **O que:** Assegurar que apenas usuários autenticados possam adicionar despesas e que a despesa seja associada ao usuário correto.
-  - **Porquê:** Manter a segurança e a privacidade dos dados do usuário.
-  - **Complexidade:** Média
-  - **Status:** [ ]
-
-
-## Backlog Frontend
-
-## Backlog Backend
-
-## Demandas Concluídas
-
-
-
 - **Tarefa:** P1 - Análise de Queries Lentas (Otimização DB)
   - **Quem:** Backend
   - **O que:** Identificar as queries mais lentas e que consomem mais recursos no banco de dados.
@@ -67,17 +37,8 @@ Este é o backlog central do projeto GiroPro. Ele contém todas as demandas, ép
   - **Complexidade:** Média
   - **Status:** [ ]
   - **Comentários:** Parte da tarefa original 'Otimização do Banco de Dados e Queries'.
+ 
 
+## Demandas Concluídas
 
-
-- **Tarefa:** P2 - Implementação de Compressão (Gzip)
-  - **Quem:** Backend
-  - **O que:** Adicionar middleware de compressão (Gzip) para reduzir o tamanho das respostas HTTP.
-  - **Porquê:** Melhorar o tempo de carregamento para os clientes.
-  - **Complexidade:** Simples
-  - **Concluído:** [x]
-  - **Como foi feita:** Implementado o middleware `compression` do Express.js em `backend/src/app.ts` para habilitar a compressão Gzip nas respostas HTTP. Isso foi feito adicionando `import compression from 'compression';` e `app.use(compression());` após o `requestLogger`.
-  - **Hash do Commit:** 3b2ac57
-  - **Arquivos modificados:** backend/src/app.ts, backend/package.json, backend/package-lock.json
-  - **Observações:** A compressão Gzip foi adicionada para melhorar o tempo de carregamento para os clientes, reduzindo o tamanho das respostas HTTP.
 
