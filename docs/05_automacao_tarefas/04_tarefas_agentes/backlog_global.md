@@ -4,15 +4,11 @@
 
 Este é o backlog central do projeto GiroPro. Ele contém todas as demandas, épicos, features, bugs e débitos técnicos que precisam ser trabalhados pelos agentes.
 
+## Novas Tarefas
+
 ## Backlog Frontend
 
 ## Backlog Backend
-
-## Backlog Geral / Mobile
-
-## Demandas em Andamento
-
-
 
 ## Demandas Concluídas
 
