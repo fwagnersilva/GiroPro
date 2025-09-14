@@ -24,13 +24,9 @@ const app = express();
 const PORT = Number(config.port);
 
 // Middlewares
-app.use(helmet()); // Use Helmet para segurança
+app.use(helmet(config.security.helmet)); // Use Helmet para segurança
 app.disable('x-powered-by'); // Desabilita o cabeçalho X-Powered-By
-app.use(cors({
-  origin: '*', // Permite qualquer origem para desenvolvimento
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
-}));
+app.use(cors(config.cors));
 app.use(express.json());
 app.use(requestLogger);
 app.use(compression());

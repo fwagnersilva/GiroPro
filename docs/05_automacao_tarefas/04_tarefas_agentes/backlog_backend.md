@@ -103,7 +103,13 @@
   - O que: Realizar testes de estresse e funcionais para garantir que o rate limiting está funcionando conforme o esperado e ajustar as configurações se necessário.
   - Porquê: Validar a eficácia da implementação e evitar falsos positivos/negativos.
   - Complexidade: Média
-  - Status: Em Execução
+  - Concluído: [x]
+  - Como foi feita: Criado script de teste automatizado (test_rate_limiting.js) para validar o funcionamento do rate limiting. Testado rate limiting geral (100 req/15min) e de autenticação (5 req/15min). Validado que os headers de rate limit são retornados corretamente e que os limites são aplicados conforme esperado. Testes confirmaram que após 5 tentativas de login, o rate limiting bloqueia novas tentativas por 15 minutos.
+  - Hash do Commit: f20197960d3db285d21cd4d9424c433d10da7d82
+  - Arquivos modificados:
+    - `backend/test_rate_limiting.js` (novo arquivo de teste)
+    - `backend/package.json` (dependência axios para testes)
+  - Observações: Rate limiting funcionando perfeitamente. Testes automatizados validaram tanto o rate limiting geral quanto o específico para autenticação. Sistema pronto para produção.
 
 
 

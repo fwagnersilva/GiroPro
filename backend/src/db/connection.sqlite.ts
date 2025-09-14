@@ -4,7 +4,7 @@ import * as schema from './schema';
 import { config } from '../config';
 
 // Configuração otimizada para SQLite
-const dbPath = config.databaseUrl;
+const dbPath = config.database.url;
 console.log("DB Path:", dbPath);
 
 // Criar conexão com configurações otimizadas
