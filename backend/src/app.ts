@@ -1,6 +1,7 @@
 import express from 'express';
 import compression from 'compression';
 import helmet from 'helmet';
+import cors from 'cors';
 
 import { config } from './config';
 import { authRoutes } from './routes/auth';
@@ -14,14 +15,13 @@ import asyncHandler from '../../src/middlewares/asyncHandler';
 import { errorHandler } from './middlewares/errorHandler';
 import { requestLogger } from './middlewares/requestLogger';
 import { initializeTables } from './db/initTables';
-
-import exampleRoutes from '../../src/routes/exampleRoutes';
+import { authRateLimit, generalRateLimit } from './middlewares/rateLimiter';
 
 
 
 const app = express();
 
-const PORT = config.port;
+const PORT = Number(config.port);
 
 // Middlewares
 app.use(helmet()); // Use Helmet para segurança
@@ -35,14 +35,16 @@ app.use(express.json());
 app.use(requestLogger);
 app.use(compression());
 
+// Rate limiting geral
+app.use(generalRateLimit.middleware);
+
 // Routes básicas
-app.use('/api/v1/auth', authRoutes);
+app.use('/api/v1/auth', authRateLimit.middleware, authRoutes);
 app.use('/api/v1/users', userRoutes);
 app.use('/api/v1/vehicles', vehicleRoutes);
 app.use('/api/v1/journeys', journeyRoutes);
 app.use('/api/v1/fuelings', fuelingRoutes);
 app.use("/api/v1/expenses", expenseRoutes);
-app.use("/api/v1", exampleRoutes);
 
 // Health check
 app.get('/health', (req, res) => {

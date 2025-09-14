@@ -33,12 +33,7 @@
 
 
 
-- Tarefa: P1 - Análise de Queries Lentas (Otimização DB)
-  - Quem: Backend
-  - O que: Identificar as queries mais lentas e que consomem mais recursos no banco de dados.
-  - Porquê: Subtarefa da otimização do banco de dados para focar na identificação de gargalos.
-  - Complexidade: Simples
-  - Status: Execução II
+
 
 - Tarefa: P1 - Criação/Otimização de Índices (Otimização DB)
   - Quem: Backend
@@ -53,12 +48,7 @@
     - `docs/05_automacao_tarefas/04_tarefas_agentes/backlog_backend.md` (atualizado)
   - Observações: Sistema já estava bem otimizado. Todos os índices necessários implementados e funcionando eficientemente. Performance excelente sem queries lentas identificadas.
 
-- Tarefa: P1 - Revisão de ORM/SQL (Otimização DB)
-  - Quem: Backend
-  - O que: Otimizar as queries escritas em SQL ou através do ORM, aplicando melhores práticas.
-  - Porquê: Reduzir o tempo de execução das queries e o consumo de recursos.
-  - Complexidade: Simples
-  - Status: Execução II
+
 
 - Tarefa: P1 - Configuração do Banco de Dados (Otimização DB)
   - Quem: Backend
@@ -97,7 +87,7 @@
   - O que: Implementar a configuração básica de rate limiting em endpoints críticos (ex: login, registro).
   - Porquê: Proteger os endpoints mais vulneráveis a ataques.
   - Complexidade: Média
-  - Concluído: [ ]
+  - Status: Em Execução
 
 
 
@@ -107,7 +97,7 @@
   - O que: Realizar testes de estresse e funcionais para garantir que o rate limiting está funcionando conforme o esperado e ajustar as configurações se necessário.
   - Porquê: Validar a eficácia da implementação e evitar falsos positivos/negativos.
   - Complexidade: Média
-  - Concluído: [ ]
+  - Status: Em Execução
 
 
 
@@ -117,7 +107,7 @@
   - O que: Criar o arquivo `config.ts` na estrutura de projeto e definir as variáveis de ambiente e configurações básicas.
   - Porquê: Iniciar a centralização das configurações da aplicação.
   - Complexidade: Simples
-  - Concluído: [ ]
+  - Status: Em Execução
 
 
 
@@ -127,7 +117,7 @@
   - O que: Migrar as configurações existentes espalhadas pelo código para o novo arquivo `config.ts`.
   - Porquê: Consolidar todas as configurações em um único local.
   - Complexidade: Média
-  - Concluído: [ ]
+  - Status: Em Execução
 
 
 
@@ -137,6 +127,6 @@
   - O que: Atualizar todas as referências de configuração no código para utilizar as variáveis definidas em `config.ts`.
   - Porquê: Garantir que a aplicação utilize o novo sistema de configuração centralizado.
   - Complexidade: Média
-  - Concluído: [ ]
+  - Status: Em Execução
 
 
