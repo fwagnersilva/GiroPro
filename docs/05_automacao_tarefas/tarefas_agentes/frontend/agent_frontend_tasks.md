@@ -18,8 +18,8 @@
 - [ ] **P0 - Debug do fluxo React**
 - [ ] **P0 - Verificar renderização condicional do componente Dashboard**
 - [x] **P0 - Implementar navegação entre estados após login**
-- [ ] **P0 - Investigar problema de eventos JavaScript**
+- [x] **P0 - Investigar problema de eventos JavaScript**
 - [x] **P0 - Testar versão HTML pura para isolar o problema**
 - [ ] **P0 - Verificar se o Vite está compilando corretamente o TypeScript**
 - [ ] **P0 - Debug do fluxo de eventos**
-- [ ] **P0 - Criar versão HTML pura funcional de login com JavaScript vanilla como fallback**
+- [x] **P0 - Criar versão HTML pura funcional de login com JavaScript vanilla como fallback**
