@@ -75,7 +75,7 @@
   - O que: Identificar as queries mais lentas e que consomem mais recursos no banco de dados.
   - Porquê: Subtarefa da otimização do banco de dados para focar na identificação de gargalos.
   - Complexidade: Simples
-  - Concluído: [ ]
+  - Status: Em Execução
 
 - Tarefa: P1 - Criação/Otimização de Índices (Otimização DB)
   - Quem: Backend

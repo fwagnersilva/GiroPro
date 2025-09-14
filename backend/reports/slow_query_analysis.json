@@ -1,0 +1,314 @@
+{
+  "timestamp": "2025-09-14T18:04:23.255Z",
+  "summary": {
+    "totalQueries": 5,
+    "slowQueries": 0,
+    "averageExecutionTime": 0.2,
+    "totalIndexes": 36
+  },
+  "queryAnalysis": [
+    {
+      "name": "Listar usuários ativos",
+      "query": "SELECT * FROM usuarios WHERE statusConta = 'ativo' LIMIT 10",
+      "executionTime": 1,
+      "rowsAffected": 1,
+      "explanation": [
+        {
+          "id": 3,
+          "parent": 0,
+          "notused": 16,
+          "detail": "SCAN usuarios"
+        }
+      ],
+      "timestamp": "2025-09-14T18:04:23.252Z"
+    },
+    {
+      "name": "Buscar jornadas por usuário",
+      "query": "SELECT * FROM jornadas WHERE idUsuario = 'test-user' ORDER BY dataInicio DESC LIMIT 20",
+      "executionTime": 0,
+      "rowsAffected": 0,
+      "explanation": [
+        {
+          "id": 5,
+          "parent": 0,
+          "notused": 62,
+          "detail": "SEARCH jornadas USING INDEX idx_jornadas_usuario_data (idUsuario=?)"
+        }
+      ],
+      "timestamp": "2025-09-14T18:04:23.253Z"
+    },
+    {
+      "name": "Relatório de jornadas com JOIN",
+      "query": "SELECT j.*, v.marca, v.modelo \n                FROM jornadas j \n                JOIN veiculos v ON j...",
+      "executionTime": 0,
+      "rowsAffected": 0,
+      "explanation": [
+        {
+          "id": 5,
+          "parent": 0,
+          "notused": 62,
+          "detail": "SEARCH j USING INDEX idx_jornadas_dashboard (idUsuario=?)"
+        },
+        {
+          "id": 10,
+          "parent": 0,
+          "notused": 46,
+          "detail": "SEARCH v USING INDEX sqlite_autoindex_veiculos_1 (id=?)"
+        }
+      ],
+      "timestamp": "2025-09-14T18:04:23.253Z"
+    },
+    {
+      "name": "Agregação de ganhos mensais",
+      "query": "SELECT \n                  COUNT(*) as totalJornadas,\n                  SUM(ganhoBruto) as totalGanho...",
+      "executionTime": 0,
+      "rowsAffected": 1,
+      "explanation": [
+        {
+          "id": 3,
+          "parent": 0,
+          "notused": 47,
+          "detail": "SEARCH jornadas USING COVERING INDEX idx_jornadas_dashboard (idUsuario=? AND dataInicio>?)"
+        }
+      ],
+      "timestamp": "2025-09-14T18:04:23.253Z"
+    },
+    {
+      "name": "Dashboard com múltiplas subconsultas",
+      "query": "SELECT \n                  (SELECT COUNT(*) FROM jornadas WHERE idUsuario = 'test-user') as totalJorn...",
+      "executionTime": 0,
+      "rowsAffected": 1,
+      "explanation": [
+        {
+          "id": 1,
+          "parent": 0,
+          "notused": 0,
+          "detail": "SCAN CONSTANT ROW"
+        },
+        {
+          "id": 4,
+          "parent": 0,
+          "notused": 0,
+          "detail": "SCALAR SUBQUERY 1"
+        },
+        {
+          "id": 9,
+          "parent": 4,
+          "notused": 54,
+          "detail": "SEARCH jornadas USING COVERING INDEX idx_jornadas_dashboard (idUsuario=?)"
+        },
+        {
+          "id": 22,
+          "parent": 0,
+          "notused": 0,
+          "detail": "SCALAR SUBQUERY 2"
+        },
+        {
+          "id": 27,
+          "parent": 22,
+          "notused": 53,
+          "detail": "SEARCH veiculos USING COVERING INDEX idx_veiculos_usuario (idUsuario=?)"
+        },
+        {
+          "id": 40,
+          "parent": 0,
+          "notused": 0,
+          "detail": "SCALAR SUBQUERY 3"
+        },
+        {
+          "id": 45,
+          "parent": 40,
+          "notused": 54,
+          "detail": "SEARCH abastecimentos USING COVERING INDEX idx_abastecimentos_dashboard (idUsuario=?)"
+        }
+      ],
+      "timestamp": "2025-09-14T18:04:23.254Z"
+    }
+  ],
+  "indexAnalysis": {
+    "total": 36,
+    "indexes": [
+      {
+        "name": "idx_abastecimentos_active",
+        "table": "abastecimentos",
+        "sql": "CREATE INDEX idx_abastecimentos_active ON abastecimentos(deletedAt) WHERE deletedAt IS NULL"
+      },
+      {
+        "name": "idx_abastecimentos_combustivel",
+        "table": "abastecimentos",
+        "sql": "CREATE INDEX idx_abastecimentos_combustivel ON abastecimentos(tipoCombustivel)"
+      },
+      {
+        "name": "idx_abastecimentos_dashboard",
+        "table": "abastecimentos",
+        "sql": "CREATE INDEX idx_abastecimentos_dashboard ON abastecimentos(idUsuario, dataAbastecimento, valorTotal)"
+      },
+      {
+        "name": "idx_abastecimentos_data",
+        "table": "abastecimentos",
+        "sql": "CREATE INDEX idx_abastecimentos_data ON abastecimentos(dataAbastecimento)"
+      },
+      {
+        "name": "idx_abastecimentos_usuario",
+        "table": "abastecimentos",
+        "sql": "CREATE INDEX idx_abastecimentos_usuario ON abastecimentos(idUsuario)"
+      },
+      {
+        "name": "idx_abastecimentos_usuario_data",
+        "table": "abastecimentos",
+        "sql": "CREATE INDEX idx_abastecimentos_usuario_data ON abastecimentos(idUsuario, dataAbastecimento)"
+      },
+      {
+        "name": "idx_abastecimentos_veiculo",
+        "table": "abastecimentos",
+        "sql": "CREATE INDEX idx_abastecimentos_veiculo ON abastecimentos(idVeiculo)"
+      },
+      {
+        "name": "idx_abastecimentos_veiculo_data",
+        "table": "abastecimentos",
+        "sql": "CREATE INDEX idx_abastecimentos_veiculo_data ON abastecimentos(idVeiculo, dataAbastecimento)"
+      },
+      {
+        "name": "idx_despesas_active",
+        "table": "despesas",
+        "sql": "CREATE INDEX idx_despesas_active ON despesas(deletedAt) WHERE deletedAt IS NULL"
+      },
+      {
+        "name": "idx_despesas_dashboard",
+        "table": "despesas",
+        "sql": "CREATE INDEX idx_despesas_dashboard ON despesas(idUsuario, dataDespesa, valorDespesa)"
+      },
+      {
+        "name": "idx_despesas_data",
+        "table": "despesas",
+        "sql": "CREATE INDEX idx_despesas_data ON despesas(dataDespesa)"
+      },
+      {
+        "name": "idx_despesas_tipo",
+        "table": "despesas",
+        "sql": "CREATE INDEX idx_despesas_tipo ON despesas(tipoDespesa)"
+      },
+      {
+        "name": "idx_despesas_usuario",
+        "table": "despesas",
+        "sql": "CREATE INDEX idx_despesas_usuario ON despesas(idUsuario)"
+      },
+      {
+        "name": "idx_despesas_usuario_data",
+        "table": "despesas",
+        "sql": "CREATE INDEX idx_despesas_usuario_data ON despesas(idUsuario, dataDespesa)"
+      },
+      {
+        "name": "idx_despesas_veiculo",
+        "table": "despesas",
+        "sql": "CREATE INDEX idx_despesas_veiculo ON despesas(idVeiculo)"
+      },
+      {
+        "name": "idx_despesas_veiculo_data",
+        "table": "despesas",
+        "sql": "CREATE INDEX idx_despesas_veiculo_data ON despesas(idVeiculo, dataDespesa)"
+      },
+      {
+        "name": "idx_jornadas_active",
+        "table": "jornadas",
+        "sql": "CREATE INDEX idx_jornadas_active ON jornadas(deletedAt) WHERE deletedAt IS NULL"
+      },
+      {
+        "name": "idx_jornadas_dashboard",
+        "table": "jornadas",
+        "sql": "CREATE INDEX idx_jornadas_dashboard ON jornadas(idUsuario, dataInicio, dataFim, ganhoBruto)"
+      },
+      {
+        "name": "idx_jornadas_data_fim",
+        "table": "jornadas",
+        "sql": "CREATE INDEX idx_jornadas_data_fim ON jornadas(dataFim)"
+      },
+      {
+        "name": "idx_jornadas_data_inicio",
+        "table": "jornadas",
+        "sql": "CREATE INDEX idx_jornadas_data_inicio ON jornadas(dataInicio)"
+      },
+      {
+        "name": "idx_jornadas_periodo",
+        "table": "jornadas",
+        "sql": "CREATE INDEX idx_jornadas_periodo ON jornadas(idUsuario, dataInicio, dataFim)"
+      },
+      {
+        "name": "idx_jornadas_status",
+        "table": "jornadas",
+        "sql": "CREATE INDEX idx_jornadas_status ON jornadas(dataFim) WHERE dataFim IS NULL"
+      },
+      {
+        "name": "idx_jornadas_usuario",
+        "table": "jornadas",
+        "sql": "CREATE INDEX idx_jornadas_usuario ON jornadas(idUsuario)"
+      },
+      {
+        "name": "idx_jornadas_usuario_data",
+        "table": "jornadas",
+        "sql": "CREATE INDEX idx_jornadas_usuario_data ON jornadas(idUsuario, dataInicio)"
+      },
+      {
+        "name": "idx_jornadas_veiculo",
+        "table": "jornadas",
+        "sql": "CREATE INDEX idx_jornadas_veiculo ON jornadas(idVeiculo)"
+      },
+      {
+        "name": "idx_jornadas_veiculo_data",
+        "table": "jornadas",
+        "sql": "CREATE INDEX idx_jornadas_veiculo_data ON jornadas(idVeiculo, dataInicio)"
+      },
+      {
+        "name": "idx_usuarios_active",
+        "table": "usuarios",
+        "sql": "CREATE INDEX idx_usuarios_active ON usuarios(deletedAt) WHERE deletedAt IS NULL"
+      },
+      {
+        "name": "idx_usuarios_atividade",
+        "table": "usuarios",
+        "sql": "CREATE INDEX idx_usuarios_atividade ON usuarios(ultimaAtividade)"
+      },
+      {
+        "name": "idx_usuarios_email",
+        "table": "usuarios",
+        "sql": "CREATE INDEX idx_usuarios_email ON usuarios(email)"
+      },
+      {
+        "name": "idx_usuarios_nivel",
+        "table": "usuarios",
+        "sql": "CREATE INDEX idx_usuarios_nivel ON usuarios(nivelUsuario)"
+      },
+      {
+        "name": "idx_usuarios_pontos",
+        "table": "usuarios",
+        "sql": "CREATE INDEX idx_usuarios_pontos ON usuarios(pontosTotal)"
+      },
+      {
+        "name": "idx_usuarios_status",
+        "table": "usuarios",
+        "sql": "CREATE INDEX idx_usuarios_status ON usuarios(statusConta)"
+      },
+      {
+        "name": "idx_veiculos_active",
+        "table": "veiculos",
+        "sql": "CREATE INDEX idx_veiculos_active ON veiculos(deletedAt) WHERE deletedAt IS NULL"
+      },
+      {
+        "name": "idx_veiculos_placa",
+        "table": "veiculos",
+        "sql": "CREATE INDEX idx_veiculos_placa ON veiculos(placa)"
+      },
+      {
+        "name": "idx_veiculos_tipo",
+        "table": "veiculos",
+        "sql": "CREATE INDEX idx_veiculos_tipo ON veiculos(tipoUso)"
+      },
+      {
+        "name": "idx_veiculos_usuario",
+        "table": "veiculos",
+        "sql": "CREATE INDEX idx_veiculos_usuario ON veiculos(idUsuario)"
+      }
+    ]
+  },
+  "recommendations": []
+}

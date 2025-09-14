@@ -1,0 +1,29 @@
+{
+  "timestamp": "2025-09-14T18:05:19.486Z",
+  "monitoring": {
+    "totalQueries": 50,
+    "slowQueries": 0,
+    "slowQueryThreshold": 100,
+    "averageExecutionTime": 0.04
+  },
+  "patterns": {
+    "patterns": {
+      "select": 50
+    },
+    "tableUsage": {
+      "jornadas": 28,
+      "veiculos": 8,
+      "abastecimentos": 7,
+      "usuarios": 15
+    },
+    "methodUsage": {
+      "all": 50,
+      "get": 0,
+      "run": 0
+    }
+  },
+  "slowestQueries": [],
+  "recommendations": [
+    "Muitas queries retornando múltiplos resultados - considerar paginação"
+  ]
+}
