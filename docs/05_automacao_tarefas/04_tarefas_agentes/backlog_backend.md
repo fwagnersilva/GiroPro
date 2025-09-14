@@ -15,6 +15,7 @@
   - **Complexidade:** Complexa
   - **Status:** Concluída [x]
   - **Como foi feita:** Criado o middleware `asyncHandler.js` para encapsular funções assíncronas e tratar erros de forma centralizada. Integrado ao `app.ts` para uso em rotas.
+  - **Hash do Commit:** 5ca9e8a8bb0c0ad68282d8a860c82453da9ea41b
   - **Arquivos modificados:**
     - `src/middlewares/asyncHandler.js`
     - `backend/src/app.ts`
@@ -27,6 +28,7 @@
   - **Complexidade:** Simples
   - **Concluído:** [x]
   - **Como foi feita:** O endpoint `/api/test` foi comentado no arquivo `backend/src/app.ts` para desabilitá-lo em produção.
+  - **Hash do Commit:** 5ca9e8a8bb0c0ad68282d8a860c82453da9ea41b
   - **Arquivos modificados:**
     - `backend/src/app.ts`
 
@@ -37,6 +39,7 @@
   - **Complexidade:** Simples
   - **Concluído:** [x]
   - **Como foi feita:** O import de `fuelPricesRoutes` foi removido do arquivo `backend/src/app.ts`, pois não estava sendo utilizado. Não havia uso explícito da rota no arquivo principal.
+  - **Hash do Commit:** 5ca9e8a8bb0c0ad68282d8a860c82453da9ea41b
   - **Arquivos modificados:**
     - `backend/src/app.ts`
 
@@ -47,6 +50,7 @@
   - **Complexidade:** Simples
   - **Concluído:** [x]
   - **Como foi feita:** Os imports do arquivo `backend/src/app.ts` foram reorganizados para seguir um padrão de legibilidade e manutenção.
+  - **Hash do Commit:** 5ca9e8a8bb0c0ad68282d8a860c82453da9ea41b
   - **Arquivos modificados:**
     - `backend/src/app.ts`
 
@@ -57,9 +61,11 @@
   - **O que:** Revisar e atualizar a documentação da API de autenticação.
   - **Porquê:** Manter a documentação precisa e atualizada.
   - **Complexidade:** Simples
-  - **Concluído:** [ ]
-  - **Comentários:** 
-  - **Hash do Commit:**
+  - **Status:** Concluída [x]
+  - **Como foi feita:** Criada uma versão atualizada da documentação da API incluindo as melhorias implementadas: middleware de tratamento de erros assíncronos, remoção do endpoint /api/test, reorganização de imports e remoção de rotas não utilizadas. Adicionados exemplos de uso e changelog.
+  - **Hash do Commit:** 
+  - **Arquivos modificados:**
+    - `docs/04_referencias/02_api_documentation_updated.md`
 
 
 
