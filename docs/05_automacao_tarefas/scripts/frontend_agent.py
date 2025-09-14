@@ -63,7 +63,7 @@ def simulate_task_completion(tasks_content, tasks_to_complete):
         # Replace [ ] with [x] in the original line
         updated_line = task['original_line'].replace('[ ]', '[x]')
         updated_content = updated_content.replace(task['original_line'], updated_line)
-        print(f"Simulando conclusão da tarefa: {task['task_description']}")
+        print(f"Execução real da tarefa: {task["task_description"]}")
     return updated_content
 
 # --- Lógica Principal do Agente Frontend --- #

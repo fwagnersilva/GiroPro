@@ -287,7 +287,7 @@ Desenvolver telas simples e layouts básicos para o frontend do GiroPro (React N
 
 ## 🎯 Missão
 
-Criar e executar testes End-to-End (E2E) simples para o sistema GiroPro, simulando interações básicas do usuário para garantir que os fluxos críticos funcionem corretamente do início ao fim.
+Criar e executar testes End-to-End (E2E) simples para o sistema GiroPro, Executando interações básicas do usuário para garantir que os fluxos críticos funcionem corretamente do início ao fim.
 
 ## 📋 Responsabilidades
 
@@ -300,7 +300,7 @@ Criar e executar testes End-to-End (E2E) simples para o sistema GiroPro, simulan
 
 - **Frameworks:** Playwright, Cypress, Detox (para React Native).
 - **Linguagens:** JavaScript, TypeScript.
-- **Habilidades:** Automação de testes, simulação de usuário, depuração de testes.
+- **Habilidades:** Automação de testes, execução real de tarefas de usuário, depuração de testes.
 
 ## 🔄 Fluxo de Trabalho
 

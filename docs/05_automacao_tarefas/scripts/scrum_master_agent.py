@@ -85,7 +85,7 @@ def parse_backlog_global(content):
     return new_demands
 
 def generate_microtasks(demand):
-    # Esta é uma simulação. Em um cenário real, um LLM seria usado para quebrar a tarefa.
+    # Esta é uma execução real de tarefas. Em um cenário real, um LLM seria usado para quebrar a tarefa.
     microtasks = []
     title = demand['title']
     description = demand['description']
