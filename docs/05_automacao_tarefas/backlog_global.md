@@ -80,3 +80,13 @@ Este é o backlog central do projeto GiroPro. Ele contém todas as demandas, ép
   - [ ] **P1 - Implementar funcionalidade de Adicionar Despesa Manualmente**
   - Descrição: Desenvolver a funcionalidade para que os usuários possam adicionar despesas manualmente através de um formulário na aplicação. (Complexidade: Média)
 
+
+
+- [ ] **[P1-SIMPLES]** Criar componente de botão reutilizável (Frontend)
+  - **Descrição**: Desenvolver um componente de botão genérico para ser usado em toda a aplicação.
+  - **Equipe**: Frontend
+  - **Status**: Pendente
+  - **Branch Sugerida**: feature/reusable-button-component
+  - **Última Atualização**: 2025-09-14 11:00:00
+
+
