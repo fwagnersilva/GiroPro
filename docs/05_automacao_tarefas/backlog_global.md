@@ -72,3 +72,9 @@ Este é o backlog central do projeto GiroPro. Ele contém todas as demandas, ép
   - Status: Concluído pelo Agente de Backend (Agent_09).
 
 
+
+
+- [ ] **P1 - Implementar funcionalidade de Adicionar Despesa Manualmente**
+  - Descrição: Desenvolver a funcionalidade para que os usuários possam adicionar despesas manualmente através de um formulário na aplicação. (Complexidade: Média)
+
+
