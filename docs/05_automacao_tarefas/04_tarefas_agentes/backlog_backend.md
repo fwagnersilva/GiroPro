@@ -16,7 +16,7 @@
   - **O que:** Adicionar middleware de compressão (Gzip) para reduzir o tamanho das respostas HTTP.
   - **Porquê:** Melhorar o tempo de carregamento para os clientes.
   - **Complexidade:** Simples
-  - **Concluído:** [ ]
+  - **Status:** [Em Execução]
   - **Comentários:**
   - **Hash do Commit:**
 
