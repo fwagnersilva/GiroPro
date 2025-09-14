@@ -12,12 +12,12 @@
 
 
 - [ ] **P1 - Criar componente FormInput**
-- [ ] **P1 - Criar tela AddExpenseScreen**
+- [x] **P1 - Criar tela AddExpenseScreen**
 - [ ] **P1 - Implementar estado para o formulário**
 - [ ] **P0 - Investigar AuthProvider e useAuth hook**
 - [ ] **P0 - Debug do fluxo React**
 - [ ] **P0 - Verificar renderização condicional do componente Dashboard**
-- [ ] **P0 - Implementar navegação entre estados após login**
+- [x] **P0 - Implementar navegação entre estados após login**
 - [ ] **P0 - Investigar problema de eventos JavaScript**
 - [ ] **P0 - Testar versão HTML pura para isolar o problema**
 - [ ] **P0 - Verificar se o Vite está compilando corretamente o TypeScript**
