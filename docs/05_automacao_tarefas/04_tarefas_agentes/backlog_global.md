@@ -129,3 +129,132 @@ Este é o backlog central do projeto GiroPro. Ele contém todas as demandas, ép
   - **Hash do Commit:**
 
 
+
+
+## Backlog Geral / Mobile
+
+- **Tarefa:** P3 - Organização de Imports
+  - **Quem:** Frontend/Backend
+  - **O que:** Padronizar a organização dos imports em todos os arquivos.
+  - **Porquê:** Melhorar a legibilidade e manutenção do código.
+  - **Concluído:** [ ]
+  - **Comentários:**
+  - **Hash do Commit:**
+
+- **Tarefa:** P3 - Adicionar Validação de Campos Específicos (Android, iOS)
+  - **Quem:** Frontend (Mobile)
+  - **O que:** Implementar validações específicas como formato de placa, valores monetários e datas nos formulários.
+  - **Porquê:** Garantir a integridade dos dados e melhorar a experiência do usuário.
+  - **Concluído:** [ ]
+  - **Comentários:**
+  - **Hash do Commit:**
+
+- **Tarefa:** P3 - Melhorar Feedback Visual (Web, Android, iOS)
+  - **Quem:** Frontend
+  - **O que:** Adicionar loading states, success messages e error handling mais robustos nas operações CRUD.
+  - **Porquê:** Fornecer uma experiência de usuário mais clara e responsiva.
+  - **Concluído:** [ ]
+  - **Comentários:**
+  - **Hash do Commit:**
+
+- **Tarefa:** P3 - Reorganizar Hierarquia de Campos (Android, iOS)
+  - **Quem:** Frontend (Mobile)
+  - **O que:** Otimizar a disposição dos campos no formulário para seguir um fluxo lógico e intuitivo de preenchimento.
+  - **Porquê:** Priorizar campos obrigatórios e de maior impacto visual para melhorar a usabilidade.
+  - **Concluído:** [ ]
+  - **Comentários:**
+  - **Hash do Commit:**
+
+- **Tarefa:** P3 - Adicionar Validação em Tempo Real (Android, iOS)
+  - **Quem:** Frontend (Mobile)
+  - **O que:** Fornecer feedback imediato e claro ao usuário sobre a validade dos dados inseridos.
+  - **Porquê:** Melhorar a experiência do usuário e reduzir erros de entrada.
+  - **Concluído:** [ ]
+  - **Comentários:**
+  - **Hash do Commit:**
+
+- **Tarefa:** P3 - Melhorar Feedback Visual e Microinterações (Web, Android, iOS)
+  - **Quem:** Frontend
+  - **O que:** Tornar a interface mais dinâmica e responsiva através de animações e microinterações.
+  - **Porquê:** Aumentar o engajamento e a satisfação do usuário.
+  - **Concluído:** [ ]
+  - **Comentários:**
+  - **Hash do Commit:**
+
+- **Tarefa:** P3 - Ícones e Elementos Visuais (Web, Android, iOS)
+  - **Quem:** Frontend
+  - **O que:** Tornar a interface mais informativa e agradável visualmente com o uso de ícones e outros elementos gráficos.
+  - **Porquê:** Melhorar a compreensão e a estética da interface.
+  - **Concluído:** [ ]
+  - **Comentários:**
+  - **Hash do Commit:**
+
+- **Tarefa:** P3 - Cores e Contraste (Web, Android, iOS)
+  - **Quem:** Frontend
+  - **O que:** Garantir que a paleta de cores seja esteticamente agradável, funcional e acessível.
+  - **Porquê:** Melhorar a experiência visual e a acessibilidade para todos os usuários.
+  - **Concluído:** [ ]
+  - **Comentários:**
+  - **Hash do Commit:**
+
+- **Tarefa:** P3 - Layout e Espaçamento (Web, Android, iOS)
+  - **Quem:** Frontend
+  - **O que:** Criar um layout bem estruturado e responsivo que se adapte a diferentes tamanhos de tela.
+  - **Porquê:** Garantir uma experiência consistente e agradável em diversos dispositivos.
+  - **Concluído:** [ ]
+  - **Comentários:**
+  - **Hash do Commit:**
+
+- **Tarefa:** P3 - Animações e Transições (Web, Android, iOS)
+  - **Quem:** Frontend
+  - **O que:** Adicionar movimento à interface para torná-la mais dinâmica e engajante.
+  - **Porquê:** Melhorar a fluidez e a percepção de responsividade da aplicação.
+  - **Concluído:** [ ]
+  - **Comentários:**
+  - **Hash do Commit:**
+
+- **Tarefa:** P3 - Feedback Háptico (Mobile)
+  - **Quem:** Frontend (Mobile)
+  - **O que:** Utilizar a vibração do dispositivo para fornecer feedback.
+  - **Porquê:** Aumentar a imersão e a resposta tátil do usuário em dispositivos móveis.
+  - **Concluído:** [ ]
+  - **Comentários:**
+  - **Hash do Commit:**
+
+## Demandas em Andamento
+
+- **Tarefa:** P0 - Corrigir bug de login
+  - **Quem:** Agente de Testes (Agent_19)
+  - **O que:** Usuários não conseguem fazer login após a última atualização.
+  - **Porquê:** O bug impede o acesso à aplicação.
+  - **Concluído:** [ ]
+  - **Comentários:** Em análise.
+  - **Hash do Commit:**
+
+## Demandas Concluídas
+
+- **Tarefa:** P2 - Atualizar documentação de API
+  - **Quem:** Backend
+  - **O que:** Revisar e atualizar a documentação da API de autenticação.
+  - **Porquê:** Manter a documentação precisa e atualizada.
+  - **Concluído:** [x]
+  - **Comentários:** Documentação da API de autenticação revisada e atualizada.
+  - **Hash do Commit:** [Adicionar hash do commit aqui]
+
+- **Tarefa:** P1 - Implementar funcionalidade de Adicionar Despesa Manualmente
+  - **Quem:** Backend/Frontend
+  - **O que:** Desenvolver a funcionalidade para que os usuários possam adicionar despesas manualmente através de um formulário na aplicação.
+  - **Porquê:** Permitir que os usuários registrem despesas que não são automaticamente capturadas.
+  - **Concluído:** [x]
+  - **Comentários:** Funcionalidade implementada no backend e frontend.
+  - **Hash do Commit:** [Adicionar hash do commit aqui]
+
+- **Tarefa:** P1 - Criar componente de botão reutilizável (Frontend)
+  - **Quem:** Frontend
+  - **O que:** Desenvolver um componente de botão genérico para ser usado em toda a aplicação.
+  - **Porquê:** Padronizar a interface e facilitar o desenvolvimento.
+  - **Concluído:** [ ]
+  - **Comentários:** Pendente.
+  - **Hash do Commit:**
+
+
