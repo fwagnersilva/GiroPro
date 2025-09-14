@@ -233,13 +233,7 @@ Este é o backlog central do projeto GiroPro. Ele contém todas as demandas, ép
 
 ## Demandas Concluídas
 
-- **Tarefa:** P2 - Atualizar documentação de API
-  - **Quem:** Backend
-  - **O que:** Revisar e atualizar a documentação da API de autenticação.
-  - **Porquê:** Manter a documentação precisa e atualizada.
-  - **Concluído:** [x]
-  - **Comentários:** Documentação da API de autenticação revisada e atualizada.
-  - **Hash do Commit:** [Adicionar hash do commit aqui]
+
 
 - **Tarefa:** P1 - Implementar funcionalidade de Adicionar Despesa Manualmente
   - **Quem:** Backend/Frontend
@@ -249,12 +243,28 @@ Este é o backlog central do projeto GiroPro. Ele contém todas as demandas, ép
   - **Comentários:** Funcionalidade implementada no backend e frontend.
   - **Hash do Commit:** [Adicionar hash do commit aqui]
 
+**
+
+
+
+
 - **Tarefa:** P1 - Criar componente de botão reutilizável (Frontend)
   - **Quem:** Frontend
   - **O que:** Desenvolver um componente de botão genérico para ser usado em toda a aplicação.
   - **Porquê:** Padronizar a interface e facilitar o desenvolvimento.
-  - **Concluído:** [ ]
-  - **Comentários:** Pendente.
-  - **Hash do Commit:**
+  - **Concluído:** [x]
+  - **Comentários:** Concluído.
+  - **Hash do Commit:** [Adicionar hash do commit aqui]
+
+
+
+
+- **Tarefa:** P2 - Atualizar documentação de API
+  - **Quem:** Backend
+  - **O que:** Revisar e atualizar a documentação da API de autenticação.
+  - **Porquê:** Manter a documentação precisa e atualizada.
+  - **Concluído:** [x]
+  - **Comentários:** Documentação da API de autenticação revisada e atualizada.
+  - **Hash do Commit:** [Adicionar hash do commit aqui]
 
 
