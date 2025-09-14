@@ -11,6 +11,6 @@
 <!-- As tarefas delegadas pelo sistema ou por outros agentes serão adicionadas aqui. Não edite esta seção manualmente. -->
 
 
-- [ ] **P1 - Verificar/atualizar schema do banco de dados**
+- [x] **P1 - Verificar/atualizar schema do banco de dados**
 - [x] **P1 - Criar rota POST /expenses**
-- [ ] **P1 - Implementar ExpensesController**
+- [x] **P1 - Implementar ExpensesController**
