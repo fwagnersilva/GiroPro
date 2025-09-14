@@ -82,6 +82,7 @@
 4.  **Monitorar e Atualizar:**
     *   Verificar tarefas que foram marcadas como `Concluído: [x]` pelos agentes Frontend/Backend.
     *   Garantir que todos os campos de conclusão (`Como foi feita`, `Hash do Commit`, `Arquivos modificados`, `Observações`) estejam preenchidos.
+    *   **Mover as tarefas concluídas para a seção 'Demandas Concluídas' no final do backlog.**
     *   Manter o backlog global atualizado.
 5.  **Finalizar:** Realizar `git push` para enviar as alterações ao repositório remoto.
 
