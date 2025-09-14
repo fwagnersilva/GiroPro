@@ -87,7 +87,13 @@
   - O que: Implementar a configuração básica de rate limiting em endpoints críticos (ex: login, registro).
   - Porquê: Proteger os endpoints mais vulneráveis a ataques.
   - Complexidade: Média
-  - Status: Em Execução
+  - Concluído: [x]
+  - Como foi feita: Implementado rate limiting usando o middleware existente rateLimiter.ts. Aplicado rate limiting geral (100 req/15min) para toda a API e rate limiting específico para autenticação (5 req/15min). Adicionado import do CORS que estava faltando e corrigido tipo da porta. Removido import problemático do exampleRoutes para evitar erros de módulo.
+  - Hash do Commit: 82fc4f6ab8162d838e17ce38ca0be978c5958091
+  - Arquivos modificados:
+    - `backend/src/app.ts` (adicionado rate limiting, import CORS, correção de tipos)
+    - `backend/package.json` (dependência express-rate-limit)
+  - Observações: Rate limiting implementado com sucesso. Endpoints de autenticação protegidos com limite mais restritivo. Sistema testado e funcionando corretamente.
 
 
 

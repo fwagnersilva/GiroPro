@@ -24,15 +24,24 @@ Emitted 'error' event on ReadStream instance at:
 }
 
 Node.js v22.13.0
-🚀 Servidor rodando na porta 3000
-📊 Health check: http://localhost:3000/health
-[2025-07-25T16:42:41.549Z] GET /health
-[2025-07-25T16:42:46.559Z] GET /api/v1/fuelings
-[2025-07-25T16:42:51.183Z] GET /api/v1/expenses
-[2025-07-25T16:42:56.797Z] POST /api/v1/auth/register
-[2025-07-25T16:43:01.311Z] POST /api/v1/auth/register
-[2025-07-25T17:00:03.198Z] GET /health
-[2025-07-25T17:00:09.169Z] GET /api/v1/dashboard/summary
-[2025-07-25T17:00:14.199Z] GET /api/v1/fuel-prices
-[2025-07-25T17:00:19.969Z] POST /api/v1/auth/register
-[2025-07-25T17:01:52.924Z] POST /api/v1/auth/register
+DB Path: giropro.db
+SQLite Pragmas aplicados:
+  journal_mode: [{"journal_mode":"wal"}]
+  synchronous: [{"synchronous":1}]
+  cache_size: [{"cache_size":2000}]
+  temp_store: [{"temp_store":2}]
+  mmap_size: [{"mmap_size":268435456}]
+  optimize: []
+  foreign_keys: [{"foreign_keys":1}]
+  busy_timeout: [{"timeout":30000}]
+Error: listen EADDRINUSE: address already in use 0.0.0.0:3000
+    at Server.setupListenHandle [as _listen2] (node:net:1937:16)
+    at listenInCluster (node:net:1994:12)
+    at node:net:2203:7
+    at processTicksAndRejections (node:internal/process/task_queues:90:21) {
+  code: 'EADDRINUSE',
+  errno: -98,
+  syscall: 'listen',
+  address: '0.0.0.0',
+  port: 3000
+}
