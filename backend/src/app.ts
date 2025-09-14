@@ -1,6 +1,5 @@
 import express from 'express';
-import dotenv from 'dotenv';
-import cors from 'cors';
+import { config } from './config';
 import { authRoutes } from './routes/auth';
 import { userRoutes } from './routes/users';
 import { vehicleRoutes } from './routes/vehicles';
@@ -15,19 +14,11 @@ import { initializeTables } from './db/initTables';
 
 import helmet from 'helmet';
 
-dotenv.config({ path: __dirname + '/../.env' });
+
 
 const app = express();
 
-const rawPort = process.env.PORT;
-let PORT: number;
-
-if (rawPort && !isNaN(parseInt(rawPort))) {
-  PORT = parseInt(rawPort);
-} else {
-  PORT = 3000;
-  console.warn(`⚠️ Variável de ambiente PORT inválida ou não definida. Usando a porta padrão: ${PORT}`);
-}
+const PORT = config.port;
 
 // Middlewares
 app.use(helmet()); // Use Helmet para segurança
