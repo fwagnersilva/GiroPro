@@ -12,5 +12,5 @@
 
 
 - [ ] **P1 - Verificar/atualizar schema do banco de dados**
-- [ ] **P1 - Criar rota POST /expenses**
+- [x] **P1 - Criar rota POST /expenses**
 - [ ] **P1 - Implementar ExpensesController**
