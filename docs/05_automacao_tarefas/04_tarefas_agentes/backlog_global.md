@@ -11,27 +11,6 @@ Este é o backlog central do projeto GiroPro. Ele contém todas as demandas, ép
 
 ## Demandas Concluídas
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 - Tarefa: P2 - Tratamento de Erros Assíncronos em Rotas (Async Handler)
   - Quem: Backend
   - O que: Implementar um wrapper para lidar com erros em rotas assíncronas.
@@ -45,9 +24,6 @@ Este é o backlog central do projeto GiroPro. Ele contém todas as demandas, ép
     - `backend/src/app.ts`
     - `src/routes/exampleRoutes.js`
 
-
-
-
 - Tarefa: P3 - Remoção/Desabilitação do Endpoint `/api/test` em Produção
   - Quem: Backend
   - O que: Remover ou desabilitar o endpoint `/api/test` em ambiente de produção.
@@ -59,9 +35,6 @@ Este é o backlog central do projeto GiroPro. Ele contém todas as demandas, ép
   - Arquivos modificados:
     - `backend/src/app.ts`
 
-
-
-
 - Tarefa: P3 - Verificação e Uso de `fuelPricesRoutes`
   - Quem: Backend
   - O que: Verificar se `fuelPricesRoutes` está sendo utilizado corretamente e se é necessário.
@@ -72,9 +45,6 @@ Este é o backlog central do projeto GiroPro. Ele contém todas as demandas, ép
   - Hash do Commit: 5ca9e8a8bb0c0ad68282d8a860c82453da9ea41b
   - Arquivos modificados:
     - `backend/src/app.ts`
-
-
-
 
 - Tarefa: P3 - Organização de Imports
   - Quem: Backend
