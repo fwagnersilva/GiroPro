@@ -2,12 +2,7 @@
 
 ## Tarefas Atribuídas
 
-- **Tarefa:** P1 - Otimização do Banco de Dados e Queries
-  - **Quem:** Backend
-  - **O que:** Analisar e otimizar as operações de banco de dados para melhorar a performance.
-  - **Porquê:** Isso inclui a criação de índices, otimização de queries SQL (ou ORM) e revisão da configuração do banco de dados.
-  - **Complexidade:** Complexa
-  - **Status:** [pendente divisão]
+
 
 - **Tarefa:** P2 - Implementação de Limitação de Taxa (Rate Limiting)
   - **Quem:** Backend
@@ -56,7 +51,7 @@
   - **O que:** Desenvolver a funcionalidade para que os usuários possam adicionar despesas manualmente através de um formulário na aplicação.
   - **Porquê:** Permitir que os usuários registrem despesas que não são automaticamente capturadas.
   - **Complexidade:** Complexa
-  - **Concluído:** []
+  - **Status:** [Em Execução]
   - **Comentários:** 
   - **Hash do Commit:**
 
