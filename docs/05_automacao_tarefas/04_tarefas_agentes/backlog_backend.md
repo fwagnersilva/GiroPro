@@ -7,7 +7,7 @@
   - **O que:** Analisar e otimizar as operações de banco de dados para melhorar a performance.
   - **Porquê:** Isso inclui a criação de índices, otimização de queries SQL (ou ORM) e revisão da configuração do banco de dados.
   - **Complexidade:** Complexa
-  - **Concluído:** [ ]
+  - **Status:** [Em Execução]
   - **Comentários:**
   - **Hash do Commit:**
 
