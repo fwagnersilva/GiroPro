@@ -9,14 +9,14 @@
   - **O que:** Adicionar rate limiting para proteger a API contra ataques de força bruta e abuso.
   - **Porquê:** Aumentar a segurança da aplicação, especialmente em endpoints de autenticação.
   - **Complexidade:** Complexa
-  - **Concluído:** [ ]
+  - **Status:** [Em Execução]
 
 - **Tarefa:** P2 - Centralização de Configurações
   - **Quem:** Backend
   - **O que:** Criar um arquivo `config.ts` para centralizar todas as configurações da aplicação.
   - **Porquê:** Tornar as configurações mais fáceis de gerenciar e acessar.
   - **Complexidade:** Simples
-  - **Status:** [Em Execução]
+  - **Status:** [pendente divisão]
 
 - **Tarefa:** P2 - Tratamento de Erros Assíncronos em Rotas (Async Handler)
   - **Quem:** Backend
@@ -46,14 +46,7 @@
   - **Complexidade:** Simples
   - **Concluído:** [ ]
 
-- **Tarefa:** P1 - Implementar funcionalidade de Adicionar Despesa Manualmente
-  - **Quem:** Backend/Frontend
-  - **O que:** Desenvolver a funcionalidade para que os usuários possam adicionar despesas manualmente através de um formulário na aplicação.
-  - **Porquê:** Permitir que os usuários registrem despesas que não são automaticamente capturadas.
-  - **Complexidade:** Complexa
-  - **Status:** [pendente divisão]
-  - **Comentários:** 
-  - **Hash do Commit:**
+
 
 - **Tarefa:** P2 - Atualizar documentação de API
   - **Quem:** Backend
