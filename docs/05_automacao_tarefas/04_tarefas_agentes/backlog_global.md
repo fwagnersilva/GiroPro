@@ -231,40 +231,31 @@ Este é o backlog central do projeto GiroPro. Ele contém todas as demandas, ép
   - **Comentários:** Em análise.
   - **Hash do Commit:**
 
-## Demandas Concluídas
-
-
-
 - **Tarefa:** P1 - Implementar funcionalidade de Adicionar Despesa Manualmente
   - **Quem:** Backend/Frontend
   - **O que:** Desenvolver a funcionalidade para que os usuários possam adicionar despesas manualmente através de um formulário na aplicação.
   - **Porquê:** Permitir que os usuários registrem despesas que não são automaticamente capturadas.
-  - **Concluído:** [x]
-  - **Comentários:** Funcionalidade implementada no backend e frontend.
-  - **Hash do Commit:** [Adicionar hash do commit aqui]
+  - **Concluído:** []
+  - **Comentários:** 
+  - **Hash do Commit:**
 
 **
-
-
-
 
 - **Tarefa:** P1 - Criar componente de botão reutilizável (Frontend)
   - **Quem:** Frontend
   - **O que:** Desenvolver um componente de botão genérico para ser usado em toda a aplicação.
   - **Porquê:** Padronizar a interface e facilitar o desenvolvimento.
-  - **Concluído:** [x]
-  - **Comentários:** Concluído.
-  - **Hash do Commit:** [Adicionar hash do commit aqui]
-
-
-
+  - **Concluído:** [ ]
+  - **Comentários:** 
+  - **Hash do Commit:**
 
 - **Tarefa:** P2 - Atualizar documentação de API
   - **Quem:** Backend
   - **O que:** Revisar e atualizar a documentação da API de autenticação.
   - **Porquê:** Manter a documentação precisa e atualizada.
-  - **Concluído:** [x]
-  - **Comentários:** Documentação da API de autenticação revisada e atualizada.
-  - **Hash do Commit:** [Adicionar hash do commit aqui]
+  - **Concluído:** [ ]
+  - **Comentários:** 
+  - **Hash do Commit:**
 
+## Demandas Concluídas
 
