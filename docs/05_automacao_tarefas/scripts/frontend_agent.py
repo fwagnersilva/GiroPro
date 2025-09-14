@@ -1,4 +1,3 @@
-
 """
 Script para automatizar a rotina diária do Agente Frontend.
 
@@ -209,5 +208,3 @@ def frontend_agent_daily_routine():
 
 if __name__ == "__main__":
     frontend_agent_daily_routine()
-
-
