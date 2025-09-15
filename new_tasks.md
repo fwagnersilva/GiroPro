@@ -1,194 +1,14 @@
-# Backlog Frontend
-
-## Tarefas Atribuídas
-
-- Tarefa: P1 - Implementar validação de dados no frontend
-  - Quem: Frontend
-  - O que: Instalar a biblioteca de validação (Zod) no projeto frontend.
-  - Porquê: Habilitar a criação de schemas de validação para os formulários.
+- Tarefa: P1 - Revisão de ORM/SQL (Otimização DB)
+  - Quem: Backend
+  - O que: Otimizar as queries escritas em SQL ou através do ORM, aplicando melhores práticas.
+  - Porquê: Reduzir o tempo de execução das queries e o consumo de recursos.
   - Complexidade: Simples
   - Concluído: [ ]
-
-
-- **Tarefa:** P0 - Corrigir renderização do Dashboard após login (Web)
-  - **Quem:** Frontend
-  - **O que:** O frontend não está atualizando o estado do usuário após o login bem-sucedido, impedindo a renderização do Dashboard.
-  - **Porquê:** A API retorna sucesso, o localStorage é atualizado, mas o componente Dashboard não renderiza.
-  - **Complexidade:** Complexa
-  - **Concluído:** [ ]
-  - **Comentários:**
-  - **Hash do Commit:**
-
-- **Tarefa:** P0 - Corrigir interatividade do formulário de login no frontend React (Web)
-  - **Quem:** Frontend
-  - **O que:** O formulário de login no React não está processando o submit corretamente.
-  - **Porquê:** Campos são limpos após clique, mas nenhuma ação subsequente. Console não mostra logs de debug do JavaScript, indicando possível problema de execução.
-  - **Complexidade:** Complexa
-  - **Concluído:** [ ]
-  - **Comentários:**
-  - **Hash do Commit:**
-
-- **Tarefa:** P1 - Implementar Seleção de Veículos nos Formulários (Web, Android, iOS)
-  - **Quem:** Frontend
-  - **O que:** Adicionar dropdown/picker para seleção de veículos cadastrados nos formulários de despesas e abastecimentos.
-  - **Porquê:** Melhorar a usabilidade e evitar erros de digitação.
-  - **Complexidade:** Simples
-  - **Concluído:** [ ]
-  - **Comentários:**
-  - **Hash do Commit:**
-
-- **Tarefa:** P1 - Implementar Navegação Web Completa
-  - **Quem:** Frontend
-  - **O que:** Configurar o React Navigation ou solução alternativa para funcionar no ambiente web, permitindo a transição entre as telas.
-  - **Porquê:** Permitir que o usuário navegue entre as diferentes seções da aplicação web.
-  - **Complexidade:** Complexa
-  - **Concluído:** [ ]
-  - **Comentários:**
-  - **Hash do Commit:**
-
-- **Tarefa:** P1 - Refatorar Componentes Incompatíveis
-  - **Quem:** Frontend
-  - **O que:** Adaptar ou criar versões web-compatíveis de componentes que usam elementos nativos do React Native (ex: `FormInput.tsx`).
-  - **Porquê:** Garantir a compatibilidade e o funcionamento correto da aplicação na plataforma web.
-  - **Complexidade:** Complexa
-  - **Concluído:** [ ]
-  - **Comentários:**
-  - **Hash do Commit:**
-
-- **Tarefa:** P2 - Decidir Estratégia de Frontend
-  - **Quem:** Frontend
-  - **O que:** Avaliar se manter duas versões (React Native para mobile + React para web) ou migrar completamente para React com React Native Web.
-  - **Porquê:** Definir a arquitetura de frontend para o projeto, visando a otimização de recursos e a manutenibilidade.
-  - **Complexidade:** Complexa
-  - **Concluído:** [ ]
-  - **Comentários:**
-  - **Hash do Commit:**
-
-- **Tarefa:** P2 - Implementar Funcionalidades Principais na Versão Web
-  - **Quem:** Frontend
-  - **O que:** Expandir `web-app.tsx` com CRUD de veículos, despesas, abastecimentos e dashboard com gráficos e relatórios.
-  - **Porquê:** Tornar a versão web da aplicação funcional e útil para o usuário.
-  - **Complexidade:** Complexa
-  - **Concluído:** [ ]
-  - **Comentários:**
-  - **Hash do Commit:**
-
-- **Tarefa:** P3 - Atualizar Credenciais de Teste Hardcoded
-  - **Quem:** Frontend
-  - **O que:** Atualizar a interface para mostrar as credenciais de teste corretas (`teste@teste.com` / `Teste123@`).
-  - **Porquê:** Facilitar o acesso e os testes da aplicação.
-  - **Complexidade:** Simples
-  - **Concluído:** [ ]
-  - **Comentários:**
-  - **Hash do Commit:**
-
-- **Tarefa:** P3 - Organização de Imports
-  - **Quem:** Frontend
-  - **O que:** Padronizar a organização dos imports em todos os arquivos.
-  - **Porquê:** Melhorar a legibilidade e manutenção do código.
-  - **Complexidade:** Simples
-  - **Concluído:** [ ]
-  - **Comentários:**
-  - **Hash do Commit:**
-
-- **Tarefa:** P3 - Adicionar Validação de Campos Específicos (Android, iOS)
-  - **Quem:** Frontend (Mobile)
-  - **O que:** Implementar validações específicas como formato de placa, valores monetários e datas nos formulários.
-  - **Porquê:** Garantir a integridade dos dados e melhorar a experiência do usuário.
-  - **Complexidade:** Complexa
-  - **Concluído:** [ ]
-  - **Comentários:**
-  - **Hash do Commit:**
-
-- **Tarefa:** P3 - Melhorar Feedback Visual (Web, Android, iOS)
-  - **Quem:** Frontend
-  - **O que:** Adicionar loading states, success messages e error handling mais robustos nas operações CRUD.
-  - **Porquê:** Fornecer uma experiência de usuário mais clara e responsiva.
-  - **Complexidade:** Complexa
-  - **Concluído:** [ ]
-  - **Comentários:**
-  - **Hash do Commit:**
-
-- **Tarefa:** P3 - Reorganizar Hierarquia de Campos (Android, iOS)
-  - **Quem:** Frontend (Mobile)
-  - **O que:** Otimizar a disposição dos campos no formulário para seguir um fluxo lógico e intuitivo de preenchimento.
-  - **Porquê:** Priorizar campos obrigatórios e de maior impacto visual para melhorar a usabilidade.
-  - **Complexidade:** Simples
-  - **Concluído:** [ ]
-  - **Comentários:**
-  - **Hash do Commit:**
-
-- **Tarefa:** P3 - Adicionar Validação em Tempo Real (Android, iOS)
-  - **Quem:** Frontend (Mobile)
-  - **O que:** Fornecer feedback imediato e claro ao usuário sobre a validade dos dados inseridos.
-  - **Porquê:** Melhorar a experiência do usuário e reduzir erros de entrada.
-  - **Complexidade:** Complexa
-  - **Concluído:** [ ]
-  - **Comentários:**
-  - **Hash do Commit:**
-
-- **Tarefa:** P3 - Melhorar Feedback Visual e Microinterações (Web, Android, iOS)
-  - **Quem:** Frontend
-  - **O que:** Tornar a interface mais dinâmica e responsiva através de animações e microinterações.
-  - **Porquê:** Aumentar o engajamento e a satisfação do usuário.
-  - **Complexidade:** Complexa
-  - **Concluído:** [ ]
-  - **Comentários:**
-  - **Hash do Commit:**
-
-- **Tarefa:** P3 - Ícones e Elementos Visuais (Web, Android, iOS)
-  - **Quem:** Frontend
-  - **O que:** Tornar a interface mais informativa e agradável visualmente com o uso de ícones e outros elementos gráficos.
-  - **Porquê:** Melhorar a compreensão e a estética da interface.
-  - **Complexidade:** Simples
-  - **Concluído:** [ ]
-  - **Comentários:**
-  - **Hash do Commit:**
-
-- **Tarefa:** P3 - Cores e Contraste (Web, Android, iOS)
-  - **Quem:** Frontend
-  - **O que:** Garantir que a paleta de cores seja esteticamente agradável, funcional e acessível.
-  - **Porquê:** Melhorar a experiência visual e a acessibilidade para todos os usuários.
-  - **Complexidade:** Simples
-  - **Concluído:** [ ]
-  - **Comentários:**
-  - **Hash do Commit:**
-
-- **Tarefa:** P3 - Layout e Espaçamento (Web, Android, iOS)
-  - **Quem:** Frontend
-  - **O que:** Criar um layout bem estruturado e responsivo que se adapte a diferentes tamanhos de tela.
-  - **Porquê:** Garantir uma experiência consistente e agradável em diversos dispositivos.
-  - **Complexidade:** Simples
-  - **Concluído:** [ ]
-  - **Comentários:**
-  - **Hash do Commit:**
-
-- **Tarefa:** P3 - Animações e Transições (Web, Android, iOS)
-  - **Quem:** Frontend
-  - **O que:** Adicionar movimento à interface para torná-la mais dinâmica e engajante.
-  - **Porquê:** Melhorar a fluidez e a percepção de responsividade da aplicação.
-  - **Complexidade:** Complexa
-  - **Concluído:** [ ]
-  - **Comentários:**
-  - **Hash do Commit:**
-
-- **Tarefa:** P3 - Feedback Háptico (Mobile)
-  - **Quem:** Frontend (Mobile)
-  - **O que:** Utilizar a vibração do dispositivo para fornecer feedback.
-  - **Porquê:** Aumentar a imersão e a resposta tátil do usuário em dispositivos móveis.
-  - **Complexidade:** Simples
-  - **Concluído:** [ ]
-  - **Comentários:**
-  - **Hash do Commit:**
-
-- **Tarefa:** P1 - Criar componente de botão reutilizável (Frontend)
-  - **Quem:** Frontend
-  - **O que:** Desenvolver um componente de botão genérico para ser usado em toda a aplicação.
-  - **Porquê:** Padronizar a interface e facilitar o desenvolvimento.
-  - **Complexidade:** Simples
-  - **Concluído:** [ ]
-  - **Comentários:** 
-  - **Hash do Commit:**
+  - Como foi feita: [ ]
+  - Hash do Commit: [ ]
+  - Arquivos modificados: [ ]
+  - Observações: [ ]
+  - Status: [ ]
 
 - Tarefa: P1 - Implementar validação de dados no frontend
   - Quem: Frontend
@@ -491,10 +311,87 @@
   - Complexidade: Simples
   - Concluído: [ ]
 
+- Tarefa: P3 - Adicionar funcionalidade de exportação de relatórios (CSV/PDF)
+  - Quem: Backend
+  - O que: Instalar csv-stringify no backend.
+  - Porquê: Habilitar a geração de strings CSV a partir de dados JavaScript.
+  - Complexidade: Simples
+  - Concluído: [ ]
+
+- Tarefa: P3 - Adicionar funcionalidade de exportação de relatórios (CSV/PDF)
+  - Quem: Backend
+  - O que: Criar uma função generateJourneysCsv(data) no backend.
+  - Porquê: Encapsular a lógica de conversão de dados para CSV.
+  - Complexidade: Simples
+  - Concluído: [ ]
+
+- Tarefa: P3 - Adicionar funcionalidade de exportação de relatórios (CSV/PDF)
+  - Quem: Backend
+  - O que: Criar rota GET /reports/journeys/csv no backend.
+  - Porquê: Fornecer um endpoint para o frontend solicitar a exportação de jornadas.
+  - Complexidade: Simples
+  - Concluído: [ ]
+
+- Tarefa: P3 - Adicionar funcionalidade de exportação de relatórios (CSV/PDF)
+  - Quem: Backend
+  - O que: Implementar a rota para chamar generateJourneysCsv e enviar o CSV como resposta.
+  - Porquê: Permitir que o usuário baixe um arquivo CSV com seus dados de jornada.
+  - Complexidade: Simples
+  - Concluído: [ ]
+
+- Tarefa: P3 - Adicionar funcionalidade de exportação de relatórios (CSV/PDF)
+  - Quem: Backend
+  - O que: Instalar pdfkit no backend.
+  - Porquê: Habilitar a geração de documentos PDF a partir de dados JavaScript.
+  - Complexidade: Simples
+  - Concluído: [ ]
+
+- Tarefa: P3 - Adicionar funcionalidade de exportação de relatórios (CSV/PDF)
+  - Quem: Backend
+  - O que: Criar uma função generateExpensesPdf(data) no backend.
+  - Porquê: Encapsular a lógica de conversão de dados para PDF.
+  - Complexidade: Simples
+  - Concluído: [ ]
+
+- Tarefa: P3 - Adicionar funcionalidade de exportação de relatórios (CSV/PDF)
+  - Quem: Backend
+  - O que: Criar rota GET /reports/expenses/pdf no backend.
+  - Porquê: Fornecer um endpoint para o frontend solicitar a exportação de despesas.
+  - Complexidade: Simples
+  - Concluído: [ ]
+
+- Tarefa: P3 - Adicionar funcionalidade de exportação de relatórios (CSV/PDF)
+  - Quem: Backend
+  - O que: Implementar a rota para chamar generateExpensesPdf e enviar o PDF como resposta.
+  - Porquê: Permitir que o usuário baixe um arquivo PDF com seus dados de despesa.
+  - Complexidade: Simples
+  - Concluído: [ ]
+
+- Tarefa: P2 - Implementar sistema de backup e restauração de dados
+  - Quem: Backend
+  - O que: Criar um script SQL para exportar todos os dados do usuário (backend).
+  - Porquê: Preparar os dados para a funcionalidade de backup.
+  - Complexidade: Simples
+  - Concluído: [ ]
+
+- Tarefa: P2 - Implementar sistema de backup e restauração de dados
+  - Quem: Backend
+  - O que: Criar rota GET /users/backup no backend para acionar o script e retornar o arquivo SQL.
+  - Porquê: Fornecer um endpoint para o frontend iniciar o processo de backup.
+  - Complexidade: Simples
+  - Concluído: [ ]
+
 - Tarefa: P2 - Implementar sistema de backup e restauração de dados
   - Quem: Frontend
   - O que: Adicionar um botão na tela de perfil do frontend para acionar a rota de backup.
   - Porquê: Permitir que o usuário inicie o download de seu backup de dados.
+  - Complexidade: Simples
+  - Concluído: [ ]
+
+- Tarefa: P2 - Implementar sistema de backup e restauração de dados
+  - Quem: Backend
+  - O que: Criar um endpoint POST /users/restore no backend para receber e executar um script SQL de restauração.
+  - Porquê: Fornecer um endpoint para o frontend enviar o arquivo de backup para restauração.
   - Complexidade: Simples
   - Concluído: [ ]
 
@@ -505,6 +402,111 @@
   - Complexidade: Simples
   - Concluído: [ ]
 
+- Tarefa: P1 - Corrigir inconsistências de schema no banco de dados
+  - Quem: Backend
+  - O que: Identificar todas as colunas com inconsistências de snake_case e camelCase.
+  - Porquê: Ter uma lista clara do que precisa ser corrigido.
+  - Complexidade: Simples
+  - Concluído: [ ]
+
+- Tarefa: P1 - Corrigir inconsistências de schema no banco de dados
+  - Quem: Backend
+  - O que: Criar um script de migração para renomear a primeira coluna identificada para camelCase.
+  - Porquê: Iniciar a padronização do schema do banco de dados.
+  - Complexidade: Simples
+  - Concluído: [ ]
+
+- Tarefa: P1 - Corrigir inconsistências de schema no banco de dados
+  - Quem: Backend
+  - O que: Executar o script de migração em um ambiente de desenvolvimento.
+  - Porquê: Testar a migração antes de aplicá-la em produção.
+  - Complexidade: Simples
+  - Concluído: [ ]
+
+- Tarefa: P1 - Corrigir inconsistências de schema no banco de dados
+  - Quem: Backend
+  - O que: Atualizar o schema do Drizzle ORM para refletir a primeira mudança de coluna.
+  - Porquê: Manter o ORM sincronizado com o schema do banco de dados.
+  - Complexidade: Simples
+  - Concluído: [ ]
+
+- Tarefa: P1 - Corrigir inconsistências de schema no banco de dados
+  - Quem: Backend
+  - O que: Corrigir o código da aplicação que faz referência ao nome antigo da primeira coluna.
+  - Porquê: Garantir que a aplicação continue funcionando corretamente após a renomeação da coluna.
+  - Complexidade: Simples
+  - Concluído: [ ]
+
+- Tarefa: P1 - Corrigir inconsistências de schema no banco de dados
+  - Quem: Backend
+  - O que: Repetir Micro-tarefas 7.2 a 7.5 para cada coluna restante com inconsistência.
+  - Porquê: Corrigir todas as inconsistências de schema de forma incremental.
+  - Complexidade: Complexa (mas cada iteração é simples)
+  - Concluído: [ ]
+
+- Tarefa: P1 - Resolver todos os erros de TypeScript
+  - Quem: Backend/Frontend
+  - O que: Compilar o projeto e listar os primeiros 5 erros de TypeScript.
+  - Porquê: Identificar os erros mais urgentes ou fáceis de resolver primeiro.
+  - Complexidade: Simples
+  - Concluído: [ ]
+
+- Tarefa: P1 - Resolver todos os erros de TypeScript
+  - Quem: Backend/Frontend
+  - O que: Corrigir o primeiro erro de TypeScript da lista.
+  - Porquê: Reduzir o número de erros e progredir no build.
+  - Complexidade: Simples
+  - Concluído: [ ]
+
+- Tarefa: P1 - Resolver todos os erros de TypeScript
+  - Quem: Backend/Frontend
+  - O que: Compilar o projeto novamente e verificar se o erro foi resolvido.
+  - Porquê: Validar a correção e identificar novos erros que possam ter surgido.
+  - Complexidade: Simples
+  - Concluído: [ ]
+
+- Tarefa: P1 - Resolver todos os erros de TypeScript
+  - Quem: Backend/Frontend
+  - O que: Repetir Micro-tarefas 8.2 e 8.3 para os próximos 4 erros da lista.
+  - Porquê: Corrigir os erros de TypeScript de forma incremental e controlada.
+  - Complexidade: Complexa (mas cada iteração é simples)
+  - Concluído: [ ]
+
+- Tarefa: P1 - Resolver todos os erros de TypeScript
+  - Quem: Backend/Frontend
+  - O que: Repetir o processo (listar 5 erros, corrigir, verificar) até que não haja mais erros de TypeScript.
+  - Porquê: Garantir um build limpo e robusto do projeto.
+  - Complexidade: Complexa
+  - Concluído: [ ]
+
+- Tarefa: P2 - Atualizar dependências do projeto
+  - Quem: Backend/Frontend
+  - O que: Executar npm outdated ou yarn outdated para listar as dependências desatualizadas.
+  - Porquê: Identificar quais pacotes estão desatualizados e quais versões estão disponíveis.
+  - Complexidade: Simples
+  - Concluído: [ ]
+
+- Tarefa: P2 - Atualizar dependências do projeto
+  - Quem: Backend/Frontend
+  - O que: Atualizar uma dependência de desenvolvimento específica e rodar os testes.
+  - Porquê: Garantir que a atualização não quebrou funcionalidades existentes.
+  - Complexidade: Simples
+  - Concluído: [ ]
+
+- Tarefa: P2 - Atualizar dependências do projeto
+  - Quem: Backend/Frontend
+  - O que: Atualizar uma dependência de produção específica e rodar os testes.
+  - Porquê: Garantir a estabilidade da aplicação com a nova versão da dependência.
+  - Complexidade: Simples
+  - Concluído: [ ]
+
+- Tarefa: P2 - Atualizar dependências do projeto
+  - Quem: Backend/Frontend
+  - O que: Repetir Micro-tarefas 9.2 e 9.3 para todas as dependências desatualizadas.
+  - Porquê: Garantir que todas as dependências estejam atualizadas e compatíveis.
+  - Complexidade: Complexa (mas cada iteração é simples)
+  - Concluído: [ ]
+
 - Tarefa: P3 - Implementar um sistema de feedback e suporte ao usuário
   - Quem: Frontend
   - O que: Criar um formulário de feedback simples no frontend (apenas UI).
@@ -513,9 +515,37 @@
   - Concluído: [ ]
 
 - Tarefa: P3 - Implementar um sistema de feedback e suporte ao usuário
+  - Quem: Backend
+  - O que: Criar um endpoint POST /feedback no backend para receber o feedback.
+  - Porquê: Processar e armazenar o feedback enviado pelos usuários.
+  - Complexidade: Simples
+  - Concluído: [ ]
+
+- Tarefa: P3 - Implementar um sistema de feedback e suporte ao usuário
   - Quem: Frontend
   - O que: Integrar o formulário de feedback com o endpoint do backend.
   - Porquê: Permitir que o feedback seja enviado e processado pela aplicação.
+  - Complexidade: Simples
+  - Concluído: [ ]
+
+- Tarefa: P2 - Adicionar autenticação de dois fatores (2FA)
+  - Quem: Backend
+  - O que: Instalar a biblioteca speakeasy no backend para gerar segredos TOTP.
+  - Porquê: Habilitar a geração e verificação de códigos TOTP para 2FA.
+  - Complexidade: Simples
+  - Concluído: [ ]
+
+- Tarefa: P2 - Adicionar autenticação de dois fatores (2FA)
+  - Quem: Backend
+  - O que: Criar um endpoint para gerar e exibir o QR code para o usuário escanear.
+  - Porquê: Permitir que o usuário configure o 2FA em seu aplicativo autenticador.
+  - Complexidade: Simples
+  - Concluído: [ ]
+
+- Tarefa: P2 - Adicionar autenticação de dois fatores (2FA)
+  - Quem: Backend
+  - O que: Modificar o endpoint de login para verificar o código TOTP.
+  - Porquê: Adicionar uma camada extra de segurança ao processo de login.
   - Complexidade: Simples
   - Concluído: [ ]
 
@@ -533,10 +563,66 @@
   - Complexidade: Simples
   - Concluído: [ ]
 
+- Tarefa: P3 - Otimizar queries do Drizzle ORM para relatórios complexos
+  - Quem: Backend
+  - O que: Identificar a query mais lenta do relatório de ganhos por jornada.
+  - Porquê: Focar os esforços de otimização na query que mais impacta a performance.
+  - Complexidade: Simples
+  - Concluído: [ ]
+
+- Tarefa: P3 - Otimizar queries do Drizzle ORM para relatórios complexos
+  - Quem: Backend
+  - O que: Executar explain analyze na query identificada.
+  - Porquê: Obter informações detalhadas sobre como o banco de dados está processando a query.
+  - Complexidade: Simples
+  - Concluído: [ ]
+
+- Tarefa: P3 - Otimizar queries do Drizzle ORM para relatórios complexos
+  - Quem: Backend
+  - O que: Aplicar uma otimização inicial à query (e.g., adicionar índice, reescrever JOIN).
+  - Porquê: Testar uma hipótese de otimização de forma rápida.
+  - Complexidade: Simples
+  - Concluído: [ ]
+
+- Tarefa: P3 - Otimizar queries do Drizzle ORM para relatórios complexos
+  - Quem: Backend
+  - O que: Medir o tempo de execução da query otimizada e comparar com o original.
+  - Porquê: Validar a eficácia da otimização aplicada.
+  - Complexidade: Simples
+  - Concluído: [ ]
+
+- Tarefa: P3 - Otimizar queries do Drizzle ORM para relatórios complexos
+  - Quem: Backend
+  - O que: Repetir Micro-tarefas 12.3 e 12.4 até atingir a performance desejada ou esgotar as opções de otimização.
+  - Porquê: Garantir a máxima performance possível para a query.
+  - Complexidade: Complexa (mas cada iteração é simples)
+  - Concluído: [ ]
+
 - Tarefa: P2 - Implementar notificações push
   - Quem: Frontend
   - O que: Configurar o Firebase Cloud Messaging (FCM) no projeto frontend.
   - Porquê: Habilitar o frontend para receber notificações push.
+  - Complexidade: Simples
+  - Concluído: [ ]
+
+- Tarefa: P2 - Implementar notificações push
+  - Quem: Backend
+  - O que: Criar um endpoint no backend para registrar tokens de dispositivo FCM.
+  - Porquê: Permitir que o backend saiba para quais dispositivos enviar notificações.
+  - Complexidade: Simples
+  - Concluído: [ ]
+
+- Tarefa: P2 - Implementar notificações push
+  - Quem: Backend
+  - O que: Criar um endpoint no backend para enviar notificações push para um dispositivo específico.
+  - Porquê: Fornecer uma forma de o backend disparar notificações manualmente ou via automação.
+  - Complexidade: Simples
+  - Concluído: [ ]
+
+- Tarefa: P2 - Implementar notificações push
+  - Quem: Backend
+  - O que: Enviar uma notificação push quando uma meta for atingida.
+  - Porquê: Informar o usuário em tempo real sobre o progresso de suas metas.
   - Complexidade: Simples
   - Concluído: [ ]
 
