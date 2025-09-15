@@ -187,3 +187,17 @@ Este é o backlog central do projeto GiroPro. Ele contém todas as demandas, ép
   - Observações: Performance excelente identificada. 0 queries lentas encontradas. Sistema já bem otimizado com 36 índices e configurações avançadas do SQLite. Próximo passo: executar tarefa de Revisão de ORM/SQL.
 
 
+
+
+- Tarefa: P1 - Revisão de ORM/SQL (Otimização DB)
+  - Quem: Backend
+  - O que: Otimizar as queries escritas em SQL ou através do ORM, aplicando melhores práticas.
+  - Porquê: Reduzir o tempo de execução das queries e o consumo de recursos.
+  - Complexidade: Simples
+  - Concluído: [ ]
+  - Como foi feita: [ ]
+  - Hash do Commit: [ ]
+  - Arquivos modificados: [ ]
+  - Observações: [ ]
+  - Status: [ ]
+
