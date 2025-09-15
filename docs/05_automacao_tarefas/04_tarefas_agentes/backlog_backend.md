@@ -142,3 +142,31 @@
   - Status: Em Execução
 
 
+
+
+- Tarefa: P1 - Análise de Queries Lentas (Otimização DB)
+  - Quem: Backend
+  - O que: Identificar as queries mais lentas e que consomem mais recursos no banco de dados.
+  - Porquê: Subtarefa da otimização do banco de dados para focar na identificação de gargalos.
+  - Complexidade: Simples
+  - Concluído: [ ]
+  - Como foi feita: [ ]
+  - Hash do Commit: [ ]
+  - Arquivos modificados: [ ]
+  - Observações: [ ]
+
+
+
+
+- Tarefa: P1 - Revisão de ORM/SQL (Otimização DB)
+  - Quem: Backend
+  - O que: Otimizar as queries escritas em SQL ou através do ORM, aplicando melhores práticas.
+  - Porquê: Reduzir o tempo de execução das queries e o consumo de recursos.
+  - Complexidade: Simples
+  - Concluído: [ ]
+  - Como foi feita: [ ]
+  - Hash do Commit: [ ]
+  - Arquivos modificados: [ ]
+  - Observações: [ ]
+
+
