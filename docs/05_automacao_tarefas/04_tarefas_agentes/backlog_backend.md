@@ -12,7 +12,7 @@
   - Hash do Commit: [ ]
   - Arquivos modificados: [ ]
   - Observações: [ ]
-  - Status: [ ]
+  - Status: Em Execução
 
 - Tarefa: [P2] - [Criação do arquivo `config.ts`]
   - Quem: Backend
