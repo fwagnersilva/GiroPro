@@ -114,34 +114,6 @@
 
 
 
-- Tarefa: P2 - Centralização de Configurações - Subtarefa: Criação do arquivo `config.ts`
-  - Quem: Backend
-  - O que: Criar o arquivo `config.ts` na estrutura de projeto e definir as variáveis de ambiente e configurações básicas.
-  - Porquê: Iniciar a centralização das configurações da aplicação.
-  - Complexidade: Simples
-  - Status: Em Execução
-
-
-
-
-- Tarefa: P2 - Centralização de Configurações - Subtarefa: Migração de Configurações Existentes
-  - Quem: Backend
-  - O que: Migrar as configurações existentes espalhadas pelo código para o novo arquivo `config.ts`.
-  - Porquê: Consolidar todas as configurações em um único local.
-  - Complexidade: Média
-  - Status: Em Execução
-
-
-
-
-- Tarefa: P2 - Centralização de Configurações - Subtarefa: Atualização do Código para Usar `config.ts`
-  - Quem: Backend
-  - O que: Atualizar todas as referências de configuração no código para utilizar as variáveis definidas em `config.ts`.
-  - Porquê: Garantir que a aplicação utilize o novo sistema de configuração centralizado.
-  - Complexidade: Média
-  - Status: Em Execução
-
-
 
 
 - Tarefa: P1 - Análise de Queries Lentas (Otimização DB)
@@ -154,6 +126,7 @@
   - Hash do Commit: [ ]
   - Arquivos modificados: [ ]
   - Observações: [ ]
+  - Status: Em Execução
 
 
 
