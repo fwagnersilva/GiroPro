@@ -52,57 +52,96 @@
   - O que: Instalar csv-stringify no backend.
   - Porquê: Habilitar a geração de strings CSV a partir de dados JavaScript.
   - Complexidade: Simples
-  - Concluído: [ ]
-  - Status: Em Execução
+  - Concluído: [x]
+  - Como foi feita: A biblioteca `csv-stringify` foi instalada com sucesso utilizando `npm install csv-stringify` no diretório `backend`.
+  - Hash do Commit: [HASH_PENDENTE]
+  - Arquivos modificados: package.json, package-lock.json
+  - Observações: Nenhuma.
+  - Status: Concluída
 
 - Tarefa: P3 - Adicionar funcionalidade de exportação de relatórios (CSV/PDF)
   - Quem: Backend
   - O que: Criar uma função generateJourneysCsv(data) no backend.
   - Porquê: Encapsular a lógica de conversão de dados para CSV.
   - Complexidade: Simples
-  - Concluído: [ ]
+  - Concluído: [x]
+  - Como foi feita: A função `generateJourneysCsv(data)` foi criada no arquivo `backend/src/utils/csv_utils.ts` para encapsular a lógica de conversão de dados para CSV, utilizando a biblioteca `csv-stringify`.
+  - Hash do Commit: [HASH_PENDENTE]
+  - Arquivos modificados: backend/src/utils/csv_utils.ts
+  - Observações: Nenhuma.
+  - Status: Concluída
 
 - Tarefa: P3 - Adicionar funcionalidade de exportação de relatórios (CSV/PDF)
   - Quem: Backend
   - O que: Criar rota GET /reports/journeys/csv no backend.
   - Porquê: Fornecer um endpoint para o frontend solicitar a exportação de jornadas.
   - Complexidade: Simples
-  - Concluído: [ ]
+  - Concluído: [x]
+  - Como foi feita: A rota `GET /reports/journeys/csv` foi adicionada ao arquivo `backend/src/routes/reports.ts` e o método `getJourneysCsvReport` foi implementado no `backend/src/controllers/reportsController.ts` para lidar com a exportação de jornadas em formato CSV.
+  - Hash do Commit: [HASH_PENDENTE]
+  - Arquivos modificados: backend/src/routes/reports.ts, backend/src/controllers/reportsController.ts
+  - Observações: Nenhuma.
+  - Status: Concluída
 
 - Tarefa: P3 - Adicionar funcionalidade de exportação de relatórios (CSV/PDF)
   - Quem: Backend
   - O que: Implementar a rota para chamar generateJourneysCsv e enviar o CSV como resposta.
   - Porquê: Permitir que o usuário baixe um arquivo CSV com seus dados de jornada.
   - Complexidade: Simples
-  - Concluído: [ ]
+  - Concluído: [x]
+  - Como foi feita: A implementação da rota para chamar `generateJourneysCsv` e enviar o CSV como resposta foi concluída como parte da tarefa anterior de criação da rota `GET /reports/journeys/csv` e do método `getJourneysCsvReport` no `ReportsController`.
+  - Hash do Commit: [HASH_PENDENTE]
+  - Arquivos modificados: backend/src/routes/reports.ts, backend/src/controllers/reportsController.ts
+  - Observações: Nenhuma.
+  - Status: Concluída
 
 - Tarefa: P3 - Adicionar funcionalidade de exportação de relatórios (CSV/PDF)
   - Quem: Backend
   - O que: Instalar pdfkit no backend.
   - Porquê: Habilitar a geração de documentos PDF a partir de dados JavaScript.
   - Complexidade: Simples
-  - Concluído: [ ]
+  - Concluído: [x]
+  - Como foi feita: A biblioteca `pdfkit` foi instalada com sucesso utilizando `npm install pdfkit` no diretório `backend`.
+  - Hash do Commit: [HASH_PENDENTE]
+  - Arquivos modificados: package.json, package-lock.json
+  - Observações: Nenhuma.
+  - Status: Concluída
 
 - Tarefa: P3 - Adicionar funcionalidade de exportação de relatórios (CSV/PDF)
   - Quem: Backend
   - O que: Criar uma função generateExpensesPdf(data) no backend.
   - Porquê: Encapsular a lógica de conversão de dados para PDF.
   - Complexidade: Simples
-  - Concluído: [ ]
+  - Concluído: [x]
+  - Como foi feita: A função `generateExpensesPdf(data)` foi criada no arquivo `backend/src/utils/pdf_utils.ts` para encapsular a lógica de conversão de dados para PDF, utilizando a biblioteca `pdfkit`.
+  - Hash do Commit: [HASH_PENDENTE]
+  - Arquivos modificados: backend/src/utils/pdf_utils.ts
+  - Observações: Nenhuma.
+  - Status: Concluída
 
 - Tarefa: P3 - Adicionar funcionalidade de exportação de relatórios (CSV/PDF)
   - Quem: Backend
   - O que: Criar rota GET /reports/expenses/pdf no backend.
   - Porquê: Fornecer um endpoint para o frontend solicitar a exportação de despesas.
   - Complexidade: Simples
-  - Concluído: [ ]
+  - Concluído: [x]
+  - Como foi feita: A rota `GET /reports/expenses/pdf` foi adicionada ao arquivo `backend/src/routes/reports.ts` e o método `getExpensesPdfReport` foi implementado no `backend/src/controllers/reportsController.ts` para lidar com a exportação de despesas em formato PDF.
+  - Hash do Commit: [HASH_PENDENTE]
+  - Arquivos modificados: backend/src/routes/reports.ts, backend/src/controllers/reportsController.ts
+  - Observações: Nenhuma.
+  - Status: Concluída
 
 - Tarefa: P3 - Adicionar funcionalidade de exportação de relatórios (CSV/PDF)
   - Quem: Backend
   - O que: Implementar a rota para chamar generateExpensesPdf e enviar o PDF como resposta.
   - Porquê: Permitir que o usuário baixe um arquivo PDF com seus dados de despesa.
   - Complexidade: Simples
-  - Concluído: [ ]
+  - Concluído: [x]
+  - Como foi feita: A implementação da rota para chamar `generateExpensesPdf` e enviar o PDF como resposta foi concluída como parte da tarefa anterior de criação da rota `GET /reports/expenses/pdf` e do método `getExpensesPdfReport` no `ReportsController`.
+  - Hash do Commit: [HASH_PENDENTE]
+  - Arquivos modificados: backend/src/routes/reports.ts, backend/src/controllers/reportsController.ts
+  - Observações: Nenhuma.
+  - Status: Concluída
 
 - Tarefa: P2 - Implementar sistema de backup e restauração de dados
   - Quem: Backend
