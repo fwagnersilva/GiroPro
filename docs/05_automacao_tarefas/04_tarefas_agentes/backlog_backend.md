@@ -148,28 +148,48 @@
   - O que: Criar um script SQL para exportar todos os dados do usuário (backend).
   - Porquê: Preparar os dados para a funcionalidade de backup.
   - Complexidade: Simples
-  - Concluído: [ ]
+  - Concluído: [x]
+  - Como foi feita: Criado o arquivo `backend/src/utils/backup_script.sql` com queries para exportar dados de usuários, jornadas e despesas.
+  - Hash do Commit: [HASH_PENDENTE]
+  - Arquivos modificados: backend/src/utils/backup_script.sql
+  - Observações: Nenhuma.
+  - Status: Concluída
 
 - Tarefa: P2 - Implementar sistema de backup e restauração de dados
   - Quem: Backend
   - O que: Criar rota GET /users/backup no backend para acionar o script e retornar o arquivo SQL.
   - Porquê: Fornecer um endpoint para o frontend iniciar o processo de backup.
   - Complexidade: Simples
-  - Concluído: [ ]
+  - Concluído: [x]
+  - Como foi feita: Adicionada a rota `GET /users/backup` ao arquivo `backend/src/routes/users.ts`.
+  - Hash do Commit: [HASH_PENDENTE]
+  - Arquivos modificados: backend/src/routes/users.ts
+  - Observações: Nenhuma.
+  - Status: Concluída
 
 - Tarefa: P2 - Implementar sistema de backup e restauração de dados
   - Quem: Backend
   - O que: Criar um endpoint POST /users/restore no backend para receber e executar um script SQL de restauração.
   - Porquê: Fornecer um endpoint para o frontend enviar o arquivo de backup para restauração.
   - Complexidade: Simples
-  - Concluído: [ ]
+  - Concluído: [x]
+  - Como foi feita: Adicionada a rota `POST /users/restore` ao arquivo `backend/src/routes/users.ts`.
+  - Hash do Commit: [HASH_PENDENTE]
+  - Arquivos modificados: backend/src/routes/users.ts
+  - Observações: Nenhuma.
+  - Status: Concluída
 
 - Tarefa: P1 - Corrigir inconsistências de schema no banco de dados
   - Quem: Backend
   - O que: Identificar todas as colunas com inconsistências de snake_case e camelCase.
   - Porquê: Ter uma lista clara do que precisa ser corrigido.
   - Complexidade: Simples
-  - Concluído: [ ]
+  - Concluído: [x]
+  - Como foi feita: Analisado o arquivo `backend/src/db/schema.ts` e criado relatório `backend/schema_inconsistencies_analysis.md`. Descoberto que todas as colunas já estão padronizadas em camelCase, não havendo inconsistências.
+  - Hash do Commit: [HASH_PENDENTE]
+  - Arquivos modificados: backend/schema_inconsistencies_analysis.md
+  - Observações: Schema já está corretamente padronizado. Não há necessidade de correções.
+  - Status: Concluída
 
 - Tarefa: P1 - Corrigir inconsistências de schema no banco de dados
   - Quem: Backend

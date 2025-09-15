@@ -19,3 +19,16 @@ router.put("/profile", (req, res) => {
 export { router as userRoutes };
 
 
+
+
+// GET /api/v1/users/backup
+router.get("/backup", (req, res) => {
+  res.json({ message: "Rota de backup de usuário - Em desenvolvimento" });
+});
+
+
+// POST /api/v1/users/restore
+router.post("/restore", (req, res) => {
+  res.json({ message: "Rota de restauração de usuário - Em desenvolvimento" });
+});
+
