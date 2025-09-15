@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
+import { config } from '../config';
 
 // Interface para o payload do JWT
 interface JWTPayload {
@@ -55,10 +56,10 @@ const authMiddleware = (
 
     const token = tokenParts[1];
 
-    // Verifica se o JWT_SECRET está configurado
-    const jwtSecret = process.env.JWT_SECRET;
-    if (!jwtSecret) {
-      console.error("JWT_SECRET não configurado nas variáveis de ambiente");
+    // Verifica se o JWT_SECRET está configurado adequadamente
+    const jwtSecret = config.auth.jwtSecret;
+    if (!jwtSecret || jwtSecret === 'supersecretjwtkey') {
+      console.error("JWT_SECRET não configurado adequadamente nas variáveis de ambiente");
       res.status(500).json({ 
         success: false,
         message: "Erro interno do servidor" 
