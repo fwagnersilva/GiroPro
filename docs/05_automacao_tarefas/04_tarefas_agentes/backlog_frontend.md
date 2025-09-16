@@ -72,7 +72,7 @@
   - **O que:** Expandir `web-app.tsx` com CRUD de veículos, despesas, abastecimentos e dashboard com gráficos e relatórios.
   - **Porquê:** Tornar a versão web da aplicação funcional e útil para o usuário.
   - **Complexidade:** Complexa
-  - **Concluído:** [ ]
+  - **Concluído:** Em Execução
   - **Comentários:**
   - **Hash do Commit:**
 
