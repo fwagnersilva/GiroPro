@@ -35,9 +35,9 @@
   - **O que:** Adicionar dropdown/picker para seleção de veículos cadastrados nos formulários de despesas e abastecimentos.
   - **Porquê:** Melhorar a usabilidade e evitar erros de digitação.
   - **Complexidade:** Simples
-  - **Concluído:** Em Execução
-  - **Comentários:**
-  - **Hash do Commit:**
+  - **Concluído:** [x]
+  - **Como foi feita:** Adicionada validação para garantir que um veículo seja selecionado nos formulários de despesa (`AddExpenseScreen.tsx`) e abastecimento (`AddFuelingScreen.tsx`). O label "(Opcional)" foi removido do campo de seleção de veículo em `AddExpenseScreen.tsx`.
+  - **Hash do Commit:** 9aa810b
 
 - **Tarefa:** P1 - Implementar Navegação Web Completa
   - **Quem:** Frontend
