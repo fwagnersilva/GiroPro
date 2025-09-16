@@ -53,8 +53,9 @@
   - **O que:** Adaptar ou criar versões web-compatíveis de componentes que usam elementos nativos do React Native (ex: `FormInput.tsx`).
   - **Porquê:** Garantir a compatibilidade e o funcionamento correto da aplicação na plataforma web.
   - **Complexidade:** Complexa
-  - **Concluído:** Em Execução
-  - **Comentários:**
+  - **Concluído:** [x]
+  - **Como foi feita:** Criado um novo arquivo `web-app-improved.tsx` que integra componentes web-compatíveis diretamente no arquivo principal. O componente `FormInput` foi refatorado para usar elementos HTML nativos (input, div, span) em vez de componentes React Native. Implementada validação em tempo real, tratamento de erros melhorado, e componente `LoadingSpinner` web-compatível. O arquivo `index.ts` foi atualizado para usar a nova versão melhorada.
+  - **Arquivos modificados:** `frontend/web-app-improved.tsx` (criado), `frontend/index.ts` (atualizado)
   - **Hash do Commit:**
 
 - **Tarefa:** P2 - Decidir Estratégia de Frontend
