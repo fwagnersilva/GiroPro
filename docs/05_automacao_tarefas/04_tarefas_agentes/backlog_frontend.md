@@ -7,7 +7,7 @@
   - O que: Instalar a biblioteca de validação (Zod) no projeto frontend.
   - Porquê: Habilitar a criação de schemas de validação para os formulários.
   - Complexidade: Simples
-  - Concluído: [ ]
+  - Concluído: Em Execução
 
 - Tarefa: P1 - Implementar validação de dados no frontend
   - Quem: Frontend
