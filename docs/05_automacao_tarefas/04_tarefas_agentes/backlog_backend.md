@@ -255,7 +255,7 @@
   - O que: Corrigir o primeiro erro de TypeScript da lista.
   - Porquê: Reduzir o número de erros e progredir no build.
   - Complexidade: Simples
-  - Concluído: [ ]
+  - Status: Em Execução
 
 - Tarefa: P1 - Resolver todos os erros de TypeScript
   - Quem: Backend/Frontend
