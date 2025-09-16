@@ -12,6 +12,7 @@
     "test:ci": "jest --ci --coverage --watchAll=false"
   },
   "dependencies": {
+    "@expo/metro-runtime": "~5.0.4",
     "@expo/vector-icons": "^15.0.2",
     "@react-native-async-storage/async-storage": "2.1.2",
     "@react-native-picker/picker": "2.11.1",
@@ -33,7 +34,7 @@
     "react-native-screens": "~4.11.1",
     "react-native-vector-icons": "^10.3.0",
     "react-native-web": "^0.19.13",
-    "@expo/metro-runtime": "~5.0.4"
+    "zod": "^4.1.8"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
