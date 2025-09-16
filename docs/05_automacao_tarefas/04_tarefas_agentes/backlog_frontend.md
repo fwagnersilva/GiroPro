@@ -56,7 +56,7 @@
   - **Concluído:** [x]
   - **Como foi feita:** Criado um novo arquivo `web-app-improved.tsx` que integra componentes web-compatíveis diretamente no arquivo principal. O componente `FormInput` foi refatorado para usar elementos HTML nativos (input, div, span) em vez de componentes React Native. Implementada validação em tempo real, tratamento de erros melhorado, e componente `LoadingSpinner` web-compatível. O arquivo `index.ts` foi atualizado para usar a nova versão melhorada.
   - **Arquivos modificados:** `frontend/web-app-improved.tsx` (criado), `frontend/index.ts` (atualizado)
-  - **Hash do Commit:**
+  - **Hash do Commit:** ad6df80
 
 - **Tarefa:** P2 - Decidir Estratégia de Frontend
   - **Quem:** Frontend
@@ -81,7 +81,7 @@
   - **O que:** Atualizar a interface para mostrar as credenciais de teste corretas (`teste@teste.com` / `Teste123@`).
   - **Porquê:** Facilitar o acesso e os testes da aplicação.
   - **Complexidade:** Simples
-  - **Concluído:** [ ]
+  - **Concluído:** Em Execução
   - **Comentários:**
   - **Hash do Commit:**
 
