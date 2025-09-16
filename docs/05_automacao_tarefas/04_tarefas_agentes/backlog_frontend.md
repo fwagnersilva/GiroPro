@@ -44,7 +44,7 @@
   - **O que:** Configurar o React Navigation ou solução alternativa para funcionar no ambiente web, permitindo a transição entre as telas.
   - **Porquê:** Permitir que o usuário navegue entre as diferentes seções da aplicação web.
   - **Complexidade:** Complexa
-  - **Concluído:** [ ]
+  - **Concluído:** Em Execução
   - **Comentários:**
   - **Hash do Commit:**
 
