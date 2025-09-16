@@ -61,7 +61,7 @@ const AddFuelingScreen: React.FC<AddFuelingScreenProps> = ({ navigation, route }
   const handleSubmit = async () => {
     // Validações
     if (!formData.id_veiculo) {
-      Alert.alert('Erro', 'Selecione um veículo');
+      Alert.alert("Erro", "Selecione um veículo");
       return;
     }
 

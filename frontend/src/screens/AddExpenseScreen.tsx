@@ -53,8 +53,13 @@ const AddExpenseScreen: React.FC<AddExpenseScreenProps> = ({ navigation, route }
       return;
     }
 
+    if (!formData.id_veiculo) {
+      Alert.alert("Erro", "Selecione um veículo");
+      return;
+    }
+
     if (!formData.valor_despesa || parseFloat(formData.valor_despesa) <= 0) {
-      Alert.alert('Erro', 'Informe um valor válido para a despesa');
+      Alert.alert("Erro", "Informe um valor válido para a despesa");
       return;
     }
 
@@ -193,7 +198,7 @@ const AddExpenseScreen: React.FC<AddExpenseScreenProps> = ({ navigation, route }
 
           {/* Seleção de Veículo (Opcional) */}
           <View style={styles.inputGroup}>
-            <Text style={styles.label}>Veículo (Opcional)</Text>
+            <Text style={styles.label}>Veículo *</Text>
             <View style={styles.pickerContainer}>
               <Picker
                 selectedValue={formData.id_veiculo}
