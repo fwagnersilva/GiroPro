@@ -63,7 +63,7 @@
   - **O que:** Avaliar se manter duas versões (React Native para mobile + React para web) ou migrar completamente para React com React Native Web.
   - **Porquê:** Definir a arquitetura de frontend para o projeto, visando a otimização de recursos e a manutenibilidade.
   - **Complexidade:** Complexa
-  - **Concluído:** [ ]
+  - **Concluído:** Em Execução
   - **Comentários:**
   - **Hash do Commit:**
 
