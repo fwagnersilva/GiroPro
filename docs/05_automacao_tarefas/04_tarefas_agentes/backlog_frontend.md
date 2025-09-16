@@ -35,7 +35,7 @@
   - **O que:** Adicionar dropdown/picker para seleção de veículos cadastrados nos formulários de despesas e abastecimentos.
   - **Porquê:** Melhorar a usabilidade e evitar erros de digitação.
   - **Complexidade:** Simples
-  - **Concluído:** [ ]
+  - **Concluído:** Em Execução
   - **Comentários:**
   - **Hash do Commit:**
 
