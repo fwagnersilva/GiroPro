@@ -91,7 +91,7 @@
   - **O que:** Padronizar a organização dos imports em todos os arquivos.
   - **Porquê:** Melhorar a legibilidade e manutenção do código.
   - **Complexidade:** Simples
-  - **Concluído:** [ ]
+  - **Concluído:** Em Execução
   - **Comentários:**
   - **Hash do Commit:**
 
