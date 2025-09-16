@@ -26,7 +26,7 @@
   - **O que:** O formulário de login no React não está processando o submit corretamente.
   - **Porquê:** Campos são limpos após clique, mas nenhuma ação subsequente. Console não mostra logs de debug do JavaScript, indicando possível problema de execução.
   - **Complexidade:** Complexa
-  - **Concluído:** [ ]
+  - **Concluído:** Em Execução
   - **Comentários:**
   - **Hash do Commit:**
 
