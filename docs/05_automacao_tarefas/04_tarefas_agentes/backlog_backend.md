@@ -302,86 +302,32 @@
   - Complexidade: Complexa (mas cada iteração é simples)
   - Concluído: [ ]
 
-- Tarefa: P3 - Implementar um sistema de feedback e suporte ao usuário
+- Tarefa: P2 - Implementar roles de usuário e permissões
   - Quem: Backend
-  - O que: Criar um endpoint POST /feedback no backend para receber o feedback.
-  - Porquê: Processar e armazenar o feedback enviado pelos usuários.
-  - Complexidade: Simples
+  - O que: Adicionar um campo de 'role' ao modelo de usuário e criar um middleware para verificar as permissões de acesso às rotas.
+  - Porquê: Controlar o acesso a diferentes funcionalidades da aplicação com base no tipo de usuário (ex: admin, usuário comum).
+  - Complexidade: Complexa
   - Concluído: [ ]
 
-- Tarefa: P2 - Adicionar autenticação de dois fatores (2FA)
+- Tarefa: P3 - Adicionar logging detalhado de eventos
   - Quem: Backend
-  - O que: Instalar a biblioteca speakeasy no backend para gerar segredos TOTP.
-  - Porquê: Habilitar a geração e verificação de códigos TOTP para 2FA.
-  - Complexidade: Simples
+  - O que: Integrar uma biblioteca de logging (ex: Winston) para registrar eventos importantes da aplicação, como erros, logins e alterações de dados.
+  - Porquê: Facilitar o debug, monitoramento e auditoria da aplicação.
+  - Complexidade: Média
   - Concluído: [ ]
 
-- Tarefa: P2 - Adicionar autenticação de dois fatores (2FA)
+- Tarefa: P2 - Criar mais testes unitários e de integração
   - Quem: Backend
-  - O que: Criar um endpoint para gerar e exibir o QR code para o usuário escanear.
-  - Porquê: Permitir que o usuário configure o 2FA em seu aplicativo autenticador.
-  - Complexidade: Simples
+  - O que: Aumentar a cobertura de testes para os principais módulos do backend, incluindo controllers, services e utils.
+  - Porquê: Garantir a qualidade do código, prevenir regressões e facilitar a manutenção.
+  - Complexidade: Média
   - Concluído: [ ]
 
-- Tarefa: P2 - Adicionar autenticação de dois fatores (2FA)
+- Tarefa: P2 - Implementar funcionalidade de recuperação de senha
   - Quem: Backend
-  - O que: Modificar o endpoint de login para verificar o código TOTP.
-  - Porquê: Adicionar uma camada extra de segurança ao processo de login.
-  - Complexidade: Simples
+  - O que: Criar endpoints para solicitar a redefinição de senha, enviar um email com um token de reset e atualizar a senha do usuário.
+  - Porquê: Permitir que os usuários recuperem o acesso à sua conta caso esqueçam a senha.
+  - Complexidade: Complexa
   - Concluído: [ ]
 
-- Tarefa: P3 - Otimizar queries do Drizzle ORM para relatórios complexos
-  - Quem: Backend
-  - O que: Identificar a query mais lenta do relatório de ganhos por jornada.
-  - Porquê: Focar os esforços de otimização na query que mais impacta a performance.
-  - Complexidade: Simples
-  - Concluído: [ ]
 
-- Tarefa: P3 - Otimizar queries do Drizzle ORM para relatórios complexos
-  - Quem: Backend
-  - O que: Executar explain analyze na query identificada.
-  - Porquê: Obter informações detalhadas sobre como o banco de dados está processando a query.
-  - Complexidade: Simples
-  - Concluído: [ ]
-
-- Tarefa: P3 - Otimizar queries do Drizzle ORM para relatórios complexos
-  - Quem: Backend
-  - O que: Aplicar uma otimização inicial à query (e.g., adicionar índice, reescrever JOIN).
-  - Porquê: Testar uma hipótese de otimização de forma rápida.
-  - Complexidade: Simples
-  - Concluído: [ ]
-
-- Tarefa: P3 - Otimizar queries do Drizzle ORM para relatórios complexos
-  - Quem: Backend
-  - O que: Medir o tempo de execução da query otimizada e comparar com o original.
-  - Porquê: Validar a eficácia da otimização aplicada.
-  - Complexidade: Simples
-  - Concluído: [ ]
-
-- Tarefa: P3 - Otimizar queries do Drizzle ORM para relatórios complexos
-  - Quem: Backend
-  - O que: Repetir Micro-tarefas 12.3 e 12.4 até atingir a performance desejada ou esgotar as opções de otimização.
-  - Porquê: Garantir a máxima performance possível para a query.
-  - Complexidade: Complexa (mas cada iteração é simples)
-  - Concluído: [ ]
-
-- Tarefa: P2 - Implementar notificações push
-  - Quem: Backend
-  - O que: Criar um endpoint no backend para registrar tokens de dispositivo FCM.
-  - Porquê: Permitir que o backend saiba para quais dispositivos enviar notificações.
-  - Complexidade: Simples
-  - Concluído: [ ]
-
-- Tarefa: P2 - Implementar notificações push
-  - Quem: Backend
-  - O que: Criar um endpoint no backend para enviar notificações push para um dispositivo específico.
-  - Porquê: Fornecer uma forma de o backend disparar notificações manualmente ou via automação.
-  - Complexidade: Simples
-  - Concluído: [ ]
-
-- Tarefa: P2 - Implementar notificações push
-  - Quem: Backend
-  - O que: Enviar uma notificação push quando uma meta for atingida.
-  - Porquê: Informar o usuário em tempo real sobre o progresso de suas metas.
-  - Complexidade: Simples
-  - Concluído: [ ]
