@@ -27,7 +27,13 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
     const token = localStorage.getItem('token');
     const userData = localStorage.getItem('user');
     if (token && userData) {
-      setUser(JSON.parse(userData));
+      try {
+        setUser(JSON.parse(userData));
+      } catch (error) {
+        console.error('Erro ao carregar dados do usuário:', error);
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+      }
     }
     setLoading(false);
   }, []);
@@ -46,15 +52,15 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message || 'Erro ao fazer login');
+        throw new Error(data.error?.message || data.message || 'Erro ao fazer login');
       }
 
-      if (data.success && data.user) {
-        localStorage.setItem('token', data.accessToken);
-        localStorage.setItem('user', JSON.stringify(data.user));
-        setUser(data.user);
+      if (data.success && data.data) {
+        localStorage.setItem('token', data.data.token);
+        localStorage.setItem('user', JSON.stringify(data.data.user));
+        setUser(data.data.user);
       } else {
-        throw new Error(data.message || 'Erro ao fazer login');
+        throw new Error(data.error?.message || data.message || 'Erro ao fazer login');
       }
     } catch (error: any) {
       throw new Error(error.message || 'Erro de conexão');
@@ -87,12 +93,261 @@ const useAuth = () => {
 // Dashboard Component
 const Dashboard = () => {
   const { user, signOut } = useAuth();
+  const [dashboardData, setDashboardData] = useState<any>(null);
+  const [loadingData, setLoadingData] = useState(true);
+
+  useEffect(() => {
+    loadDashboardData();
+  }, []);
+
+  const loadDashboardData = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch('http://localhost:3000/api/v1/dashboard/summary?periodo=mes', {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        if (result.success) {
+          setDashboardData(result.data);
+        }
+      }
+    } catch (error) {
+      console.error('Erro ao carregar dashboard:', error);
+    } finally {
+      setLoadingData(false);
+    }
+  };
+
+  const formatCurrency = (centavos: number): string => {
+    return new Intl.NumberFormat('pt-BR', {
+      style: 'currency',
+      currency: 'BRL'
+    }).format(centavos / 100);
+  };
 
   return (
-    <div>
-      <h1>Bem-vindo, {user?.nome}!</h1>
-      <p>{user?.email}</p>
-      <button onClick={signOut}>Sair</button>
+    <div style={{
+      minHeight: '100vh',
+      backgroundColor: '#F2F2F7',
+      padding: '24px'
+    }}>
+      <div style={{
+        backgroundColor: '#FFFFFF',
+        borderRadius: '16px',
+        padding: '32px',
+        marginBottom: '24px',
+        boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)'
+      }}>
+        <div style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          marginBottom: '24px'
+        }}>
+          <div>
+            <h1 style={{
+              fontSize: '28px',
+              fontWeight: 'bold',
+              color: '#007AFF',
+              margin: '0 0 8px 0'
+            }}>
+              Bem-vindo, {user?.nome}!
+            </h1>
+            <p style={{
+              fontSize: '16px',
+              color: '#8E8E93',
+              margin: '0'
+            }}>
+              {user?.email}
+            </p>
+          </div>
+          <button
+            onClick={signOut}
+            style={{
+              padding: '12px 24px',
+              backgroundColor: '#FF3B30',
+              color: 'white',
+              border: 'none',
+              borderRadius: '8px',
+              fontSize: '16px',
+              cursor: 'pointer'
+            }}
+          >
+            Sair
+          </button>
+        </div>
+
+        {loadingData ? (
+          <div style={{ textAlign: 'center', padding: '40px' }}>
+            <p>Carregando dados do dashboard...</p>
+          </div>
+        ) : dashboardData ? (
+          <div>
+            <h2 style={{
+              fontSize: '24px',
+              fontWeight: 'bold',
+              color: '#333',
+              marginBottom: '16px'
+            }}>
+              Resumo Financeiro - Este Mês
+            </h2>
+            
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
+              gap: '16px',
+              marginBottom: '24px'
+            }}>
+              <div style={{
+                backgroundColor: '#E8F5E8',
+                padding: '20px',
+                borderRadius: '12px',
+                border: '1px solid #34C759'
+              }}>
+                <h3 style={{
+                  fontSize: '16px',
+                  color: '#34C759',
+                  margin: '0 0 8px 0'
+                }}>
+                  Faturamento Bruto
+                </h3>
+                <p style={{
+                  fontSize: '24px',
+                  fontWeight: 'bold',
+                  color: '#333',
+                  margin: '0'
+                }}>
+                  {formatCurrency(dashboardData.metricas_principais?.faturamento_bruto || 0)}
+                </p>
+              </div>
+
+              <div style={{
+                backgroundColor: '#FFE8E8',
+                padding: '20px',
+                borderRadius: '12px',
+                border: '1px solid #FF3B30'
+              }}>
+                <h3 style={{
+                  fontSize: '16px',
+                  color: '#FF3B30',
+                  margin: '0 0 8px 0'
+                }}>
+                  Total de Despesas
+                </h3>
+                <p style={{
+                  fontSize: '24px',
+                  fontWeight: 'bold',
+                  color: '#333',
+                  margin: '0'
+                }}>
+                  {formatCurrency(dashboardData.metricas_principais?.total_despesas || 0)}
+                </p>
+              </div>
+
+              <div style={{
+                backgroundColor: '#E8F4FF',
+                padding: '20px',
+                borderRadius: '12px',
+                border: '1px solid #007AFF'
+              }}>
+                <h3 style={{
+                  fontSize: '16px',
+                  color: '#007AFF',
+                  margin: '0 0 8px 0'
+                }}>
+                  Lucro Líquido
+                </h3>
+                <p style={{
+                  fontSize: '24px',
+                  fontWeight: 'bold',
+                  color: '#333',
+                  margin: '0'
+                }}>
+                  {formatCurrency(dashboardData.metricas_principais?.lucro_liquido || 0)}
+                </p>
+                <p style={{
+                  fontSize: '14px',
+                  color: '#666',
+                  margin: '4px 0 0 0'
+                }}>
+                  Margem: {(dashboardData.metricas_principais?.margem_lucro || 0).toFixed(1)}%
+                </p>
+              </div>
+
+              <div style={{
+                backgroundColor: '#FFF4E8',
+                padding: '20px',
+                borderRadius: '12px',
+                border: '1px solid #FF9500'
+              }}>
+                <h3 style={{
+                  fontSize: '16px',
+                  color: '#FF9500',
+                  margin: '0 0 8px 0'
+                }}>
+                  Ganho por Hora
+                </h3>
+                <p style={{
+                  fontSize: '24px',
+                  fontWeight: 'bold',
+                  color: '#333',
+                  margin: '0'
+                }}>
+                  {formatCurrency(dashboardData.metricas_operacionais?.ganho_por_hora || 0)}
+                </p>
+              </div>
+            </div>
+
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+              gap: '16px'
+            }}>
+              <div style={{
+                backgroundColor: '#F8F9FA',
+                padding: '16px',
+                borderRadius: '8px'
+              }}>
+                <h4 style={{ margin: '0 0 8px 0', color: '#666' }}>KM Total</h4>
+                <p style={{ margin: '0', fontSize: '20px', fontWeight: 'bold' }}>
+                  {(dashboardData.metricas_operacionais?.km_total || 0).toLocaleString()} km
+                </p>
+              </div>
+
+              <div style={{
+                backgroundColor: '#F8F9FA',
+                padding: '16px',
+                borderRadius: '8px'
+              }}>
+                <h4 style={{ margin: '0 0 8px 0', color: '#666' }}>Jornadas</h4>
+                <p style={{ margin: '0', fontSize: '20px', fontWeight: 'bold' }}>
+                  {dashboardData.metricas_operacionais?.numero_jornadas || 0}
+                </p>
+              </div>
+
+              <div style={{
+                backgroundColor: '#F8F9FA',
+                padding: '16px',
+                borderRadius: '8px'
+              }}>
+                <h4 style={{ margin: '0 0 8px 0', color: '#666' }}>Custo por KM</h4>
+                <p style={{ margin: '0', fontSize: '20px', fontWeight: 'bold' }}>
+                  {formatCurrency(dashboardData.metricas_operacionais?.custo_por_km || 0)}
+                </p>
+              </div>
+            </div>
+          </div>
+        ) : (
+          <div style={{ textAlign: 'center', padding: '40px' }}>
+            <p>Nenhum dado disponível no momento.</p>
+          </div>
+        )}
+      </div>
     </div>
   );
 };
@@ -100,19 +355,22 @@ const Dashboard = () => {
 const NewLoginScreen = () => {
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
+  const [error, setError] = useState('');
   const { signIn, loading } = useAuth();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError('');
+    
     if (!email.trim() || !senha.trim()) {
-      alert('Por favor, preencha todos os campos');
+      setError('Por favor, preencha todos os campos');
       return;
     }
 
     try {
       await signIn({ email: email.trim(), senha });
     } catch (error: any) {
-      alert(error.message || 'Erro ao fazer login');
+      setError(error.message || 'Erro ao fazer login');
     }
   };
 
@@ -150,6 +408,19 @@ const NewLoginScreen = () => {
         }}>
           Gestão financeira para motoristas
         </p>
+
+        {error && (
+          <div style={{
+            backgroundColor: '#FFE8E8',
+            color: '#FF3B30',
+            padding: '12px',
+            borderRadius: '8px',
+            marginBottom: '16px',
+            textAlign: 'center'
+          }}>
+            {error}
+          </div>
+        )}
 
         <form onSubmit={handleLogin}>
           <div style={{ marginBottom: '16px' }}>
@@ -259,7 +530,25 @@ const App = () => {
   const { isAuthenticated, loading } = useAuth();
 
   if (loading) {
-    return <div>Carregando...</div>;
+    return (
+      <div style={{
+        minHeight: '100vh',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: '#F2F2F7'
+      }}>
+        <div style={{
+          backgroundColor: '#FFFFFF',
+          padding: '40px',
+          borderRadius: '16px',
+          textAlign: 'center',
+          boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)'
+        }}>
+          <p style={{ margin: '0', fontSize: '18px', color: '#666' }}>Carregando...</p>
+        </div>
+      </div>
+    );
   }
 
   return isAuthenticated ? <Dashboard /> : <NewLoginScreen />;

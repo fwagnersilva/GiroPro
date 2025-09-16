@@ -7,7 +7,9 @@
   - O que: Instalar a biblioteca de validação (Zod) no projeto frontend.
   - Porquê: Habilitar a criação de schemas de validação para os formulários.
   - Complexidade: Simples
-  - Concluído: Em Execução
+  - Concluído: [x]
+  - Como foi feita: A biblioteca Zod foi instalada utilizando `npm install zod`.
+  - Hash do Commit: 4575a33bfcace047c4897ad1a2b4972e45cb3da3
 
 
 - **Tarefa:** P0 - Corrigir renderização do Dashboard após login (Web)
@@ -15,7 +17,7 @@
   - **O que:** O frontend não está atualizando o estado do usuário após o login bem-sucedido, impedindo a renderização do Dashboard.
   - **Porquê:** A API retorna sucesso, o localStorage é atualizado, mas o componente Dashboard não renderiza.
   - **Complexidade:** Complexa
-  - **Concluído:** [ ]
+  - **Concluído:** Em Execução
   - **Comentários:**
   - **Hash do Commit:**
 
