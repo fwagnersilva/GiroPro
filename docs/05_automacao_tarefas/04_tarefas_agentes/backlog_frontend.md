@@ -9,7 +9,7 @@
   - Complexidade: Simples
   - Concluído: [x]
   - Como foi feita: A biblioteca Zod foi instalada no projeto frontend utilizando o comando `npm install zod --legacy-peer-deps` no diretório `/home/ubuntu/GiroPro/frontend`.
-  - Hash do Commit: a7a34034b8945e38228eb18d4ca2018922cd98c5
+  - Hash do Commit: 94f2b1ddf171361ab2be67cb8807771ededb1c31
   - Arquivos modificados: frontend/package.json, frontend/package-lock.json
   - Observações: A instalação exigiu o uso da flag `--legacy-peer-deps` devido a conflitos de dependência.
 
