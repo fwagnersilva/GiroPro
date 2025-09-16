@@ -44,9 +44,9 @@
   - **O que:** Configurar o React Navigation ou solução alternativa para funcionar no ambiente web, permitindo a transição entre as telas.
   - **Porquê:** Permitir que o usuário navegue entre as diferentes seções da aplicação web.
   - **Complexidade:** Complexa
-  - **Concluído:** Em Execução
-  - **Comentários:**
-  - **Hash do Commit:**
+  - **Concluído:** [x]
+  - **Como foi feita:** Criado o arquivo `LinkingConfiguration.ts` para definir as rotas web e integrado ao `NavigationContainer` em `AppNavigator.tsx`. Instaladas as dependências `expo-linking` e `@react-navigation/native`.
+  - **Hash do Commit:** eb1bf90
 
 - **Tarefa:** P1 - Refatorar Componentes Incompatíveis
   - **Quem:** Frontend
