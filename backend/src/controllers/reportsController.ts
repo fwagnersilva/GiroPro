@@ -322,11 +322,11 @@ export class ReportsController {
         .where(and(
           eq(despesas.idUsuario, userId),
           isNull(despesas.deletedAt),
-          gte(despesas.data, parsedDataInicio),
-          lte(despesas.data, parsedDataFim),
+          gte(despesas.dataDespesa, parsedDataInicio),
+          lte(despesas.dataDespesa, parsedDataFim),
           idVeiculo ? eq(despesas.idVeiculo, idVeiculo) : undefined
         ))
-        .orderBy(desc(despesas.data));
+        .orderBy(desc(despesas.dataDespesa));
 
       const pdfBuffer = await generateExpensesPdf(despesasDetalhadas);
 
