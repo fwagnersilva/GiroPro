@@ -53,7 +53,7 @@
   - **O que:** Adaptar ou criar versões web-compatíveis de componentes que usam elementos nativos do React Native (ex: `FormInput.tsx`).
   - **Porquê:** Garantir a compatibilidade e o funcionamento correto da aplicação na plataforma web.
   - **Complexidade:** Complexa
-  - **Concluído:** [ ]
+  - **Concluído:** Em Execução
   - **Comentários:**
   - **Hash do Commit:**
 
