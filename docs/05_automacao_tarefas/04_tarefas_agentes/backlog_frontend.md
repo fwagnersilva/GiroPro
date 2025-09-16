@@ -84,7 +84,7 @@
   - **Concluído:** [x]
   - **Como foi feita:** Atualizadas as credenciais de teste em dois arquivos: `frontend/web-app-improved.tsx` e `frontend/LoginScreen.simple.web.tsx`. As credenciais foram alteradas de `test@test.com` / `123456` para `teste@teste.com` / `Teste123@` conforme especificado na tarefa.
   - **Arquivos modificados:** `frontend/web-app-improved.tsx`, `frontend/LoginScreen.simple.web.tsx`
-  - **Hash do Commit:**
+  - **Hash do Commit:** 937b914
 
 - **Tarefa:** P3 - Organização de Imports
   - **Quem:** Frontend
