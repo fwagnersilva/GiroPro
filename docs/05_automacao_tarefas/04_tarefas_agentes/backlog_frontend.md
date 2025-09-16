@@ -547,7 +547,7 @@
   - O que: Investigar por que o login falha mesmo com credenciais corretas e o backend respondendo com erro.
   - Porquê: O login é uma funcionalidade crítica e precisa ser corrigida para que o restante do frontend possa ser testado.
   - Complexidade: Complexa
-  - Concluído: [ ]
+  - Concluído: Em Execução
 
 - Tarefa: P1 - Adicionar tratamento de erro visual para login no frontend (Web)
   - Quem: Frontend
