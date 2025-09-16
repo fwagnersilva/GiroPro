@@ -81,8 +81,9 @@
   - **O que:** Atualizar a interface para mostrar as credenciais de teste corretas (`teste@teste.com` / `Teste123@`).
   - **Porquê:** Facilitar o acesso e os testes da aplicação.
   - **Complexidade:** Simples
-  - **Concluído:** Em Execução
-  - **Comentários:**
+  - **Concluído:** [x]
+  - **Como foi feita:** Atualizadas as credenciais de teste em dois arquivos: `frontend/web-app-improved.tsx` e `frontend/LoginScreen.simple.web.tsx`. As credenciais foram alteradas de `test@test.com` / `123456` para `teste@teste.com` / `Teste123@` conforme especificado na tarefa.
+  - **Arquivos modificados:** `frontend/web-app-improved.tsx`, `frontend/LoginScreen.simple.web.tsx`
   - **Hash do Commit:**
 
 - **Tarefa:** P3 - Organização de Imports
