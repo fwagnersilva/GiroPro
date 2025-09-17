@@ -14,6 +14,7 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import { Picker } from '@react-native-picker/picker';
 import { expenseService } from '../services/api';
+import { expenseSchema } from '../schemas/expenseSchemas';
 import { Vehicle } from '../types';
 
 interface AddExpenseScreenProps {
@@ -48,18 +49,15 @@ const AddExpenseScreen: React.FC<AddExpenseScreenProps> = ({ navigation, route }
 
   const handleSubmit = async () => {
     // Validações
-    if (valorDespesaError) {
-      Alert.alert('Erro', valorDespesaError);
-      return;
-    }
-
     if (!formData.id_veiculo) {
       Alert.alert("Erro", "Selecione um veículo");
       return;
     }
 
-    if (!formData.valor_despesa || parseFloat(formData.valor_despesa) <= 0) {
-      Alert.alert("Erro", "Informe um valor válido para a despesa");
+    try {
+      expenseSchema.pick({ valorDespesa: true }).parse({ valorDespesa: parseFloat(formData.valor_despesa) });
+    } catch (e: any) {
+      Alert.alert("Erro de Validação", e.errors[0].message);
       return;
     }
 
