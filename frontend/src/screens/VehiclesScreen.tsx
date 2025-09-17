@@ -145,21 +145,18 @@ const VehiclesScreen: React.FC = () => {
   const handleSubmit = () => {
     // Validações básicas
     try {
-      vehicleSchema.parse({ marca: formData.marca, modelo: formData.modelo });
+      vehicleSchema.parse({ marca: formData.marca, modelo: formData.modelo, ano: Number(formData.ano) });
     } catch (e: any) {
       Alert.alert("Erro", e.errors[0].message);
       return;
     }
 
-    if (!formData.ano || !formData.placa) {
+    if (!formData.placa) {
       Alert.alert("Erro", "Preencha todos os campos obrigatórios");
       return;
     }
 
-    if (isNaN(Number(formData.ano)) || Number(formData.ano) < 1900 || Number(formData.ano) > new Date().getFullYear() + 1) {
-      Alert.alert('Erro', 'Ano inválido');
-      return;
-    }
+
 
     // Validar placa (formato brasileiro)
     const placaRegex = /^[A-Z]{3}[0-9][A-Z0-9][0-9]{2}$/;

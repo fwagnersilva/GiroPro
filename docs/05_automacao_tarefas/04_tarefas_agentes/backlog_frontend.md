@@ -62,14 +62,18 @@
   - O que: Criar o schema de validação para o campo 'ano' do formulário de veículos.
   - Porquê: Garantir que o ano do veículo seja um dado válido.
   - Complexidade: Simples
-  - Concluído: Em Execução
+  - Concluído: [x]
+  - Como foi feita: O campo 'ano' foi adicionado ao `vehicleSchema` no arquivo `frontend/src/schemas/vehicleSchemas.ts` com validação de número inteiro, mínimo de 1900 e máximo de ano atual + 1.
+  - Hash do Commit: 6d8ac6c6b4c790279604b0d77ba312ab5def23c2
+  - Arquivos modificados: frontend/src/schemas/vehicleSchemas.ts
+  - Observações: Nenhuma.
 
 - Tarefa: P1 - Implementar validação de dados no frontend
   - Quem: Frontend
   - O que: Integrar a validação do campo 'ano' ao formulário de veículos.
   - Porquê: Fornecer feedback imediato ao usuário.
   - Complexidade: Simples
-  - Concluído: [ ]
+  - Concluído: Em Execução
 
 - Tarefa: P1 - Implementar validação de dados no frontend
   - Quem: Frontend
