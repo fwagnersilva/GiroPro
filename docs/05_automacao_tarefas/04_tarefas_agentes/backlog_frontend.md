@@ -108,7 +108,11 @@
   - O que: Integrar a validação do campo 'tipoCombustivel' ao formulário de veículos.
   - Porquê: Fornecer feedback imediato ao usuário.
   - Complexidade: Simples
-  - Concluído: Em Execução
+  - Concluído: [x]
+  - Como foi feita: O campo 'tipoCombustivel' foi adicionado ao `vehicleSchema` no arquivo `frontend/src/schemas/vehicleSchemas.ts` e integrado ao `handleSubmit` em `frontend/src/screens/VehiclesScreen.tsx`.
+  - Hash do Commit: 22a8758d7c9b0a1e2f3d4c5b6a7e8f9c0d1a2b3c
+  - Arquivos modificados: frontend/src/schemas/vehicleSchemas.ts, frontend/src/screens/VehiclesScreen.tsx
+  - Observações: Nenhuma.
 
 - Tarefa: P1 - Implementar validação de dados no frontend
   - Quem: Frontend
