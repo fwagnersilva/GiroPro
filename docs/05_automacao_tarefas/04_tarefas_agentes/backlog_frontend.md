@@ -221,21 +221,29 @@ _**
   - O que: Criar o schema de validação para o campo 'valorDespesa' do formulário de despesas.
   - Porquê: Garantir que o valor da despesa seja um dado válido.
   - Complexidade: Simples
-  - Status: Em Execução
+  - Status: [x]
+  - Como foi feita: O arquivo `frontend/src/schemas/expenseSchemas.ts` foi criado com o schema de validação para o campo `valorDespesa`, que deve ser um número positivo.
+  - Hash do Commit: 0ad9b29
+  - Arquivos modificados: frontend/src/schemas/expenseSchemas.ts
+  - Observações: Nenhuma.
 
 - Tarefa: P1 - Implementar validação de dados no frontend
   - Quem: Frontend
   - O que: Integrar a validação do campo 'valorDespesa' ao formulário de despesas.
   - Porquê: Fornecer feedback imediato ao usuário.
   - Complexidade: Simples
-  - Concluído: Em Execução
+  - Status: [x]
+  - Como foi feita: O `expenseSchema` foi importado em `frontend/src/screens/AddExpenseScreen.tsx` e a validação do campo `valor_despesa` foi integrada ao `handleSubmit` do formulário.
+  - Hash do Commit: eff1ba3
+  - Arquivos modificados: frontend/src/screens/AddExpenseScreen.tsx
+  - Observações: Nenhuma.
 
 - Tarefa: P2 - Refatorar o tratamento de erros global no frontend
   - Quem: Frontend
   - O que: Criar um componente básico de Toast/Notificação (apenas UI).
   - Porquê: Ter uma base visual para exibir erros e mensagens de feedback.
   - Complexidade: Simples
-  - Concluído: Em Execução
+  - Status: Em Execução
 
 - Tarefa: P2 - Refatorar o tratamento de erros global no frontend
   - Quem: Frontend
