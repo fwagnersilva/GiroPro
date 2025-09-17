@@ -51,14 +51,18 @@
   - O que: Integrar a validação do campo 'modelo' ao formulário de veículos.
   - Porquê: Fornecer feedback imediato ao usuário.
   - Complexidade: Simples
-  - Concluído: Em Execução
+  - Concluído: [x]
+  - Como foi feita: O `vehicleSchema` em `frontend/src/schemas/vehicleSchemas.ts` foi atualizado para incluir a validação do campo 'modelo', e o `handleSubmit` em `frontend/src/screens/VehiclesScreen.tsx` foi modificado para utilizar essa validação.
+  - Hash do Commit: 147d1c9a032eb3027519abb17176a429134b1ca6
+  - Arquivos modificados: frontend/src/schemas/vehicleSchemas.ts, frontend/src/screens/VehiclesScreen.tsx
+  - Observações: Nenhuma.
 
 - Tarefa: P1 - Implementar validação de dados no frontend
   - Quem: Frontend
   - O que: Criar o schema de validação para o campo 'ano' do formulário de veículos.
   - Porquê: Garantir que o ano do veículo seja um dado válido.
   - Complexidade: Simples
-  - Concluído: [ ]
+  - Concluído: Em Execução
 
 - Tarefa: P1 - Implementar validação de dados no frontend
   - Quem: Frontend
