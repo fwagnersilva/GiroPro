@@ -64,7 +64,7 @@
   - Complexidade: Média
   - Status: Concluída [x]
   - Como foi feita: Instalado o pacote `winston` via npm. Criado o arquivo `backend/src/utils/logger.ts` para configurar o Winston com saídas para console e arquivos (error.log e combined.log). Renomeado o arquivo `backend/src/utils/logger.ts` existente para `customLogger.ts` para evitar conflitos. Integrado o novo logger no `backend/src/app.ts`, substituindo as chamadas `console.log` por `logger.info` para os logs de inicialização do servidor.
-  - Hash do Commit: [PENDING_COMMIT_HASH]
+  - Hash do Commit: b51d5e72dded3d1515e34747bb97bb8f08f2aa0f
   - Arquivos modificados: backend/src/utils/logger.ts, backend/src/utils/customLogger.ts, backend/src/app.ts
   - Observações: O logger Winston agora está configurado para registrar eventos. Próximos passos incluem a integração do logger em outros módulos e a configuração de níveis de log mais granulares.
 
@@ -76,7 +76,7 @@
   - O que: Adicionar um campo de 'role' ao modelo de usuário e criar um middleware para verificar as permissões de acesso às rotas.
   - Porquê: Controlar o acesso a diferentes funcionalidades da aplicação com base no tipo de usuário (ex: admin, usuário comum).
   - Complexidade: Complexa
-  - Concluído: [ ]
+  - Status: Em Execução
   - Como foi feita: [ ]
   - Hash do Commit: [ ]
   - Arquivos modificados: [ ]
