@@ -17,7 +17,9 @@ import { lightTheme } from '../theme/tokens';
 import { getSafePadding } from '../utils/platformUtils';
 import { useJourneys, useQuickFilters } from '../hooks/useJourneys';
 import { Journey, QUICK_FILTERS } from '../types/journey';
+import { journeySchema } from '../schemas/journeySchemas';
 import JourneyCard from '../components/JourneyCard';
+import AddJourneyModal from '../components/AddJourneyModal';
 
 // Componente de Estado Vazio
 const EmptyState: React.FC<{ onNewJourney: () => void }> = ({ onNewJourney }) => (
@@ -123,7 +125,8 @@ const MetricsSummary: React.FC<{ journeys: Journey[] }> = ({ journeys }) => {
 
 // Componente Principal
 const JourneysScreen: React.FC = ({ navigation }: any) => {
-  const [selectedFilter, setSelectedFilter] = useState('all');
+  const [selectedFilter, setSelectedFilter] = useState(\'all\');
+  const [isAddJourneyModalVisible, setAddJourneyModalVisible] = useState(false);
   const { getQuickFilter } = useQuickFilters();
   const { journeys, loading, error, refresh } = useJourneys();
   const { isDesktop, isTablet } = useResponsiveStyles();
@@ -136,11 +139,7 @@ const JourneysScreen: React.FC = ({ navigation }: any) => {
   }, [getQuickFilter]);
 
   const handleNewJourney = useCallback(() => {
-    Alert.alert(
-      'Nova Jornada',
-      'Funcionalidade em desenvolvimento. Em breve você poderá iniciar o rastreamento de uma nova jornada.',
-      [{ text: 'OK' }]
-    );
+    setAddJourneyModalVisible(true);
   }, []);
 
   const handleJourneyPress = useCallback((journey: Journey) => {
@@ -276,6 +275,21 @@ const JourneysScreen: React.FC = ({ navigation }: any) => {
       >
         <Ionicons name="add" size={28} color={lightTheme.colors.surface} />
       </TouchableOpacity>
+
+      <AddJourneyModal
+        visible={isAddJourneyModalVisible}
+        onClose={() => setAddJourneyModalVisible(false)}
+        onSubmit={(kmInicio) => {
+          console.log("Nova jornada com km inicial:", kmInicio);
+          setAddJourneyModalVisible(false);
+          Alert.alert(
+            'Nova Jornada',
+            `Jornada iniciada com ${kmInicio} km. Funcionalidade de rastreamento em desenvolvimento.`,
+            [{ text: 'OK' }]
+          );
+        }}
+        loading={false} // Adicionar estado de loading real quando a API for integrada
+      />
     </SafeAreaView>
   );
 };
