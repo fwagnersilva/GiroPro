@@ -15,6 +15,7 @@ import { Ionicons } from '@expo/vector-icons';
 import * as Haptics from 'expo-haptics';
 import { Picker } from '@react-native-picker/picker';
 import { fuelingService } from '../services/api';
+import { fuelingSchema } from '../schemas/fuelingSchemas';
 import { Vehicle } from '../types';
 
 interface AddFuelingScreenProps {
@@ -65,8 +66,10 @@ const AddFuelingScreen: React.FC<AddFuelingScreenProps> = ({ navigation, route }
       return;
     }
 
-    if (!formData.quantidade_litros || parseFloat(formData.quantidade_litros) <= 0) {
-      Alert.alert('Erro', 'Informe uma quantidade válida de litros');
+    try {
+      fuelingSchema.pick({ quantidadeLitros: true }).parse({ quantidadeLitros: parseFloat(formData.quantidade_litros) });
+    } catch (e: any) {
+      Alert.alert("Erro de Validação", e.errors[0].message);
       return;
     }
 
