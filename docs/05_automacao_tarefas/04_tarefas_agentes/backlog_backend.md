@@ -62,11 +62,11 @@
   - O que: Integrar uma biblioteca de logging (ex: Winston) para registrar eventos importantes da aplicação, como erros, logins e alterações de dados.
   - Porquê: Facilitar o debug, monitoramento e auditoria da aplicação.
   - Complexidade: Média
-  - Concluído: [ ]
-  - Como foi feita: [ ]
-  - Hash do Commit: [ ]
-  - Arquivos modificados: [ ]
-  - Observações: [ ]
+  - Status: Concluída [x]
+  - Como foi feita: Instalado o pacote `winston` via npm. Criado o arquivo `backend/src/utils/logger.ts` para configurar o Winston com saídas para console e arquivos (error.log e combined.log). Renomeado o arquivo `backend/src/utils/logger.ts` existente para `customLogger.ts` para evitar conflitos. Integrado o novo logger no `backend/src/app.ts`, substituindo as chamadas `console.log` por `logger.info` para os logs de inicialização do servidor.
+  - Hash do Commit: [PENDING_COMMIT_HASH]
+  - Arquivos modificados: backend/src/utils/logger.ts, backend/src/utils/customLogger.ts, backend/src/app.ts
+  - Observações: O logger Winston agora está configurado para registrar eventos. Próximos passos incluem a integração do logger em outros módulos e a configuração de níveis de log mais granulares.
 
 
 
