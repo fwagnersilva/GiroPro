@@ -73,7 +73,11 @@
   - O que: Integrar a validação do campo 'ano' ao formulário de veículos.
   - Porquê: Fornecer feedback imediato ao usuário.
   - Complexidade: Simples
-  - Concluído: Em Execução
+  - Concluído: [x]
+  - Como foi feita: A validação do campo 'ano' já estava implementada no schema `vehicleSchema` e sendo utilizada no `handleSubmit` do formulário em `frontend/src/screens/VehiclesScreen.tsx`. A integração estava funcionando corretamente.
+  - Hash do Commit: c907d66c7e0388dd6a97124519c01c2d401a6b84
+  - Arquivos modificados: frontend/src/screens/VehiclesScreen.tsx
+  - Observações: A validação já estava funcionando, apenas foi confirmada a implementação.
 
 - Tarefa: P1 - Implementar validação de dados no frontend
   - Quem: Frontend
