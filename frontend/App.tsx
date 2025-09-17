@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import ToastNotification, { ToastType } from './src/components/ToastNotification';
+import React from 'react';
+import { ToastProvider } from './src/contexts/ToastContext';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import LoginScreen from './src/screens/LoginScreen';
@@ -28,52 +28,36 @@ import InsightsScreen from './src/screens/InsightsScreen';
 const Stack = createStackNavigator();
 
 const App: React.FC = () => {
-  const [toastVisible, setToastVisible] = useState(false);
-  const [toastMessage, setToastMessage] = useState("");
-  const [toastType, setToastType] = useState<ToastType>("info");
 
-  const showToast = (message: string, type: ToastType) => {
-    setToastMessage(message);
-    setToastType(type);
-    setToastVisible(true);
-  };
-
-  const hideToast = () => {
-    setToastVisible(false);
-  };
   return (
-    <NavigationContainer>
-      <Stack.Navigator initialRouteName="Login" screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="Login" component={LoginScreen} />
-        <Stack.Screen name="Register" component={RegisterScreen} />
-        <Stack.Screen name="Dashboard" component={DashboardScreen} />
-        <Stack.Screen name="Vehicles" component={VehiclesScreen} />
-        <Stack.Screen name="Expenses" component={ExpensesScreen} />
-        <Stack.Screen name="Fuelings" component={FuelingsScreen} />
-        <Stack.Screen name="AddExpense" component={AddExpenseScreen} />
-        <Stack.Screen name="AddFueling" component={AddFuelingScreen} />
-        <Stack.Screen name="Reports" component={ReportsScreen} />
-        <Stack.Screen name="Profile" component={ProfileScreen} />
-        <Stack.Screen name="Journeys" component={JourneysScreen} />
-        <Stack.Screen name="JourneyHistory" component={JourneyHistoryScreen} />
-        <Stack.Screen name="Onboarding" component={OnboardingScreen} />
-        <Stack.Screen name="MultiVehicle" component={MultiVehicleScreen} />
-        <Stack.Screen name="FuelPrices" component={FuelPricesScreen} />
-        <Stack.Screen name="ExpenseHistory" component={ExpenseHistoryScreen} />
-        <Stack.Screen name="FuelingHistory" component={FuelingHistoryScreen} />
-        <Stack.Screen name="Achievements" component={AchievementsScreen} />
-        <Stack.Screen name="ChangePassword" component={ChangePasswordScreen} />
-        <Stack.Screen name="Goals" component={GoalsScreen} />
-        <Stack.Screen name="Insights" component={InsightsScreen} />
+    <ToastProvider>
+      <NavigationContainer>
+        <Stack.Navigator initialRouteName="Login" screenOptions={{ headerShown: false }}>
+          <Stack.Screen name="Login" component={LoginScreen} />
+          <Stack.Screen name="Register" component={RegisterScreen} />
+          <Stack.Screen name="Dashboard" component={DashboardScreen} />
+          <Stack.Screen name="Vehicles" component={VehiclesScreen} />
+          <Stack.Screen name="Expenses" component={ExpensesScreen} />
+          <Stack.Screen name="Fuelings" component={FuelingsScreen} />
+          <Stack.Screen name="AddExpense" component={AddExpenseScreen} />
+          <Stack.Screen name="AddFueling" component={AddFuelingScreen} />
+          <Stack.Screen name="Reports" component={ReportsScreen} />
+          <Stack.Screen name="Profile" component={ProfileScreen} />
+          <Stack.Screen name="Journeys" component={JourneysScreen} />
+          <Stack.Screen name="JourneyHistory" component={JourneyHistoryScreen} />
+          <Stack.Screen name="Onboarding" component={OnboardingScreen} />
+          <Stack.Screen name="MultiVehicle" component={MultiVehicleScreen} />
+          <Stack.Screen name="FuelPrices" component={FuelPricesScreen} />
+          <Stack.Screen name="ExpenseHistory" component={ExpenseHistoryScreen} />
+          <Stack.Screen name="FuelingHistory" component={FuelingHistoryScreen} />
+          <Stack.Screen name="Achievements" component={AchievementsScreen} />
+          <Stack.Screen name="ChangePassword" component={ChangePasswordScreen} />
+          <Stack.Screen name="Goals" component={GoalsScreen} />
+          <Stack.Screen name="Insights" component={InsightsScreen} />
 
-      </Stack.Navigator>
-      <ToastNotification
-        visible={toastVisible}
-        message={toastMessage}
-        type={toastType}
-        onHide={hideToast}
-      />
-    </NavigationContainer>
+        </Stack.Navigator>
+      </NavigationContainer>
+    </ToastProvider>
   );
 };
 
