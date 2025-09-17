@@ -15,6 +15,8 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { vehicleService } from '../services/api';
+import { z } from 'zod';
+import { vehicleSchema } from '../schemas/vehicleSchemas';
 
 interface Vehicle {
   id: string;
@@ -142,8 +144,15 @@ const VehiclesScreen: React.FC = () => {
 
   const handleSubmit = () => {
     // Validações básicas
-    if (!formData.marca || !formData.modelo || !formData.ano || !formData.placa) {
-      Alert.alert('Erro', 'Preencha todos os campos obrigatórios');
+    try {
+      vehicleSchema.parse({ marca: formData.marca });
+    } catch (e: any) {
+      Alert.alert("Erro", e.errors[0].message);
+      return;
+    }
+
+    if (!formData.modelo || !formData.ano || !formData.placa) {
+      Alert.alert("Erro", "Preencha todos os campos obrigatórios");
       return;
     }
 

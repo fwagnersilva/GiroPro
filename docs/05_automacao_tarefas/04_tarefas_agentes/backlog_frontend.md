@@ -29,7 +29,7 @@
   - O que: Integrar a validação do campo 'marca' ao formulário de veículos.
   - Porquê: Fornecer feedback imediato ao usuário sobre a validade da entrada.
   - Complexidade: Simples
-  - Concluído: [ ]
+  - Concluído: Em Execução
 
 - Tarefa: P1 - Implementar validação de dados no frontend
   - Quem: Frontend
