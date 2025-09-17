@@ -55,3 +55,147 @@
   - Hash do Commit: [SIMULATED_HASH_2]
   - Arquivos modificados: backend/src/routes/reports.ts, backend/src/controllers/reportsController.ts
   - Observações: Nenhuma.
+
+
+- Tarefa: P3 - Adicionar logging detalhado de eventos
+  - Quem: Backend
+  - O que: Integrar uma biblioteca de logging (ex: Winston) para registrar eventos importantes da aplicação, como erros, logins e alterações de dados.
+  - Porquê: Facilitar o debug, monitoramento e auditoria da aplicação.
+  - Complexidade: Média
+  - Concluído: [ ]
+  - Como foi feita: [ ]
+  - Hash do Commit: [ ]
+  - Arquivos modificados: [ ]
+  - Observações: [ ]
+
+
+
+
+- Tarefa: P2 - Implementar roles de usuário e permissões
+  - Quem: Backend
+  - O que: Adicionar um campo de 'role' ao modelo de usuário e criar um middleware para verificar as permissões de acesso às rotas.
+  - Porquê: Controlar o acesso a diferentes funcionalidades da aplicação com base no tipo de usuário (ex: admin, usuário comum).
+  - Complexidade: Complexa
+  - Concluído: [ ]
+  - Como foi feita: [ ]
+  - Hash do Commit: [ ]
+  - Arquivos modificados: [ ]
+  - Observações: [ ]
+
+- Tarefa: P2 - Microtarefa: Definir modelo de roles e permissões
+  - Quem: Backend
+  - O que: Criar ou modificar o modelo de usuário para incluir um campo de 'role' e definir as possíveis roles (ex: admin, user, guest) e suas permissões associadas.
+  - Porquê: Estruturar a base de dados para suportar o controle de acesso.
+  - Complexidade: Simples
+  - Concluído: [ ]
+  - Como foi feita: [ ]
+  - Hash do Commit: [ ]
+  - Arquivos modificados: [ ]
+  - Observações: [ ]
+
+- Tarefa: P2 - Microtarefa: Implementar middleware de autenticação e autorização
+  - Quem: Backend
+  - O que: Desenvolver um middleware que intercepta as requisições, verifica o token de autenticação do usuário e, com base na 'role' do usuário, autoriza ou nega o acesso à rota solicitada.
+  - Porquê: Proteger as rotas da API e garantir que apenas usuários autorizados acessem funcionalidades específicas.
+  - Complexidade: Média
+  - Concluído: [ ]
+  - Como foi feita: [ ]
+  - Hash do Commit: [ ]
+  - Arquivos modificados: [ ]
+  - Observações: [ ]
+
+- Tarefa: P2 - Microtarefa: Atualizar rotas existentes com verificação de permissão
+  - Quem: Backend
+  - O que: Aplicar o middleware de autorização às rotas existentes que requerem controle de acesso, especificando as roles permitidas para cada rota.
+  - Porquê: Integrar o novo sistema de permissões com as funcionalidades atuais da aplicação.
+  - Complexidade: Média
+  - Concluído: [ ]
+  - Como foi feita: [ ]
+  - Hash do Commit: [ ]
+  - Arquivos modificados: [ ]
+  - Observações: [ ]
+
+- Tarefa: P2 - Microtarefa: Criar testes para roles e permissões
+  - Quem: Backend
+  - O que: Desenvolver testes unitários e de integração para o modelo de roles, o middleware de autorização e as rotas protegidas, garantindo que as permissões funcionem conforme o esperado.
+  - Porquê: Assegurar a robustez e a segurança do sistema de controle de acesso.
+  - Complexidade: Média
+  - Concluído: [ ]
+  - Como foi feita: [ ]
+  - Hash do Commit: [ ]
+  - Arquivos modificados: [ ]
+  - Observações: [ ]
+
+
+
+
+- Tarefa: P2 - Criar mais testes unitários e de integração
+  - Quem: Backend
+  - O que: Aumentar a cobertura de testes para os principais módulos do backend, incluindo controllers, services e utils.
+  - Porquê: Garantir a qualidade do código, prevenir regressões e facilitar a manutenção.
+  - Complexidade: Média
+  - Concluído: [ ]
+  - Como foi feita: [ ]
+  - Hash do Commit: [ ]
+  - Arquivos modificados: [ ]
+  - Observações: [ ]
+
+
+
+
+- Tarefa: P2 - Implementar funcionalidade de recuperação de senha
+  - Quem: Backend
+  - O que: Criar endpoints para solicitar a redefinição de senha, enviar um email com um token de reset e atualizar a senha do usuário.
+  - Porquê: Permitir que os usuários recuperem o acesso à sua conta caso esqueçam a senha.
+  - Complexidade: Complexa
+  - Concluído: [ ]
+  - Como foi feita: [ ]
+  - Hash do Commit: [ ]
+  - Arquivos modificados: [ ]
+  - Observações: [ ]
+
+- Tarefa: P2 - Microtarefa: Criar endpoint para solicitação de redefinição de senha
+  - Quem: Backend
+  - O que: Desenvolver um endpoint que recebe o email do usuário, gera um token único e o armazena no banco de dados associado ao usuário, com um tempo de expiração.
+  - Porquê: Iniciar o processo de recuperação de senha de forma segura.
+  - Complexidade: Média
+  - Concluído: [ ]
+  - Como foi feita: [ ]
+  - Hash do Commit: [ ]
+  - Arquivos modificados: [ ]
+  - Observações: [ ]
+
+- Tarefa: P2 - Microtarefa: Implementar envio de email com token de reset
+  - Quem: Backend
+  - O que: Integrar um serviço de envio de email (ex: Nodemailer) para enviar um email ao usuário contendo o link de redefinição de senha, que incluirá o token gerado.
+  - Porquê: Fornecer ao usuário o meio para redefinir sua senha.
+  - Complexidade: Média
+  - Concluído: [ ]
+  - Como foi feita: [ ]
+  - Hash do Commit: [ ]
+  - Arquivos modificados: [ ]
+  - Observações: [ ]
+
+- Tarefa: P2 - Microtarefa: Criar endpoint para redefinição de senha
+  - Quem: Backend
+  - O que: Desenvolver um endpoint que recebe o token de reset e a nova senha do usuário. O endpoint deve validar o token (existência e expiração) e, se válido, atualizar a senha do usuário no banco de dados.
+  - Porquê: Concluir o processo de recuperação de senha, permitindo que o usuário defina uma nova senha.
+  - Complexidade: Média
+  - Concluído: [ ]
+  - Como foi feita: [ ]
+  - Hash do Commit: [ ]
+  - Arquivos modificados: [ ]
+  - Observações: [ ]
+
+- Tarefa: P2 - Microtarefa: Criar testes para recuperação de senha
+  - Quem: Backend
+  - O que: Desenvolver testes unitários e de integração para todos os endpoints e lógicas envolvidas na funcionalidade de recuperação de senha, incluindo geração de token, envio de email e atualização de senha.
+  - Porquê: Garantir a segurança e o funcionamento correto da funcionalidade.
+  - Complexidade: Média
+  - Concluído: [ ]
+  - Como foi feita: [ ]
+  - Hash do Commit: [ ]
+  - Arquivos modificados: [ ]
+  - Observações: [ ]
+
+
