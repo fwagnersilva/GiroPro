@@ -145,25 +145,20 @@ const VehiclesScreen: React.FC = () => {
   const handleSubmit = () => {
     // Validações básicas
     try {
-      vehicleSchema.parse({ marca: formData.marca, modelo: formData.modelo, ano: Number(formData.ano) });
+      vehicleSchema.parse({ 
+        marca: formData.marca, 
+        modelo: formData.modelo, 
+        ano: Number(formData.ano),
+        placa: formData.placa.toUpperCase().replace('-', '')
+      });
     } catch (e: any) {
       Alert.alert("Erro", e.errors[0].message);
       return;
     }
 
-    if (!formData.placa) {
-      Alert.alert("Erro", "Preencha todos os campos obrigatórios");
-      return;
-    }
 
 
-
-    // Validar placa (formato brasileiro)
-    const placaRegex = /^[A-Z]{3}[0-9][A-Z0-9][0-9]{2}$/;
-    if (!placaRegex.test(formData.placa.toUpperCase().replace('-', ''))) {
-      Alert.alert('Erro', 'Formato de placa inválido');
-      return;
-    }
+    // Validar placa (formato brasileiro) - removido pois já está no schema
 
     const submitData: any = {
       marca: formData.marca,

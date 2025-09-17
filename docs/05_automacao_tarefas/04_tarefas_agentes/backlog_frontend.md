@@ -84,14 +84,18 @@
   - O que: Criar o schema de validação para o campo 'placa' do formulário de veículos.
   - Porquê: Garantir que a placa do veículo seja um dado válido.
   - Complexidade: Simples
-  - Concluído: Em Execução
+  - Concluído: [x]
+  - Como foi feita: O campo 'placa' foi adicionado ao `vehicleSchema` no arquivo `frontend/src/schemas/vehicleSchemas.ts` com validação de string obrigatória e regex para formato brasileiro de placa (ABC1234 ou ABC1D23).
+  - Hash do Commit: 5f472c34b3dd31518bd0e6bae1fddc2b4503c833
+  - Arquivos modificados: frontend/src/schemas/vehicleSchemas.ts
+  - Observações: Nenhuma.
 
 - Tarefa: P1 - Implementar validação de dados no frontend
   - Quem: Frontend
   - O que: Integrar a validação do campo 'placa' ao formulário de veículos.
   - Porquê: Fornecer feedback imediato ao usuário.
   - Complexidade: Simples
-  - Concluído: [ ]
+  - Concluído: Em Execução
 
 - Tarefa: P1 - Implementar validação de dados no frontend
   - Quem: Frontend
