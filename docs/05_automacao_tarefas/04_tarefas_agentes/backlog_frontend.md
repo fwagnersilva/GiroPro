@@ -27,10 +27,14 @@ _**
 
 - Tarefa: P1 - Implementar validação de dados no frontend
   - Quem: Frontend
-  - O que: Integrar a validação do campo 'marca' ao formulário de veículos.
+  - O que: Integrar a validação do campo 'placa' ao formulário de veículos.
   - Porquê: Fornecer feedback imediato ao usuário sobre a validade da entrada.
   - Complexidade: Simples
   - Concluído: [x]
+  - Como foi feita: A validação do campo 'placa' foi integrada ao formulário de veículos no arquivo `frontend/src/screens/VehiclesScreen.tsx`. A placa é convertida para maiúsculas e caracteres de hífen são removidos antes da validação pelo schema Zod.
+  - Hash do Commit: 8c8399f
+  - Arquivos modificados: frontend/src/screens/VehiclesScreen.tsx
+  - Observações: Nenhuma.
   - Como foi feita: O schema `vehicleSchema` foi importado em `frontend/src/screens/VehiclesScreen.tsx` e utilizado para validar o campo `marca` no `handleSubmit` do formulário. Mensagens de erro são exibidas via `Alert.alert`.
   - Hash do Commit: b626480ebdfbaf288dff69380c7301d6a8d08306
   - Arquivos modificados: frontend/src/screens/VehiclesScreen.tsx
@@ -129,7 +133,7 @@ _**
   - O que: Criar o schema de validação para o campo 'kmInicio' do formulário de jornadas.
   - Porquê: Garantir que a quilometragem inicial seja um dado válido.
   - Complexidade: Simples
-  - Concluído: Em Execução
+  - Concluído: Em ExecuçãoExecução
 
 - Tarefa: P1 - Implementar validação de dados no frontend
   - Quem: Frontend
