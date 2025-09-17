@@ -1,3 +1,4 @@
+_**
 # Backlog Frontend
 
 ## Tarefas Atribuídas
@@ -90,8 +91,6 @@
   - Arquivos modificados: frontend/src/schemas/vehicleSchemas.ts
   - Observações: Nenhuma.
 
-
-
 - Tarefa: P1 - Implementar validação de dados no frontend
   - Quem: Frontend
   - O que: Criar o schema de validação para o campo 'tipoCombustivel' do formulário de veículos.
@@ -113,13 +112,6 @@
   - Hash do Commit: 22a8758d7c9b0a1e2f3d4c5b6a7e8f9c0d1a2b3c
   - Arquivos modificados: frontend/src/schemas/vehicleSchemas.ts, frontend/src/screens/VehiclesScreen.tsx
   - Observações: Nenhuma.
-
-- Tarefa: P1 - Implementar validação de dados no frontend
-  - Quem: Frontend
-  - O que: Criar o schema de validação para o campo 'tipoUso' do formulário de veículos.
-  - Porquê: Garantir que o tipo de uso seja um dado válido.
-  - Complexidade: Simples
-  - Concluído: Execução II
 
 - Tarefa: P1 - Implementar validação de dados no frontend
   - Quem: Frontend
@@ -366,79 +358,3 @@
   - Complexidade: Simples
   - Concluído: [ ]
 
-- Tarefa: P2 - Adicionar autenticação de dois fatores (2FA)
-  - Quem: Frontend
-  - O que: Adicionar campo de entrada para o código TOTP na tela de login do frontend.
-  - Porquê: Permitir que o usuário forneça o segundo fator de autenticação.
-  - Complexidade: Simples
-  - Concluído: [ ]
-
-- Tarefa: P2 - Adicionar autenticação de dois fatores (2FA)
-  - Quem: Frontend
-  - O que: Integrar a tela de configuração de 2FA no frontend.
-  - Porquê: Fornecer uma interface para o usuário gerenciar suas configurações de 2FA.
-  - Complexidade: Simples
-  - Concluído: [ ]
-
-- Tarefa: P2 - Implementar notificações push
-  - Quem: Frontend
-  - O que: Configurar o Firebase Cloud Messaging (FCM) no projeto frontend.
-  - Porquê: Habilitar o frontend para receber notificações push.
-  - Complexidade: Simples
-  - Concluído: [ ]
-
-- Tarefa: P0 - Debugar falha de login no frontend (Web)
-  - Quem: Frontend
-  - O que: Investigar por que o login falha mesmo com credenciais corretas e o backend respondendo com erro.
-  - Porquê: O login é uma funcionalidade crítica e precisa ser corrigida para que o restante do frontend possa ser testado.
-  - Complexidade: Complexa
-  - Concluído: Execução II
-
-- Tarefa: P1 - Adicionar tratamento de erro visual para login no frontend (Web)
-  - Quem: Frontend
-  - O que: Exibir uma mensagem de erro amigável ao usuário quando o login falhar.
-  - Porquê: Melhorar a experiência do usuário, informando sobre o problema.
-  - Complexidade: Simples
-  - Concluído: [ ]
-
-- Tarefa: P1 - Verificar e corrigir comunicação do frontend com o backend (Web)
-  - Quem: Frontend
-  - O que: Analisar as requisições e respostas da API no console do navegador para identificar problemas de comunicação.
-  - Porquê: Garantir que o frontend está enviando e recebendo dados corretamente do backend.
-  - Complexidade: Média
-  - Concluído: [ ]
-
-- Tarefa: P2 - Implementar tela de registro de usuário no frontend (Web)
-  - Quem: Frontend
-  - O que: Criar a interface e a lógica para permitir que novos usuários se registrem na aplicação.
-  - Porquê: Habilitar novos usuários a utilizar o sistema.
-  - Complexidade: Complexa
-  - Concluído: [ ]
-
-- Tarefa: P2 - Implementar navegação básica entre telas de login e registro (Web)
-  - Quem: Frontend
-  - O que: Adicionar links ou botões para alternar entre as telas de login e registro.
-  - Porquê: Permitir que o usuário navegue entre as funcionalidades de autenticação.
-  - Complexidade: Simples
-  - Concluído: [ ]
-
-- Tarefa: P3 - Refatorar componentes de formulário para reuso (Web)
-  - Quem: Frontend
-  - O que: Identificar elementos comuns em formulários (inputs, botões) e criar componentes reutilizáveis.
-  - Porquê: Reduzir duplicação de código e manter consistência visual.
-  - Complexidade: Média
-  - Concluído: [ ]
-
-- Tarefa: P3 - Adicionar validação de campos de email e senha no formulário de login (Web)
-  - Quem: Frontend
-  - O que: Implementar validação básica para os campos de email (formato) e senha (tamanho mínimo) no lado do cliente.
-  - Porquê: Fornecer feedback imediato ao usuário e reduzir requisições inválidas ao backend.
-  - Complexidade: Simples
-  - Concluído: [ ]
-
-- Tarefa: P3 - Adicionar ícone de carregamento no botão de login (Web)
-  - Quem: Frontend
-  - O que: Exibir um spinner ou ícone de carregamento no botão 'Entrar' enquanto a requisição de login está em andamento.
-  - Porquê: Melhorar a experiência do usuário, indicando que a ação está sendo processada.
-  - Complexidade: Simples
-  - Concluído: [ ]

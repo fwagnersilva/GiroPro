@@ -448,3 +448,12 @@ Este é o backlog central do projeto GiroPro. Ele contém todas as demandas, ép
   - Concluído: [ ]
 
 
+
+
+- Tarefa: P1 - Implementar validação de dados no frontend
+  - Quem: Frontend
+  - O que: Criar o schema de validação para o campo 'tipoUso' do formulário de veículos.
+  - Porquê: Garantir que o tipo de uso seja um dado válido.
+  - Complexidade: Simples
+  - Concluído: [ ]
+
