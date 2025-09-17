@@ -6,6 +6,52 @@ Este é o backlog central do projeto GiroPro. Ele contém todas as demandas, ép
 
 ## Novas Tarefas
 
+- Tarefa: P3 - Adicionar logging detalhado de eventos
+  - Quem: Backend
+  - O que: Integrar uma biblioteca de logging (ex: Winston) para registrar eventos importantes da aplicação, como erros, logins e alterações de dados.
+  - Porquê: Facilitar o debug, monitoramento e auditoria da aplicação.
+  - Complexidade: Média
+  - Status: [ ]
+
+- Tarefa: P2 - Implementar roles de usuário e permissões
+  - Quem: Backend
+  - O que: Adicionar um campo de 'role' ao modelo de usuário e criar um middleware para verificar as permissões de acesso às rotas.
+  - Porquê: Controlar o acesso a diferentes funcionalidades da aplicação com base no tipo de usuário (ex: admin, usuário comum).
+  - Complexidade: Complexa
+  - Status: [ ]
+
+- Tarefa: P2 - Criar mais testes unitários e de integração
+  - Quem: Backend
+  - O que: Aumentar a cobertura de testes para os principais módulos do backend, incluindo controllers, services e utils.
+  - Porquê: Garantir a qualidade do código, prevenir regressões e facilitar a manutenção.
+  - Complexidade: Média
+  - Status: [ ]
+
+- Tarefa: P2 - Implementar funcionalidade de recuperação de senha
+  - Quem: Backend
+  - O que: Criar endpoints para solicitar a redefinição de senha, enviar um email com um token de reset e atualizar a senha do usuário.
+  - Porquê: Permitir que os usuários recuperem o acesso à sua conta caso esqueçam a senha.
+  - Complexidade: Complexa
+  - Status: [ ]
+
+- Tarefa: P3 - Adicionar logging detalhado de eventos
+  - Quem: Backend
+  - O que: Integrar uma biblioteca de logging (ex: Winston) para registrar eventos importantes da aplicação, como erros, logins e alterações de dados.
+  - Porquê: Facilitar o debug, monitoramento e auditoria da aplicação.
+  - Complexidade: Média
+  - Status: [ ]
+
+
+- Tarefa: P2 - Criar mais testes unitários e de integração
+  - Quem: Backend
+  - O que: Aumentar a cobertura de testes para os principais módulos do backend, incluindo controllers, services e utils.
+  - Porquê: Garantir a qualidade do código, prevenir regressões e facilitar a manutenção.
+  - Complexidade: Média
+  - Status: [ ]
+
+
+
+
 ## Demandas Concluídas
 
 - Tarefa: P1 - Revisão de ORM/SQL (Otimização DB)

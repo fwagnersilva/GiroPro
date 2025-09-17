@@ -31,39 +31,15 @@
   - Complexidade: Complexa (mas cada iteração é simples)
   - Status: Concluída [x]
 
-- Tarefa: P2 - Implementar roles de usuário e permissões
-  - Quem: Backend
-  - O que: Adicionar um campo de 'role' ao modelo de usuário e criar um middleware para verificar as permissões de acesso às rotas.
-  - Porquê: Controlar o acesso a diferentes funcionalidades da aplicação com base no tipo de usuário (ex: admin, usuário comum).
-  - Complexidade: Complexa
-  - Status: Em Execução
 
-- Tarefa: P3 - Adicionar logging detalhado de eventos
-  - Quem: Backend
-  - O que: Integrar uma biblioteca de logging (ex: Winston) para registrar eventos importantes da aplicação, como erros, logins e alterações de dados.
-  - Porquê: Facilitar o debug, monitoramento e auditoria da aplicação.
-  - Complexidade: Média
-  - Status: Execução II
 
-- Tarefa: P2 - Criar mais testes unitários e de integração
-  - Quem: Backend
-  - O que: Aumentar a cobertura de testes para os principais módulos do backend, incluindo controllers, services e utils.
-  - Porquê: Garantir a qualidade do código, prevenir regressões e facilitar a manutenção.
-  - Complexidade: Média
-  - Status: Em Execução
 
-- Tarefa: P2 - Implementar funcionalidade de recuperação de senha
-  - Quem: Backend
-  - O que: Criar endpoints para solicitar a redefinição de senha, enviar um email com um token de reset e atualizar a senha do usuário.
-  - Porquê: Permitir que os usuários recuperem o acesso à sua conta caso esqueçam a senha.
-  - Complexidade: Complexa
-  - Status: Em Execução
 - Tarefa: P3 - Adicionar funcionalidade de exportação de relatórios (CSV/PDF)
   - Quem: Backend
   - O que: Criar rota GET /reports/journeys/csv no backend.
   - Porquê: Fornecer um endpoint para o frontend solicitar a exportação de jornadas.
   - Complexidade: Simples
-  - Status: Em Execução
+  - Status: Concluída [x]
   - Como foi feita: A rota `GET /reports/journeys/csv` foi adicionada ao arquivo `backend/src/routes/reports.ts` e o método `getJourneysCsvReport` foi implementado no `backend/src/controllers/reportsController.ts` para lidar com a exportação de jornadas em formato CSV.
   - Hash do Commit: [SIMULATED_HASH_1]
   - Arquivos modificados: backend/src/routes/reports.ts, backend/src/controllers/reportsController.ts
@@ -74,7 +50,7 @@
   - O que: Implementar a rota para chamar generateJourneysCsv e enviar o CSV como resposta.
   - Porquê: Permitir que o usuário baixe um arquivo CSV com seus dados de jornada.
   - Complexidade: Simples
-  - Status: Em Execução
+  - Status: Concluída [x]
   - Como foi feita: A implementação da rota para chamar `generateJourneysCsv` e enviar o CSV como resposta foi concluída como parte da tarefa anterior de criação da rota `GET /reports/journeys/csv` e do método `getJourneysCsvReport` no `ReportsController`.
   - Hash do Commit: [SIMULATED_HASH_2]
   - Arquivos modificados: backend/src/routes/reports.ts, backend/src/controllers/reportsController.ts
