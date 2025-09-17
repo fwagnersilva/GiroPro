@@ -243,7 +243,11 @@ _**
   - O que: Criar um componente básico de Toast/Notificação (apenas UI).
   - Porquê: Ter uma base visual para exibir erros e mensagens de feedback.
   - Complexidade: Simples
-  - Status: Em Execução
+  - Status: [x]
+  - Como foi feita: Um componente `ToastNotification.tsx` já existe em `frontend/src/components/ToastNotification.tsx` com uma implementação mais completa e funcional do que o básico solicitado. Não foi necessário criar um novo componente.
+  - Hash do Commit: N/A (componente já existente)
+  - Arquivos modificados: N/A
+  - Observações: O componente existente já atende e excede os requisitos básicos da tarefa.
 
 - Tarefa: P2 - Refatorar o tratamento de erros global no frontend
   - Quem: Frontend
