@@ -457,3 +457,34 @@ Este é o backlog central do projeto GiroPro. Ele contém todas as demandas, ép
   - Complexidade: Simples
   - Concluído: [ ]
 
+
+
+- Tarefa: Backend - Implementar Cache para APIs de Leitura Frequente
+  - Quem: Backend
+  - O que: Integrar uma solução de cache (ex: Redis) para APIs que servem dados frequentemente acessados e que não mudam com muita frequência (ex: dados de configuração, listas de veículos do usuário).
+  - Porquê: Melhorar o tempo de resposta e reduzir a carga sobre o banco de dados para operações de leitura.
+  - Complexidade: Complexa
+  - Concluído: [ ]
+
+- Tarefa: Backend - Implementar Auditoria de Segurança para Ações Críticas
+  - Quem: Backend
+  - O que: Registrar logs detalhados de ações críticas (ex: alteração de senha, exclusão de conta, alteração de permissões) com informações como usuário, timestamp, IP e detalhes da ação.
+  - Porquê: Aumentar a segurança e a capacidade de auditoria do sistema, facilitando a detecção de atividades suspeitas.
+  - Complexidade: Média
+  - Concluído: [ ]
+
+- Tarefa: Frontend - Implementar Modo Offline Básico
+  - Quem: Frontend
+  - O que: Configurar o Service Worker (ou equivalente no React Native/Expo) para cachear recursos estáticos da aplicação, permitindo que o aplicativo carregue mesmo sem conexão à internet.
+  - Porquê: Melhorar a resiliência da aplicação e a experiência do usuário em ambientes com conectividade limitada.
+  - Complexidade: Média
+  - Concluído: [ ]
+
+- Tarefa: Frontend - Implementar Sincronização de Dados Offline (Básico)
+  - Quem: Frontend
+  - O que: Desenvolver um mecanismo básico para armazenar dados de jornadas, abastecimentos e despesas localmente quando offline e sincronizá-los com o backend assim que a conexão for restabelecida.
+  - Porquê: Permitir que o usuário continue registrando informações importantes mesmo sem internet, garantindo que os dados não sejam perdidos.
+  - Complexidade: Complexa
+  - Concluído: [ ]
+
+
