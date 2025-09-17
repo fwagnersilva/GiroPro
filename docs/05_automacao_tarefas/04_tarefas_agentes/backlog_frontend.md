@@ -18,7 +18,7 @@
   - O que: Criar o schema de validação para o campo 'marca' do formulário de veículos.
   - Porquê: Garantir que a marca do veículo seja um dado válido antes de enviar ao backend.
   - Complexidade: Simples
-  - Concluído: [ ]
+  - Concluído: Em Execução
 
 - Tarefa: P1 - Implementar validação de dados no frontend
   - Quem: Frontend
@@ -361,7 +361,7 @@
   - O que: Investigar por que o login falha mesmo com credenciais corretas e o backend respondendo com erro.
   - Porquê: O login é uma funcionalidade crítica e precisa ser corrigida para que o restante do frontend possa ser testado.
   - Complexidade: Complexa
-  - Concluído: Em Execução
+  - Concluído: Execução II
 
 - Tarefa: P1 - Adicionar tratamento de erro visual para login no frontend (Web)
   - Quem: Frontend
