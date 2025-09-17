@@ -149,7 +149,7 @@ const VehiclesScreen: React.FC = () => {
         marca: formData.marca, 
         modelo: formData.modelo, 
         ano: Number(formData.ano),
-        placa: formData.placa.toUpperCase().replace('-', ''),
+        placa: formData.placa.toUpperCase().replace("-", ""),
         tipoCombustivel: formData.tipo_combustivel,
         tipoUso: formData.tipo_uso
       });
