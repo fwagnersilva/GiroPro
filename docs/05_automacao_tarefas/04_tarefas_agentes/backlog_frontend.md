@@ -18,7 +18,11 @@
   - O que: Criar o schema de validação para o campo 'marca' do formulário de veículos.
   - Porquê: Garantir que a marca do veículo seja um dado válido antes de enviar ao backend.
   - Complexidade: Simples
-  - Concluído: Em Execução
+  - Concluído: [x]
+  - Como foi feita: O diretório `frontend/src/schemas` foi criado e o arquivo `vehicleSchemas.ts` foi adicionado com o schema de validação para o campo 'marca'.
+  - Hash do Commit: db8ebfdcf4be3490a5339e7cea9b938ce412320b
+  - Arquivos modificados: frontend/src/schemas/vehicleSchemas.ts
+  - Observações: Nenhuma.
 
 - Tarefa: P1 - Implementar validação de dados no frontend
   - Quem: Frontend
