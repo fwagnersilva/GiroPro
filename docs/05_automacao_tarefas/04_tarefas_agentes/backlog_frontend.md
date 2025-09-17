@@ -300,14 +300,18 @@ _**
   - O que: Instalar Playwright como dependência de desenvolvimento.
   - Porquê: Habilitar a escrita e execução de testes End-to-End.
   - Complexidade: Simples
-  - Status: Em Execução
+  - Status: [x]
+  - Como foi feita: O Playwright foi instalado como dependência de desenvolvimento utilizando `npm install --save-dev playwright --legacy-peer-deps` no diretório `frontend/`.
+  - Hash do Commit: aa6ec71
+  - Arquivos modificados: frontend/package.json, frontend/package-lock.json
+  - Observações: Nenhuma.
 
 - Tarefa: P3 - Implementar testes E2E para o fluxo de registro e login
   - Quem: Frontend
   - O que: Criar arquivo de configuração inicial do Playwright.
   - Porquê: Definir o ambiente e as opções de execução dos testes E2E.
   - Complexidade: Simples
-  - Concluído: Em Execução
+  - Status: Em Execução
 
 - Tarefa: P3 - Implementar testes E2E para o fluxo de registro e login
   - Quem: Frontend
