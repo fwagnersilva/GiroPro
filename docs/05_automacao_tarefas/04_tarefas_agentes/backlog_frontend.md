@@ -254,7 +254,7 @@ _**
   - O que: Adicionar o componente de Toast ao layout principal da aplicação.
   - Porquê: Permitir que qualquer parte da aplicação possa disparar notificações.
   - Complexidade: Simples
-  - Concluído: Em Execução
+  - Status: Em Execução
 
 - Tarefa: P2 - Refatorar o tratamento de erros global no frontend
   - Quem: Frontend
