@@ -438,3 +438,13 @@ Este é o backlog central do projeto GiroPro. Ele contém todas as demandas, ép
   - Complexidade: Complexa (mas cada iteração é simples)
   - Status: [ ]
 
+
+
+- Tarefa: P1 - Implementar validação de dados no frontend
+  - Quem: Frontend
+  - O que: Integrar a validação do campo 'placa' ao formulário de veículos.
+  - Porquê: Fornecer feedback imediato ao usuário.
+  - Complexidade: Simples
+  - Concluído: [ ]
+
+

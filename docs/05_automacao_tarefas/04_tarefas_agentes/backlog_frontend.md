@@ -90,12 +90,7 @@
   - Arquivos modificados: frontend/src/schemas/vehicleSchemas.ts
   - Observações: Nenhuma.
 
-- Tarefa: P1 - Implementar validação de dados no frontend
-  - Quem: Frontend
-  - O que: Integrar a validação do campo 'placa' ao formulário de veículos.
-  - Porquê: Fornecer feedback imediato ao usuário.
-  - Complexidade: Simples
-  - Concluído: Em Execução
+
 
 - Tarefa: P1 - Implementar validação de dados no frontend
   - Quem: Frontend
