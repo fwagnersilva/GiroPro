@@ -145,13 +145,13 @@ const VehiclesScreen: React.FC = () => {
   const handleSubmit = () => {
     // Validações básicas
     try {
-      vehicleSchema.parse({ marca: formData.marca });
+      vehicleSchema.parse({ marca: formData.marca, modelo: formData.modelo });
     } catch (e: any) {
       Alert.alert("Erro", e.errors[0].message);
       return;
     }
 
-    if (!formData.modelo || !formData.ano || !formData.placa) {
+    if (!formData.ano || !formData.placa) {
       Alert.alert("Erro", "Preencha todos os campos obrigatórios");
       return;
     }

@@ -40,14 +40,18 @@
   - O que: Criar o schema de validação para o campo 'modelo' do formulário de veículos.
   - Porquê: Garantir que o modelo do veículo seja um dado válido.
   - Complexidade: Simples
-  - Concluído: Em Execução
+  - Concluído: [x]
+  - Como foi feita: O campo 'modelo' foi adicionado ao `vehicleSchema` no arquivo `frontend/src/schemas/vehicleSchemas.ts` com validação de string e tamanho.
+  - Hash do Commit: caa9009293d04404262cfc0c22696573231ffcde
+  - Arquivos modificados: frontend/src/schemas/vehicleSchemas.ts
+  - Observações: Nenhuma.
 
 - Tarefa: P1 - Implementar validação de dados no frontend
   - Quem: Frontend
   - O que: Integrar a validação do campo 'modelo' ao formulário de veículos.
   - Porquê: Fornecer feedback imediato ao usuário.
   - Complexidade: Simples
-  - Concluído: [ ]
+  - Concluído: Em Execução
 
 - Tarefa: P1 - Implementar validação de dados no frontend
   - Quem: Frontend
