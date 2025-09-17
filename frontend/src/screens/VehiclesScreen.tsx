@@ -148,9 +148,12 @@ const VehiclesScreen: React.FC = () => {
       vehicleSchema.parse({ 
         marca: formData.marca, 
         modelo: formData.modelo, 
-        ano: Number(formData.a        placa: formData.placa.toUpperCase().replace(\'-\\' , \'\'),
-        tipo_combustivel: formData.tipo_combustivel
-      });    } catch (e: any) {
+        ano: Number(formData.ano),
+        placa: formData.placa.toUpperCase().replace('-', ''),
+        tipoCombustivel: formData.tipo_combustivel,
+        tipoUso: formData.tipo_uso
+      });
+    } catch (e: any) {
       Alert.alert("Erro", e.errors[0].message);
       return;
     }
