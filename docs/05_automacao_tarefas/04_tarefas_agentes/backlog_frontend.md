@@ -144,15 +144,18 @@ _**
   - O que: Integrar a validação do campo 'kmInicio' ao formulário de jornadas.
   - Porquê: Fornecer feedback imediato ao usuário.
   - Complexidade: Média
-  - Concluído: Em Execução
-  - Observações: Esta tarefa requer a criação de um formulário para iniciar uma nova jornada antes que a validação possa ser integrada.
+  - Status: [x]
+  - Como foi feita: Criado o componente `AddJourneyModal.tsx` para o formulário de nova jornada e integrado ao `JourneysScreen.tsx`. A validação do `kmInicio` foi implementada no modal utilizando o `journeySchema`.
+  - Hash do Commit: 124496a
+  - Arquivos modificados: frontend/src/screens/JourneysScreen.tsx, frontend/src/components/AddJourneyModal.tsx
+  - Observações: A funcionalidade de rastreamento da jornada ainda está em desenvolvimento, mas o formulário de entrada e a validação do `kmInicio` estão funcionando.
 
 - Tarefa: P1 - Implementar validação de dados no frontend
   - Quem: Frontend
   - O que: Criar o schema de validação para o campo 'dataInicio' do formulário de jornadas.
   - Porquê: Garantir que a data de início seja um dado válido.
   - Complexidade: Simples
-  - Concluído: Em Execução
+  - Status: Em Execução
 
 - Tarefa: P1 - Implementar validação de dados no frontend
   - Quem: Frontend
