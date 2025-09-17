@@ -97,7 +97,11 @@
   - O que: Criar o schema de validação para o campo 'tipoCombustivel' do formulário de veículos.
   - Porquê: Garantir que o tipo de combustível seja um dado válido.
   - Complexidade: Simples
-  - Concluído: Em Execução
+  - Concluído: [x]
+  - Como foi feita: O campo 'tipoCombustivel' foi adicionado ao `vehicleSchema` no arquivo `frontend/src/schemas/vehicleSchemas.ts` com validação de string obrigatória.
+  - Hash do Commit: d09a529b3a7e4f8c1d2e3f4a5b6c7d8e9f0a1b2c
+  - Arquivos modificados: frontend/src/schemas/vehicleSchemas.ts
+  - Observações: Nenhuma.
 
 - Tarefa: P1 - Implementar validação de dados no frontend
   - Quem: Frontend
