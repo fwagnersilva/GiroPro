@@ -73,8 +73,10 @@ const AddFuelingScreen: React.FC<AddFuelingScreenProps> = ({ navigation, route }
       return;
     }
 
-    if (!formData.valor_litro || parseFloat(formData.valor_litro) <= 0) {
-      Alert.alert('Erro', 'Informe um valor válido por litro');
+    try {
+      fuelingSchema.pick({ valorLitro: true }).parse({ valorLitro: parseFloat(formData.valor_litro) });
+    } catch (e: any) {
+      Alert.alert("Erro de Validação", e.errors[0].message);
       return;
     }
 
