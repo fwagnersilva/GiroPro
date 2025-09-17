@@ -80,7 +80,7 @@
   - O que: Criar o schema de validação para o campo 'placa' do formulário de veículos.
   - Porquê: Garantir que a placa do veículo seja um dado válido.
   - Complexidade: Simples
-  - Concluído: [ ]
+  - Concluído: Em Execução
 
 - Tarefa: P1 - Implementar validação de dados no frontend
   - Quem: Frontend
