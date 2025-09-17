@@ -16,6 +16,7 @@ import FormInput, { validators, combineValidators } from '../components/FormInpu
 import LoadingSpinner from '../components/LoadingSpinner';
 import Icon from '../components/Icon';
 import Alert from '../utils/alert';
+import { showErrorToast } from '../utils/toastUtils';
 
 type LoginScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Login'>;
 
@@ -66,7 +67,7 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
       setLoading(true);
       await signIn({ email: email.trim(), senha });
     } catch (error: any) {
-      Alert.alert('Erro', error.message || 'Erro ao fazer login');
+      showErrorToast(error.message || "Erro ao fazer login");
     } finally {
       setLoading(false);
     }
