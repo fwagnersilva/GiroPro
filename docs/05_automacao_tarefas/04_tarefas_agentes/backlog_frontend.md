@@ -29,14 +29,18 @@
   - O que: Integrar a validação do campo 'marca' ao formulário de veículos.
   - Porquê: Fornecer feedback imediato ao usuário sobre a validade da entrada.
   - Complexidade: Simples
-  - Concluído: Em Execução
+  - Concluído: [x]
+  - Como foi feita: O schema `vehicleSchema` foi importado em `frontend/src/screens/VehiclesScreen.tsx` e utilizado para validar o campo `marca` no `handleSubmit` do formulário. Mensagens de erro são exibidas via `Alert.alert`.
+  - Hash do Commit: b626480ebdfbaf288dff69380c7301d6a8d08306
+  - Arquivos modificados: frontend/src/screens/VehiclesScreen.tsx
+  - Observações: Nenhuma.
 
 - Tarefa: P1 - Implementar validação de dados no frontend
   - Quem: Frontend
   - O que: Criar o schema de validação para o campo 'modelo' do formulário de veículos.
   - Porquê: Garantir que o modelo do veículo seja um dado válido.
   - Complexidade: Simples
-  - Concluído: [ ]
+  - Concluído: Em Execução
 
 - Tarefa: P1 - Implementar validação de dados no frontend
   - Quem: Frontend
