@@ -108,7 +108,7 @@
   - O que: Integrar a validação do campo 'tipoCombustivel' ao formulário de veículos.
   - Porquê: Fornecer feedback imediato ao usuário.
   - Complexidade: Simples
-  - Concluído: [ ]
+  - Concluído: Em Execução
 
 - Tarefa: P1 - Implementar validação de dados no frontend
   - Quem: Frontend
