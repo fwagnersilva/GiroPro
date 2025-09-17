@@ -248,41 +248,59 @@ _**
   - Hash do Commit: N/A (componente já existente)
   - Arquivos modificados: N/A
   - Observações: O componente existente já atende e excede os requisitos básicos da tarefa.
-
 - Tarefa: P2 - Refatorar o tratamento de erros global no frontend
   - Quem: Frontend
   - O que: Adicionar o componente de Toast ao layout principal da aplicação.
   - Porquê: Permitir que qualquer parte da aplicação possa disparar notificações.
   - Complexidade: Simples
-  - Status: Em Execução
+  - Status: [x]
+  - Como foi feita: O `ToastProvider` foi utilizado para envolver o `NavigationContainer` em `App.tsx`, e o componente `ToastNotification` é agora gerenciado pelo `ToastContext`.
+  - Hash do Commit: 0075810
+  - Arquivos modificados: frontend/App.tsx, frontend/src/contexts/ToastContext.tsx
+  - Observações: Nenhuma.mo foi feita: O componente `ToastNotification` foi importado em `App.tsx` e integrado ao `NavigationContainer`, com estados para controlar sua visibilidade, mensagem e tipo. Uma função `showToast` foi criada para exibir as notificações.
+  - Hash do Commit: b6a0166
+  - Arquivos modificados: frontend/App.tsx
+  - Observações: Nenhuma.
 
 - Tarefa: P2 - Refatorar o tratamento de erros global no frontend
   - Quem: Frontend
   - O que: Criar uma função utilitária showErrorToast(message).
   - Porquê: Centralizar a lógica de exibição de erros e facilitar o uso em toda a aplicação.
   - Complexidade: Simples
-  - Concluído: Em Execução
+  - Status: [x]
+  - Como foi feita: O arquivo `frontend/src/utils/toastUtils.ts` foi criado com a função `showErrorToast` que utiliza o `useToast` do `ToastContext` para exibir mensagens de erro.
+  - Hash do Commit: 860709b
+  - Arquivos modificados: frontend/src/utils/toastUtils.ts
+  - Observações: Nenhuma.
 
 - Tarefa: P2 - Refatorar o tratamento de erros global no frontend
   - Quem: Frontend
   - O que: Refatorar a chamada da API de login para usar o novo hook de tratamento de erros.
   - Porquê: Exibir mensagens de erro amigáveis ao usuário durante o login.
   - Complexidade: Simples
-  - Concluído: Em Execução
+  - Status: [x]
+  - Como foi feita: O `showErrorToast` foi importado em `LoginScreen.tsx` e utilizado no bloco `catch` da função `handleLogin` para exibir mensagens de erro.
+  - Hash do Commit: bf050a3
+  - Arquivos modificados: frontend/src/screens/LoginScreen.tsx
+  - Observações: Nenhuma.
 
 - Tarefa: P2 - Refatorar o tratamento de erros global no frontend
   - Quem: Frontend
   - O que: Refatorar a chamada da API de registro para usar o novo hook de tratamento de erros.
   - Porquê: Exibir mensagens de erro amigáveis ao usuário durante o registro.
   - Complexidade: Simples
-  - Concluído: Em Execução
+  - Status: [x]
+  - Como foi feita: O `showErrorToast` foi importado em `RegisterScreen.tsx` e utilizado nos blocos `if` de validação e no bloco `catch` da função `handleRegister` para exibir mensagens de erro.
+  - Hash do Commit: d889e35
+  - Arquivos modificados: frontend/src/screens/RegisterScreen.tsx
+  - Observações: Nenhuma.
 
 - Tarefa: P3 - Implementar testes E2E para o fluxo de registro e login
   - Quem: Frontend
   - O que: Instalar Playwright como dependência de desenvolvimento.
   - Porquê: Habilitar a escrita e execução de testes End-to-End.
   - Complexidade: Simples
-  - Concluído: Em Execução
+  - Status: Em Execução
 
 - Tarefa: P3 - Implementar testes E2E para o fluxo de registro e login
   - Quem: Frontend
