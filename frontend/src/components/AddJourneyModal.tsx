@@ -17,7 +17,7 @@ import { journeySchema } from '../schemas/journeySchemas';
 interface AddJourneyModalProps {
   visible: boolean;
   onClose: () => void;
-  onSubmit: (kmInicio: number) => void;
+  onSubmit: (kmInicio: number, dataInicio: string) => void;
   loading: boolean;
 }
 
@@ -27,12 +27,13 @@ const AddJourneyModal: React.FC<AddJourneyModalProps> = ({
   onSubmit,
   loading,
 }) => {
-  const [kmInicio, setKmInicio] = useState('');
+  const [kmInicio, setKmInicio] = useState("");
+  const [dataInicio, setDataInicio] = useState(new Date().toISOString()); // Inicializa com a data e hora atuais
 
   const handleSubmit = () => {
     try {
-      journeySchema.parse({ kmInicio: Number(kmInicio) });
-      onSubmit(Number(kmInicio));
+      journeySchema.parse({ kmInicio: Number(kmInicio), dataInicio });
+      onSubmit(Number(kmInicio), dataInicio);
     } catch (e: any) {
       Alert.alert('Erro de Validação', e.errors[0].message);
     }
@@ -67,6 +68,16 @@ const AddJourneyModal: React.FC<AddJourneyModalProps> = ({
               onChangeText={setKmInicio}
               placeholder="Ex: 12345"
               keyboardType="numeric"
+            />
+          </View>
+
+          <View style={styles.formField}>
+            <Text style={styles.formLabel}>Data e Hora de Início *</Text>
+            <TextInput
+              style={styles.formInput}
+              value={dataInicio}
+              onChangeText={setDataInicio}
+              placeholder="AAAA-MM-DDTHH:mm:ssZ"
             />
           </View>
         </ScrollView>

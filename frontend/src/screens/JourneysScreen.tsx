@@ -279,12 +279,12 @@ const JourneysScreen: React.FC = ({ navigation }: any) => {
       <AddJourneyModal
         visible={isAddJourneyModalVisible}
         onClose={() => setAddJourneyModalVisible(false)}
-        onSubmit={(kmInicio) => {
-          console.log("Nova jornada com km inicial:", kmInicio);
+        onSubmit={(kmInicio, dataInicio) => {
+          console.log("Nova jornada com km inicial:", kmInicio, "e data de início:", dataInicio);
           setAddJourneyModalVisible(false);
           Alert.alert(
             'Nova Jornada',
-            `Jornada iniciada com ${kmInicio} km. Funcionalidade de rastreamento em desenvolvimento.`,
+            `Jornada iniciada com ${kmInicio} km em ${dataInicio}. Funcionalidade de rastreamento em desenvolvimento.`,
             [{ text: 'OK' }]
           );
         }}
