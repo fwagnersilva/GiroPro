@@ -387,3 +387,38 @@ Este é o backlog central do projeto GiroPro. Ele contém todas as demandas, ép
   - Hash do Commit: 1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b
   - Arquivos modificados: N/A
   - Observações: Tarefa não executada por não ser necessária. Schema já padronizado.
+- Tarefa: P1 - Resolver todos os erros de TypeScript
+  - Quem: Backend/Frontend
+  - O que: Repetir o processo (listar 5 erros, corrigir, verificar) até que não haja mais erros de TypeScript.
+  - Porquê: Garantir um build limpo e robusto do projeto.
+  - Complexidade: Complexa
+  - Status: [ ]
+
+- Tarefa: P2 - Atualizar dependências do projeto
+  - Quem: Backend/Frontend
+  - O que: Executar npm outdated ou yarn outdated para listar as dependências desatualizadas.
+  - Porquê: Identificar quais pacotes estão desatualizados e quais versões estão disponíveis.
+  - Complexidade: Simples
+  - Status: [ ]
+
+- Tarefa: P2 - Atualizar dependências do projeto
+  - Quem: Backend/Frontend
+  - O que: Atualizar uma dependência de desenvolvimento específica e rodar os testes.
+  - Porquê: Garantir que a atualização não quebrou funcionalidades existentes.
+  - Complexidade: Simples
+  - Status: [ ]
+
+- Tarefa: P2 - Atualizar dependências do projeto
+  - Quem: Backend/Frontend
+  - O que: Atualizar uma dependência de produção específica e rodar os testes.
+  - Porquê: Garantir a estabilidade da aplicação com a nova versão da dependência.
+  - Complexidade: Simples
+  - Status: [ ]
+
+- Tarefa: P2 - Atualizar dependências do projeto
+  - Quem: Backend/Frontend
+  - O que: Repetir Micro-tarefas 9.2 e 9.3 para todas as dependências desatualizadas.
+  - Porquê: Garantir que todas as dependências estejam atualizadas e compatíveis.
+  - Complexidade: Complexa (mas cada iteração é simples)
+  - Status: [ ]
+
