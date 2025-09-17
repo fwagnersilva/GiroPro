@@ -339,5 +339,173 @@ export class ReportsController {
       return ReportsController.errorResponse(res, 500, "Erro ao gerar PDF de despesas", error.message);
     }
   }
+
+  // ====================== MÉTODOS FALTANTES ======================
+
+  static async getJourneyEarningsReport(req: AuthenticatedRequest, res: Response): Promise<Response> {
+    try {
+      const userId = req.user?.id;
+      if (!userId) {
+        return ReportsController.errorResponse(res, 401, "Usuário não autenticado");
+      }
+
+      const { dataInicio, dataFim, idVeiculo } = req.query;
+
+      // Validação de parâmetros
+      if (!dataInicio || !dataFim) {
+        return ReportsController.errorResponse(res, 400, "Parâmetros dataInicio e dataFim são obrigatórios");
+      }
+
+      const parsedDataInicio = new Date(dataInicio as string);
+      const parsedDataFim = new Date(dataFim as string);
+
+      if (isNaN(parsedDataInicio.getTime()) || isNaN(parsedDataFim.getTime())) {
+        return ReportsController.errorResponse(res, 400, "Formato de data inválido");
+      }
+
+      // Buscar jornadas com ganhos detalhados
+      const jornadasGanhos = await db
+        .select({
+          id: jornadas.id,
+          dataInicio: jornadas.dataInicio,
+          dataFim: jornadas.dataFim,
+          ganhoBruto: jornadas.ganhoBruto,
+          lucroLiquidoEstimado: jornadas.lucroLiquidoEstimado,
+          margemLucro: jornadas.margemLucro,
+          veiculo: {
+            marca: veiculos.marca,
+            modelo: veiculos.modelo,
+            placa: veiculos.placa
+          }
+        })
+        .from(jornadas)
+        .leftJoin(veiculos, eq(jornadas.idVeiculo, veiculos.id))
+        .where(and(
+          eq(jornadas.idUsuario, userId),
+          isNull(jornadas.deletedAt),
+          gte(jornadas.dataInicio, parsedDataInicio),
+          lte(jornadas.dataFim, parsedDataFim),
+          idVeiculo ? eq(jornadas.idVeiculo, idVeiculo as string) : undefined
+        ))
+        .orderBy(desc(jornadas.dataInicio));
+
+      return res.status(200).json({
+        success: true,
+        data: jornadasGanhos,
+        message: "Relatório de ganhos por jornada gerado com sucesso"
+      });
+
+    } catch (error: any) {
+      return ReportsController.errorResponse(res, 500, "Erro ao gerar relatório de ganhos", error.message);
+    }
+  }
+
+  static async getExpenseAnalysisReport(req: AuthenticatedRequest, res: Response): Promise<Response> {
+    try {
+      const userId = req.user?.id;
+      if (!userId) {
+        return ReportsController.errorResponse(res, 401, "Usuário não autenticado");
+      }
+
+      const { dataInicio, dataFim, idVeiculo } = req.query;
+
+      // Validação de parâmetros
+      if (!dataInicio || !dataFim) {
+        return ReportsController.errorResponse(res, 400, "Parâmetros dataInicio e dataFim são obrigatórios");
+      }
+
+      const parsedDataInicio = new Date(dataInicio as string);
+      const parsedDataFim = new Date(dataFim as string);
+
+      if (isNaN(parsedDataInicio.getTime()) || isNaN(parsedDataFim.getTime())) {
+        return ReportsController.errorResponse(res, 400, "Formato de data inválido");
+      }
+
+      // Análise de despesas por categoria
+      const analiseDesp = await db
+        .select({
+          categoria: despesas.tipoDespesa,
+          totalGasto: sum(despesas.valorDespesa),
+          quantidadeTransacoes: count(despesas.id),
+          mediaGasto: avg(despesas.valorDespesa)
+        })
+        .from(despesas)
+        .where(and(
+          eq(despesas.idUsuario, userId),
+          isNull(despesas.deletedAt),
+          gte(despesas.dataDespesa, parsedDataInicio),
+          lte(despesas.dataDespesa, parsedDataFim),
+          idVeiculo ? eq(despesas.idVeiculo, idVeiculo as string) : undefined
+        ))
+        .groupBy(despesas.tipoDespesa);
+
+      return res.status(200).json({
+        success: true,
+        data: analiseDesp,
+        message: "Análise de despesas gerada com sucesso"
+      });
+
+    } catch (error: any) {
+      return ReportsController.errorResponse(res, 500, "Erro ao gerar análise de despesas", error.message);
+    }
+  }
+
+  static async getFuelConsumptionReport(req: AuthenticatedRequest, res: Response): Promise<Response> {
+    try {
+      const userId = req.user?.id;
+      if (!userId) {
+        return ReportsController.errorResponse(res, 401, "Usuário não autenticado");
+      }
+
+      const { dataInicio, dataFim, idVeiculo } = req.query;
+
+      // Validação de parâmetros
+      if (!dataInicio || !dataFim) {
+        return ReportsController.errorResponse(res, 400, "Parâmetros dataInicio e dataFim são obrigatórios");
+      }
+
+      const parsedDataInicio = new Date(dataInicio as string);
+      const parsedDataFim = new Date(dataFim as string);
+
+      if (isNaN(parsedDataInicio.getTime()) || isNaN(parsedDataFim.getTime())) {
+        return ReportsController.errorResponse(res, 400, "Formato de data inválido");
+      }
+
+      // Relatório de consumo de combustível
+      const consumoCombustivel = await db
+        .select({
+          id: abastecimentos.id,
+          data: abastecimentos.data,
+          litros: abastecimentos.litros,
+          valorTotal: abastecimentos.valorTotal,
+          precoPorLitro: abastecimentos.precoPorLitro,
+          kmAtual: abastecimentos.kmAtual,
+          veiculo: {
+            marca: veiculos.marca,
+            modelo: veiculos.modelo,
+            placa: veiculos.placa
+          }
+        })
+        .from(abastecimentos)
+        .leftJoin(veiculos, eq(abastecimentos.idVeiculo, veiculos.id))
+        .where(and(
+          eq(abastecimentos.idUsuario, userId),
+          isNull(abastecimentos.deletedAt),
+          gte(abastecimentos.data, parsedDataInicio),
+          lte(abastecimentos.data, parsedDataFim),
+          idVeiculo ? eq(abastecimentos.idVeiculo, idVeiculo as string) : undefined
+        ))
+        .orderBy(desc(abastecimentos.data));
+
+      return res.status(200).json({
+        success: true,
+        data: consumoCombustivel,
+        message: "Relatório de consumo de combustível gerado com sucesso"
+      });
+
+    } catch (error: any) {
+      return ReportsController.errorResponse(res, 500, "Erro ao gerar relatório de consumo", error.message);
+    }
+  }
 }
 
