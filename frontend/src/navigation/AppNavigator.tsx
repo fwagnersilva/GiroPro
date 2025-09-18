@@ -1,5 +1,7 @@
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
+import * as Linking from 'expo-linking';
+import linking from './LinkingConfiguration';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { useAuth } from '../contexts/AuthContext';
@@ -130,7 +132,7 @@ const AppNavigator: React.FC = () => {
   }
 
   return (
-    <NavigationContainer>
+    <NavigationContainer linking={linking}>
       {isAuthenticated ? <AppStack /> : <AuthStack />}
     </NavigationContainer>
   );

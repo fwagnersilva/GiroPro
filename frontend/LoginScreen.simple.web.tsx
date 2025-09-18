@@ -163,8 +163,8 @@ const LoginForm: React.FC = () => {
 
           <div style={{ textAlign: 'center', marginTop: '16px', fontSize: '14px', color: '#666' }}>
             <p>Credenciais de teste:</p>
-            <p>Email: test@test.com</p>
-            <p>Senha: 123456</p>
+            <p>Email: teste@teste.com</p>
+            <p>Senha: Teste123@</p>
           </div>
         </div>
       </div>
