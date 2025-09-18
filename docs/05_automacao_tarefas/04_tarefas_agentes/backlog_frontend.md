@@ -374,7 +374,11 @@ _**
   - O que: Instalar @tanstack/react-query no frontend.
   - Porquê: Habilitar o uso de caching e re-fetching de dados de forma eficiente.
   - Complexidade: Simples
-  - Concluído: Em Execução
+  - Concluído: [x]
+  - Como foi feita: A biblioteca @tanstack/react-query foi instalada no projeto frontend utilizando o comando `npm install @tanstack/react-query --legacy-peer-deps` no diretório `frontend`.
+  - Hash do Commit: 5490aa0
+  - Arquivos modificados: frontend/package.json, frontend/package-lock.json
+  - Observações: Nenhuma.
 
 - Tarefa: P2 - Otimizar o carregamento de dados no Dashboard
   - Quem: Frontend
