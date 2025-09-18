@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import {
   View,
   Text,
@@ -18,6 +18,8 @@ import { getSafePadding } from '../utils/platformUtils';
 import { useJourneys, useQuickFilters } from '../hooks/useJourneys';
 import { Journey, QUICK_FILTERS } from '../types/journey';
 import { journeySchema } from '../schemas/journeySchemas';
+import { Vehicle } from '../types';
+import { vehicleService } from '../services/api';
 import JourneyCard from '../components/JourneyCard';
 import AddJourneyModal from '../components/AddJourneyModal';
 
@@ -125,11 +127,25 @@ const MetricsSummary: React.FC<{ journeys: Journey[] }> = ({ journeys }) => {
 
 // Componente Principal
 const JourneysScreen: React.FC = ({ navigation }: any) => {
-  const [selectedFilter, setSelectedFilter] = useState(\'all\');
+  const [selectedFilter, setSelectedFilter] = useState('all');
   const [isAddJourneyModalVisible, setAddJourneyModalVisible] = useState(false);
+  const [vehicles, setVehicles] = useState<Vehicle[]>([]);
   const { getQuickFilter } = useQuickFilters();
   const { journeys, loading, error, refresh } = useJourneys();
   const { isDesktop, isTablet } = useResponsiveStyles();
+
+  useEffect(() => {
+    loadVehicles();
+  }, []);
+
+  const loadVehicles = async () => {
+    try {
+      const vehiclesData = await vehicleService.getVehicles();
+      setVehicles(vehiclesData);
+    } catch (error) {
+      console.error('Erro ao carregar veículos:', error);
+    }
+  };
 
   const handleFilterChange = useCallback((filterKey: string) => {
     setSelectedFilter(filterKey);
@@ -279,16 +295,18 @@ const JourneysScreen: React.FC = ({ navigation }: any) => {
       <AddJourneyModal
         visible={isAddJourneyModalVisible}
         onClose={() => setAddJourneyModalVisible(false)}
-        onSubmit={(kmInicio, dataInicio) => {
-          console.log("Nova jornada com km inicial:", kmInicio, "e data de início:", dataInicio);
+        onSubmit={(idVeiculo, kmInicio, dataInicio) => {
+          console.log("Nova jornada com veículo:", idVeiculo, "km inicial:", kmInicio, "e data de início:", dataInicio);
           setAddJourneyModalVisible(false);
+          const selectedVehicle = vehicles.find(v => v.id === idVeiculo);
           Alert.alert(
             'Nova Jornada',
-            `Jornada iniciada com ${kmInicio} km em ${dataInicio}. Funcionalidade de rastreamento em desenvolvimento.`,
+            `Jornada iniciada para ${selectedVehicle?.marca} ${selectedVehicle?.modelo} com ${kmInicio} km em ${dataInicio}. Funcionalidade de rastreamento em desenvolvimento.`,
             [{ text: 'OK' }]
           );
         }}
         loading={false} // Adicionar estado de loading real quando a API for integrada
+        vehicles={vehicles}
       />
     </SafeAreaView>
   );
