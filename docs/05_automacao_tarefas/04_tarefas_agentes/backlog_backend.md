@@ -195,3 +195,84 @@
   - Observações: Sistema apresenta arquitetura bem planejada com padrões consistentes. Cache hit rate esperado de 70-80%. Performance otimizada com type safety completo. Código altamente maintível e pronto para produção.
 
 
+
+
+## Tarefas de Sincronização Offline (Propostas)
+
+- **Tarefa:** P1 - Desenvolver API para Upload de Dados Offline
+  - **Quem:** Backend
+  - **O que:** Criar um conjunto de endpoints na API para que o frontend possa enviar dados coletados ou modificados offline. Estes endpoints devem ser capazes de receber lotes de dados (batch processing) para diferentes entidades (jornadas, abastecimentos, despesas, veículos) e processá-los de forma transacional.
+  - **Porquê:** Permitir que o usuário continue utilizando o aplicativo e registrando informações mesmo sem conexão, garantindo que esses dados sejam persistidos no servidor assim que a conectividade for restaurada.
+  - **Complexidade:** Complexa
+  - **Concluído:** [ ]
+  - **Como foi feita:** 
+  - **Hash do Commit:** 
+  - **Arquivos modificados:** 
+  - **Observações:** Considerar a idempotência das operações para evitar duplicação de dados em caso de retentativas de envio. A autenticação e autorização devem ser mantidas.
+
+- **Tarefa:** P1 - Desenvolver API para Download de Dados para Sincronização Inicial/Incremental
+  - **Quem:** Backend
+  - **O que:** Criar endpoints que permitam ao frontend baixar dados necessários para operar offline. Isso inclui uma sincronização inicial completa (para o primeiro acesso offline) e mecanismos para sincronização incremental (apenas dados alterados desde a última sincronização). Deve-se considerar filtros por data/timestamp ou um mecanismo de versionamento de dados.
+  - **Porquê:** Prover ao aplicativo móvel os dados mais recentes do servidor para que ele possa funcionar de forma autônoma, exibindo informações atualizadas e permitindo operações sobre elas.
+  - **Complexidade:** Complexa
+  - **Concluído:** [ ]
+  - **Como foi feita:** 
+  - **Hash do Commit:** 
+  - **Arquivos modificados:** 
+  - **Observações:** A otimização da quantidade de dados transferidos é crucial para a performance e consumo de dados do usuário. Implementar paginação e filtros eficientes.
+
+- **Tarefa:** P2 - Projetar e Implementar Estratégia de Resolução de Conflitos
+  - **Quem:** Backend
+  - **O que:** Desenvolver uma lógica no backend para identificar e resolver conflitos que possam surgir quando o mesmo dado é modificado offline pelo usuário e online por outra instância ou processo. As estratégias podem incluir "last-write-wins", "client-wins", "server-wins" ou uma abordagem mais sofisticada que registre o conflito para revisão manual.
+  - **Porquê:** Garantir a integridade e consistência dos dados, evitando perdas de informação ou estados inconsistentes na base de dados principal.
+  - **Complexidade:** Complexa
+  - **Concluído:** [ ]
+  - **Como foi feita:** 
+  - **Hash do Commit:** 
+  - **Arquivos modificados:** 
+  - **Observações:** A escolha da estratégia deve ser documentada e justificada. Pode ser necessário adicionar campos de metadados aos registros (e.g., `lastModifiedBy`, `version`).
+
+- **Tarefa:** P2 - Adicionar Campos de Metadados para Sincronização
+  - **Quem:** Backend
+  - **O que:** Modificar os schemas das entidades relevantes (jornadas, abastecimentos, despesas, veículos) para incluir campos de metadados essenciais para a sincronização, como `last_synced_at` (timestamp da última sincronização), `is_deleted_offline` (flag para soft delete offline) e `version` (número de versão do registro).
+  - **Porquê:** Fornecer ao backend as informações necessárias para determinar quais dados precisam ser sincronizados, identificar registros excluídos offline e auxiliar na resolução de conflitos.
+  - **Complexidade:** Média
+  - **Concluído:** [ ]
+  - **Como foi feita:** 
+  - **Hash do Commit:** 
+  - **Arquivos modificados:** 
+  - **Observações:** Esta tarefa pode envolver migrações de banco de dados. A consistência dos nomes dos campos (`snake_case` vs `camelCase`) deve ser observada.
+
+- **Tarefa:** P3 - Implementar Fila de Processamento de Sincronização
+  - **Quem:** Backend
+  - **O que:** Criar um mecanismo de fila (e.g., utilizando RabbitMQ ou um sistema de fila interno) para processar os dados recebidos do frontend de forma assíncrona. Isso evita que a requisição de upload bloqueie o cliente e permite um processamento mais robusto e resiliente a falhas.
+  - **Porquê:** Melhorar a responsividade da API, garantir a durabilidade dos dados enviados (mesmo que o processamento falhe inicialmente) e permitir o reprocessamento de itens com erro.
+  - **Complexidade:** Média
+  - **Concluído:** [ ]
+  - **Como foi feita:** 
+  - **Hash do Commit:** 
+  - **Arquivos modificados:** 
+  - **Observações:** A fila deve ter mecanismos de retry e tratamento de mensagens "dead-letter" para falhas persistentes. O status do processamento deve ser reportado ao frontend.
+
+- **Tarefa:** P2 - Desenvolver Testes de Integração para Sincronização Offline
+  - **Quem:** Backend
+  - **O que:** Criar testes de integração abrangentes para os novos endpoints de sincronização, incluindo cenários de sucesso, falha, conflito e retentativas. Simular múltiplos clientes sincronizando dados simultaneamente.
+  - **Porquê:** Garantir a robustez e a correção do mecanismo de sincronização, prevenindo bugs críticos relacionados à perda ou inconsistência de dados.
+  - **Complexidade:** Média
+  - **Concluído:** [ ]
+  - **Como foi feita:** 
+  - **Hash do Commit:** 
+  - **Arquivos modificados:** 
+  - **Observações:** Utilizar ferramentas de teste que permitam simular condições de rede e latência.
+
+- **Tarefa:** P3 - Implementar Monitoramento e Logging para Sincronização
+  - **Quem:** Backend
+  - **O que:** Adicionar logging detalhado e métricas de monitoramento para as operações de sincronização. Isso inclui o volume de dados sincronizados, a frequência, a taxa de sucesso/falha e a ocorrência de conflitos.
+  - **Porquê:** Permitir a identificação rápida de problemas na sincronização, depuração e otimização do desempenho do sistema.
+  - **Complexidade:** Simples
+  - **Concluído:** [ ]
+  - **Como foi feita:** 
+  - **Hash do Commit:** 
+  - **Arquivos modificados:** 
+  - **Observações:** Integrar com o sistema de logging e monitoramento existente do projeto.
+
