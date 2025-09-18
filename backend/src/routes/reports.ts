@@ -33,3 +33,13 @@ router.get("/monthly-comparison", (req, res, next) => WeeklyMonthlyReportsContro
 export { router as reportRoutes };
 
 
+
+
+// GET /api/v1/reports/journeys/csv - Exportar relatório de jornadas em CSV
+router.get("/journeys/csv", (req, res) => ReportsController.getJourneysCsvReport(req as AuthenticatedRequest, res));
+
+
+
+// GET /api/v1/reports/expenses/pdf - Exportar relatório de despesas em PDF
+router.get("/expenses/pdf", (req, res) => ReportsController.getExpensesPdfReport(req as AuthenticatedRequest, res));
+

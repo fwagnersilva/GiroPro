@@ -15,6 +15,8 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { vehicleService } from '../services/api';
+import { z } from 'zod';
+import { vehicleSchema } from '../schemas/vehicleSchemas';
 
 interface Vehicle {
   id: string;
@@ -142,22 +144,23 @@ const VehiclesScreen: React.FC = () => {
 
   const handleSubmit = () => {
     // Validações básicas
-    if (!formData.marca || !formData.modelo || !formData.ano || !formData.placa) {
-      Alert.alert('Erro', 'Preencha todos os campos obrigatórios');
+    try {
+      vehicleSchema.parse({ 
+        marca: formData.marca, 
+        modelo: formData.modelo, 
+        ano: Number(formData.ano),
+        placa: formData.placa.toUpperCase().replace("-", ""),
+        tipoCombustivel: formData.tipo_combustivel,
+        tipoUso: formData.tipo_uso
+      });
+    } catch (e: any) {
+      Alert.alert("Erro", e.errors[0].message);
       return;
     }
 
-    if (isNaN(Number(formData.ano)) || Number(formData.ano) < 1900 || Number(formData.ano) > new Date().getFullYear() + 1) {
-      Alert.alert('Erro', 'Ano inválido');
-      return;
-    }
 
-    // Validar placa (formato brasileiro)
-    const placaRegex = /^[A-Z]{3}[0-9][A-Z0-9][0-9]{2}$/;
-    if (!placaRegex.test(formData.placa.toUpperCase().replace('-', ''))) {
-      Alert.alert('Erro', 'Formato de placa inválido');
-      return;
-    }
+
+    // Validar placa (formato brasileiro) - removido pois já está no schema
 
     const submitData: any = {
       marca: formData.marca,

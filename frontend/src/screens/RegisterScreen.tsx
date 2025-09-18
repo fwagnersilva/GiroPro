@@ -13,6 +13,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../types';
 import FormInput, { validators, combineValidators } from '../components/FormInput';
+import { showErrorToast } from '../utils/toastUtils';
 
 type RegisterScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Register'>;
 
@@ -30,17 +31,17 @@ const RegisterScreen: React.FC<Props> = ({ navigation }) => {
 
   const handleRegister = useCallback(async () => {
     if (!nome.trim() || !email.trim() || !senha.trim() || !confirmarSenha.trim()) {
-      Alert.alert('Erro', 'Por favor, preencha todos os campos');
+      showErrorToast("Por favor, preencha todos os campos");
       return;
     }
 
     if (senha !== confirmarSenha) {
-      Alert.alert('Erro', 'As senhas não coincidem');
+      showErrorToast("As senhas não coincidem");
       return;
     }
 
     if (senha.length < 8) {
-      Alert.alert('Erro', 'A senha deve ter pelo menos 8 caracteres');
+      showErrorToast("A senha deve ter pelo menos 8 caracteres");
       return;
     }
 
@@ -48,7 +49,7 @@ const RegisterScreen: React.FC<Props> = ({ navigation }) => {
     try {
       await signUp({ nome, email, senha });
     } catch (error: any) {
-      Alert.alert('Erro', error.message || 'Erro ao criar conta');
+      showErrorToast(error.message || "Erro ao criar conta");
     } finally {
       setLoading(false);
     }

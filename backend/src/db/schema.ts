@@ -1,6 +1,8 @@
 import { sqliteTable, text, integer, real, index, uniqueIndex } from 'drizzle-orm/sqlite-core';
 import { relations, sql } from 'drizzle-orm';
 
+export const userRole = text("role").$type<"admin" | "user" | "guest">().notNull();
+
 // ===============================
 // ENUMS TIPADOS E OTIMIZADOS
 // ===============================
@@ -26,6 +28,7 @@ export const usuarios = sqliteTable("usuarios", {
   nome: text("nome", { length: 100 }).notNull(),
   email: text("email", { length: 255 }).notNull(),
   senhaHash: text("senhaHash", { length: 255 }).notNull(),
+  role: userRole.default("user").notNull(),
   statusConta: accountStatus.default("ativo").notNull(),
   dataCadastro: integer("dataCadastro", { mode: "timestamp" }).default(sql`(unixepoch())`).notNull(),
   
