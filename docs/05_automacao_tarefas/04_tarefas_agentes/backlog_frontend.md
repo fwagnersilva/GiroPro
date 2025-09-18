@@ -37,9 +37,11 @@
   - **O que:** Adicionar dropdown/picker para seleção de veículos cadastrados nos formulários de despesas e abastecimentos.
   - **Porquê:** Melhorar a usabilidade e evitar erros de digitação.
   - **Complexidade:** Simples
-  - **Concluído:** Em Execução
-  - **Comentários:**
-  - **Hash do Commit:**
+  - **Concluído:** [x]
+  - **Como foi feita:** Implementada a seleção de veículos nos formulários de jornada (AddJourneyModal) e atualizado o JourneysScreen para carregar os veículos e passá-los para o modal. Os formulários de despesas e abastecimentos já possuíam essa funcionalidade.
+  - **Arquivos modificados:** frontend/src/components/AddJourneyModal.tsx, frontend/src/screens/JourneysScreen.tsx
+  - **Hash do Commit:** b3a65724d96b41d8b76ce91156674bf9cc327424
+  - **Observações:** Nenhuma.
 
 - **Tarefa:** P1 - Implementar Navegação Web Completa
   - **Quem:** Frontend
