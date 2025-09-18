@@ -255,7 +255,11 @@
   - O que: Integrar a validação do campo 'placa' ao formulário de veículos.
   - Porquê: Fornecer feedback imediato ao usuário.
   - Complexidade: Simples
-  - Concluído: [ ]
+  - Concluído: [x]
+  - Como foi feita: A validação do campo 'placa' foi integrada ao `handleSubmit` em `frontend/src/screens/VehiclesScreen.tsx`, utilizando o schema `vehicleSchema` que já contém a validação de placa. A validação duplicada foi removida.
+  - Hash do Commit: 735999b1bde4691f9763642d0a5af3e13688b47c
+  - Arquivos modificados: frontend/src/screens/VehiclesScreen.tsx, frontend/docs/05_automacao_tarefas/04_tarefas_agentes/backlog_frontend.md
+  - Observações: Nenhuma.
 
 - Tarefa: P1 - Implementar validação de dados no frontend
   - Quem: Frontend
