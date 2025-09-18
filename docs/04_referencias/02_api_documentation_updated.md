@@ -173,7 +173,7 @@ Esta seção detalha cada endpoint da API, incluindo seu propósito, método HTT
 
 #### `GET /auth/me`
 
-*   **Descrição:** Retorna os dados do usuário autenticado.
+*   **Descrição:** Retorna os dados do usuário autenticado. **Apenas usuários com a função 'admin' podem acessar esta rota.**
 *   **Método:** `GET`
 *   **URL:** `/api/v1/auth/me`
 *   **Autenticação:** Requer token JWT válido.
@@ -190,12 +190,13 @@ Esta seção detalha cada endpoint da API, incluindo seu propósito, método HTT
         }
         ```
     *   **`401 Unauthorized`:** Token JWT inválido.
+    *   **`403 Forbidden`:** Usuário não tem permissão de acesso.
 
 ### 2.2. Usuários
 
 #### `GET /users/profile`
 
-*   **Descrição:** Retorna o perfil do usuário autenticado.
+*   **Descrição:** Retorna o perfil do usuário autenticado. **Acesso permitido a usuários autenticados ou administradores.**
 *   **Método:** `GET`
 *   **URL:** `/api/v1/users/profile`
 *   **Autenticação:** Requer token JWT válido.
@@ -211,7 +212,7 @@ Esta seção detalha cada endpoint da API, incluindo seu propósito, método HTT
 
 #### `PUT /users/profile`
 
-*   **Descrição:** Atualiza o perfil do usuário autenticado.
+*   **Descrição:** Atualiza o perfil do usuário autenticado. **Acesso permitido a usuários autenticados ou administradores.**
 *   **Método:** `PUT`
 *   **URL:** `/api/v1/users/profile`
 *   **Autenticação:** Requer token JWT válido.
@@ -234,6 +235,37 @@ Esta seção detalha cada endpoint da API, incluindo seu propósito, método HTT
         ```
     *   **`401 Unauthorized`:** Token JWT inválido.
     *   **`400 Bad Request`:** Dados inválidos.
+
+#### `GET /users/backup`
+
+*   **Descrição:** Realiza o backup dos dados do usuário. **Apenas usuários com a função 'admin' podem acessar esta rota.**
+*   **Método:** `GET`
+*   **URL:** `/api/v1/users/backup`
+*   **Autenticação:** Requer token JWT válido.
+*   **Respostas:**
+    *   **`200 OK`:** Backup realizado com sucesso.
+    *   **`401 Unauthorized`:** Token JWT inválido.
+    *   **`403 Forbidden`:** Usuário não tem permissão de acesso.
+
+#### `POST /users/restore`
+
+*   **Descrição:** Restaura os dados do usuário a partir de um backup. **Apenas usuários com a função 'admin' podem acessar esta rota.**
+*   **Método:** `POST`
+*   **URL:** `/api/v1/users/restore`
+*   **Autenticação:** Requer token JWT válido.
+*   **Corpo da Requisição (JSON):**
+
+    ```json
+    {
+      "backup_file": "string" // Exemplo: nome do arquivo de backup
+    }
+    ```
+
+*   **Respostas:**
+    *   **`200 OK`:** Restauração realizada com sucesso.
+    *   **`401 Unauthorized`:** Token JWT inválido.
+    *   **`403 Forbidden`:** Usuário não tem permissão de acesso.
+    *   **`400 Bad Request`:** Arquivo de backup inválido ou não encontrado.
 
 ### 2.3. Veículos
 
@@ -392,11 +424,11 @@ Esta seção detalha cada endpoint da API, incluindo seu propósito, método HTT
 
 ### 2.4. Jornadas
 
-#### `POST /journeys/start`
+#### `POST /journeys`
 
-*   **Descrição:** Inicia uma nova jornada para um veículo específico.
+*   **Descrição:** Cria uma nova jornada para um veículo específico.
 *   **Método:** `POST`
-*   **URL:** `/api/v1/journeys/start`
+*   **URL:** `/api/v1/journeys`
 *   **Autenticação:** Requer token JWT válido.
 *   **Corpo da Requisição (JSON):**
 
@@ -409,7 +441,7 @@ Esta seção detalha cada endpoint da API, incluindo seu propósito, método HTT
     ```
 
 *   **Respostas:**
-    *   **`201 Created`:** Jornada iniciada com sucesso.
+    *   **`201 Created`:** Jornada criada com sucesso.
 
         ```json
         {
@@ -421,47 +453,6 @@ Esta seção detalha cada endpoint da API, incluindo seu propósito, método HTT
         }
         ```
     *   **`400 Bad Request`:** Dados inválidos.
-    *   **`401 Unauthorized`:** Token JWT inválido.
-
-#### `PUT /journeys/:id/end`
-
-*   **Descrição:** Finaliza uma jornada existente, registrando o ganho e a quilometragem final.
-*   **Método:** `PUT`
-*   **URL:** `/api/v1/journeys/:id/end`
-*   **Autenticação:** Requer token JWT válido.
-*   **Parâmetros de Rota:**
-    *   `id` (UUID): O ID da jornada a ser finalizada.
-*   **Corpo da Requisição (JSON):**
-
-    ```json
-    {
-      "km_fim": "integer",
-      "data_fim": "timestamp (ISO 8601)",
-      "ganho_bruto": "integer",
-      "observacoes": "string" (opcional)
-    }
-    ```
-
-*   **Respostas:**
-    *   **`200 OK`:** Jornada finalizada com sucesso.
-
-        ```json
-        {
-          "id": "uuid",
-          "id_usuario": "uuid",
-          "id_veiculo": "uuid",
-          "data_inicio": "timestamp",
-          "km_inicio": "integer",
-          "data_fim": "timestamp",
-          "km_fim": "integer",
-          "ganho_bruto": "integer",
-          "km_total": "integer",
-          "tempo_total": "integer",
-          "observacoes": "string"
-        }
-        ```
-    *   **`400 Bad Request`:** Dados inválidos.
-    *   **`404 Not Found`:** Jornada não encontrada ou não pertence ao usuário.
     *   **`401 Unauthorized`:** Token JWT inválido.
 
 #### `GET /journeys`
@@ -497,33 +488,115 @@ Esta seção detalha cada endpoint da API, incluindo seu propósito, método HTT
         ```
     *   **`401 Unauthorized`:** Token JWT inválido.
 
+#### `GET /journeys/:id`
+
+*   **Descrição:** Retorna os detalhes de uma jornada específica pelo seu ID.
+*   **Método:** `GET`
+*   **URL:** `/api/v1/journeys/:id`
+*   **Autenticação:** Requer token JWT válido.
+*   **Parâmetros de Rota:**
+    *   `id` (UUID): O ID da jornada.
+*   **Respostas:**
+    *   **`200 OK`:** Detalhes da jornada retornados com sucesso.
+
+        ```json
+        {
+          "id": "uuid",
+          "id_usuario": "uuid",
+          "id_veiculo": "uuid",
+          "data_inicio": "timestamp",
+          "km_inicio": "integer",
+          "data_fim": "timestamp",
+          "km_fim": "integer",
+          "ganho_bruto": "integer",
+          "km_total": "integer",
+          "tempo_total": "integer",
+          "observacoes": "string"
+        }
+        ```
+    *   **`404 Not Found`:** Jornada não encontrada ou não pertence ao usuário.
+    *   **`401 Unauthorized`:** Token JWT inválido.
+
+#### `PUT /journeys/:id`
+
+*   **Descrição:** Atualiza os detalhes de uma jornada existente, incluindo a possibilidade de finalizá-la.
+*   **Método:** `PUT`
+*   **URL:** `/api/v1/journeys/:id`
+*   **Autenticação:** Requer token JWT válido.
+*   **Parâmetros de Rota:**
+    *   `id` (UUID): O ID da jornada a ser atualizada.
+*   **Corpo da Requisição (JSON):**
+
+    ```json
+    {
+      "km_fim": "integer" (opcional),
+      "data_fim": "timestamp (ISO 8601)" (opcional),
+      "ganho_bruto": "integer" (opcional),
+      "observacoes": "string" (opcional)
+    }
+    ```
+
+*   **Respostas:**
+    *   **`200 OK`:** Jornada atualizada com sucesso.
+
+        ```json
+        {
+          "id": "uuid",
+          "id_usuario": "uuid",
+          "id_veiculo": "uuid",
+          "data_inicio": "timestamp",
+          "km_inicio": "integer",
+          "data_fim": "timestamp",
+          "km_fim": "integer",
+          "ganho_bruto": "integer",
+          "km_total": "integer",
+          "tempo_total": "integer",
+          "observacoes": "string"
+        }
+        ```
+    *   **`400 Bad Request`:** Dados inválidos.
+    *   **`404 Not Found`:** Jornada não encontrada ou não pertence ao usuário.
+    *   **`401 Unauthorized`:** Token JWT inválido.
+
+#### `DELETE /journeys/:id`
+
+*   **Descrição:** Exclui uma jornada existente (soft delete).
+*   **Método:** `DELETE`
+*   **URL:** `/api/v1/journeys/:id`
+*   **Autenticação:** Requer token JWT válido.
+*   **Parâmetros de Rota:**
+    *   `id` (UUID): O ID da jornada a ser excluída.
+*   **Respostas:**
+    *   **`204 No Content`:** Jornada excluída com sucesso.
+    *   **`404 Not Found`:** Jornada não encontrada ou não pertence ao usuário.
+    *   **`401 Unauthorized`:** Token JWT inválido.
+
+#### `GET /journeys/stats`
+
+*   **Descrição:** Retorna estatísticas agregadas sobre as jornadas do usuário.
+*   **Método:** `GET`
+*   **URL:** `/api/v1/journeys/stats`
+*   **Autenticação:** Requer token JWT válido.
+*   **Parâmetros de Query (Opcional):**
+    *   `periodo` (string): Período para agregação das estatísticas (ex: `semana`, `mes`, `trimestre`, `ano`).
+*   **Respostas:**
+    *   **`200 OK`:** Estatísticas de jornada retornadas com sucesso.
+
+        ```json
+        {
+          "totalJornadas": "integer",
+          "totalKmPercorridos": "integer",
+          "totalGanhoBruto": "integer",
+          "mediaGanhoPorJornada": "number",
+          "mediaKmPorJornada": "number",
+          "jornadasPorStatus": {
+            "em_andamento": "integer",
+            "concluida": "integer"
+          }
+        }
+        ```
+    *   **`401 Unauthorized`:** Token JWT inválido.
+    *   **`400 Bad Request`:** Período inválido.
+
 ### 2.5. Abastecimentos
-
-
-
-
-
-# Documentação da API de Autenticação (Atualizada)
-
-Esta documentação descreve os endpoints da API de autenticação, incluindo as melhorias implementadas.
-
-## Melhorias
-
-- **Middleware de Tratamento de Erros Assíncronos:** Adicionado um middleware para capturar e tratar erros em rotas assíncronas de forma centralizada.
-- **Remoção do Endpoint `/api/test`:** O endpoint de teste foi removido por não ser mais necessário.
-- **Reorganização de Imports:** Os imports foram reorganizados para melhorar a legibilidade e manutenção do código.
-- **Remoção de Rotas Não Utilizadas:** Rotas que não estavam sendo utilizadas foram removidas para limpar o código.
-
-## Endpoints
-
-...
-
-## Changelog
-
-- **v1.1.0:**
-  - Adicionado middleware de tratamento de erros assíncronos.
-  - Removido o endpoint `/api/test`.
-  - Reorganização de imports.
-  - Remoção de rotas não utilizadas.
-
 
