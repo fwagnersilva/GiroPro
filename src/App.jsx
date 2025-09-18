@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import PrimaryButton from './components/PrimaryButton'
+import Header from './components/Header'
 import './App.css'
 
 function App() {
@@ -17,14 +18,7 @@ function App() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-8">
       <div className="max-w-4xl mx-auto">
-        <header className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-gray-800 mb-4">
-            GiroPro Frontend
-          </h1>
-          <p className="text-lg text-gray-600">
-            Demonstração do Componente PrimaryButton
-          </p>
-        </header>
+        <Header />
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {/* Seção de Contadores */}
