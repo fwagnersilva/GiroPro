@@ -371,8 +371,8 @@ _**
 
 - Tarefa: P2 - Otimizar o carregamento de dados no Dashboard
   - Quem: Frontend
-  - O que: Instalar react-query no projeto frontend.
-  - Porquê: Habilitar o uso de hooks para gerenciamento de estado de dados e cache.
+  - O que: Instalar @tanstack/react-query no frontend.
+  - Porquê: Habilitar o uso de caching e re-fetching de dados de forma eficiente.
   - Complexidade: Simples
   - Concluído: Em Execução
 
