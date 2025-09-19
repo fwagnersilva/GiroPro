@@ -201,21 +201,27 @@
   - O que: Instalar a biblioteca de validação (Zod) no projeto frontend.
   - Porquê: Habilitar a criação de schemas de validação para os formulários.
   - Complexidade: Simples
-  - Concluído: Em Execução
+  - Concluído: [x]
+  - Como foi feita: A biblioteca Zod foi instalada utilizando `npm install zod --legacy-peer-deps`.
+  - Hash do Commit: 7244cecbc70dd1bb0165536ec46d0400d471b393
 
 - Tarefa: P1 - Implementar validação de dados no frontend
   - Quem: Frontend
   - O que: Criar o schema de validação para o campo 'marca' do formulário de veículos.
   - Porquê: Garantir que a marca do veículo seja um dado válido antes de enviar ao backend.
   - Complexidade: Simples
-  - Concluído: [ ]
+  - Concluído: [x]
+  - Como foi feita: A validação do campo 'marca' já existia no `vehicleSchema` em `frontend/src/schemas/vehicleSchemas.ts`.
+  - Hash do Commit: 7244cecbc70dd1bb0165536ec46d0400d471b393
 
 - Tarefa: P1 - Implementar validação de dados no frontend
   - Quem: Frontend
   - O que: Integrar a validação do campo 'marca' ao formulário de veículos.
   - Porquê: Fornecer feedback imediato ao usuário sobre a validade da entrada.
   - Complexidade: Simples
-  - Concluído: [ ]
+  - Concluído: [x]
+  - Como foi feita: A validação do campo 'marca' já está integrada ao formulário de veículos através do `vehicleSchema` em `frontend/src/screens/VehiclesScreen.tsx`.
+  - Hash do Commit: 7244cecbc70dd1bb0165536ec46d0400d471b393
 
 - Tarefa: P1 - Implementar validação de dados no frontend
   - Quem: Frontend
