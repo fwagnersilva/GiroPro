@@ -389,17 +389,21 @@
 
 - Tarefa: P1 - Implementar validação de dados no frontend
   - Quem: Frontend
-  - O que: Criar o schema de validação para o campo 'valorDespesa' do formulário de despesas.
-  - Porquê: Garantir que o valor da despesa seja um dado válido.
+  - O que: Criar o schema de validação para o campo 'valorTotal' do formulário de abastecimentos.
+  - Porquê: Garantir que o valor total seja um dado válido.
   - Complexidade: Simples
-  - Concluído: [ ]
+  - Concluído: [x]
+  - Como foi feita: O campo 'valorTotal' é um valor calculado no frontend a partir de 'quantidadeLitros' e 'valorLitro', que já possuem validação no `fuelingSchema` em `frontend/src/schemas/fuelingSchemas.ts`. Portanto, não é necessário um schema de validação direto para 'valorTotal'.
+  - Hash do Commit: aa85c3fe2cd0bb2d3a694dd24466bd9015e1d333
 
 - Tarefa: P1 - Implementar validação de dados no frontend
   - Quem: Frontend
-  - O que: Integrar a validação do campo 'valorDespesa' ao formulário de despesas.
+  - O que: Integrar a validação do campo 'valorTotal' ao formulário de abastecimentos.
   - Porquê: Fornecer feedback imediato ao usuário.
   - Complexidade: Simples
-  - Concluído: [ ]
+  - Concluído: [x]
+  - Como foi feita: O campo 'valorTotal' é um valor calculado e não requer validação direta. Seus componentes, 'quantidadeLitros' e 'valorLitro', já são validados no `fuelingSchema` e integrados ao formulário em `frontend/src/screens/AddFuelingScreen.tsx`.
+  - Hash do Commit: aa85c3fe2cd0bb2d3a694dd24466bd9015e1d333
 
 - Tarefa: P2 - Refatorar o tratamento de erros global no frontend
   - Quem: Frontend
