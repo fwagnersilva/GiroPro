@@ -338,14 +338,18 @@
   - O que: Criar o schema de validação para o campo 'dataInicio' do formulário de jornadas.
   - Porquê: Garantir que a data de início seja um dado válido.
   - Complexidade: Simples
-  - Concluído: [ ]
+  - Concluído: [x]
+  - Como foi feita: A validação do campo 'dataInicio' já existia no `journeySchema` em `frontend/src/schemas/journeySchemas.ts`.
+  - Hash do Commit: b6b6f5d647b24affb50c1df80476a2a767c9dbbc
 
 - Tarefa: P1 - Implementar validação de dados no frontend
   - Quem: Frontend
   - O que: Integrar a validação do campo 'dataInicio' ao formulário de jornadas.
   - Porquê: Fornecer feedback imediato ao usuário.
   - Complexidade: Simples
-  - Concluído: [ ]
+  - Concluído: [x]
+  - Como foi feita: A validação do campo 'dataInicio' já está integrada ao formulário de jornadas através do `journeySchema` em `frontend/src/screens/JourneysScreen.tsx`.
+  - Hash do Commit: b6b6f5d647b24affb50c1df80476a2a767c9dbbc
 
 - Tarefa: P1 - Implementar validação de dados no frontend
   - Quem: Frontend
