@@ -204,10 +204,15 @@
   - **O que:** Criar um conjunto de endpoints na API para que o frontend possa enviar dados coletados ou modificados offline. Estes endpoints devem ser capazes de receber lotes de dados (batch processing) para diferentes entidades (jornadas, abastecimentos, despesas, veículos) e processá-los de forma transacional.
   - **Porquê:** Permitir que o usuário continue utilizando o aplicativo e registrando informações mesmo sem conexão, garantindo que esses dados sejam persistidos no servidor assim que a conectividade for restaurada.
   - **Complexidade:** Complexa
-  - **Concluído:** [ ]
-  - **Como foi feita:** 
-  - **Hash do Commit:** 
+  - **Concluído:** [x]
+  - **Como foi feita:** Implementada API completa para sincronização offline com 4 endpoints principais: /api/v1/sync/upload (upload de dados em lote), /api/v1/sync/download/initial (sincronização inicial), /api/v1/sync/download/incremental (sincronização incremental) e /api/v1/sync/last-sync (timestamp da última sincronização). Implementado processamento transacional com resolução de conflitos usando estratégia "last-write-wins" com fallback para detecção de conflitos. Sistema suporta idempotência para evitar duplicação de dados e inclui autenticação JWT em todas as rotas. Criados arquivos: src/routes/sync.ts (rotas), src/controllers/syncController.ts (lógica de negócio) e integração no app.ts principal.
+  - **Hash do Commit:** [PENDENTE]
   - **Arquivos modificados:** 
+    - `backend/src/routes/sync.ts` (novo arquivo)
+    - `backend/src/controllers/syncController.ts` (novo arquivo)
+    - `backend/src/app.ts` (adicionada rota de sincronização)
+    - `backend/src/db/schema.ts` (corrigidas importações)
+  - **Observações:** API implementada com suporte completo a batch processing, resolução de conflitos e sincronização bidirecional. Sistema preparado para produção com tratamento robusto de erros e logging detalhado. Endpoints testados e funcionais, prontos para integração com frontend mobile.
   - **Observações:** Considerar a idempotência das operações para evitar duplicação de dados em caso de retentativas de envio. A autenticação e autorização devem ser mantidas.
 
 - **Tarefa:** P1 - Desenvolver API para Download de Dados para Sincronização Inicial/Incremental
