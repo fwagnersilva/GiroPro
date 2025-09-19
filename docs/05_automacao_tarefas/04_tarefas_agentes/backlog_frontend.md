@@ -320,14 +320,18 @@
   - O que: Criar o schema de validação para o campo 'kmInicio' do formulário de jornadas.
   - Porquê: Garantir que a quilometragem inicial seja um dado válido.
   - Complexidade: Simples
-  - Concluído: [ ]
+  - Concluído: [x]
+  - Como foi feita: A validação do campo 'kmInicio' já existia no `journeySchema` em `frontend/src/schemas/journeySchemas.ts`.
+  - Hash do Commit: bf06b95f1b0c204af28e90c5655bca4a9f28ddd2
 
 - Tarefa: P1 - Implementar validação de dados no frontend
   - Quem: Frontend
   - O que: Integrar a validação do campo 'kmInicio' ao formulário de jornadas.
   - Porquê: Fornecer feedback imediato ao usuário.
   - Complexidade: Simples
-  - Concluído: [ ]
+  - Concluído: [x]
+  - Como foi feita: A validação do campo 'kmInicio' já está integrada ao formulário de jornadas através do `journeySchema` em `frontend/src/screens/JourneysScreen.tsx`.
+  - Hash do Commit: bf06b95f1b0c204af28e90c5655bca4a9f28ddd2
 
 - Tarefa: P1 - Implementar validação de dados no frontend
   - Quem: Frontend
