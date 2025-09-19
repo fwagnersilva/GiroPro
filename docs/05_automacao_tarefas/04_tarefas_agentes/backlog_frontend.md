@@ -356,14 +356,18 @@
   - O que: Criar o schema de validação para o campo 'quantidadeLitros' do formulário de abastecimentos.
   - Porquê: Garantir que a quantidade de litros seja um dado válido.
   - Complexidade: Simples
-  - Concluído: [ ]
+  - Concluído: [x]
+  - Como foi feita: A validação do campo 'quantidadeLitros' já existia no `fuelingSchema` em `frontend/src/schemas/fuelingSchemas.ts`.
+  - Hash do Commit: 3499ac4558ef1766c9bd1eccad8b95bd4c345a7a
 
 - Tarefa: P1 - Implementar validação de dados no frontend
   - Quem: Frontend
   - O que: Integrar a validação do campo 'quantidadeLitros' ao formulário de abastecimentos.
   - Porquê: Fornecer feedback imediato ao usuário.
   - Complexidade: Simples
-  - Concluído: [ ]
+  - Concluído: [x]
+  - Como foi feita: A validação do campo 'quantidadeLitros' já está integrada ao formulário de abastecimentos através do `fuelingSchema` em `frontend/src/screens/AddFuelingScreen.tsx`.
+  - Hash do Commit: 3499ac4558ef1766c9bd1eccad8b95bd4c345a7a
 
 - Tarefa: P1 - Implementar validação de dados no frontend
   - Quem: Frontend
