@@ -678,3 +678,97 @@ Este é o backlog central do projeto GiroPro. Ele contém todas as demandas, ép
   - Concluído: [ ]
 
 
+
+
+- Tarefa: P1 - Configurar Variáveis de Ambiente para Frontend Web
+  - Quem: Frontend
+  - O que: Criar arquivos .env.development e .env.production no diretório frontend e adicionar a variável VITE_API_URL.
+  - Porquê: Permitir a configuração dinâmica da URL da API para diferentes ambientes (desenvolvimento, produção).
+  - Complexidade: Simples
+  - Concluído: [ ]
+
+- Tarefa: P1 - Atualizar Frontend para Usar Variáveis de Ambiente
+  - Quem: Frontend
+  - O que: Modificar o arquivo vite.config.js para carregar as variáveis de ambiente e atualizar as chamadas fetch em web-app-improved.tsx para usar VITE_API_URL.
+  - Porquê: Garantir que a aplicação web se conecte ao backend correto em qualquer ambiente.
+  - Complexidade: Simples
+  - Concluído: [ ]
+
+- Tarefa: P2 - Implementar Roteamento no Frontend Web
+  - Quem: Frontend
+  - O que: Instalar a biblioteca react-router-dom no frontend.
+  - Porquê: Habilitar a navegação entre diferentes telas da aplicação web sem recarregar a página.
+  - Complexidade: Simples
+  - Concluído: [ ]
+
+- Tarefa: P2 - Definir Rotas Básicas para Autenticação e Dashboard
+  - Quem: Frontend
+  - O que: Configurar as rotas para LoginScreen e Dashboard usando react-router-dom em web-app-improved.tsx.
+  - Porquê: Estruturar a navegação principal da aplicação web.
+  - Complexidade: Média
+  - Concluído: [ ]
+
+- Tarefa: P2 - Proteger Rotas Autenticadas no Frontend Web
+  - Quem: Frontend
+  - O que: Implementar um componente de rota privada para redirecionar usuários não autenticados para a tela de login.
+  - Porquê: Garantir que apenas usuários logados possam acessar o Dashboard e outras áreas restritas.
+  - Complexidade: Média
+  - Concluído: [ ]
+
+- Tarefa: P3 - Desenvolver Tela de Meus Veículos (Frontend Web)
+  - Quem: Frontend
+  - O que: Criar um novo componente para exibir a lista de veículos do usuário.
+  - Porquê: Começar a implementar as funcionalidades do Dashboard.
+  - Complexidade: Média
+  - Concluído: [ ]
+
+- Tarefa: P3 - Integrar API de Veículos (Frontend Web)
+  - Quem: Frontend
+  - O que: Fazer requisições à API do backend para buscar e exibir os veículos do usuário na tela de Meus Veículos.
+  - Porquê: Popular a tela com dados reais do usuário.
+  - Complexidade: Média
+  - Concluído: [ ]
+
+- Tarefa: P3 - Melhorar Tratamento de Erros de API no Frontend
+  - Quem: Frontend
+  - O que: Implementar um sistema de notificação (ex: toasts, alertas) para exibir erros de API de forma mais clara e amigável ao usuário.
+  - Porquê: Fornecer feedback imediato e compreensível sobre falhas na comunicação com o backend.
+  - Complexidade: Média
+  - Concluído: [ ]
+
+- Tarefa: P3 - Otimizar Imagens para Web
+  - Quem: Frontend
+  - O que: Implementar lazy loading para imagens e considerar formatos otimizados (ex: WebP) para melhorar o desempenho de carregamento.
+  - Porquê: Reduzir o tempo de carregamento da página e o consumo de dados.
+  - Complexidade: Simples
+  - Concluído: [ ]
+
+- Tarefa: P3 - Adicionar Suporte Básico a PWA (Progressive Web App)
+  - Quem: Frontend
+  - O que: Criar um manifest.json e configurar um Service Worker básico para permitir a instalação do aplicativo web na tela inicial e cache de assets estáticos.
+  - Porquê: Melhorar a experiência do usuário, permitindo acesso offline e instalação como aplicativo nativo.
+  - Complexidade: Média
+  - Concluído: [ ]
+
+- Tarefa: P4 - Refatorar Estilos para CSS Modules/Styled Components
+  - Quem: Frontend
+  - O que: Migrar os estilos inline existentes em web-app-improved.tsx para CSS Modules ou Styled Components.
+  - Porquê: Melhorar a manutenibilidade, escalabilidade e evitar conflitos de estilo.
+  - Complexidade: Complexa
+  - Concluído: [ ]
+
+- Tarefa: P4 - Preparar Componentes para Reutilização Mobile
+  - Quem: Frontend
+  - O que: Analisar os componentes existentes e refatorá-los para que possam ser facilmente adaptados ou reutilizados em um ambiente React Native (ex: separando lógica de UI).
+  - Porquê: Facilitar a futura implementação para Android e iOS, maximizando a reutilização de código.
+  - Complexidade: Complexa
+  - Concluído: [ ]
+
+- Tarefa: P4 - Implementar Testes E2E (End-to-End) para Fluxo de Login/Registro
+  - Quem: Frontend
+  - O que: Configurar uma ferramenta de testes E2E (ex: Cypress, Playwright) e escrever testes para os fluxos de login e registro.
+  - Porquê: Garantir que as funcionalidades críticas da aplicação web funcionem corretamente de ponta a ponta.
+  - Complexidade: Complexa
+  - Concluído: [ ]
+
+
