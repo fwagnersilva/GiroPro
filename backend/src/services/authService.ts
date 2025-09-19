@@ -53,7 +53,7 @@ export class AuthService {
         });
 
       // Gerar tokens
-      const token = this.generateToken(newUser.id, newUser.email);
+      const token = this.generateToken(newUser.id, newUser.email, newUser.nome, newUser.role);
       const refreshToken = this.generateRefreshToken(newUser.id);
 
       return {
@@ -106,7 +106,7 @@ export class AuthService {
       await this.updateLastActivity(user.id);
 
       // Gerar tokens
-      const token = this.generateToken(user.id, user.email);
+      const token = this.generateToken(user.id, user.email, user.nome, user.role);
       const refreshToken = this.generateRefreshToken(user.id);
 
       return {
@@ -131,7 +131,7 @@ export class AuthService {
       }
 
       // Gerar novos tokens
-      const newToken = this.generateToken(user.id, user.email);
+      const newToken = this.generateToken(user.id, user.email, user.nome, user.role);
       const newRefreshToken = this.generateRefreshToken(user.id);
 
       return {
@@ -240,7 +240,7 @@ const decoded = jwt.verify(token, process.env.JWT_SECRET!) as { userId: string }
         .where(eq(usuarios.id, userId));
   }
 
-  private static generateToken(userId: string, email?: string): string {
+  private static generateToken(userId: string, email: string, nome: string, role: string): string {
     if (!process.env.JWT_SECRET) {
       throw new Error('JWT_SECRET não configurado');
     }
@@ -273,7 +273,7 @@ const decoded = jwt.verify(token, process.env.JWT_SECRET!) as { userId: string }
     );
   }
 
-  static verifyToken(token: string): { userId: string } {
+  static verifyToken(token: string): { userId: string; email: string; nome: string; role: string } {
 if (!process.env.JWT_SECRET) {
       throw new Error("JWT_SECRET não configurado");
     }
@@ -284,7 +284,7 @@ if (!process.env.JWT_SECRET) {
       throw new Error("Tipo de token inválido");
     }
 
-    return { userId: decoded.userId };
+    return { userId: decoded.userId, email: decoded.email, nome: decoded.nome, role: decoded.role };
   }
 
   // Métodos auxiliares privados
