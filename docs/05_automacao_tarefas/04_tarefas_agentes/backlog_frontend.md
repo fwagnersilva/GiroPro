@@ -228,35 +228,45 @@
   - O que: Criar o schema de validação para o campo 'modelo' do formulário de veículos.
   - Porquê: Garantir que o modelo do veículo seja um dado válido.
   - Complexidade: Simples
-  - Concluído: [ ]
+  - Concluído: [x]
+  - Como foi feita: A validação do campo 'modelo' já existia no `vehicleSchema` em `frontend/src/schemas/vehicleSchemas.ts`.
+  - Hash do Commit: 18429970234fd2c5451494be39faa4c87b913d47
 
 - Tarefa: P1 - Implementar validação de dados no frontend
   - Quem: Frontend
   - O que: Integrar a validação do campo 'modelo' ao formulário de veículos.
   - Porquê: Fornecer feedback imediato ao usuário.
   - Complexidade: Simples
-  - Concluído: [ ]
+  - Concluído: [x]
+  - Como foi feita: A validação do campo 'modelo' já está integrada ao formulário de veículos através do `vehicleSchema` em `frontend/src/screens/VehiclesScreen.tsx`.
+  - Hash do Commit: 18429970234fd2c5451494be39faa4c87b913d47
 
 - Tarefa: P1 - Implementar validação de dados no frontend
   - Quem: Frontend
   - O que: Criar o schema de validação para o campo 'ano' do formulário de veículos.
   - Porquê: Garantir que o ano do veículo seja um dado válido.
   - Complexidade: Simples
-  - Concluído: [ ]
+  - Concluído: [x]
+  - Como foi feita: A validação do campo 'ano' já existia no `vehicleSchema` em `frontend/src/schemas/vehicleSchemas.ts`.
+  - Hash do Commit: 18429970234fd2c5451494be39faa4c87b913d47
 
 - Tarefa: P1 - Implementar validação de dados no frontend
   - Quem: Frontend
   - O que: Integrar a validação do campo 'ano' ao formulário de veículos.
   - Porquê: Fornecer feedback imediato ao usuário.
   - Complexidade: Simples
-  - Concluído: [ ]
+  - Concluído: [x]
+  - Como foi feita: A validação do campo 'ano' já está integrada ao formulário de veículos através do `vehicleSchema` em `frontend/src/screens/VehiclesScreen.tsx`.
+  - Hash do Commit: 18429970234fd2c5451494be39faa4c87b913d47
 
 - Tarefa: P1 - Implementar validação de dados no frontend
   - Quem: Frontend
   - O que: Criar o schema de validação para o campo 'placa' do formulário de veículos.
   - Porquê: Garantir que a placa do veículo seja um dado válido.
   - Complexidade: Simples
-  - Concluído: [ ]
+  - Concluído: [x]
+  - Como foi feita: A validação do campo 'placa' já existia no `vehicleSchema` em `frontend/src/schemas/vehicleSchemas.ts`.
+  - Hash do Commit: 18429970234fd2c5451494be39faa4c87b913d47
 
 - Tarefa: P1 - Implementar validação de dados no frontend
   - Quem: Frontend
@@ -274,28 +284,36 @@
   - O que: Criar o schema de validação para o campo 'tipoCombustivel' do formulário de veículos.
   - Porquê: Garantir que o tipo de combustível seja um dado válido.
   - Complexidade: Simples
-  - Concluído: [ ]
+  - Concluído: [x]
+  - Como foi feita: A validação do campo 'tipoCombustivel' já existia no `vehicleSchema` em `frontend/src/schemas/vehicleSchemas.ts`.
+  - Hash do Commit: 18429970234fd2c5451494be39faa4c87b913d47
 
 - Tarefa: P1 - Implementar validação de dados no frontend
   - Quem: Frontend
   - O que: Integrar a validação do campo 'tipoCombustivel' ao formulário de veículos.
   - Porquê: Fornecer feedback imediato ao usuário.
   - Complexidade: Simples
-  - Concluído: [ ]
+  - Concluído: [x]
+  - Como foi feita: A validação do campo 'tipoCombustivel' já está integrada ao formulário de veículos através do `vehicleSchema` em `frontend/src/screens/VehiclesScreen.tsx`.
+  - Hash do Commit: 18429970234fd2c5451494be39faa4c87b913d47
 
 - Tarefa: P1 - Implementar validação de dados no frontend
   - Quem: Frontend
   - O que: Criar o schema de validação para o campo 'tipoUso' do formulário de veículos.
   - Porquê: Garantir que o tipo de uso seja um dado válido.
   - Complexidade: Simples
-  - Concluído: [ ]
+  - Concluído: [x]
+  - Como foi feita: A validação do campo 'tipoUso' já existia no `vehicleSchema` em `frontend/src/schemas/vehicleSchemas.ts`.
+  - Hash do Commit: 18429970234fd2c5451494be39faa4c87b913d47
 
 - Tarefa: P1 - Implementar validação de dados no frontend
   - Quem: Frontend
   - O que: Integrar a validação do campo 'tipoUso' ao formulário de veículos.
   - Porquê: Fornecer feedback imediato ao usuário.
   - Complexidade: Simples
-  - Concluído: [ ]
+  - Concluído: [x]
+  - Como foi feita: A validação do campo 'tipoUso' já está integrada ao formulário de veículos através do `vehicleSchema` em `frontend/src/screens/VehiclesScreen.tsx`.
+  - Hash do Commit: 18429970234fd2c5451494be39faa4c87b913d47
 
 - Tarefa: P1 - Implementar validação de dados no frontend
   - Quem: Frontend
