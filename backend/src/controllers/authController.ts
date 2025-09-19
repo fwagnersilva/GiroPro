@@ -2,7 +2,8 @@ import { Request, Response } from 'express';
 import { AuthService } from '../services/authService';
 import { loginSchema, registerSchema, requestPasswordResetSchema, resetPasswordSchema, changePasswordSchema } from '../utils/validation';
 import { UnauthorizedError, NotFoundError, ValidationError, ConflictError } from "../utils/customErrors";
-import { AuthenticatedRequest } from "../types/common";
+
+import { AuthenticatedRequest } from "../types/auth";
 import { z } from 'zod';
 
 export class AuthController {
