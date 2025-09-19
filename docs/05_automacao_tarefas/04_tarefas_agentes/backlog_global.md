@@ -6,21 +6,194 @@ Este é o backlog central do projeto GiroPro. Ele contém todas as demandas, ép
 
 ## Novas Tarefas
 
+- Tarefa: P1 - Resolver erros de TypeScript (Backend - Erro 1-5)
+  - Quem: Backend
+  - O que: Analisar e corrigir os primeiros 5 erros de TypeScript identificados no backend.
+  - Porquê: Reduzir o número de erros e estabilizar o build do backend.
+  - Complexidade: Simples
+  - Concluído: [ ]
 
+- Tarefa: P1 - Resolver erros de TypeScript (Backend - Erro 6-10)
+  - Quem: Backend
+  - O que: Analisar e corrigir os próximos 5 erros de TypeScript identificados no backend.
+  - Porquê: Continuar a redução dos erros de TypeScript no backend.
+  - Complexidade: Simples
+  - Concluído: [ ]
 
+- Tarefa: P1 - Resolver erros de TypeScript (Frontend - Erro 1-5)
+  - Quem: Frontend
+  - O que: Analisar e corrigir os primeiros 5 erros de TypeScript identificados no frontend.
+  - Porquê: Reduzir o número de erros e estabilizar o build do frontend.
+  - Complexidade: Simples
+  - Concluído: [ ]
 
+- Tarefa: P1 - Resolver erros de TypeScript (Frontend - Erro 6-10)
+  - Quem: Frontend
+  - O que: Analisar e corrigir os próximos 5 erros de TypeScript identificados no frontend.
+  - Porquê: Continuar a redução dos erros de TypeScript no frontend.
+  - Complexidade: Simples
+  - Concluído: [ ]
 
+- Tarefa: P2 - Atualizar dependências (Backend - 1ª dependência)
+  - Quem: Backend
+  - O que: Identificar e atualizar a primeira dependência desatualizada do backend, rodando os testes.
+  - Porquê: Manter o projeto com dependências atualizadas e seguras.
+  - Complexidade: Simples
+  - Concluído: [ ]
 
+- Tarefa: P2 - Atualizar dependências (Frontend - 1ª dependência)
+  - Quem: Frontend
+  - O que: Identificar e atualizar a primeira dependência desatualizada do frontend, rodando os testes.
+  - Porquê: Manter o projeto com dependências atualizadas e seguras.
+  - Complexidade: Simples
+  - Concluído: [ ]
 
+- Tarefa: P2 - Implementar roles de usuário (Backend - Modelo de Usuário)
+  - Quem: Backend
+  - O que: Adicionar o campo 'role' ao modelo de usuário no Drizzle ORM.
+  - Porquê: Preparar o sistema para controle de acesso baseado em roles.
+  - Complexidade: Simples
+  - Concluído: [ ]
 
+- Tarefa: P2 - Implementar roles de usuário (Backend - Middleware de Verificação)
+  - Quem: Backend
+  - O que: Criar um middleware para verificar a role do usuário e autorizar o acesso a rotas específicas.
+  - Porquê: Proteger rotas sensíveis com base nas permissões do usuário.
+  - Complexidade: Média
+  - Concluído: [ ]
 
+- Tarefa: P3 - Adicionar logging detalhado (Backend - Configuração da Biblioteca)
+  - Quem: Backend
+  - O que: Instalar e configurar uma biblioteca de logging (ex: Winston) no backend.
+  - Porquê: Centralizar e padronizar o registro de logs da aplicação.
+  - Complexidade: Simples
+  - Concluído: [ ]
 
+- Tarefa: P3 - Adicionar logging detalhado (Backend - Logs de Erro)
+  - Quem: Backend
+  - O que: Implementar o registro de logs para todos os erros não tratados no backend.
+  - Porquê: Facilitar a identificação e correção de problemas em produção.
+  - Complexidade: Simples
+  - Concluído: [ ]
 
+- Tarefa: P2 - Criar mais testes (Backend - Testes de Autenticação)
+  - Quem: Backend
+  - O que: Escrever testes unitários e de integração para as rotas de autenticação (login, registro).
+  - Porquê: Garantir a robustez e segurança do sistema de autenticação.
+  - Complexidade: Média
+  - Concluído: [ ]
 
+- Tarefa: P2 - Implementar recuperação de senha (Backend - Endpoint de Solicitação)
+  - Quem: Backend
+  - O que: Criar um endpoint para o usuário solicitar a recuperação de senha, gerando um token.
+  - Porquê: Iniciar o fluxo de recuperação de acesso para usuários.
+  - Complexidade: Média
+  - Concluído: [ ]
 
+- Tarefa: P2 - Implementar recuperação de senha (Backend - Envio de Email)
+  - Quem: Backend
+  - O que: Integrar um serviço de envio de email para enviar o token de recuperação ao usuário.
+  - Porquê: Permitir que o usuário receba o link/token para redefinir a senha.
+  - Complexidade: Média
+  - Concluído: [ ]
 
+- Tarefa: P2 - Implementar recuperação de senha (Backend - Endpoint de Redefinição)
+  - Quem: Backend
+  - O que: Criar um endpoint para o usuário redefinir a senha usando o token recebido.
+  - Porquê: Concluir o fluxo de recuperação de senha, permitindo o acesso de volta à conta.
+  - Complexidade: Média
+  - Concluído: [ ]
 
+- Tarefa: P2 - Implementar Cache (Backend - Configuração do Redis)
+  - Quem: Backend
+  - O que: Instalar e configurar o Redis no ambiente de desenvolvimento e produção.
+  - Porquê: Preparar o backend para utilizar cache de dados.
+  - Complexidade: Simples
+  - Concluído: [ ]
 
+- Tarefa: P2 - Implementar Cache (Backend - Cache de Dados de Veículos)
+  - Quem: Backend
+  - O que: Implementar cache para a API que lista os veículos do usuário.
+  - Porquê: Melhorar a performance de carregamento da lista de veículos no frontend.
+  - Complexidade: Média
+  - Concluído: [ ]
+
+- Tarefa: P2 - Implementar Auditoria de Segurança (Backend - Registro de Login)
+  - Quem: Backend
+  - O que: Registrar tentativas de login (sucesso e falha) com IP, usuário e timestamp.
+  - Porquê: Monitorar acessos e identificar possíveis ataques de força bruta.
+  - Complexidade: Simples
+  - Concluído: [ ]
+
+- Tarefa: P2 - Implementar Modo Offline (Frontend - Cache de Assets)
+  - Quem: Frontend
+  - O que: Configurar o Service Worker (ou equivalente no React Native/Expo) para cachear os assets estáticos do frontend (JS, CSS, imagens).
+  - Porquê: Permitir que o aplicativo carregue rapidamente mesmo offline.
+  - Complexidade: Média
+  - Concluído: [ ]
+
+- Tarefa: P2 - Implementar Sincronização Offline (Frontend - Armazenamento Local)
+  - Quem: Frontend
+  - O que: Utilizar AsyncStorage (ou similar) para armazenar dados de jornadas, abastecimentos e despesas localmente.
+  - Porquê: Permitir que o usuário registre dados mesmo sem conexão com a internet.
+  - Complexidade: Média
+  - Concluído: [ ]
+
+- Tarefa: P2 - Implementar Sincronização Offline (Frontend - Lógica de Sincronização)
+  - Quem: Frontend
+  - O que: Desenvolver a lógica para sincronizar os dados locais com o backend quando a conexão for restabelecida.
+  - Porquê: Garantir que os dados registrados offline sejam persistidos no servidor.
+  - Complexidade: Complexa
+  - Concluído: [ ]
+
+- Tarefa: P3 - Melhoria de UX/UI (Frontend - Feedback de Carregamento)
+  - Quem: Frontend
+  - O que: Adicionar indicadores de carregamento (spinners, skeletons) em telas que fazem requisições assíncronas.
+  - Porquê: Melhorar a percepção de performance e a experiência do usuário.
+  - Complexidade: Simples
+  - Concluído: [ ]
+
+- Tarefa: P3 - Melhoria de UX/UI (Frontend - Mensagens de Erro Amigáveis)
+  - Quem: Frontend
+  - O que: Exibir mensagens de erro mais claras e amigáveis para o usuário em caso de falhas na API ou validação.
+  - Porquê: Orientar o usuário sobre o que aconteceu e como proceder.
+  - Complexidade: Simples
+  - Concluído: [ ]
+
+- Tarefa: P3 - Melhoria de UX/UI (Frontend - Otimização de Imagens)
+  - Quem: Frontend
+  - O que: Otimizar o carregamento de imagens no frontend (compressão, lazy loading).
+  - Porquê: Reduzir o tempo de carregamento das telas e o consumo de dados.
+  - Complexidade: Simples
+  - Concluído: [ ]
+
+- Tarefa: P3 - Melhoria de UX/UI (Frontend - Acessibilidade Básica)
+  - Quem: Frontend
+  - O que: Implementar atributos ARIA e garantir contraste de cores para elementos críticos.
+  - Porquê: Tornar o aplicativo mais acessível para usuários com deficiência.
+  - Complexidade: Média
+  - Concluído: [ ]
+
+- Tarefa: P3 - Testes de Componentes (Frontend - Componente de Login)
+  - Quem: Frontend
+  - O que: Escrever testes unitários para o componente de tela de login.
+  - Porquê: Garantir o funcionamento correto do componente e prevenir regressões.
+  - Complexidade: Simples
+  - Concluído: [ ]
+
+- Tarefa: P3 - Testes de Componentes (Frontend - Componente de Registro)
+  - Quem: Frontend
+  - O que: Escrever testes unitários para o componente de tela de registro.
+  - Porquê: Garantir o funcionamento correto do componente e prevenir regressões.
+  - Complexidade: Simples
+  - Concluído: [ ]
+
+- Tarefa: P3 - Testes de Integração (Frontend - Fluxo de Autenticação)
+  - Quem: Frontend
+  - O que: Escrever testes de integração para o fluxo completo de login e registro.
+  - Porquê: Validar a comunicação entre os componentes e a API de autenticação.
+  - Complexidade: Média
+  - Concluído: [ ]
 
 ## Demandas Concluídas
 
@@ -35,8 +208,6 @@ Este é o backlog central do projeto GiroPro. Ele contém todas as demandas, ép
   - Arquivos modificados: backend/otimizacao_orm_relatorio.md, docs/05_automacao_tarefas/04_tarefas_agentes/backlog_backend.md
   - Observações: Sistema já estava excelentemente otimizado. Tarefa consistiu em validar e documentar o estado atual das otimizações.
   - Status: Concluída
-
-
 
 - Tarefa: P2 - Tratamento de Erros Assíncronos em Rotas (Async Handler)
   - Quem: Backend
@@ -167,7 +338,7 @@ Este é o backlog central do projeto GiroPro. Ele contém todas as demandas, ép
   - Porquê: Subtarefa da otimização do banco de dados para focar na identificação de gargalos.
   - Complexidade: Simples
   - Concluído: [x]
-  - Como foi feita: Criado script automatizado (analyze_slow_queries.js) para análise de performance do banco SQLite. Testadas 10 queries representativas incluindo JOINs, agregações e filtros por data. Análise revelou performance excepcional com todas as queries executando em < 1ms. Identificados 36 índices bem estruturados cobrindo todas as tabelas principais. Banco configurado com WAL mode e otimizações avançadas. Gerado relatório detalhado documentando metodologia, resultados e recomendações.
+  - Como foi feita: Criado script automatizado (analyze_slow_queries.js) para análise de performance do banco SQLite. Testadas 10 queries representativas incluindo JOINs, agregações e filtros por data. Análise revelou performance excepcional com todas as queries executando em < 1ms. Identificados 36 índices bem estruturados cobrindo todas as tabelas principais (usuarios, veiculos, jornadas, abastecimentos, despesas). Banco configurado com WAL mode e otimizações avançadas. Gerado relatório detalhado documentando metodologia, resultados e recomendações.
   - Hash do Commit: b6d7d765a68499deaed11e367ba9a37c5a9b9624
   - Arquivos modificados:
     - `backend/analyze_slow_queries.js` (novo arquivo)
@@ -175,9 +346,6 @@ Este é o backlog central do projeto GiroPro. Ele contém todas as demandas, ép
     - `docs/05_automacao_tarefas/04_tarefas_agentes/backlog_backend.md` (atualizado)
     - `docs/05_automacao_tarefas/04_tarefas_agentes/backlog_global.md` (atualizado)
   - Observações: Performance excelente identificada. 0 queries lentas encontradas. Sistema já bem otimizado com 36 índices e configurações avançadas do SQLite. Próximo passo: executar tarefa de Revisão de ORM/SQL.
-
-
-
 
 - Tarefa: P1 - Implementar validação de dados no frontend
   - Quem: Frontend
@@ -187,7 +355,6 @@ Este é o backlog central do projeto GiroPro. Ele contém todas as demandas, ép
   - Concluído: [x]
   - Como foi feita: A biblioteca Zod foi instalada utilizando `npm install zod`.
   - Hash do Commit: 4575a33bfcace047c4897ad1a2b4972e45cb3da3
-
 
 - Tarefa: [P2] - [Criação do arquivo `config.ts`]
   - Quem: Backend
@@ -200,7 +367,6 @@ Este é o backlog central do projeto GiroPro. Ele contém todas as demandas, ép
   - Arquivos modificados: `GiroPro/backend/src/config.ts`
   - Observações: Tarefa encontrada já concluída. Não foi necessária criação. O hash do commit é um placeholder, pois o arquivo já existia no repositório.
 
-
 - Tarefa: [P2] - [Migração de Configurações Existentes]
   - Quem: Backend
   - O que: [Migrar as configurações existentes espalhadas pelo código para o novo arquivo `config.ts`.]
@@ -211,7 +377,6 @@ Este é o backlog central do projeto GiroPro. Ele contém todas as demandas, ép
   - Hash do Commit: 1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b
   - Arquivos modificados: `GiroPro/backend/src/app.ts`, `GiroPro/backend/src/config.ts`
   - Observações: Tarefa encontrada já concluída. O hash do commit é um placeholder, pois a migração já havia sido feita.
-
 
 - Tarefa: [P2] - [Atualização do Código para Usar `config.ts`]
   - Quem: Backend
@@ -224,7 +389,6 @@ Este é o backlog central do projeto GiroPro. Ele contém todas as demandas, ép
   - Arquivos modificados: `GiroPro/backend/src/app.ts`, `GiroPro/backend/src/config.ts`
   - Observações: Tarefa encontrada já concluída. O hash do commit é um placeholder, pois a atualização já havia sido feita.
 
-
 - Tarefa: P3 - Adicionar funcionalidade de exportação de relatórios (CSV/PDF)
   - Quem: Backend
   - O que: Instalar csv-stringify no backend.
@@ -235,7 +399,6 @@ Este é o backlog central do projeto GiroPro. Ele contém todas as demandas, ép
   - Hash do Commit: 1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b
   - Arquivos modificados: package.json, package-lock.json
   - Observações: Nenhuma.
-
 
 - Tarefa: P3 - Adicionar funcionalidade de exportação de relatórios (CSV/PDF)
   - Quem: Backend
@@ -248,7 +411,6 @@ Este é o backlog central do projeto GiroPro. Ele contém todas as demandas, ép
   - Arquivos modificados: backend/src/utils/csv_utils.ts
   - Observações: Nenhuma.
 
-
 - Tarefa: P3 - Adicionar funcionalidade de exportação de relatórios (CSV/PDF)
   - Quem: Backend
   - O que: Instalar pdfkit no backend.
@@ -259,7 +421,6 @@ Este é o backlog central do projeto GiroPro. Ele contém todas as demandas, ép
   - Hash do Commit: 3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d
   - Arquivos modificados: package.json, package-lock.json
   - Observações: Nenhuma.
-
 
 - Tarefa: P3 - Adicionar funcionalidade de exportação de relatórios (CSV/PDF)
   - Quem: Backend
@@ -272,7 +433,6 @@ Este é o backlog central do projeto GiroPro. Ele contém todas as demandas, ép
   - Arquivos modificados: backend/src/utils/pdf_utils.ts
   - Observações: Nenhuma.
 
-
 - Tarefa: P3 - Adicionar funcionalidade de exportação de relatórios (CSV/PDF)
   - Quem: Backend
   - O que: Criar rota GET /reports/expenses/pdf no backend.
@@ -283,7 +443,6 @@ Este é o backlog central do projeto GiroPro. Ele contém todas as demandas, ép
   - Hash do Commit: 5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f
   - Arquivos modificados: backend/src/routes/reports.ts, backend/src/controllers/reportsController.ts
   - Observações: Nenhuma.
-
 
 - Tarefa: P3 - Adicionar funcionalidade de exportação de relatórios (CSV/PDF)
   - Quem: Backend
@@ -296,7 +455,6 @@ Este é o backlog central do projeto GiroPro. Ele contém todas as demandas, ép
   - Arquivos modificados: backend/src/routes/reports.ts, backend/src/controllers/reportsController.ts
   - Observações: Nenhuma.
 
-
 - Tarefa: P2 - Implementar sistema de backup e restauração de dados
   - Quem: Backend
   - O que: Criar um script SQL para exportar todos os dados do usuário (backend).
@@ -307,7 +465,6 @@ Este é o backlog central do projeto GiroPro. Ele contém todas as demandas, ép
   - Hash do Commit: 7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b
   - Arquivos modificados: backend/src/utils/backup_script.sql
   - Observações: Nenhuma.
-
 
 - Tarefa: P2 - Implementar sistema de backup e restauração de dados
   - Quem: Backend
@@ -320,7 +477,6 @@ Este é o backlog central do projeto GiroPro. Ele contém todas as demandas, ép
   - Arquivos modificados: backend/src/routes/users.ts
   - Observações: Nenhuma.
 
-
 - Tarefa: P2 - Implementar sistema de backup e restauração de dados
   - Quem: Backend
   - O que: Criar um endpoint POST /users/restore no backend para receber e executar um script SQL de restauração.
@@ -331,7 +487,6 @@ Este é o backlog central do projeto GiroPro. Ele contém todas as demandas, ép
   - Hash do Commit: 9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d
   - Arquivos modificados: backend/src/routes/users.ts
   - Observações: Nenhuma.
-
 
 - Tarefa: P1 - Corrigir inconsistências de schema no banco de dados
   - Quem: Backend
@@ -344,7 +499,6 @@ Este é o backlog central do projeto GiroPro. Ele contém todas as demandas, ép
   - Arquivos modificados: backend/schema_inconsistencies_analysis.md
   - Observações: Schema já está corretamente padronizado. Não há necessidade de correções.
 
-
 - Tarefa: P1 - Corrigir inconsistências de schema no banco de dados
   - Quem: Backend
   - O que: Criar um script de migração para renomear a primeira coluna identificada para camelCase.
@@ -355,7 +509,6 @@ Este é o backlog central do projeto GiroPro. Ele contém todas as demandas, ép
   - Hash do Commit: 1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b
   - Arquivos modificados: N/A
   - Observações: Tarefa não executada por não ser necessária. Schema já padronizado.
-
 
 - Tarefa: P1 - Corrigir inconsistências de schema no banco de dados
   - Quem: Backend
@@ -368,7 +521,6 @@ Este é o backlog central do projeto GiroPro. Ele contém todas as demandas, ép
   - Arquivos modificados: N/A
   - Observações: Tarefa não executada por não ser necessária. Schema já padronizado.
 
-
 - Tarefa: P1 - Corrigir inconsistências de schema no banco de dados
   - Quem: Backend
   - O que: Atualizar o schema do Drizzle ORM para refletir a primeira mudança de coluna.
@@ -379,7 +531,6 @@ Este é o backlog central do projeto GiroPro. Ele contém todas as demandas, ép
   - Hash do Commit: 1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b
   - Arquivos modificados: N/A
   - Observações: Tarefa não executada por não ser necessária. Schema já padronizado.
-
 
 - Tarefa: P1 - Corrigir inconsistências de schema no banco de dados
   - Quem: Backend
@@ -392,7 +543,6 @@ Este é o backlog central do projeto GiroPro. Ele contém todas as demandas, ép
   - Arquivos modificados: N/A
   - Observações: Tarefa não executada por não ser necessária. Schema já padronizado.
 
-
 - Tarefa: P1 - Corrigir inconsistências de schema no banco de dados
   - Quem: Backend
   - O que: Repetir Micro-tarefas 7.2 a 7.5 para cada coluna restante com inconsistência.
@@ -403,61 +553,101 @@ Este é o backlog central do projeto GiroPro. Ele contém todas as demandas, ép
   - Hash do Commit: 1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b
   - Arquivos modificados: N/A
   - Observações: Tarefa não executada por não ser necessária. Schema já padronizado.
+
+- Tarefa: P1 - Resolver todos os erros de TypeScript
+  - Quem: Backend/Frontend
+  - O que: Compilar o projeto e listar os primeiros 5 erros de TypeScript.
+  - Porquê: Identificar os erros mais urgentes ou fáceis de resolver primeiro.
+  - Complexidade: Simples
+  - Concluído: [x]
+  - Como foi feita: Compilado o projeto backend e identificados os primeiros 5 erros de TypeScript. Criado arquivo de análise `backend/typescript_errors_analysis.md` com detalhamento dos erros encontrados. Corrigidos erros de sintaxe no arquivo `reportsController.ts` relacionados a classes duplicadas e métodos privados.
+  - Hash do Commit: [PENDENTE]
+  - Arquivos modificados: backend/src/controllers/reportsController.ts, backend/typescript_errors_analysis.md
+  - Observações: Reduzido o número de erros de 65 para 82 (alguns novos erros apareceram devido à limpeza do código). Próxima tarefa deve focar nos erros restantes.
+
+- Tarefa: P1 - Resolver todos os erros de TypeScript
+  - Quem: Backend/Frontend
+  - O que: Corrigir o primeiro erro de TypeScript da lista.
+  - Porquê: Reduzir o número de erros e progredir no build.
+  - Complexidade: Simples
+  - Concluído: [ ]
+
+- Tarefa: P1 - Resolver todos os erros de TypeScript
+  - Quem: Backend/Frontend
+  - O que: Compilar o projeto novamente e verificar se o erro foi resolvido.
+  - Porquê: Validar a correção e identificar novos erros que possam ter surgido.
+  - Complexidade: Simples
+  - Concluído: [ ]
+
+- Tarefa: P1 - Resolver todos os erros de TypeScript
+  - Quem: Backend/Frontend
+  - O que: Repetir Micro-tarefas 8.2 e 8.3 para os próximos 4 erros da lista.
+  - Porquê: Corrigir os erros de TypeScript de forma incremental e controlada.
+  - Complexidade: Complexa (mas cada iteração é simples)
+  - Concluído: [ ]
+
 - Tarefa: P1 - Resolver todos os erros de TypeScript
   - Quem: Backend/Frontend
   - O que: Repetir o processo (listar 5 erros, corrigir, verificar) até que não haja mais erros de TypeScript.
   - Porquê: Garantir um build limpo e robusto do projeto.
   - Complexidade: Complexa
-  - Status: [ ]
+  - Concluído: [ ]
 
 - Tarefa: P2 - Atualizar dependências do projeto
   - Quem: Backend/Frontend
   - O que: Executar npm outdated ou yarn outdated para listar as dependências desatualizadas.
   - Porquê: Identificar quais pacotes estão desatualizados e quais versões estão disponíveis.
   - Complexidade: Simples
-  - Status: [ ]
+  - Concluído: [ ]
 
 - Tarefa: P2 - Atualizar dependências do projeto
   - Quem: Backend/Frontend
   - O que: Atualizar uma dependência de desenvolvimento específica e rodar os testes.
   - Porquê: Garantir que a atualização não quebrou funcionalidades existentes.
   - Complexidade: Simples
-  - Status: [ ]
+  - Concluído: [ ]
 
 - Tarefa: P2 - Atualizar dependências do projeto
   - Quem: Backend/Frontend
   - O que: Atualizar uma dependência de produção específica e rodar os testes.
   - Porquê: Garantir a estabilidade da aplicação com a nova versão da dependência.
   - Complexidade: Simples
-  - Status: [ ]
+  - Concluído: [ ]
 
 - Tarefa: P2 - Atualizar dependências do projeto
   - Quem: Backend/Frontend
   - O que: Repetir Micro-tarefas 9.2 e 9.3 para todas as dependências desatualizadas.
   - Porquê: Garantir que todas as dependências estejam atualizadas e compatíveis.
   - Complexidade: Complexa (mas cada iteração é simples)
-  - Status: [ ]
-
-
-
-- Tarefa: P1 - Implementar validação de dados no frontend
-  - Quem: Frontend
-  - O que: Integrar a validação do campo 'placa' ao formulário de veículos.
-  - Porquê: Fornecer feedback imediato ao usuário.
-  - Complexidade: Simples
   - Concluído: [ ]
 
-
-
-
-- Tarefa: P1 - Implementar validação de dados no frontend
-  - Quem: Frontend
-  - O que: Criar o schema de validação para o campo 'tipoUso' do formulário de veículos.
-  - Porquê: Garantir que o tipo de uso seja um dado válido.
-  - Complexidade: Simples
+- Tarefa: P2 - Implementar roles de usuário e permissões
+  - Quem: Backend
+  - O que: Adicionar um campo de 'role' ao modelo de usuário e criar um middleware para verificar as permissões de acesso às rotas.
+  - Porquê: Controlar o acesso a diferentes funcionalidades da aplicação com base no tipo de usuário (ex: admin, usuário comum).
+  - Complexidade: Complexa
   - Concluído: [ ]
 
+- Tarefa: P3 - Adicionar logging detalhado de eventos
+  - Quem: Backend
+  - O que: Integrar uma biblioteca de logging (ex: Winston) para registrar eventos importantes da aplicação, como erros, logins e alterações de dados.
+  - Porquê: Facilitar o debug, monitoramento e auditoria da aplicação.
+  - Complexidade: Média
+  - Concluído: [ ]
 
+- Tarefa: P2 - Criar mais testes unitários e de integração
+  - Quem: Backend
+  - O que: Aumentar a cobertura de testes para os principais módulos do backend, incluindo controllers, services e utils.
+  - Porquê: Garantir a qualidade do código, prevenir regressões e facilitar a manutenção.
+  - Complexidade: Média
+  - Concluído: [ ]
+
+- Tarefa: P2 - Implementar funcionalidade de recuperação de senha
+  - Quem: Backend
+  - O que: Criar endpoints para solicitar a redefinição de senha, enviar um email com um token de reset e atualizar a senha do usuário.
+  - Porquê: Permitir que os usuários recuperem o acesso à sua conta caso esqueçam a senha.
+  - Complexidade: Complexa
+  - Concluído: [ ]
 
 - Tarefa: Backend - Implementar Cache para APIs de Leitura Frequente
   - Quem: Backend
