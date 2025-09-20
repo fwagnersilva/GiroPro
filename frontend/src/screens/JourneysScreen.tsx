@@ -16,7 +16,7 @@ import { layouts, typography, spacing, useResponsiveStyles } from '../styles/res
 import { lightTheme } from '../theme/tokens';
 import { getSafePadding } from '../utils/platformUtils';
 import { useJourneys, useQuickFilters } from '../hooks/useJourneys';
-import { Journey, QUICK_FILTERS } from '../types/journey';
+import { Journey, QUICK_FILTERS, CreateJourneyRequest, UpdateJourneyRequest } from '../types/journey';
 import { journeySchema } from '../schemas/journeySchemas';
 import { Vehicle } from '../types';
 import { vehicleService } from '../services/api';
@@ -131,7 +131,7 @@ const JourneysScreen: React.FC = ({ navigation }: any) => {
   const [isAddJourneyModalVisible, setAddJourneyModalVisible] = useState(false);
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
   const { getQuickFilter } = useQuickFilters();
-  const { journeys, loading, error, refresh } = useJourneys();
+  const { journeys, loading, error, refresh, createJourney, updateJourney, deleteJourney } = useJourneys();
   const { isDesktop, isTablet } = useResponsiveStyles();
 
   useEffect(() => {
@@ -166,14 +166,25 @@ const JourneysScreen: React.FC = ({ navigation }: any) => {
     );
   }, []);
 
-  const handleJourneyEdit = useCallback((journey: Journey) => {
+  const handleJourneyEdit = useCallback(async (journey: Journey) => {
     Alert.alert(
       'Editar Jornada',
-      `Edição da jornada "${journey.title}" em desenvolvimento.`,
-      [{ text: 'OK' }]
+      `Funcionalidade de edição para a jornada "${journey.title}" será implementada usando updateJourney.`,
+      [
+        { text: 'Cancelar', style: 'cancel' },
+        { text: 'Simular Edição', onPress: async () => {
+            try {
+              // Simular uma atualização simples, por exemplo, mudar o status para 'paused'
+              await updateJourney(journey.id, { status: 'paused' });
+              Alert.alert('Sucesso', 'Jornada atualizada para pausada!');
+            } catch (err: any) {
+              Alert.alert('Erro', err.message || 'Falha ao atualizar jornada.');
+            }
+          }
+        }
+      ]
     );
-  }, []);
-
+  }, [updateJourney]);
   const handleJourneyDelete = useCallback((journey: Journey) => {
     Alert.alert(
       'Excluir Jornada',
@@ -181,8 +192,12 @@ const JourneysScreen: React.FC = ({ navigation }: any) => {
       [
         { text: 'Cancelar', style: 'cancel' },
         { text: 'Excluir', style: 'destructive', onPress: () => {
-          // Implementar exclusão
-          console.log('Excluir jornada:', journey.id);
+          try {
+            await deleteJourney(journey.id);
+            Alert.alert("Sucesso", "Jornada excluída com sucesso!");
+          } catch (err: any) {
+            Alert.alert("Erro", err.message || "Falha ao excluir jornada.");
+          }
         }}
       ]
     );
@@ -295,15 +310,20 @@ const JourneysScreen: React.FC = ({ navigation }: any) => {
       <AddJourneyModal
         visible={isAddJourneyModalVisible}
         onClose={() => setAddJourneyModalVisible(false)}
-        onSubmit={(idVeiculo, kmInicio, dataInicio) => {
-          console.log("Nova jornada com veículo:", idVeiculo, "km inicial:", kmInicio, "e data de início:", dataInicio);
-          setAddJourneyModalVisible(false);
-          const selectedVehicle = vehicles.find(v => v.id === idVeiculo);
-          Alert.alert(
-            'Nova Jornada',
-            `Jornada iniciada para ${selectedVehicle?.marca} ${selectedVehicle?.modelo} com ${kmInicio} km em ${dataInicio}. Funcionalidade de rastreamento em desenvolvimento.`,
-            [{ text: 'OK' }]
-          );
+        onSubmit={async (idVeiculo, kmInicio, dataInicio) => {
+          try {
+            const newJourneyData: CreateJourneyRequest = {
+              idVeiculo: idVeiculo,
+              kmInicio: kmInicio,
+              dataInicio: dataInicio,
+              // Outros campos opcionais podem ser adicionados aqui se o modal suportar
+            };
+            await createJourney(newJourneyData);
+            setAddJourneyModalVisible(false);
+            Alert.alert('Sucesso', 'Jornada criada com sucesso!');
+          } catch (err: any) {
+            Alert.alert('Erro', err.message || 'Falha ao criar jornada.');
+          }
         }}
         loading={false} // Adicionar estado de loading real quando a API for integrada
         vehicles={vehicles}

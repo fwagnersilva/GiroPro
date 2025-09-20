@@ -218,3 +218,21 @@ export const QUICK_FILTERS = [
   { key: 'in_progress', label: 'Em andamento', icon: 'play-circle-outline' },
 ] as const;
 
+
+
+export interface CreateJourneyRequest {
+  idVeiculo: string;
+  dataInicio: string;
+  kmInicio: number;
+  observacoes?: string;
+}
+
+export interface UpdateJourneyRequest {
+  dataFim?: string;
+  kmFim?: number;
+  ganhoBruto?: number;
+  observacoes?: string;
+  status?: JourneyStatus;
+}
+
+
