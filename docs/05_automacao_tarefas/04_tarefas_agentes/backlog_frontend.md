@@ -293,21 +293,33 @@ _**
   - O que: Escrever teste E2E para navegar até a tela de registro.
   - Porquê: Verificar se a página de registro é acessível.
   - Complexidade: Simples
-  - Concluído: Em Execução
+  - Concluído: [x]
+  - Como foi feita: O teste E2E para navegar até a tela de registro já estava implementado no arquivo `frontend/tests/e2e/auth.spec.ts` com o teste "deve navegar até a tela de registro" que verifica a visibilidade do botão de registro, clica nele e valida o redirecionamento e campos visíveis.
+  - Hash do Commit: e4caa8a777597271071a455e77fa3f588c6b746f
+  - Arquivos modificados: frontend/tests/e2e/auth.spec.ts (já existente)
+  - Observações: O teste já estava implementado no projeto, cobrindo a navegação e validação da tela de registro.
 
 - Tarefa: P3 - Implementar testes E2E para o fluxo de registro e login
   - Quem: Frontend
   - O que: Escrever teste E2E para preencher o formulário de registro (campos válidos).
   - Porquê: Simular a entrada de dados de um usuário real.
   - Complexidade: Simples
-  - Concluído: [ ]
+  - Concluído: [x]
+  - Como foi feita: O teste E2E para preencher o formulário de registro já estava implementado no arquivo `frontend/tests/e2e/auth.spec.ts` com o teste "deve preencher o formulário de registro com campos válidos" que preenche os campos nome, email e senha e valida os valores inseridos.
+  - Hash do Commit: e4caa8a777597271071a455e77fa3f588c6b746f
+  - Arquivos modificados: frontend/tests/e2e/auth.spec.ts (já existente)
+  - Observações: O teste já estava implementado, cobrindo o preenchimento e validação dos campos do formulário de registro.
 
 - Tarefa: P3 - Implementar testes E2E para o fluxo de registro e login
   - Quem: Frontend
   - O que: Escrever teste E2E para submeter o formulário de registro.
   - Porquê: Simular a ação final do usuário no formulário.
   - Complexidade: Simples
-  - Concluído: [ ]
+  - Concluído: [x]
+  - Como foi feita: O teste E2E para submeter o formulário de registro já estava implementado no arquivo `frontend/tests/e2e/auth.spec.ts` com o teste "deve submeter o formulário de registro" que preenche os campos e clica no botão de submissão.
+  - Hash do Commit: e4caa8a777597271071a455e77fa3f588c6b746f
+  - Arquivos modificados: frontend/tests/e2e/auth.spec.ts (já existente)
+  - Observações: O teste já estava implementado, cobrindo a submissão completa do formulário de registro.
 
 - Tarefa: P3 - Implementar testes E2E para o fluxo de registro e login
   - Quem: Frontend
