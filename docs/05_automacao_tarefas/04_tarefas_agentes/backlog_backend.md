@@ -220,11 +220,14 @@
   - **O que:** Criar endpoints que permitam ao frontend baixar dados necessários para operar offline. Isso inclui uma sincronização inicial completa (para o primeiro acesso offline) e mecanismos para sincronização incremental (apenas dados alterados desde a última sincronização). Deve-se considerar filtros por data/timestamp ou um mecanismo de versionamento de dados.
   - **Porquê:** Prover ao aplicativo móvel os dados mais recentes do servidor para que ele possa funcionar de forma autônoma, exibindo informações atualizadas e permitindo operações sobre elas.
   - **Complexidade:** Complexa
-  - **Concluído:** [ ]
-  - **Como foi feita:** 
-  - **Hash do Commit:** 
+  - **Concluído:** [x]
+  - **Como foi feita:** Implementados endpoints para download de dados iniciais e incrementais. O endpoint `/download/initial` permite baixar todos os dados do usuário para uso offline. O endpoint `/download/incremental` permite baixar apenas os dados modificados desde a última sincronização, utilizando um `lastSyncTimestamp`. Ambos os endpoints utilizam autenticação JWT e filtram os dados por `userId`. Foram criados os arquivos `syncDownloadRoutes.ts` e `syncDownloadController.ts` e integrados ao `app.ts`.
+  - **Hash do Commit:** [PENDENTE]
   - **Arquivos modificados:** 
-  - **Observações:** A otimização da quantidade de dados transferidos é crucial para a performance e consumo de dados do usuário. Implementar paginação e filtros eficientes.
+    - `backend/src/routes/syncDownloadRoutes.ts` (novo arquivo)
+    - `backend/src/controllers/syncDownloadController.ts` (novo arquivo)
+    - `backend/src/app.ts` (atualizado para incluir as novas rotas)
+  - **Observações:** A otimização da quantidade de dados transferidos é crucial para a performance e consumo de dados do usuário. Implementar paginação e filtros eficientes.ce e consumo de dados do usuário. Implementar paginação e filtros eficientes.
 
 - **Tarefa:** P2 - Projetar e Implementar Estratégia de Resolução de Conflitos
   - **Quem:** Backend

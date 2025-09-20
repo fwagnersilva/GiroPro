@@ -10,6 +10,7 @@ import { vehicleRoutes } from './routes/vehicles';
 import { journeyRoutes } from './routes/journeys';
 import { fuelingRoutes } from './routes/fuelings';
 import { syncRoutes } from './routes/sync';
+import { syncDownloadRoutes } from './routes/syncDownloadRoutes';
 import { expenseRoutes } from './routes/expenses';
 
 import asyncHandler from '../../src/middlewares/asyncHandler';
@@ -44,6 +45,7 @@ app.use('/api/v1/journeys', journeyRoutes);
 app.use('/api/v1/fuelings', fuelingRoutes);
 app.use("/api/v1/expenses", expenseRoutes);
 app.use("/api/v1/sync", syncRoutes);
+app.use("/api/v1/sync", syncDownloadRoutes);
 
 // Health check
 app.get('/health', (req, res) => {
