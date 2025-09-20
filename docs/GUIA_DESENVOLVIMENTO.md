@@ -23,15 +23,21 @@ backend/
 ```
 frontend/
 ├── src/
-│   ├── screens/        # Telas React Native
-│   ├── contexts/       # Contextos (AuthContext.web.tsx)
-│   └── components/     # Componentes reutilizáveis
-├── App.tsx            # Componente raiz (React Navigation)
-├── index.ts           # Ponto de entrada
-└── package.json       # Dependências
+│   ├── components/     # Componentes reutilizáveis (inclui ui/)
+│   │   └── ui/         # Componentes de UI (Button, Card, Input, etc.)
+│   ├── contexts/       # Contextos (AuthContext.tsx)
+│   ├── styles/         # Sistema de Design (designSystem.ts)
+│   ├── utils/          # Utilitários (apiErrorHandler.ts)
+│   └── App.tsx         # Componente raiz da aplicação web
+├── web-app-improved.tsx # Ponto de entrada da aplicação web
+├── index.html          # Arquivo HTML principal
+├── public/             # Arquivos públicos (manifest.json)
+├── .env.development    # Variáveis de ambiente de desenvolvimento
+├── .env.production     # Variáveis de ambiente de produção
+└── package.json        # Dependências
 ```
 
-**Status Atual:** Sistema funcionando com `App.tsx` - versão estável com React Navigation.
+**Status Atual:** Aplicação web funcional com roteamento, telas de Veículos, Despesas e Abastecimentos, tratamento de erros e sistema de design. PWA configurado.
 
 ---
 
@@ -87,25 +93,44 @@ Para a documentação completa das APIs, consulte:
 
 ## 🎯 **Como Adicionar Novas Funcionalidades**
 
-### **1. Nova Tela (Web):**
-```html
-<!-- Criar arquivo: nova-tela.html -->
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <title>GiroPro - Nova Tela</title>
-    <style>
-        /* Usar padrões de design do elegant-login.html */
-    </style>
-</head>
-<body>
-    <!-- Conteúdo da tela -->
-    <script>
-        // Lógica JavaScript
-    </script>
-</body>
-</html>
+### **1. Nova Tela (Frontend React/TypeScript):**
+```typescript
+// 1. Criar arquivo em frontend/src/components/ ou frontend/src/screens/
+// Ex: frontend/src/components/NovaTela.tsx
+import React from 'react';
+import { Card, Button, typography, spacing, colors } from './ui'; // Importar componentes do Design System
+
+interface NovaTelaProps {
+  onBack?: () => void;
+}
+
+const NovaTela: React.FC<NovaTelaProps> = ({ onBack }) => {
+  return (
+    <div style={{
+      minHeight: '100vh',
+      backgroundColor: colors.neutral.background,
+      padding: spacing.xl
+    }}>
+      <Card style={{ maxWidth: '1200px', margin: '0 auto' }}>
+        <h1 style={{ fontSize: typography.fontSize['3xl'], color: colors.primary.main }}>Nova Tela</h1>
+        <p style={{ color: colors.neutral.text.primary }}>Conteúdo da nova tela aqui.</p>
+        {onBack && <Button variant="secondary" onClick={onBack}>Voltar</Button>}
+      </Card>
+    </div>
+  );
+};
+
+export default NovaTela;
+
+// 2. Adicionar rota em web-app-improved.tsx
+// Importar o componente
+// import NovaTela from './src/components/NovaTela';
+
+// Adicionar a rota dentro de <Routes>
+// <Route path="/nova-tela" element={<NovaTela onBack={() => navigate(-1)} />} />
+
+// 3. Adicionar botão de navegação no Dashboard (opcional)
+// <Button variant="primary" onClick={() => navigate("/nova-tela")}>Nova Tela</Button>
 ```
 
 ### **2. Nova API (Backend):**
@@ -292,6 +317,7 @@ app.use(cors({
 ---
 
 **Guia criado em:** 05 de Setembro de 2025  
-**Versão:** 1.0  
+**Última atualização:** 20 de Setembro de 2025  
+**Versão:** 1.1  
 **Próxima atualização:** Após implementação de novas funcionalidades
 

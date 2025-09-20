@@ -49,6 +49,6 @@ SQLITE_DB_PATH=./giropro.db
 
 ---
 
-**Última atualização**: 05/09/2025  
+**Última atualização**: 20/09/2025  
 **Próxima revisão**: Quando migrar para SQLite persistente
 
