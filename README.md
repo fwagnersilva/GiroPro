@@ -44,3 +44,40 @@ Esta documentação está organizada de acordo com o framework Diátaxis, que ca
     
     *   [Guia de Deploy](docs/04_referencias/03_guia_deploy.md)
     *   [Funcionalidades Implementadas](docs/04_referencias/05_funcionalidades_implementadas.m
+
+## Setup e Execução
+
+Para configurar e executar o projeto GiroPro, siga os passos abaixo:
+
+1.  **Clone o repositório:**
+    ```bash
+    git clone https://github.com/fwagnersilva/GiroPro.git
+    cd GiroPro
+    ```
+
+2.  **Variáveis de Ambiente:**
+    Crie um arquivo `.env` na raiz do projeto, baseado no `.env.example` fornecido. Este arquivo contém as configurações essenciais para o backend e frontend.
+    ```bash
+    cp .env.example .env
+    ```
+    Edite o arquivo `.env` com suas configurações específicas, como credenciais de banco de dados e chaves de API.
+
+3.  **Configuração do Backend:**
+    Navegue até o diretório `backend`, instale as dependências e inicie o servidor.
+    ```bash
+    cd backend
+    npm install
+    npm run dev
+    ```
+
+4.  **Configuração do Frontend:**
+    Em um novo terminal, navegue até o diretório `frontend`, instale as dependências e inicie a aplicação.
+    ```bash
+    cd ../frontend
+    npm install
+    npm run dev
+    ```
+
+Agora o backend e o frontend estarão rodando e acessíveis em `http://localhost:3000` e `http://localhost:5173` (ou portas configuradas no `.env`), respectivamente.
+
+
