@@ -50,6 +50,7 @@ export class AuthService {
           nome: usuarios.nome,
           email: usuarios.email,
           statusConta: usuarios.statusConta,
+          role: usuarios.role,
         });
 
       // Gerar tokens
@@ -71,7 +72,17 @@ export class AuthService {
   static async login(data: LoginRequest): Promise<AuthResponse> {
 // Buscar usuário por email
       const [user] = await db
-        .select()
+        .select({
+          id: usuarios.id,
+          nome: usuarios.nome,
+          email: usuarios.email,
+          senhaHash: usuarios.senhaHash,
+          role: usuarios.role,
+          statusConta: usuarios.statusConta,
+          tentativasLogin: usuarios.tentativasLogin,
+          ultimoLoginFalhado: usuarios.ultimoLoginFalhado,
+          ultimaAtividade: usuarios.ultimaAtividade,
+        })
         .from(usuarios)
         .where(eq(usuarios.email, data.email.toLowerCase().trim()))
         .limit(1);
@@ -117,6 +128,7 @@ export class AuthService {
           nome: user.nome,
           email: user.email,
           statusConta: user.statusConta,
+          role: user.role,
         },
       };
   }
@@ -146,6 +158,7 @@ const [user] = await db
           id: usuarios.id,
           nome: usuarios.nome,
           email: usuarios.email,
+          role: usuarios.role,
           statusConta: usuarios.statusConta,
           dataCadastro: usuarios.dataCadastro,
           ultimaAtividade: usuarios.ultimaAtividade,
@@ -249,6 +262,8 @@ const decoded = jwt.verify(token, process.env.JWT_SECRET!) as { userId: string }
       { 
         userId,
         email,
+        nome,
+        role,
         type: 'access',
         iat: Math.floor(Date.now() / 1000),
       },

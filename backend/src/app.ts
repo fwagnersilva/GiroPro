@@ -10,7 +10,7 @@ import { vehicleRoutes } from './routes/vehicles';
 import { journeyRoutes } from './routes/journeys';
 import { fuelingRoutes } from './routes/fuelings';
 import { syncRoutes } from './routes/sync';
-import { syncDownloadRoutes } from './routes/syncDownloadRoutes';
+import syncDownloadRoutes from './routes/syncDownloadRoutes';
 import { expenseRoutes } from './routes/expenses';
 
 import asyncHandler from '../../src/middlewares/asyncHandler';
