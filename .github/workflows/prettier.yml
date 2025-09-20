@@ -1,0 +1,36 @@
+name: Prettier Code Formatter
+
+on:
+  pull_request:
+
+jobs:
+  format:
+    name: Format code
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: '**/package-lock.json'
+
+      - name: Install root dependencies
+        run: npm install
+
+      - name: Run Prettier
+        run: npm run format
+
+      - name: Commit changes
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "style: format code with prettier"
+          commit_user_name: "Prettier Bot"
+          commit_user_email: "github-actions@github.com"
+          commit_author: "Prettier Bot <github-actions@github.com>"

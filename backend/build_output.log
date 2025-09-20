@@ -1,0 +1,12 @@
+
+> giropro-backend@1.0.0 build
+> tsc
+
+src/services/get_week_summary_service.ts(26,34): error TS2345: Argument of type 'string | Date' is not assignable to parameter of type 'Date'.
+  Type 'string' is not assignable to type 'Date'.
+src/tests/integration/dashboard.test.ts(81,37): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(value: { tipo_combustivel: "Gasolina" | "Etanol" | "Diesel" | "GNV" | "Flex" | SQL<unknown> | Placeholder<string, any>; id_usuario: string | SQL<unknown> | Placeholder<string, any>; ... 8 more ...; nome_posto?: string | ... 1 more ... | Placeholder<...>; }): SQLiteInsertBase<...>', gave the following error.
+    Argument of type '{ id: string; id_usuario: string; id_veiculo: string; data_abastecimento: string; litros: number; valor_total: number; preco_litro: number; nome_posto: string; km_atual: number; tipo_combustivel: string; }[]' is not assignable to parameter of type '{ tipo_combustivel: "Gasolina" | "Etanol" | "Diesel" | "GNV" | "Flex" | SQL<unknown> | Placeholder<string, any>; id_usuario: string | SQL<unknown> | Placeholder<string, any>; ... 8 more ...; nome_posto?: string | ... 1 more ... | Placeholder<...>; }'.
+      Type '{ id: string; id_usuario: string; id_veiculo: string; data_abastecimento: string; litros: number; valor_total: number; preco_litro: number; nome_posto: string; km_atual: number; tipo_combustivel: string; }[]' is missing the following properties from type '{ tipo_combustivel: "Gasolina" | "Etanol" | "Diesel" | "GNV" | "Flex" | SQL<unknown> | Placeholder<string, any>; id_usuario: string | SQL<unknown> | Placeholder<string, any>; ... 8 more ...; nome_posto?: string | ... 1 more ... | Placeholder<...>; }': tipo_combustivel, id_usuario, id_veiculo, data_abastecimento, and 3 more.
+  Overload 2 of 2, '(values: { tipo_combustivel: "Gasolina" | "Etanol" | "Diesel" | "GNV" | "Flex" | SQL<unknown> | Placeholder<string, any>; id_usuario: string | SQL<unknown> | Placeholder<string, any>; ... 8 more ...; nome_posto?: string | ... 1 more ... | Placeholder<...>; }[]): SQLiteInsertBase<...>', gave the following error.
+    Object literal may only specify known properties, and 'litros' does not exist in type '{ tipo_combustivel: "Gasolina" | "Etanol" | "Diesel" | "GNV" | "Flex" | SQL<unknown> | Placeholder<string, any>; id_usuario: string | SQL<unknown> | Placeholder<string, any>; ... 8 more ...; nome_posto?: string | ... 1 more ... | Placeholder<...>; }'.

@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GiroPro - Debug</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            background-color: #F2F2F7;
+            padding: 24px;
+        }
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
+            background: white;
+            padding: 32px;
+            border-radius: 16px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #007AFF;
+            text-align: center;
+            margin-bottom: 32px;
+        }
+        .form-group {
+            margin-bottom: 16px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        input {
+            width: 100%;
+            padding: 16px;
+            border: 1px solid #E5E5EA;
+            border-radius: 12px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+        button {
+            width: 100%;
+            padding: 16px;
+            background: #007AFF;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #0056CC;
+        }
+        .status {
+            margin-top: 16px;
+            padding: 16px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .success {
+            background: #E8F5E8;
+            color: #34C759;
+            border: 2px solid #34C759;
+        }
+        .error {
+            background: #FFE8E8;
+            color: #FF3B30;
+            border: 2px solid #FF3B30;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>GiroPro - Debug</h1>
+        
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" value="teste@teste.com" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="senha">Senha</label>
+                <input type="password" id="senha" value="Teste123@" required>
+            </div>
+            
+            <button type="submit">Entrar</button>
+        </form>
+        
+        <div id="status"></div>
+    </div>
+
+    <script>
+        console.log('Debug HTML loaded');
+        
+        const form = document.getElementById('loginForm');
+        const statusDiv = document.getElementById('status');
+        
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            console.log('Form submitted');
+            
+            const email = document.getElementById('email').value;
+            const senha = document.getElementById('senha').value;
+            
+            console.log('Email:', email);
+            console.log('Senha:', senha);
+            
+            statusDiv.innerHTML = '<div class="status">Fazendo login...</div>';
+            
+            try {
+                console.log('Making fetch request to:', 'http://localhost:3000/api/v1/auth/login');
+                console.log('Request body:', JSON.stringify({ email, senha }));
+                
+                const response = await fetch('http://localhost:3000/api/v1/auth/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ email, senha }),
+                });
+                
+                console.log('Response status:', response.status);
+                console.log('Response headers:', response.headers);
+                
+                const data = await response.json();
+                console.log('Response data:', data);
+                
+                if (data.success) {
+                    localStorage.setItem('token', data.accessToken);
+                    localStorage.setItem('user', JSON.stringify(data.user));
+                    
+                    if (data.user && data.user.nome) {
+                        statusDiv.innerHTML = `
+                            <div class="status success">
+                                ✅ Login realizado com sucesso!<br>
+                                Usuário: ${data.user.nome}<br>
+                                <button onclick="showDashboard()">Ir para Dashboard</button>
+                            </div>
+                        `;
+                    } else {
+                        statusDiv.innerHTML = `
+                            <div class="status success">
+                                ✅ Login realizado com sucesso!<br>
+                                <button onclick="showDashboard()">Ir para Dashboard</button>
+                            </div>
+                        `;
+                    }
+                } else {
+                    statusDiv.innerHTML = `<div class="status error">❌ ${data.message}</div>`;
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                statusDiv.innerHTML = `<div class="status error">❌ Erro de conexão: ${error.message}</div>`;
+            }
+        });
+        
+        function showDashboard() {
+            const user = JSON.parse(localStorage.getItem('user'));
+            document.body.innerHTML = `
+                <div class="container">
+                    <h1>Dashboard</h1>
+                    <div class="status success">
+                        ✅ Bem-vindo, ${user.nome}!<br>
+                        Sistema funcionando corretamente.
+                    </div>
+                    <button onclick="logout()">Sair</button>
+                </div>
+            `;
+        }
+        
+        function logout() {
+            localStorage.clear();
+            location.reload();
+        }
+        
+        // Verificar se já está logado
+        window.addEventListener('load', () => {
+            const token = localStorage.getItem('token');
+            if (token) {
+                showDashboard();
+            }
+        });
+    </script>
+</body>
+</html>
+
