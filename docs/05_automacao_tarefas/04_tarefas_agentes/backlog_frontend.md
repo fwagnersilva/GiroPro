@@ -271,21 +271,29 @@ _**
   - O que: Instalar Playwright como dependência de desenvolvimento.
   - Porquê: Habilitar a escrita e execução de testes End-to-End.
   - Complexidade: Simples
-  - Concluído: [ ]
+  - Concluído: [x]
+  - Como foi feita: O Playwright foi instalado como dependência de desenvolvimento usando o comando `npm install --save-dev @playwright/test --legacy-peer-deps` no diretório frontend. Também foram instalados os navegadores necessários com `npx playwright install` e as dependências do sistema com `npx playwright install-deps`.
+  - Hash do Commit: 0ad3af8d02d8e541c64f931604d4c76fabfef14a
+  - Arquivos modificados: frontend/package.json, frontend/package-lock.json
+  - Observações: Foi necessário usar a flag --legacy-peer-deps devido a conflitos de dependência com o Expo.
 
 - Tarefa: P3 - Implementar testes E2E para o fluxo de registro e login
   - Quem: Frontend
   - O que: Criar arquivo de configuração inicial do Playwright.
   - Porquê: Definir o ambiente e as opções de execução dos testes E2E.
   - Complexidade: Simples
-  - Concluído: [ ]
+  - Concluído: [x]
+  - Como foi feita: O arquivo de configuração do Playwright já existia no projeto em `frontend/playwright.config.ts` com configurações adequadas para testes E2E, incluindo configuração para múltiplos navegadores e dispositivos móveis.
+  - Hash do Commit: 0ad3af8d02d8e541c64f931604d4c76fabfef14a
+  - Arquivos modificados: frontend/playwright.config.ts (já existente)
+  - Observações: A configuração já estava presente no projeto, não foi necessário criar um novo arquivo.
 
 - Tarefa: P3 - Implementar testes E2E para o fluxo de registro e login
   - Quem: Frontend
   - O que: Escrever teste E2E para navegar até a tela de registro.
   - Porquê: Verificar se a página de registro é acessível.
   - Complexidade: Simples
-  - Concluído: [ ]
+  - Concluído: Em Execução
 
 - Tarefa: P3 - Implementar testes E2E para o fluxo de registro e login
   - Quem: Frontend
