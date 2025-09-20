@@ -3,7 +3,8 @@ import { AuthService } from '../services/authService';
 import { loginSchema, registerSchema, requestPasswordResetSchema, resetPasswordSchema, changePasswordSchema } from '../utils/validation';
 import { UnauthorizedError, NotFoundError, ValidationError, ConflictError } from "../utils/customErrors";
 
-import { AuthenticatedRequest } from "../types/auth";
+
+import { AuthenticatedRequest } from "../middleware/auth";
 import { z } from 'zod';
 
 export class AuthController {

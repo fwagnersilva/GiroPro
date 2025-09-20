@@ -39,7 +39,8 @@ export default defineConfig({
   define: {
     global: 'globalThis',
     __DEV__: JSON.stringify(true),
-    'process.env.NODE_ENV': JSON.stringify('development'),
+    'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development'),
+    'process.env.VITE_API_URL': JSON.stringify(process.env.VITE_API_URL),
   },
 });
 

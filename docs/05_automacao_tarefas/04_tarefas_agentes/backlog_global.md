@@ -772,3 +772,429 @@ Este é o backlog central do projeto GiroPro. Ele contém todas as demandas, ép
   - Concluído: [ ]
 
 
+
+
+- Tarefa: P2 - Instalar `react-router-dom`
+  - Quem: Frontend
+  - O que: Executar `npm install react-router-dom` no diretório `frontend`.
+  - Porquê: Habilitar a navegação declarativa na aplicação web.
+  - Complexidade: Simples
+  - Concluído: [ ]
+
+- Tarefa: P2 - Criar componente `AppRouter`
+  - Quem: Frontend
+  - O que: Criar um novo arquivo `src/components/AppRouter.tsx` para encapsular a lógica de roteamento.
+  - Porquê: Organizar as rotas e manter o `App.tsx` limpo.
+  - Complexidade: Simples
+  - Concluído: [ ]
+
+- Tarefa: P2 - Configurar `BrowserRouter`
+  - Quem: Frontend
+  - O que: Envolver o `AppContent` com `BrowserRouter` em `main.tsx` ou `App.tsx`.
+  - Porquê: Habilitar o roteamento baseado em URL para a aplicação web.
+  - Complexidade: Simples
+  - Concluído: [ ]
+
+- Tarefa: P2 - Definir rotas para Login e Dashboard
+  - Quem: Frontend
+  - O que: No `AppRouter.tsx`, definir rotas para `/login` (renderizando `LoginScreen`) e `/dashboard` (renderizando `Dashboard`).
+  - Porquê: Permitir a navegação entre as telas principais.
+  - Complexidade: Simples
+  - Concluído: [ ]
+
+- Tarefa: P2 - Implementar `PrivateRoutes`
+  - Quem: Frontend
+  - O que: Criar um componente `PrivateRoutes` que verifica a autenticação e redireciona para `/login` se o usuário não estiver autenticado.
+  - Porquê: Proteger as rotas do dashboard e outras áreas restritas.
+  - Complexidade: Média
+  - Concluído: [ ]
+
+- Tarefa: P2 - Integrar `PrivateRoutes` ao `AppRouter`
+  - Quem: Frontend
+  - O que: Usar `PrivateRoutes` para envolver a rota do `/dashboard`.
+  - Porquê: Aplicar a proteção de rota ao dashboard.
+  - Complexidade: Simples
+  - Concluído: [ ]
+
+- Tarefa: P2 - Redirecionar após Login/Registro
+  - Quem: Frontend
+  - O que: Após login/registro bem-sucedido, usar `useNavigate` do `react-router-dom` para redirecionar para `/dashboard` em vez de `window.location.reload()`.
+  - Porquê: Melhorar a experiência do usuário com navegação suave.
+  - Complexidade: Simples
+  - Concluído: [ ]
+
+- Tarefa: P3 - Criar componente `VehicleList`
+  - Quem: Frontend
+  - O que: Criar um novo componente `src/components/VehicleList.tsx` para exibir a lista de veículos.
+  - Porquê: Modularizar a interface do usuário e preparar para a integração da API.
+  - Complexidade: Simples
+  - Concluído: [ ]
+
+- Tarefa: P3 - Adicionar rota para `VehicleList`
+  - Quem: Frontend
+  - O que: Adicionar uma rota `/dashboard/vehicles` no `AppRouter.tsx` que renderize o `VehicleList`.
+  - Porquê: Permitir o acesso à tela de veículos através da navegação.
+  - Complexidade: Simples
+  - Concluído: [ ]
+
+- Tarefa: P3 - Criar serviço de API para Veículos
+  - Quem: Frontend
+  - O que: Criar um arquivo `src/services/vehicleService.ts` com funções para chamar a API de veículos do backend (ex: `getVehicles()`).
+  - Porquê: Centralizar a lógica de comunicação com a API de veículos.
+  - Complexidade: Média
+  - Concluído: [ ]
+
+- Tarefa: P3 - Integrar `vehicleService` ao `VehicleList`
+  - Quem: Frontend
+  - O que: No componente `VehicleList`, usar `useEffect` para chamar `vehicleService.getVehicles()` e exibir os dados.
+  - Porquê: Popular a lista de veículos com dados reais do backend.
+  - Complexidade: Média
+  - Concluído: [ ]
+
+- Tarefa: P3 - Adicionar tratamento de erro visual para `VehicleList`
+  - Quem: Frontend
+  - O que: Exibir uma mensagem de erro amigável se a API de veículos falhar.
+  - Porquê: Informar o usuário sobre problemas de carregamento de dados.
+  - Complexidade: Simples
+  - Concluído: [ ]
+
+- Tarefa: P3 - Adicionar estado de carregamento para `VehicleList`
+  - Quem: Frontend
+  - O que: Exibir um `LoadingSpinner` enquanto os veículos estão sendo carregados.
+  - Porquê: Melhorar a experiência do usuário durante o carregamento de dados.
+  - Complexidade: Simples
+  - Concluído: [ ]
+
+- Tarefa: P3 - Criar componente `ToastNotification`
+  - Quem: Frontend
+  - O que: Desenvolver um componente reutilizável para exibir mensagens de toast (sucesso, erro, informação).
+  - Porquê: Padronizar o feedback visual para o usuário em toda a aplicação.
+  - Complexidade: Média
+  - Concluído: [ ]
+
+- Tarefa: P3 - Integrar `ToastNotification` ao `AuthContext`
+  - Quem: Frontend
+  - O que: Usar `ToastNotification` para exibir mensagens de erro do `signIn` e `handleRegister`.
+  - Porquê: Fornecer feedback visual imediato para falhas de autenticação.
+  - Complexidade: Simples
+  - Concluído: [ ]
+
+- Tarefa: P3 - Integrar `ToastNotification` ao `vehicleService`
+  - Quem: Frontend
+  - O que: Usar `ToastNotification` para exibir erros de API no `vehicleService`.
+  - Porquê: Centralizar o tratamento de erros de API com feedback visual.
+  - Complexidade: Simples
+  - Concluído: [ ]
+
+- Tarefa: P3 - Criar componente `ImageOptimizer`
+  - Quem: Frontend
+  - O que: Desenvolver um componente que implemente lazy loading para imagens e, se possível, converta para WebP.
+  - Porquê: Otimizar o carregamento de imagens e melhorar a performance geral.
+  - Complexidade: Média
+  - Concluído: [ ]
+
+- Tarefa: P3 - Integrar `ImageOptimizer` aos componentes existentes
+  - Quem: Frontend
+  - O que: Substituir tags `<img>` por `ImageOptimizer` onde aplicável.
+  - Porquê: Aplicar as otimizações de imagem em toda a aplicação.
+  - Complexidade: Simples
+  - Concluído: [ ]
+
+- Tarefa: P3 - Criar `manifest.json`
+  - Quem: Frontend
+  - O que: Criar o arquivo `manifest.json` na raiz do diretório `public` do frontend com metadados básicos do PWA.
+  - Porquê: Permitir que o navegador reconheça a aplicação como um PWA e ofereça a instalação.
+  - Complexidade: Simples
+  - Concluído: [ ]
+
+- Tarefa: P3 - Configurar `Service Worker` básico
+  - Quem: Frontend
+  - O que: Criar um arquivo `src/service-worker.js` e registrá-lo em `main.tsx` para cachear assets estáticos.
+  - Porquê: Habilitar o cache offline e melhorar a resiliência da aplicação.
+  - Complexidade: Média
+  - Concluído: [ ]
+
+- Tarefa: P4 - Migrar estilos inline para CSS Modules (LoginScreen)
+  - Quem: Frontend
+  - O que: Criar um arquivo `LoginScreen.module.css` e mover os estilos inline da `LoginScreen` para ele.
+  - Porquê: Iniciar a refatoração dos estilos para uma abordagem mais escalável e manutenível.
+  - Complexidade: Média
+  - Concluído: [ ]
+
+- Tarefa: P4 - Migrar estilos inline para CSS Modules (Dashboard)
+  - Quem: Frontend
+  - O que: Criar um arquivo `Dashboard.module.css` e mover os estilos inline do `Dashboard` para ele.
+  - Porquê: Continuar a refatoração dos estilos.
+  - Complexidade: Média
+  - Concluído: [ ]
+
+- Tarefa: P4 - Refatorar `FormInput` para reutilização mobile
+  - Quem: Frontend
+  - O que: Separar a lógica de `FormInput` da sua apresentação visual, criando uma interface mais genérica.
+  - Porquê: Facilitar a adaptação do componente para React Native no futuro.
+  - Complexidade: Complexa
+  - Concluído: [ ]
+
+- Tarefa: P4 - Instalar Cypress para testes E2E
+  - Quem: Frontend
+  - O que: Executar `npm install cypress --save-dev` no diretório `frontend`.
+  - Porquê: Configurar o ambiente para testes end-to-end.
+  - Complexidade: Simples
+  - Concluído: [ ]
+
+- Tarefa: P4 - Escrever teste E2E para fluxo de Login
+  - Quem: Frontend
+  - O que: Criar um arquivo `cypress/e2e/login.cy.ts` e escrever um teste para o fluxo completo de login.
+  - Porquê: Garantir que o login funcione corretamente em um ambiente de navegador real.
+  - Complexidade: Média
+  - Concluído: [ ]
+
+- Tarefa: P4 - Escrever teste E2E para fluxo de Registro
+  - Quem: Frontend
+  - O que: Criar um arquivo `cypress/e2e/register.cy.ts` e escrever um teste para o fluxo completo de registro.
+  - Porquê: Garantir que o registro funcione corretamente em um ambiente de navegador real.
+  - Complexidade: Média
+  - Concluído: [ ]
+
+
+
+
+- Tarefa: P1 - Implementar variáveis de ambiente (Frontend - Identificar URLs hardcoded)
+  - Quem: Frontend
+  - O que: Analisar o código do frontend para identificar todas as URLs de API hardcoded.
+  - Porquê: Preparar para centralizar a configuração de URLs e facilitar a troca entre ambientes.
+  - Complexidade: Simples
+  - Concluído: [ ]
+
+- Tarefa: P1 - Implementar variáveis de ambiente (Frontend - Criar arquivo .env)
+  - Quem: Frontend
+  - O que: Criar um arquivo `.env.local` para desenvolvimento e `.env.production` para produção no frontend.
+  - Porquê: Armazenar as URLs da API e outras configurações sensíveis de forma segura e flexível.
+  - Complexidade: Simples
+  - Concluído: [ ]
+
+- Tarefa: P1 - Implementar variáveis de ambiente (Frontend - Substituir URLs)
+  - Quem: Frontend
+  - O que: Substituir todas as URLs hardcoded identificadas pelas variáveis de ambiente correspondentes (ex: `import.meta.env.VITE_API_URL`).
+  - Porquê: Garantir que a aplicação utilize as URLs corretas para cada ambiente.
+  - Complexidade: Média
+  - Concluído: [ ]
+
+- Tarefa: P1 - Implementar variáveis de ambiente (Frontend - Configurar carregamento)
+  - Quem: Frontend
+  - O que: Verificar e configurar o projeto para carregar as variáveis de ambiente corretamente no build e em tempo de execução.
+  - Porquê: Assegurar que as variáveis de ambiente sejam acessíveis e utilizadas pela aplicação.
+  - Complexidade: Simples
+  - Concluído: [ ]
+
+
+- Tarefa: P1 - Configurar sistema de roteamento (Frontend - Instalar react-router-dom)
+  - Quem: Frontend
+  - O que: Instalar a biblioteca react-router-dom no projeto frontend.
+  - Porquê: Preparar o projeto para implementar navegação entre diferentes telas.
+  - Complexidade: Simples
+  - Concluído: [x]
+
+- Tarefa: P1 - Configurar sistema de roteamento (Frontend - Definir rotas principais)
+  - Quem: Frontend
+  - O que: Definir as rotas principais da aplicação (Dashboard, Veículos, etc.).
+  - Porquê: Estruturar a navegação da aplicação web.
+  - Complexidade: Simples
+  - Concluído: [x]
+
+- Tarefa: P1 - Configurar sistema de roteamento (Frontend - Implementar navegação)
+  - Quem: Frontend
+  - O que: Implementar a navegação entre as rotas usando React Router.
+  - Porquê: Permitir que o usuário navegue entre diferentes telas da aplicação.
+  - Complexidade: Média
+  - Concluído: [x]
+
+- Tarefa: P1 - Desenvolver tela Meus Veículos (Frontend - Criar componente)
+  - Quem: Frontend
+  - O que: Criar o componente VehiclesScreen com interface para listar veículos.
+  - Porquê: Fornecer uma tela dedicada para gerenciamento de veículos do usuário.
+  - Complexidade: Média
+  - Concluído: [x]
+
+- Tarefa: P1 - Desenvolver tela Meus Veículos (Frontend - Integrar ao roteamento)
+  - Quem: Frontend
+  - O que: Integrar a tela de veículos ao sistema de roteamento da aplicação.
+  - Porquê: Permitir acesso à tela através da navegação principal.
+  - Complexidade: Simples
+  - Concluído: [x]
+
+- Tarefa: P1 - Desenvolver tela Meus Veículos (Frontend - Implementar lógica de exibição)
+  - Quem: Frontend
+  - O que: Desenvolver a lógica para exibir a lista de veículos com dados mock.
+  - Porquê: Demonstrar a funcionalidade da tela com dados de exemplo.
+  - Complexidade: Média
+  - Concluído: [x]
+
+- Tarefa: P1 - Melhorar tratamento de erros (Frontend - Criar utilitário de tratamento)
+  - Quem: Frontend
+  - O que: Criar um utilitário centralizado para tratamento de erros de API.
+  - Porquê: Padronizar o tratamento de erros em toda a aplicação.
+  - Complexidade: Média
+  - Concluído: [x]
+
+- Tarefa: P1 - Melhorar tratamento de erros (Frontend - Integrar ao AuthProvider)
+  - Quem: Frontend
+  - O que: Integrar o tratamento de erros ao sistema de autenticação.
+  - Porquê: Melhorar a experiência do usuário durante login e registro.
+  - Complexidade: Simples
+  - Concluído: [x]
+
+- Tarefa: P1 - Melhorar tratamento de erros (Frontend - Implementar mensagens amigáveis)
+  - Quem: Frontend
+  - O que: Implementar exibição de mensagens de erro amigáveis ao usuário.
+  - Porquê: Fornecer feedback claro sobre problemas na aplicação.
+  - Complexidade: Simples
+  - Concluído: [x]
+
+
+- Tarefa: P1 - Implementar PWA (Frontend - Configurar Service Worker)
+  - Quem: Frontend
+  - O que: Configurar Service Worker para cache de assets e funcionamento offline básico.
+  - Porquê: Melhorar a performance e permitir uso offline da aplicação.
+  - Complexidade: Média
+  - Concluído: [x]
+
+- Tarefa: P1 - Implementar PWA (Frontend - Configurar manifest.json)
+  - Quem: Frontend
+  - O que: Criar e configurar o arquivo manifest.json para instalação como PWA.
+  - Porquê: Permitir que a aplicação seja instalada como app nativo.
+  - Complexidade: Simples
+  - Concluído: [x]
+
+- Tarefa: P2 - Refatorar estilos (Frontend - Criar sistema de design)
+  - Quem: Frontend
+  - O que: Criar um sistema de design básico com cores, tipografia e componentes reutilizáveis.
+  - Porquê: Padronizar a interface e facilitar manutenção futura.
+  - Complexidade: Média
+  - Concluído: [x]
+
+- Tarefa: P2 - Preparar para mobile (Frontend - Criar componentes reutilizáveis)
+  - Quem: Frontend
+  - O que: Refatorar componentes para serem reutilizáveis entre web e React Native.
+  - Porquê: Facilitar o desenvolvimento futuro da versão mobile.
+  - Complexidade: Complexa
+  - Concluído: [ ]
+
+- Tarefa: P2 - Implementar tela de Despesas (Frontend - Criar componente)
+  - Quem: Frontend
+  - O que: Criar o componente ExpensesScreen para gerenciamento de despesas.
+  - Porquê: Expandir as funcionalidades disponíveis na aplicação.
+  - Complexidade: Média
+  - Concluído: [x]
+
+- Tarefa: P2 - Implementar tela de Abastecimentos (Frontend - Criar componente)
+  - Quem: Frontend
+  - O que: Criar o componente FuelScreen para registro de abastecimentos.
+  - Porquê: Expandir as funcionalidades disponíveis na aplicação.
+  - Complexidade: Média
+  - Concluído: [x]
+
+- Tarefa: P3 - Implementar tela de Relatórios (Frontend - Criar componente)
+  - Quem: Frontend
+  - O que: Criar o componente ReportsScreen com gráficos e estatísticas básicas.
+  - Porquê: Fornecer insights sobre os dados financeiros do usuário.
+  - Complexidade: Complexa
+  - Concluído: [ ]
+
+- Tarefa: P1 - Conectar API de Veículos (Frontend - Integrar com backend)
+  - Quem: Frontend
+  - O que: Substituir dados mock por chamadas reais à API de veículos do backend.
+  - Porquê: Conectar o frontend com dados reais do servidor.
+  - Complexidade: Média
+  - Concluído: [x]
+
+- Tarefa: P1 - Implementar formulário de veículos (Frontend - Criar formulário)
+  - Quem: Frontend
+  - O que: Implementar formulário completo para adicionar/editar veículos.
+  - Porquê: Permitir que o usuário gerencie seus veículos através da interface.
+  - Complexidade: Média
+  - Concluído: [x]
+
+- Tarefa: P2 - Adicionar validação de formulários (Frontend - Validação client-side)
+  - Quem: Frontend
+  - O que: Implementar validação robusta para todos os formulários da aplicação.
+  - Porquê: Melhorar a experiência do usuário e reduzir erros de entrada.
+  - Complexidade: Média
+  - Concluído: [ ]
+
+
+
+## Tarefas Concluídas na Sessão Atual
+
+- Tarefa: P2 - Refatorar estilos (Frontend - Criar sistema de design)
+  - Quem: Frontend
+  - O que: Criar um sistema de design básico com cores, tipografia e componentes reutilizáveis.
+  - Porquê: Padronizar a interface e facilitar manutenção futura.
+  - Complexidade: Média
+  - Concluído: [x]
+  - Como foi feita: Criado sistema de design centralizado em `designSystem.ts` com cores, tipografia, espaçamentos, sombras e componentes base. Implementados componentes UI reutilizáveis: Button, Card, Input e LoadingSpinner. Organizadas exportações centralizadas em `index.ts`.
+  - Arquivos criados:
+    - `frontend/src/styles/designSystem.ts`
+    - `frontend/src/components/ui/Button.tsx`
+    - `frontend/src/components/ui/Card.tsx`
+    - `frontend/src/components/ui/Input.tsx`
+    - `frontend/src/components/ui/LoadingSpinner.tsx`
+    - `frontend/src/components/ui/index.ts`
+
+- Tarefa: P2 - Implementar tela de Despesas (Frontend - Criar componente)
+  - Quem: Frontend
+  - O que: Criar o componente ExpensesScreen para gerenciamento de despesas.
+  - Porquê: Expandir as funcionalidades disponíveis na aplicação.
+  - Complexidade: Média
+  - Concluído: [x]
+  - Como foi feita: Criado componente ExpensesScreen completo com interface moderna, filtros por categoria, estatísticas financeiras, dados mock para demonstração e integração com o sistema de design. Inclui funcionalidades de visualização, edição e exclusão de despesas.
+  - Arquivos criados:
+    - `frontend/src/components/ExpensesScreen.tsx`
+
+- Tarefa: P2 - Implementar tela de Abastecimentos (Frontend - Criar componente)
+  - Quem: Frontend
+  - O que: Criar o componente FuelScreen para registro de abastecimentos.
+  - Porquê: Expandir as funcionalidades disponíveis na aplicação.
+  - Complexidade: Média
+  - Concluído: [x]
+  - Como foi feita: Criado componente FuelScreen completo com interface avançada, filtros por tipo de combustível, cálculo automático de consumo, estatísticas detalhadas (total gasto, litros, preço médio), dados mock para demonstração e integração com o sistema de design. Inclui funcionalidades de visualização, edição e exclusão de abastecimentos.
+  - Arquivos criados:
+    - `frontend/src/components/FuelScreen.tsx`
+
+## Próximas Tarefas Recomendadas
+
+- Tarefa: P1 - Integrar novas telas ao sistema de roteamento
+  - Quem: Frontend
+  - O que: Adicionar rotas para ExpensesScreen e FuelScreen no web-app-improved.tsx e criar navegação no Dashboard.
+  - Porquê: Permitir acesso às novas funcionalidades através da navegação principal.
+  - Complexidade: Simples
+  - Concluído: [ ]
+
+- Tarefa: P1 - Conectar APIs de Despesas e Abastecimentos
+  - Quem: Frontend
+  - O que: Substituir dados mock por chamadas reais às APIs do backend para despesas e abastecimentos.
+  - Porquê: Conectar as novas telas com dados reais do servidor.
+  - Complexidade: Média
+  - Concluído: [ ]
+
+- Tarefa: P1 - Implementar formulários funcionais
+  - Quem: Frontend
+  - O que: Desenvolver formulários completos para adicionar/editar despesas e abastecimentos.
+  - Porquê: Tornar as funcionalidades totalmente interativas e funcionais.
+  - Complexidade: Média
+  - Concluído: [ ]
+
+- Tarefa: P2 - Migrar componentes existentes para o sistema de design
+  - Quem: Frontend
+  - O que: Refatorar VehiclesScreen e web-app-improved.tsx para usar os novos componentes UI.
+  - Porquê: Padronizar toda a interface com o sistema de design criado.
+  - Complexidade: Média
+  - Concluído: [ ]
+
+- Tarefa: P2 - Implementar validação de formulários
+  - Quem: Frontend
+  - O que: Adicionar validação robusta para todos os formulários das novas telas.
+  - Porquê: Melhorar a experiência do usuário e reduzir erros de entrada.
+  - Complexidade: Média
+  - Concluído: [ ]
+

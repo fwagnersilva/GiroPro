@@ -1,4 +1,7 @@
 import React, { useState, useEffect, createContext, useContext } from 'react';
+import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
+import VehiclesScreen from './src/components/VehiclesScreen';
+import { apiRequest, useApiErrorHandler } from './src/utils/apiErrorHandler';
 
 // Types
 interface User {
@@ -44,19 +47,10 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
   const signIn = async (credentials: { email: string; senha: string }) => {
     try {
       setLoading(true);
-      const response = await fetch('http://localhost:3000/api/v1/auth/login', {
+      const data = await apiRequest(`${import.meta.env.VITE_API_URL}/api/v1/auth/login`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
         body: JSON.stringify({ email: credentials.email, senha: credentials.senha }),
       });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || 'Erro ao fazer login');
-      }
 
       if (data.success && data.user) {
         localStorage.setItem('token', data.accessToken);
@@ -66,7 +60,7 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
         throw new Error(data.message || 'Dados de usuário não encontrados');
       }
     } catch (error: any) {
-      throw new Error(error.message || 'Erro de conexão');
+      throw error; // Re-throw para ser tratado no componente
     } finally {
       setLoading(false);
     }
@@ -315,19 +309,10 @@ const LoginScreen = () => {
 
     try {
       setLoading(true);
-      const response = await fetch('http://localhost:3000/api/v1/auth/register', {
+      const data = await apiRequest(`${import.meta.env.VITE_API_URL}/api/v1/auth/register`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
         body: JSON.stringify({ nome: nome.trim(), email: email.trim(), senha }),
       });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || 'Erro ao registrar');
-      }
 
       if (data.success && data.user) {
         localStorage.setItem('token', data.accessToken);
@@ -539,9 +524,14 @@ const LoginScreen = () => {
   );
 };
 
-// Dashboard Component (unchanged from original)
+// Dashboard Component (updated with navigation)
 const Dashboard = () => {
   const { user, signOut } = useAuth();
+  const navigate = useNavigate();
+
+  const handleNavigateToVehicles = () => {
+    navigate('/vehicles');
+  };
 
   return (
     <div style={{
@@ -645,7 +635,7 @@ const Dashboard = () => {
           marginBottom: '32px'
         }}>
           <button
-            onClick={() => alert('Funcionalidade em desenvolvimento')}
+            onClick={handleNavigateToVehicles}
             style={{
               backgroundColor: '#007AFF',
               color: '#FFFFFF',
@@ -759,7 +749,7 @@ const LoadingScreen = () => (
   </div>
 );
 
-// Main App Component
+// Main App Component with Routing
 const AppContent = () => {
   const { isAuthenticated, loading } = useAuth();
 
@@ -767,10 +757,19 @@ const AppContent = () => {
     return <LoadingScreen />;
   }
 
-  return isAuthenticated ? <Dashboard /> : <LoginScreen />;
+  if (!isAuthenticated) {
+    return <LoginScreen />;
+  }
+
+  return (
+    <Routes>
+      <Route path="/" element={<Dashboard />} />
+      <Route path="/vehicles" element={<VehiclesScreen onBack={() => window.history.back()} />} />
+    </Routes>
+  );
 };
 
-// App with Provider
+// App with Provider and Router
 export default function WebAppImproved() {
   return (
     <>
@@ -791,9 +790,11 @@ export default function WebAppImproved() {
           -moz-osx-font-smoothing: grayscale;
         }
       `}</style>
-      <AuthProvider>
-        <AppContent />
-      </AuthProvider>
+      <Router>
+        <AuthProvider>
+          <AppContent />
+        </AuthProvider>
+      </Router>
     </>
   );
 }
