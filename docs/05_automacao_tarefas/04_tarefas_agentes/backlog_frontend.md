@@ -231,35 +231,40 @@ _**
   - O que: Criar um componente básico de Toast/Notificação (apenas UI).
   - Porquê: Ter uma base visual para exibir erros e mensagens de feedback.
   - Complexidade: Simples
-  - Concluído: [ ]
+  - Concluído: [x]
+  - Como foi feita: O componente `ToastNotification.tsx` já existe no diretório `frontend/src/components` e atende a este requisito.
 
 - Tarefa: P2 - Refatorar o tratamento de erros global no frontend
   - Quem: Frontend
   - O que: Adicionar o componente de Toast ao layout principal da aplicação.
   - Porquê: Permitir que qualquer parte da aplicação possa disparar notificações.
   - Complexidade: Simples
-  - Concluído: [ ]
+  - Concluído: [x]
+  - Como foi feita: O `ToastProvider` já está configurado em `App.tsx`, envolvendo o `NavigationContainer`, o que significa que o componente de Toast já está disponível globalmente.
 
 - Tarefa: P2 - Refatorar o tratamento de erros global no frontend
   - Quem: Frontend
   - O que: Criar uma função utilitária showErrorToast(message).
   - Porquê: Centralizar a lógica de exibição de erros e facilitar o uso em toda a aplicação.
   - Complexidade: Simples
-  - Concluído: [ ]
+  - Concluído: [x]
+  - Como foi feita: A funcionalidade de exibir erros já é provida pelo `useToast` e a função `showToast` no `ToastContext.tsx`, que aceita um tipo 'error' para exibir mensagens de erro.
 
 - Tarefa: P2 - Refatorar o tratamento de erros global no frontend
   - Quem: Frontend
   - O que: Refatorar a chamada da API de login para usar o novo hook de tratamento de erros.
   - Porquê: Exibir mensagens de erro amigáveis ao usuário durante o login.
   - Complexidade: Simples
-  - Concluído: [ ]
+  - Concluído: [x]
+  - Como foi feita: A função `showErrorToast` já está sendo utilizada no `LoginScreen.tsx` para exibir mensagens de erro durante o login.
 
 - Tarefa: P2 - Refatorar o tratamento de erros global no frontend
   - Quem: Frontend
   - O que: Refatorar a chamada da API de registro para usar o novo hook de tratamento de erros.
   - Porquê: Exibir mensagens de erro amigáveis ao usuário durante o registro.
   - Complexidade: Simples
-  - Concluído: [ ]
+  - Concluído: [x]
+  - Como foi feita: A função `showErrorToast` já está sendo utilizada no `RegisterScreen.tsx` para exibir mensagens de erro durante o registro.
 
 - Tarefa: P3 - Implementar testes E2E para o fluxo de registro e login
   - Quem: Frontend
