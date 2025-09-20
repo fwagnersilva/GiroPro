@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
+import { useApiErrorHandler } from '../../src/utils/apiErrorHandler';
 import { Button, Card, Input, LoadingSpinner, colors, spacing, typography } from './ui';
+import AddEditExpenseForm from './AddEditExpenseForm';
 
 interface Expense {
   id: string;
@@ -21,58 +23,32 @@ const ExpensesScreen: React.FC<ExpensesScreenProps> = ({ onBack }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [showAddForm, setShowAddForm] = useState(false);
+  const [editingExpense, setEditingExpense] = useState<Expense | null>(null);
   const [filterCategory, setFilterCategory] = useState<string>('todas');
 
-  // Mock data para demonstração
-  useEffect(() => {
-    const mockExpenses: Expense[] = [
-      {
-        id: '1',
-        descricao: 'Abastecimento Posto Shell',
-        valor: 85.50,
-        categoria: 'Combustível',
-        data: '2024-01-15',
-        veiculoId: '1',
-        veiculoNome: 'Toyota Corolla',
-        tipo: 'combustivel'
-      },
-      {
-        id: '2',
-        descricao: 'Troca de óleo',
-        valor: 120.00,
-        categoria: 'Manutenção',
-        data: '2024-01-10',
-        veiculoId: '1',
-        veiculoNome: 'Toyota Corolla',
-        tipo: 'manutencao'
-      },
-      {
-        id: '3',
-        descricao: 'Seguro anual',
-        valor: 1200.00,
-        categoria: 'Seguro',
-        data: '2024-01-05',
-        veiculoId: '2',
-        veiculoNome: 'Honda Civic',
-        tipo: 'seguro'
-      },
-      {
-        id: '4',
-        descricao: 'IPVA 2024',
-        valor: 450.00,
-        categoria: 'IPVA',
-        data: '2024-01-03',
-        veiculoId: '1',
-        veiculoNome: 'Toyota Corolla',
-        tipo: 'ipva'
-      }
-    ];
+  const { apiRequest } = useApiErrorHandler();
 
-    // Simular carregamento
-    setTimeout(() => {
-      setExpenses(mockExpenses);
+  const fetchExpenses = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await apiRequest(`${import.meta.env.VITE_API_URL}/api/v1/expenses`, {
+        method: 'GET',
+      });
+      if (response.success) {
+        setExpenses(response.data);
+      } else {
+        setError(response.message || 'Erro ao buscar despesas.');
+      }
+    } catch (err: any) {
+      setError(err.message || 'Erro de conexão ao buscar despesas.');
+    } finally {
       setLoading(false);
-    }, 1000);
+    }
+  };
+
+  useEffect(() => {
+    fetchExpenses();
   }, []);
 
   const categories = [
@@ -101,6 +77,54 @@ const ExpensesScreen: React.FC<ExpensesScreenProps> = ({ onBack }) => {
       outros: '📝'
     };
     return icons[tipo as keyof typeof icons] || '📝';
+  };
+
+  const handleSaveExpense = async (expenseData: any) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const method = expenseData.id ? 'PUT' : 'POST';
+      const url = expenseData.id ? `${import.meta.env.VITE_API_URL}/api/v1/expenses/${expenseData.id}` : `${import.meta.env.VITE_API_URL}/api/v1/expenses`;
+      const response = await apiRequest(url, {
+        method,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(expenseData),
+      });
+
+      if (response.success) {
+        setShowAddForm(false);
+        setEditingExpense(null);
+        fetchExpenses(); // Recarrega a lista de despesas
+      } else {
+        setError(response.message || 'Erro ao salvar despesa.');
+      }
+    } catch (err: any) {
+      setError(err.message || 'Erro de conexão ao salvar despesa.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDeleteExpense = async (id: string) => {
+    if (!confirm("Tem certeza que deseja excluir esta despesa?")) return;
+
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await apiRequest(`${import.meta.env.VITE_API_URL}/api/v1/expenses/${id}`, {
+        method: 'DELETE',
+      });
+
+      if (response.success) {
+        fetchExpenses(); // Recarrega a lista de despesas
+      } else {
+        setError(response.message || 'Erro ao excluir despesa.');
+      }
+    } catch (err: any) {
+      setError(err.message || 'Erro de conexão ao excluir despesa.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const getCategoryColor = (tipo: string) => {
@@ -362,7 +386,7 @@ const ExpensesScreen: React.FC<ExpensesScreenProps> = ({ onBack }) => {
                       <Button
                         variant="primary"
                         size="sm"
-                        onClick={() => alert('Funcionalidade de edição em desenvolvimento')}
+                        onClick={() => setEditingExpense(expense)}
                       >
                         Editar
                       </Button>
@@ -370,8 +394,8 @@ const ExpensesScreen: React.FC<ExpensesScreenProps> = ({ onBack }) => {
                         variant="error"
                         size="sm"
                         onClick={() => {
-                          if (confirm('Tem certeza que deseja excluir esta despesa?')) {
-                            setExpenses(expenses.filter(e => e.id !== expense.id));
+                          if (confirm("Tem certeza que deseja excluir esta despesa?")) {
+                            handleDeleteExpense(expense.id);
                           }
                         }}
                       >
@@ -385,8 +409,8 @@ const ExpensesScreen: React.FC<ExpensesScreenProps> = ({ onBack }) => {
           </div>
         )}
 
-        {/* Add Form Modal */}
-        {showAddForm && (
+        {/* Add/Edit Form Modal */}
+        {(showAddForm || editingExpense) && (
           <div style={{
             position: 'fixed',
             top: 0,
@@ -411,30 +435,18 @@ const ExpensesScreen: React.FC<ExpensesScreenProps> = ({ onBack }) => {
                 color: colors.neutral.text.primary,
                 margin: `0 0 ${spacing.xl} 0`
               }}>
-                Adicionar Nova Despesa
+                {editingExpense ? 'Editar Despesa' : 'Adicionar Nova Despesa'}
               </h2>
-              
-              <p style={{
-                color: colors.neutral.text.secondary,
-                fontSize: typography.fontSize.base,
-                textAlign: 'center',
-                margin: `0 0 ${spacing.xl} 0`
-              }}>
-                Funcionalidade em desenvolvimento
-              </p>
-
-              <div style={{
-                display: 'flex',
-                gap: spacing.md,
-                justifyContent: 'flex-end'
-              }}>
-                <Button
-                  variant="secondary"
-                  onClick={() => setShowAddForm(false)}
-                >
-                  Fechar
-                </Button>
-              </div>
+              <AddEditExpenseForm
+                initialData={editingExpense}
+                onSave={handleSaveExpense}
+                onCancel={() => {
+                  setShowAddForm(false);
+                  setEditingExpense(null);
+                }}
+                loading={loading}
+                error={error}
+              />
             </Card>
           </div>
         )}

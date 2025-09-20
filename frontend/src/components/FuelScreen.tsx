@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
+import { useApiErrorHandler } from '../../src/utils/apiErrorHandler';
 import { Button, Card, Input, LoadingSpinner, colors, spacing, typography } from './ui';
+import AddEditFuelForm from './AddEditFuelForm';
 
 interface FuelRecord {
   id: string;
@@ -24,55 +26,32 @@ const FuelScreen: React.FC<FuelScreenProps> = ({ onBack }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [showAddForm, setShowAddForm] = useState(false);
+  const [editingFuelRecord, setEditingFuelRecord] = useState<FuelRecord | null>(null);
   const [filterFuel, setFilterFuel] = useState<string>('todos');
 
-  // Mock data para demonstração
-  useEffect(() => {
-    const mockFuelRecords: FuelRecord[] = [
-      {
-        id: '1',
-        veiculoId: '1',
-        veiculoNome: 'Toyota Corolla',
-        posto: 'Posto Shell - Av. Paulista',
-        combustivel: 'gasolina',
-        litros: 45.2,
-        valorLitro: 5.89,
-        valorTotal: 266.23,
-        quilometragem: 45250,
-        data: '2024-01-15',
-        observacoes: 'Tanque cheio'
-      },
-      {
-        id: '2',
-        veiculoId: '1',
-        veiculoNome: 'Toyota Corolla',
-        posto: 'Posto BR - Centro',
-        combustivel: 'etanol',
-        litros: 42.8,
-        valorLitro: 4.12,
-        valorTotal: 176.34,
-        quilometragem: 44850,
-        data: '2024-01-08'
-      },
-      {
-        id: '3',
-        veiculoId: '2',
-        veiculoNome: 'Honda Civic',
-        posto: 'Posto Ipiranga - Shopping',
-        combustivel: 'gasolina',
-        litros: 38.5,
-        valorLitro: 5.95,
-        valorTotal: 229.08,
-        quilometragem: 52150,
-        data: '2024-01-12'
-      }
-    ];
+  const { apiRequest } = useApiErrorHandler();
 
-    // Simular carregamento
-    setTimeout(() => {
-      setFuelRecords(mockFuelRecords);
+  const fetchFuelRecords = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await apiRequest(`${import.meta.env.VITE_API_URL}/api/v1/fuel`, {
+        method: 'GET',
+      });
+      if (response.success) {
+        setFuelRecords(response.data);
+      } else {
+        setError(response.message || 'Erro ao buscar abastecimentos.');
+      }
+    } catch (err: any) {
+      setError(err.message || 'Erro de conexão ao buscar abastecimentos.');
+    } finally {
       setLoading(false);
-    }, 1000);
+    }
+  };
+
+  useEffect(() => {
+    fetchFuelRecords();
   }, []);
 
   const fuelTypes = [
@@ -109,6 +88,54 @@ const FuelScreen: React.FC<FuelScreenProps> = ({ onBack }) => {
       gnv: colors.primary.main
     };
     return colorMap[combustivel as keyof typeof colorMap] || colors.neutral.text.secondary;
+  };
+
+  const handleSaveFuelRecord = async (fuelData: any) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const method = fuelData.id ? 'PUT' : 'POST';
+      const url = fuelData.id ? `${import.meta.env.VITE_API_URL}/api/v1/fuel/${fuelData.id}` : `${import.meta.env.VITE_API_URL}/api/v1/fuel`;
+      const response = await apiRequest(url, {
+        method,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(fuelData),
+      });
+
+      if (response.success) {
+        setShowAddForm(false);
+        setEditingFuelRecord(null);
+        fetchFuelRecords(); // Recarrega a lista de abastecimentos
+      } else {
+        setError(response.message || 'Erro ao salvar abastecimento.');
+      }
+    } catch (err: any) {
+      setError(err.message || 'Erro de conexão ao salvar abastecimento.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDeleteFuelRecord = async (id: string) => {
+    if (!confirm("Tem certeza que deseja excluir este abastecimento?")) return;
+
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await apiRequest(`${import.meta.env.VITE_API_URL}/api/v1/fuel/${id}`, {
+        method: 'DELETE',
+      });
+
+      if (response.success) {
+        fetchFuelRecords(); // Recarrega a lista de abastecimentos
+      } else {
+        setError(response.message || 'Erro ao excluir abastecimento.');
+      }
+    } catch (err: any) {
+      setError(err.message || 'Erro de conexão ao excluir abastecimento.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const calculateConsumption = (currentRecord: FuelRecord, previousRecord?: FuelRecord) => {
@@ -538,20 +565,20 @@ const FuelScreen: React.FC<FuelScreenProps> = ({ onBack }) => {
                         </div>
 
                         <div style={{ display: 'flex', gap: spacing.sm }}>
-                          <Button
-                            variant="primary"
-                            size="sm"
-                            onClick={() => alert('Funcionalidade de edição em desenvolvimento')}
-                          >
-                            Editar
-                          </Button>
+                      <Button
+                        variant="primary"
+                        size="sm"
+                        onClick={() => setEditingFuelRecord(record)}
+                      >
+                        Editar
+                      </Button>
                           <Button
                             variant="error"
                             size="sm"
                             onClick={() => {
-                              if (confirm('Tem certeza que deseja excluir este abastecimento?')) {
-                                setFuelRecords(fuelRecords.filter(r => r.id !== record.id));
-                              }
+                                 if (confirm("Tem certeza que deseja excluir este abastecimento?")) {
+                            handleDeleteFuelRecord(record.id);
+                          }    }
                             }}
                           >
                             🗑️
@@ -583,8 +610,8 @@ const FuelScreen: React.FC<FuelScreenProps> = ({ onBack }) => {
           </div>
         )}
 
-        {/* Add Form Modal */}
-        {showAddForm && (
+        {/* Add/Edit Form Modal */}
+        {(showAddForm || editingFuelRecord) && (
           <div style={{
             position: 'fixed',
             top: 0,
@@ -609,30 +636,18 @@ const FuelScreen: React.FC<FuelScreenProps> = ({ onBack }) => {
                 color: colors.neutral.text.primary,
                 margin: `0 0 ${spacing.xl} 0`
               }}>
-                Registrar Novo Abastecimento
+                {editingFuelRecord ? 'Editar Abastecimento' : 'Registrar Novo Abastecimento'}
               </h2>
-              
-              <p style={{
-                color: colors.neutral.text.secondary,
-                fontSize: typography.fontSize.base,
-                textAlign: 'center',
-                margin: `0 0 ${spacing.xl} 0`
-              }}>
-                Funcionalidade em desenvolvimento
-              </p>
-
-              <div style={{
-                display: 'flex',
-                gap: spacing.md,
-                justifyContent: 'flex-end'
-              }}>
-                <Button
-                  variant="secondary"
-                  onClick={() => setShowAddForm(false)}
-                >
-                  Fechar
-                </Button>
-              </div>
+              <AddEditFuelForm
+                initialData={editingFuelRecord}
+                onSave={handleSaveFuelRecord}
+                onCancel={() => {
+                  setShowAddForm(false);
+                  setEditingFuelRecord(null);
+                }}
+                loading={loading}
+                error={error}
+              />
             </Card>
           </div>
         )}

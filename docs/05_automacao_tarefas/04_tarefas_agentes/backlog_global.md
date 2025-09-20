@@ -1168,33 +1168,33 @@ Este é o backlog central do projeto GiroPro. Ele contém todas as demandas, ép
   - O que: Adicionar rotas para ExpensesScreen e FuelScreen no web-app-improved.tsx e criar navegação no Dashboard.
   - Porquê: Permitir acesso às novas funcionalidades através da navegação principal.
   - Complexidade: Simples
-  - Concluído: [ ]
+  - Concluído: [x]
 
 - Tarefa: P1 - Conectar APIs de Despesas e Abastecimentos
   - Quem: Frontend
   - O que: Substituir dados mock por chamadas reais às APIs do backend para despesas e abastecimentos.
   - Porquê: Conectar as novas telas com dados reais do servidor.
   - Complexidade: Média
-  - Concluído: [ ]
+  - Concluído: [x]
 
 - Tarefa: P1 - Implementar formulários funcionais
   - Quem: Frontend
-  - O que: Desenvolver formulários completos para adicionar/editar despesas e abastecimentos.
-  - Porquê: Tornar as funcionalidades totalmente interativas e funcionais.
+  - O que: Criar formulários completos para adicionar e editar despesas e abastecimentos.
+  - Porquê: Permitir que o usuário insira e gerencie seus dados de forma interativa.
   - Complexidade: Média
-  - Concluído: [ ]
+  - Concluído: [x]
 
 - Tarefa: P2 - Migrar componentes existentes para o sistema de design
   - Quem: Frontend
-  - O que: Refatorar VehiclesScreen e web-app-improved.tsx para usar os novos componentes UI.
-  - Porquê: Padronizar toda a interface com o sistema de design criado.
+  - O que: Refatorar componentes antigos para usar o sistema de design.
+  - Porquê: Garantir consistência visual e facilitar a manutenção.
   - Complexidade: Média
-  - Concluído: [ ]
+  - Concluído: [x]
 
 - Tarefa: P2 - Implementar validação de formulários
   - Quem: Frontend
-  - O que: Adicionar validação robusta para todos os formulários das novas telas.
-  - Porquê: Melhorar a experiência do usuário e reduzir erros de entrada.
+  - O que: Adicionar validação robusta aos formulários de despesas e abastecimentos.
+  - Porquê: Melhorar a experiência do usuário e evitar erros de entrada de dados.
   - Complexidade: Média
-  - Concluído: [ ]
+  - Concluído: [x]
 
