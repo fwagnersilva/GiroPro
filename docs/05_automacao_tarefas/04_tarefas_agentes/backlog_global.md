@@ -437,3 +437,54 @@
   - Concluído: [x]
 
 
+
+
+- Tarefa: P1 - Implementar APIs CRUD completas para Jornadas
+  - Quem: Backend
+  - O que: Desenvolver endpoints CRUD completos para a entidade Jornadas.
+  - Porquê: Permitir o gerenciamento completo de jornadas no backend.
+  - Complexidade: Média
+  - Concluído: [ ]
+
+- Tarefa: P1 - Implementar APIs CRUD completas para Abastecimentos
+  - Quem: Backend
+  - O que: Desenvolver endpoints CRUD completos para a entidade Abastecimentos.
+  - Porquê: Permitir o gerenciamento completo de abastecimentos no backend.
+  - Complexidade: Média
+  - Concluído: [ ]
+
+- Tarefa: P1 - Implementar APIs CRUD completas para Despesas
+  - Quem: Backend
+  - O que: Desenvolver endpoints CRUD completos para a entidade Despesas.
+  - Porquê: Permitir o gerenciamento completo de despesas no backend.
+  - Complexidade: Média
+  - Concluído: [ ]
+
+- Tarefa: P1 - Desenvolver Tela de Jornadas
+  - Quem: Frontend
+  - O que: Criar um componente de tela para gerenciar as jornadas do usuário.
+  - Porquê: Adicionar uma funcionalidade central de gestão de viagens.
+  - Complexidade: Média
+  - Concluído: [ ]
+
+- Tarefa: P1 - Implementar APIs CRUD completas para Jornadas (Frontend - Integração)
+  - Quem: Frontend
+  - O que: Integrar a tela de Jornadas com as APIs CRUD do backend.
+  - Porquê: Popular a tela com dados reais e permitir a interação do usuário.
+  - Complexidade: Média
+  - Concluído: [ ]
+
+- Tarefa: P2 - Criar arquivo `.env.example`
+  - Quem: Geral
+  - O que: Criar um arquivo `.env.example` na raiz do projeto com todas as variáveis de ambiente necessárias.
+  - Porquê: Facilitar a configuração do ambiente para novos desenvolvedores.
+  - Complexidade: Simples
+  - Concluído: [ ]
+
+- Tarefa: P2 - Atualizar `README.md` com instruções de setup e execução
+  - Quem: Geral
+  - O que: Revisar e atualizar o `README.md` principal com instruções claras e concisas para o setup e execução do projeto.
+  - Porquê: Fornecer um guia rápido e preciso para iniciar o desenvolvimento.
+  - Complexidade: Simples
+  - Concluído: [ ]
+
