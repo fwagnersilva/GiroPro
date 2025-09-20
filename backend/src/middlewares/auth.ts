@@ -6,29 +6,24 @@ import { config } from '../config';
 interface JWTPayload {
   userId: string;
   email: string;
+  nome: string;
+  role: string;
   iat?: number;
   exp?: number;
 }
 
 // Estende a interface Request do Express para incluir a propriedade 'user'
-declare global {
-  namespace Express {
-    interface Request {
-      user?: {
-        id: string;
-        email: string;
-      };
-    }
-  }
-}
+
 
 /**
  * Middleware de autenticação JWT
  * Verifica se o token fornecido no header Authorization é válido
  * e adiciona os dados do usuário ao objeto request
  */
+import { AuthenticatedRequest } from "../types/auth";
+
 const authMiddleware = (
-  req: Request, 
+  req: AuthenticatedRequest, 
   res: Response, 
   next: NextFunction
 ): void => {
@@ -82,7 +77,9 @@ const authMiddleware = (
     // Adiciona os dados do usuário ao request
     req.user = {
       id: decoded.userId,
-      email: decoded.email
+      email: decoded.email,
+      nome: decoded.nome,
+      role: decoded.role
     };
 
     next();

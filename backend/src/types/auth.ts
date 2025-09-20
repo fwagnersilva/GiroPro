@@ -5,12 +5,15 @@ export interface AuthenticatedRequest extends Request {
     id: string;
     email: string;
     nome: string;
+    role: string;
   };
 }
 
 export interface JWTPayload {
   userId: string;
   email: string;
+  nome: string;
+  role: string;
   iat?: number;
   exp?: number;
 }
