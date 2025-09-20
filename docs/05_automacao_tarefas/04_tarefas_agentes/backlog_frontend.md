@@ -151,70 +151,80 @@ _**
   - O que: Criar o schema de validação para o campo 'kmInicio' do formulário de jornadas.
   - Porquê: Garantir que a quilometragem inicial seja um dado válido.
   - Complexidade: Simples
-  - Concluído: [ ]
+  - Concluído: [x]
+  - Como foi feita: O schema de validação para 'kmInicio' já estava implementado no arquivo `frontend/src/schemas/journeySchemas.ts`.
 
 - Tarefa: P1 - Implementar validação de dados no frontend
   - Quem: Frontend
   - O que: Integrar a validação do campo 'kmInicio' ao formulário de jornadas.
   - Porquê: Fornecer feedback imediato ao usuário.
   - Complexidade: Simples
-  - Concluído: [ ]
+  - Concluído: [x]
+  - Como foi feita: A validação para 'kmInicio' já estava integrada no `AddJourneyModal.tsx` através do `journeySchema.parse`.
 
 - Tarefa: P1 - Implementar validação de dados no frontend
   - Quem: Frontend
   - O que: Criar o schema de validação para o campo 'dataInicio' do formulário de jornadas.
   - Porquê: Garantir que a data de início seja um dado válido.
   - Complexidade: Simples
-  - Concluído: [ ]
+  - Concluído: [x]
+  - Como foi feita: O schema de validação para 'dataInicio' já estava implementado no arquivo `frontend/src/schemas/journeySchemas.ts`.
 
 - Tarefa: P1 - Implementar validação de dados no frontend
   - Quem: Frontend
   - O que: Integrar a validação do campo 'dataInicio' ao formulário de jornadas.
   - Porquê: Fornecer feedback imediato ao usuário.
   - Complexidade: Simples
-  - Concluído: [ ]
+  - Concluído: [x]
+  - Como foi feita: A validação para 'dataInicio' já estava integrada no `AddJourneyModal.tsx` através do `journeySchema.parse`.
 
 - Tarefa: P1 - Implementar validação de dados no frontend
   - Quem: Frontend
   - O que: Criar o schema de validação para o campo 'quantidadeLitros' do formulário de abastecimentos.
   - Porquê: Garantir que a quantidade de litros seja um dado válido.
   - Complexidade: Simples
-  - Concluído: [ ]
+  - Concluído: [x]
+  - Como foi feita: O schema de validação para 'quantidadeLitros' já estava implementado no arquivo `frontend/src/schemas/fuelingSchemas.ts`.
 
 - Tarefa: P1 - Implementar validação de dados no frontend
   - Quem: Frontend
   - O que: Integrar a validação do campo 'quantidadeLitros' ao formulário de abastecimentos.
   - Porquê: Fornecer feedback imediato ao usuário.
   - Complexidade: Simples
-  - Concluído: [ ]
+  - Concluído: [x]
+  - Como foi feita: A validação para 'quantidadeLitros' já estava integrada no `AddFuelingScreen.tsx` através do `fuelingSchema.pick({ quantidadeLitros: parseFloat(formData.quantidade_litros) })`.
 
 - Tarefa: P1 - Implementar validação de dados no frontend
   - Quem: Frontend
   - O que: Criar o schema de validação para o campo 'valorLitro' do formulário de abastecimentos.
   - Porquê: Garantir que o valor do litro seja um dado válido.
   - Complexidade: Simples
-  - Concluído: [ ]
+  - Concluído: [x]
+  - Como foi feita: O schema de validação para 'valorLitro' já estava implementado no arquivo `frontend/src/schemas/fuelingSchemas.ts`.
 
 - Tarefa: P1 - Implementar validação de dados no frontend
   - Quem: Frontend
   - O que: Integrar a validação do campo 'valorLitro' ao formulário de abastecimentos.
   - Porquê: Fornecer feedback imediato ao usuário.
   - Complexidade: Simples
-  - Concluído: [ ]
+  - Concluído: [x]
+  - Como foi feita: A validação para 'valorLitro' já estava integrada no `AddFuelingScreen.tsx` através do `fuelingSchema.pick({ valorLitro: parseFloat(formData.valor_litro) })`.
 
 - Tarefa: P1 - Implementar validação de dados no frontend
   - Quem: Frontend
   - O que: Criar o schema de validação para o campo 'valorDespesa' do formulário de despesas.
   - Porquê: Garantir que o valor da despesa seja um dado válido.
   - Complexidade: Simples
-  - Concluído: [ ]
+  - Concluído: [x]
+  - Como foi feita: O schema de validação para 'valorDespesa' já estava implementado no arquivo `frontend/src/schemas/expenseSchemas.ts`.
 
 - Tarefa: P1 - Implementar validação de dados no frontend
   - Quem: Frontend
   - O que: Integrar a validação do campo 'valorDespesa' ao formulário de despesas.
   - Porquê: Fornecer feedback imediato ao usuário.
   - Complexidade: Simples
-  - Concluído: [ ]
+  - Concluído: [x]
+  - Como foi feita: A validação para 'valorDespesa' já estava integrada no `AddExpenseScreen.tsx` através do `expenseSchema.pick({ valorDespesa: parseFloat(formData.valor_despesa) })`.
 
 - Tarefa: P2 - Refatorar o tratamento de erros global no frontend
   - Quem: Frontend
