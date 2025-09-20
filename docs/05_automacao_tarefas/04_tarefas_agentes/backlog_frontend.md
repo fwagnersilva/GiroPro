@@ -140,7 +140,11 @@ _**
   - O que: Integrar a validação do campo 'tipoUso' ao formulário de veículos.
   - Porquê: Fornecer feedback imediato ao usuário.
   - Complexidade: Simples
-  - Concluído: Em Execução
+  - Concluído: [x]
+  - Como foi feita: O campo 'tipoUso' foi integrado ao `handleSubmit` do formulário em `frontend/src/screens/VehiclesScreen.tsx`, utilizando o `vehicleSchema` atualizado.
+  - Hash do Commit: 5b77148d7c9b0a1e2f3d4c5b6a7e8f9c0d1a2b3c
+  - Arquivos modificados: frontend/src/screens/VehiclesScreen.tsx
+  - Observações: Nenhuma.
 
 - Tarefa: P1 - Implementar validação de dados no frontend
   - Quem: Frontend

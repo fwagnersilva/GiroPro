@@ -150,8 +150,8 @@ const VehiclesScreen: React.FC = () => {
         modelo: formData.modelo, 
         ano: Number(formData.ano),
         placa: formData.placa.toUpperCase().replace('-', ''),
-        tipoCombustivel: formData.tipo_combustivel.toLowerCase(), // Convertendo para minúsculas para corresponder ao enum do Zod
-        tipoUso: formData.tipo_uso.toLowerCase() // Convertendo para minúsculas para corresponder ao enum do Zod
+        tipoCombustivel: formData.tipo_combustivel, // Não precisa converter para minúsculas, o enum já aceita maiúsculas
+        tipoUso: formData.tipo_uso
       });
     } catch (e: any) {
       Alert.alert("Erro", e.errors[0].message);
