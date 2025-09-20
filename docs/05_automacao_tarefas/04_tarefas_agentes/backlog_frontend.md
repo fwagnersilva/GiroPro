@@ -271,70 +271,90 @@ _**
   - O que: Instalar Playwright como dependência de desenvolvimento.
   - Porquê: Habilitar a escrita e execução de testes End-to-End.
   - Complexidade: Simples
-  - Concluído: [ ]
+  - Concluído: [x]
+  - Como foi feita: O Playwright foi instalado como dependência de desenvolvimento utilizando `npm install playwright --save-dev --legacy-peer-deps` no diretório `frontend`.
+  - Observações: Foi necessário usar a flag `--legacy-peer-deps` devido a conflitos de dependência.
 
 - Tarefa: P3 - Implementar testes E2E para o fluxo de registro e login
   - Quem: Frontend
   - O que: Criar arquivo de configuração inicial do Playwright.
   - Porquê: Definir o ambiente e as opções de execução dos testes E2E.
   - Complexidade: Simples
-  - Concluído: [ ]
+  - Concluído: [x]
+  - Como foi feita: O arquivo `playwright.config.ts` já existia no diretório `frontend` com uma configuração inicial. Foi verificado e considerado como atendendo ao requisito da tarefa.
+  - Observações: Nenhuma.
 
 - Tarefa: P3 - Implementar testes E2E para o fluxo de registro e login
   - Quem: Frontend
   - O que: Escrever teste E2E para navegar até a tela de registro.
   - Porquê: Verificar se a página de registro é acessível.
   - Complexidade: Simples
-  - Concluído: [ ]
+  - Concluído: [x]
+  - Como foi feita: O teste E2E para navegar até a tela de registro já está implementado no arquivo `frontend/tests/e2e/auth.spec.ts`.
+  - Observações: Nenhuma.
 
 - Tarefa: P3 - Implementar testes E2E para o fluxo de registro e login
   - Quem: Frontend
   - O que: Escrever teste E2E para preencher o formulário de registro (campos válidos).
   - Porquê: Simular a entrada de dados de um usuário real.
   - Complexidade: Simples
-  - Concluído: [ ]
+  - Concluído: [x]
+  - Como foi feita: O teste E2E para preencher o formulário de registro com campos válidos já está implementado no arquivo `frontend/tests/e2e/auth.spec.ts`.
+  - Observações: Nenhuma.
 
 - Tarefa: P3 - Implementar testes E2E para o fluxo de registro e login
   - Quem: Frontend
   - O que: Escrever teste E2E para submeter o formulário de registro.
   - Porquê: Simular a ação final do usuário no formulário.
   - Complexidade: Simples
-  - Concluído: [ ]
+  - Concluído: [x]
+  - Como foi feita: O teste E2E para submeter o formulário de registro já está implementado no arquivo `frontend/tests/e2e/auth.spec.ts`.
+  - Observações: Nenhuma.
 
 - Tarefa: P3 - Implementar testes E2E para o fluxo de registro e login
   - Quem: Frontend
   - O que: Escrever teste E2E para verificar sucesso do registro (redirecionamento/mensagem).
   - Porquê: Validar o comportamento esperado após um registro bem-sucedido.
   - Complexidade: Simples
-  - Concluído: [ ]
+  - Concluído: [x]
+  - Como foi feita: O teste E2E para verificar o sucesso do registro já está implementado no arquivo `frontend/tests/e2e/auth.spec.ts` através da verificação de redirecionamento para o dashboard ou página principal.
+  - Observações: Nenhuma.
 
 - Tarefa: P3 - Implementar testes E2E para o fluxo de registro e login
   - Quem: Frontend
   - O que: Escrever teste E2E para navegar até a tela de login.
   - Porquê: Verificar se a página de login é acessível.
   - Complexidade: Simples
-  - Concluído: [ ]
+  - Concluído: [x]
+  - Como foi feita: O teste E2E para navegar até a tela de login já está implementado no arquivo `frontend/tests/e2e/auth.spec.ts`.
+  - Observações: Nenhuma.
 
 - Tarefa: P3 - Implementar testes E2E para o fluxo de registro e login
   - Quem: Frontend
-  - O que: Escrever teste E2E para preencher o formulário de login (credenciais válidas).
-  - Porquê: Simular a entrada de credenciais de um usuário real.
+  - O que: Escrever teste E2E para preencher o formulário de login com credenciais válidas.
+  - Porquê: Simular a entrada de dados de um usuário real.
   - Complexidade: Simples
-  - Concluído: [ ]
+  - Concluído: [x]
+  - Como foi feita: O teste E2E para preencher o formulário de login com credenciais válidas já está implementado no arquivo `frontend/tests/e2e/auth.spec.ts`.
+  - Observações: Nenhuma.
 
 - Tarefa: P3 - Implementar testes E2E para o fluxo de registro e login
   - Quem: Frontend
   - O que: Escrever teste E2E para submeter o formulário de login.
   - Porquê: Simular a ação final do usuário no formulário.
   - Complexidade: Simples
-  - Concluído: [ ]
+  - Concluído: [x]
+  - Como foi feita: O teste E2E para submeter o formulário de login já está implementado no arquivo `frontend/tests/e2e/auth.spec.ts`.
+  - Observações: Nenhuma.
 
 - Tarefa: P3 - Implementar testes E2E para o fluxo de registro e login
   - Quem: Frontend
   - O que: Escrever teste E2E para verificar sucesso do login (redirecionamento para dashboard).
   - Porquê: Validar o comportamento esperado após um login bem-sucedido.
   - Complexidade: Simples
-  - Concluído: [ ]
+  - Concluído: [x]
+  - Como foi feita: O teste E2E para verificar o sucesso do login já está implementado no arquivo `frontend/tests/e2e/auth.spec.ts` através da verificação de redirecionamento para o dashboard ou página principal.
+  - Observações: Nenhuma.
 
 - Tarefa: P2 - Otimizar o carregamento de dados no Dashboard
   - Quem: Frontend
