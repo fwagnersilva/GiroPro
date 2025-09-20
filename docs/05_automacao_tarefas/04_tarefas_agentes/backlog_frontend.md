@@ -129,7 +129,11 @@ _**
   - O que: Criar o schema de validação para o campo 'tipoUso' do formulário de veículos.
   - Porquê: Garantir que o tipo de uso seja um dado válido.
   - Complexidade: Simples
-  - Concluído: [ ]
+  - Concluído: [x]
+  - Como foi feita: O campo 'tipoUso' foi adicionado ao `vehicleSchema` no arquivo `frontend/src/schemas/vehicleSchemas.ts` com validação de enum para os tipos 'Proprio', 'Alugado', 'Financiado'.
+  - Hash do Commit: 51317a9
+  - Arquivos modificados: frontend/src/schemas/vehicleSchemas.ts
+  - Observações: Nenhuma.
 
 - Tarefa: P1 - Implementar validação de dados no frontend
   - Quem: Frontend
