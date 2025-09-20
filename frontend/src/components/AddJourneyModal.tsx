@@ -13,12 +13,15 @@ import { Ionicons } from '@expo/vector-icons';
 import { lightTheme } from '../theme/tokens';
 import { typography, spacing } from '../styles/responsive';
 import { journeySchema } from '../schemas/journeySchemas';
+import { Vehicle } from '../types';
+import { Picker } from '@react-native-picker/picker';
 
 interface AddJourneyModalProps {
   visible: boolean;
   onClose: () => void;
-  onSubmit: (kmInicio: number, dataInicio: string) => void;
+  onSubmit: (idVeiculo: string, kmInicio: number, dataInicio: string) => void;
   loading: boolean;
+  vehicles: Vehicle[];
 }
 
 const AddJourneyModal: React.FC<AddJourneyModalProps> = ({
@@ -26,14 +29,22 @@ const AddJourneyModal: React.FC<AddJourneyModalProps> = ({
   onClose,
   onSubmit,
   loading,
+  vehicles,
 }) => {
+  const [idVeiculo, setIdVeiculo] = useState("");
   const [kmInicio, setKmInicio] = useState("");
   const [dataInicio, setDataInicio] = useState(new Date().toISOString()); // Inicializa com a data e hora atuais
 
   const handleSubmit = () => {
+    // Validações
+    if (!idVeiculo) {
+      Alert.alert("Erro", "Selecione um veículo");
+      return;
+    }
+
     try {
       journeySchema.parse({ kmInicio: Number(kmInicio), dataInicio });
-      onSubmit(Number(kmInicio), dataInicio);
+      onSubmit(idVeiculo, Number(kmInicio), dataInicio);
     } catch (e: any) {
       Alert.alert('Erro de Validação', e.errors[0].message);
     }
@@ -60,6 +71,26 @@ const AddJourneyModal: React.FC<AddJourneyModalProps> = ({
         </View>
 
         <ScrollView style={styles.modalContent}>
+          <View style={styles.formField}>
+            <Text style={styles.formLabel}>Veículo *</Text>
+            <View style={styles.pickerContainer}>
+              <Picker
+                selectedValue={idVeiculo}
+                onValueChange={(value) => setIdVeiculo(value)}
+                style={styles.picker}
+              >
+                <Picker.Item label="Selecione um veículo" value="" />
+                {vehicles.map((vehicle) => (
+                  <Picker.Item
+                    key={vehicle.id}
+                    label={`${vehicle.marca} ${vehicle.modelo} - ${vehicle.placa}`}
+                    value={vehicle.id}
+                  />
+                ))}
+              </Picker>
+            </View>
+          </View>
+
           <View style={styles.formField}>
             <Text style={styles.formLabel}>Quilometragem Inicial *</Text>
             <TextInput
@@ -136,6 +167,16 @@ const styles = StyleSheet.create({
     ...typography.body,
     color: lightTheme.colors.text,
     backgroundColor: lightTheme.colors.surface,
+  },
+  pickerContainer: {
+    borderWidth: 1,
+    borderColor: lightTheme.colors.border,
+    borderRadius: 8,
+    backgroundColor: lightTheme.colors.surface,
+    overflow: 'hidden',
+  },
+  picker: {
+    height: 50,
   },
 });
 

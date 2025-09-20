@@ -1,4 +1,10 @@
 import React, { useState, useEffect, createContext, useContext } from 'react';
+import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
+import VehiclesScreen from './src/components/VehiclesScreen';
+import ExpensesScreen from './src/components/ExpensesScreen';
+import FuelScreen from './src/components/FuelScreen';
+import { apiRequest, useApiErrorHandler } from './src/utils/apiErrorHandler';
+import { Button, Input, LoadingSpinner, colors, spacing, typography } from './src/components/ui';
 
 // Types
 interface User {
@@ -44,19 +50,10 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
   const signIn = async (credentials: { email: string; senha: string }) => {
     try {
       setLoading(true);
-      const response = await fetch('http://localhost:3000/api/v1/auth/login', {
+      const data = await apiRequest(`${import.meta.env.VITE_API_URL}/api/v1/auth/login`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
         body: JSON.stringify({ email: credentials.email, senha: credentials.senha }),
       });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || 'Erro ao fazer login');
-      }
 
       if (data.success && data.user) {
         localStorage.setItem('token', data.accessToken);
@@ -66,7 +63,7 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
         throw new Error(data.message || 'Dados de usuário não encontrados');
       }
     } catch (error: any) {
-      throw new Error(error.message || 'Erro de conexão');
+      throw error; // Re-throw para ser tratado no componente
     } finally {
       setLoading(false);
     }
@@ -102,146 +99,9 @@ const useAuth = () => {
 };
 
 // Web-compatible FormInput Component
-interface FormInputProps {
-  label: string;
-  type?: string;
-  placeholder?: string;
-  value: string;
-  onChange: (value: string) => void;
-  required?: boolean;
-  error?: string;
-  leftIcon?: string;
-  rightIcon?: string;
-  onRightIconPress?: () => void;
-  testID?: string;
-}
 
-const FormInput: React.FC<FormInputProps> = ({
-  label,
-  type = 'text',
-  placeholder,
-  value,
-  onChange,
-  required = false,
-  error,
-  leftIcon,
-  rightIcon,
-  onRightIconPress,
-  testID,
-}) => {
-  const [isFocused, setIsFocused] = useState(false);
 
-  const iconMap: Record<string, string> = {
-    'mail-outline': '✉️',
-    'lock-closed-outline': '🔒',
-    'eye-outline': '👁️',
-    'eye-off-outline': '🙈',
-    'person-outline': '👤',
-  };
 
-  return (
-    <div style={{ marginBottom: '16px' }}>
-      <label style={{
-        fontSize: '16px',
-        fontWeight: '500',
-        color: '#000000',
-        marginBottom: '8px',
-        display: 'block'
-      }}>
-        {label}
-        {required && <span style={{ color: '#FF3B30' }}> *</span>}
-      </label>
-      
-      <div style={{
-        display: 'flex',
-        alignItems: 'center',
-        backgroundColor: '#FFFFFF',
-        border: `1px solid ${error ? '#FF3B30' : isFocused ? '#007AFF' : '#E5E5EA'}`,
-        borderRadius: '8px',
-        minHeight: '48px',
-        boxShadow: isFocused ? '0 0 0 2px rgba(0, 122, 255, 0.2)' : 'none',
-      }}>
-        {leftIcon && (
-          <span style={{
-            marginLeft: '16px',
-            fontSize: '20px',
-            color: error ? '#FF3B30' : isFocused ? '#007AFF' : '#8E8E93'
-          }}>
-            {iconMap[leftIcon] || leftIcon}
-          </span>
-        )}
-        
-        <input
-          type={type}
-          placeholder={placeholder}
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
-          onFocus={() => setIsFocused(true)}
-          onBlur={() => setIsFocused(false)}
-          data-testid={testID}
-          style={{
-            flex: 1,
-            fontSize: '16px',
-            color: '#000000',
-            padding: '12px 16px',
-            border: 'none',
-            outline: 'none',
-            backgroundColor: 'transparent',
-            paddingLeft: leftIcon ? '8px' : '16px',
-            paddingRight: rightIcon ? '8px' : '16px',
-          }}
-        />
-        
-        {rightIcon && (
-          <button
-            type="button"
-            onClick={onRightIconPress}
-            data-testid="right-icon-button"
-            style={{
-              padding: '12px',
-              marginRight: '4px',
-              backgroundColor: 'transparent',
-              border: 'none',
-              cursor: 'pointer',
-              fontSize: '20px',
-              color: error ? '#FF3B30' : isFocused ? '#007AFF' : '#8E8E93'
-            }}
-          >
-            {iconMap[rightIcon] || rightIcon}
-          </button>
-        )}
-      </div>
-      
-      {error && (
-        <div style={{
-          display: 'flex',
-          alignItems: 'center',
-          marginTop: '6px'
-        }}>
-          <span style={{ fontSize: '16px', color: '#FF3B30', marginRight: '6px' }}>⚠️</span>
-          <span style={{ fontSize: '14px', color: '#FF3B30' }}>{error}</span>
-        </div>
-      )}
-    </div>
-  );
-};
-
-// Loading Spinner Component
-const LoadingSpinner: React.FC<{ color?: string; size?: number }> = ({ 
-  color = '#007AFF', 
-  size = 24 
-}) => (
-  <div
-    style={{
-      width: `${size}px`,
-      height: `${size}px`,
-      border: `2px solid transparent`,
-      borderTop: `2px solid ${color}`,
-      borderRadius: '50%',
-      animation: 'spin 1s linear infinite',
-    }}
-  />
-);
 
 // Login Component with improved form handling
 const LoginScreen = () => {
@@ -315,19 +175,10 @@ const LoginScreen = () => {
 
     try {
       setLoading(true);
-      const response = await fetch('http://localhost:3000/api/v1/auth/register', {
+      const data = await apiRequest(`${import.meta.env.VITE_API_URL}/api/v1/auth/register`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
         body: JSON.stringify({ nome: nome.trim(), email: email.trim(), senha }),
       });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || 'Erro ao registrar');
-      }
 
       if (data.success && data.user) {
         localStorage.setItem('token', data.accessToken);
@@ -440,19 +291,19 @@ const LoginScreen = () => {
         {/* Form */}
         <form onSubmit={showRegister ? handleRegister : handleLogin}>
           {showRegister && (
-            <FormInput
+            <Input
               label="Nome"
               placeholder="Digite seu nome"
               value={nome}
               onChange={setNome}
               required
               error={errors.nome}
-              leftIcon="person-outline"
+              leftIcon="👤"
               testID="nome-input"
             />
           )}
 
-          <FormInput
+          <Input
             label="Email"
             type="email"
             placeholder="Digite seu email"
@@ -460,11 +311,11 @@ const LoginScreen = () => {
             onChange={setEmail}
             required
             error={errors.email}
-            leftIcon="mail-outline"
+            leftIcon="✉️"
             testID="email-input"
           />
 
-          <FormInput
+          <Input
             label="Senha"
             type={showPassword ? 'text' : 'password'}
             placeholder="Digite sua senha"
@@ -472,34 +323,20 @@ const LoginScreen = () => {
             onChange={setSenha}
             required
             error={errors.senha}
-            leftIcon="lock-closed-outline"
-            rightIcon={showPassword ? 'eye-off-outline' : 'eye-outline'}
+            leftIcon="🔒"
+            rightIcon={showPassword ? '🙈' : '👁️'}
             onRightIconPress={() => setShowPassword(!showPassword)}
             testID="senha-input"
           />
 
-          <button
+          <Button
             type="submit"
-            disabled={loading}
-            style={{
-              width: '100%',
-              backgroundColor: loading ? '#A9D3FF' : '#007AFF',
-              color: '#FFFFFF',
-              border: 'none',
-              borderRadius: '12px',
-              padding: '16px',
-              fontSize: '18px',
-              fontWeight: '600',
-              cursor: loading ? 'not-allowed' : 'pointer',
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-              gap: '8px'
-            }}
+            variant="primary"
+            loading={loading}
+            style={{ width: '100%', marginTop: spacing.lg }}
           >
-            {loading && <LoadingSpinner color="#FFFFFF" size={20} />}
             {loading ? 'Processando...' : (showRegister ? 'Registrar' : 'Entrar')}
-          </button>
+          </Button>
         </form>
 
         {/* Test Credentials */}
@@ -539,9 +376,14 @@ const LoginScreen = () => {
   );
 };
 
-// Dashboard Component (unchanged from original)
+// Dashboard Component (updated with navigation)
 const Dashboard = () => {
   const { user, signOut } = useAuth();
+  const navigate = useNavigate();
+
+  const handleNavigateToVehicles = () => {
+    navigate('/vehicles');
+  };
 
   return (
     <div style={{
@@ -579,21 +421,53 @@ const Dashboard = () => {
               margin: '0'
             }}>Bem-vindo, {user?.nome}!</p>
           </div>
-          <button
-            onClick={signOut}
-            style={{
-              backgroundColor: '#FF3B30',
-              color: '#FFFFFF',
-              border: 'none',
-              borderRadius: '8px',
-              padding: '12px 24px',
-              fontSize: '16px',
-              fontWeight: '600',
-              cursor: 'pointer'
-            }}
-          >
-            Sair
-          </button>
+<div style={{ display: "flex", gap: "16px", flexWrap: "wrap" }}>
+            <button
+              onClick={() => navigate("/vehicles")}
+              style={{
+                backgroundColor: "#007AFF",
+                color: "#FFFFFF",
+                border: "none",
+                borderRadius: "8px",
+                padding: "12px 24px",
+                fontSize: "16px",
+                fontWeight: "600",
+                cursor: "pointer",
+              }}
+            >
+              Meus Veículos
+            </button>
+            <button
+              onClick={() => navigate("/expenses")}
+              style={{
+                backgroundColor: "#34C759",
+                color: "#FFFFFF",
+                border: "none",
+                borderRadius: "8px",
+                padding: "12px 24px",
+                fontSize: "16px",
+                fontWeight: "600",
+                cursor: "pointer",
+              }}
+            >
+              Despesas
+            </button>
+            <button
+              onClick={() => navigate("/fuel")}
+              style={{
+                backgroundColor: "#FF9500",
+                color: "#FFFFFF",
+                border: "none",
+                borderRadius: "8px",
+                padding: "12px 24px",
+                fontSize: "16px",
+                fontWeight: "600",
+                cursor: "pointer",
+              }}
+            >
+              Abastecimentos
+            </button>
+          </div>
         </div>
 
         {/* Status Cards */}
@@ -645,7 +519,7 @@ const Dashboard = () => {
           marginBottom: '32px'
         }}>
           <button
-            onClick={() => alert('Funcionalidade em desenvolvimento')}
+            onClick={handleNavigateToVehicles}
             style={{
               backgroundColor: '#007AFF',
               color: '#FFFFFF',
@@ -759,7 +633,7 @@ const LoadingScreen = () => (
   </div>
 );
 
-// Main App Component
+// Main App Component with Routing
 const AppContent = () => {
   const { isAuthenticated, loading } = useAuth();
 
@@ -767,10 +641,21 @@ const AppContent = () => {
     return <LoadingScreen />;
   }
 
-  return isAuthenticated ? <Dashboard /> : <LoginScreen />;
+  if (!isAuthenticated) {
+    return <LoginScreen />;
+  }
+
+  return (
+    <Routes>
+      <Route path="/" element={<Dashboard />} />
+     <Route path="/vehicles" element={<VehiclesScreen onBack={() => navigate("/dashboard")} />} />
+              <Route path="/expenses" element={<ExpensesScreen onBack={() => navigate("/dashboard")} />} />
+              <Route path="/fuel" element={<FuelScreen onBack={() => navigate("/dashboard")} />} />
+    </Routes>
+  );
 };
 
-// App with Provider
+// App with Provider and Router
 export default function WebAppImproved() {
   return (
     <>
@@ -791,9 +676,11 @@ export default function WebAppImproved() {
           -moz-osx-font-smoothing: grayscale;
         }
       `}</style>
-      <AuthProvider>
-        <AppContent />
-      </AuthProvider>
+      <Router>
+        <AuthProvider>
+          <AppContent />
+        </AuthProvider>
+      </Router>
     </>
   );
 }

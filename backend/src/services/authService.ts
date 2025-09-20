@@ -5,7 +5,6 @@ import { eq, and, sql } from 'drizzle-orm'; // Adicionado 'sql'
 import { db } from '../db';
 import { usuarios } from '../db/schema';
 import { LoginRequest, RegisterRequest, AuthResponse } from '../types';
-import { config } from '../config';
 
 export class AuthService {
   private static readonly SALT_ROUNDS = 12;
@@ -55,7 +54,7 @@ export class AuthService {
         });
 
       // Gerar tokens
-      const token = this.generateToken(newUser.id, newUser.email, newUser.role);
+      const token = this.generateToken(newUser.id, newUser.email, newUser.nome, newUser.role);
       const refreshToken = this.generateRefreshToken(newUser.id);
 
       return {
@@ -66,7 +65,6 @@ export class AuthService {
           nome: newUser.nome,
           email: newUser.email,
           statusConta: newUser.statusConta,
-          role: newUser.role,
         },
       };
   }
@@ -74,7 +72,17 @@ export class AuthService {
   static async login(data: LoginRequest): Promise<AuthResponse> {
 // Buscar usuário por email
       const [user] = await db
-        .select()
+        .select({
+          id: usuarios.id,
+          nome: usuarios.nome,
+          email: usuarios.email,
+          senhaHash: usuarios.senhaHash,
+          role: usuarios.role,
+          statusConta: usuarios.statusConta,
+          tentativasLogin: usuarios.tentativasLogin,
+          ultimoLoginFalhado: usuarios.ultimoLoginFalhado,
+          ultimaAtividade: usuarios.ultimaAtividade,
+        })
         .from(usuarios)
         .where(eq(usuarios.email, data.email.toLowerCase().trim()))
         .limit(1);
@@ -109,7 +117,7 @@ export class AuthService {
       await this.updateLastActivity(user.id);
 
       // Gerar tokens
-      const token = this.generateToken(user.id, user.email, user.role);
+      const token = this.generateToken(user.id, user.email, user.nome, user.role);
       const refreshToken = this.generateRefreshToken(user.id);
 
       return {
@@ -126,7 +134,7 @@ export class AuthService {
   }
 
   static async refreshToken(refreshToken: string): Promise<{ token: string; refreshToken: string }> {
-    const decoded = jwt.verify(refreshToken, config.auth.jwtSecret) as any;
+    const decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET!) as any;
       
       // Verificar se o usuário ainda existe e está ativo
       const user = await this.getUserById(decoded.userId);
@@ -135,7 +143,7 @@ export class AuthService {
       }
 
       // Gerar novos tokens
-      const newToken = this.generateToken(user.id, user.email, user.role);
+      const newToken = this.generateToken(user.id, user.email, user.nome, user.role);
       const newRefreshToken = this.generateRefreshToken(user.id);
 
       return {
@@ -150,10 +158,10 @@ const [user] = await db
           id: usuarios.id,
           nome: usuarios.nome,
           email: usuarios.email,
+          role: usuarios.role,
           statusConta: usuarios.statusConta,
           dataCadastro: usuarios.dataCadastro,
           ultimaAtividade: usuarios.ultimaAtividade,
-          role: usuarios.role,
         })
         .from(usuarios)
         .where(eq(usuarios.id, userId))
@@ -219,14 +227,14 @@ const [user] = await db
       }
 
       // Gerar token de redefinição de senha (JWT com expiração curta)
-      const resetToken = jwt.sign({ userId: user.id }, config.auth.jwtSecret, { expiresIn: '1h' });
+      const resetToken = jwt.sign({ userId: user.id }, process.env.JWT_SECRET!, { expiresIn: '1h' });
 
       // TODO: Enviar email com o link de redefinição de senha (contendo o resetToken)
       console.log(`Link de redefinição de senha para ${email}: http://localhost:3000/reset-password?token=${resetToken}`);
   }
 
   static async resetPassword(token: string, newPassword: string): Promise<void> {
-const decoded = jwt.verify(token, config.auth.jwtSecret) as { userId: string };
+const decoded = jwt.verify(token, process.env.JWT_SECRET!) as { userId: string };
       const userId = decoded.userId;
 
       // Validar nova senha
@@ -245,9 +253,9 @@ const decoded = jwt.verify(token, config.auth.jwtSecret) as { userId: string };
         .where(eq(usuarios.id, userId));
   }
 
-  private static generateToken(userId: string, email: string, role: string): string {
-    if (!config.auth.jwtSecret) {
-      throw new Error("JWT_SECRET não configurado");
+  private static generateToken(userId: string, email: string, nome: string, role: string): string {
+    if (!process.env.JWT_SECRET) {
+      throw new Error('JWT_SECRET não configurado');
     }
     
     return jwt.sign(
@@ -259,14 +267,14 @@ const decoded = jwt.verify(token, config.auth.jwtSecret) as { userId: string };
         type: 'access',
         iat: Math.floor(Date.now() / 1000),
       },
-      config.auth.jwtSecret,
+      process.env.JWT_SECRET,
       { expiresIn: this.JWT_EXPIRES_IN }
     );
   }
 
   private static generateRefreshToken(userId: string): string {
-    if (!config.auth.jwtSecret) {
-      throw new Error("JWT_REFRESH_SECRET não configurado");
+    if (!process.env.JWT_REFRESH_SECRET) {
+      throw new Error('JWT_REFRESH_SECRET não configurado');
     }
     
     return jwt.sign(
@@ -275,23 +283,23 @@ const decoded = jwt.verify(token, config.auth.jwtSecret) as { userId: string };
         type: 'refresh',
         iat: Math.floor(Date.now() / 1000),
       },
-      config.auth.jwtSecret,
+      process.env.JWT_REFRESH_SECRET,
       { expiresIn: this.REFRESH_TOKEN_EXPIRES_IN }
     );
   }
 
-  static verifyToken(token: string): { userId: string } {
-if (!config.auth.jwtSecret) {
+  static verifyToken(token: string): { userId: string; email: string; nome: string; role: string } {
+if (!process.env.JWT_SECRET) {
       throw new Error("JWT_SECRET não configurado");
     }
 
-    const decoded = jwt.verify(token, config.auth.jwtSecret) as any;
+    const decoded = jwt.verify(token, process.env.JWT_SECRET) as any;
     
     if (decoded.type !== "access") {
       throw new Error("Tipo de token inválido");
     }
 
-    return { userId: decoded.userId };
+    return { userId: decoded.userId, email: decoded.email, nome: decoded.nome, role: decoded.role };
   }
 
   // Métodos auxiliares privados

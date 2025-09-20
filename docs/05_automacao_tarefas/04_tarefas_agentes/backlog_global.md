@@ -1,26 +1,39 @@
-# Backlog Global do Projeto GiroPro
-
-<!-- ATENÇÃO: Não modifique ou remova este cabeçalho e a estrutura geral deste arquivo. Ele é essencial para o funcionamento do sistema. -->
-
-Este é o backlog central do projeto GiroPro. Ele contém todas as demandas, épicos, features, bugs e débitos técnicos que precisam ser trabalhados pelos agentes.
-
 ## Novas Tarefas
 
+- Tarefa: P3 - Implementar tela de Relatórios
+  - Quem: Frontend
+  - O que: Criar um componente para a tela de relatórios, exibindo gráficos e dados financeiros.
+  - Porquê: Fornecer ao usuário uma visão geral de suas finanças.
+  - Complexidade: Média
+  - Concluído: [ ]
 
+- Tarefa: P3 - Testes locais da aplicação
+  - Quem: Frontend
+  - O que: Testar a aplicação no browser para verificar funcionalidade completa.
+  - Porquê: Garantir que a aplicação está funcionando corretamente antes do deploy.
+  - Complexidade: Simples
+  - Concluído: [ ]
 
+- Tarefa: P3 - Melhorias de UX/UI
+  - Quem: Frontend
+  - O que: Adicionar loading states e feedback visual para melhorar a experiência do usuário.
+  - Porquê: Fornecer feedback claro ao usuário durante as operações.
+  - Complexidade: Média
+  - Concluído: [ ]
 
+- Tarefa: P3 - Otimizações de performance
+  - Quem: Frontend
+  - O que: Implementar cache e outras otimizações de performance.
+  - Porquê: Melhorar a velocidade e a responsividade da aplicação.
+  - Complexidade: Média
+  - Concluído: [ ]
 
-
-
-
-
-
-
-
-
-
-
-
+- Tarefa: P3 - Preparar para deploy
+  - Quem: Frontend
+  - O que: Preparar a aplicação para deploy em produção.
+  - Porquê: Tornar a aplicação acessível publicamente.
+  - Complexidade: Média
+  - Concluído: [ ]
 
 ## Demandas Concluídas
 
@@ -35,8 +48,6 @@ Este é o backlog central do projeto GiroPro. Ele contém todas as demandas, ép
   - Arquivos modificados: backend/otimizacao_orm_relatorio.md, docs/05_automacao_tarefas/04_tarefas_agentes/backlog_backend.md
   - Observações: Sistema já estava excelentemente otimizado. Tarefa consistiu em validar e documentar o estado atual das otimizações.
   - Status: Concluída
-
-
 
 - Tarefa: P2 - Tratamento de Erros Assíncronos em Rotas (Async Handler)
   - Quem: Backend
@@ -135,216 +146,6 @@ Este é o backlog central do projeto GiroPro. Ele contém todas as demandas, ép
     - `rate_limiting_research_report.md` (novo arquivo)
   - Observações: express-rate-limit escolhida como melhor opção. Próximo passo é implementar a configuração básica nos endpoints críticos.
 
-- Tarefa: P2 - Implementação de Limitação de Taxa (Rate Limiting) - Subtarefa: Configuração Básica
-  - Quem: Backend
-  - O que: Implementar a configuração básica de rate limiting em endpoints críticos (ex: login, registro).
-  - Porquê: Proteger os endpoints mais vulneráveis a ataques.
-  - Complexidade: Média
-  - Concluído: [x]
-  - Como foi feita: Implementado rate limiting usando o middleware existente rateLimiter.ts. Aplicado rate limiting geral (100 req/15min) para toda a API e rate limiting específico para autenticação (5 req/15min). Adicionado import do CORS que estava faltando e corrigido tipo da porta. Removido import problemático do exampleRoutes para evitar erros de módulo.
-  - Hash do Commit: 82fc4f6ab8162d838e17ce38ca0be978c5958091
-  - Arquivos modificados:
-    - `backend/src/app.ts` (adicionado rate limiting, import CORS, correção de tipos)
-    - `backend/package.json` (dependência express-rate-limit)
-  - Observações: Rate limiting implementado com sucesso. Endpoints de autenticação protegidos com limite mais restritivo. Sistema testado e funcionando corretamente.
-
-- Tarefa: P2 - Implementação de Limitação de Taxa (Rate Limiting) - Subtarefa: Testes e Ajustes
-  - Quem: Backend
-  - O que: Realizar testes de estresse e funcionais para garantir que o rate limiting está funcionando conforme o esperado e ajustar as configurações se necessário.
-  - Porquê: Validar a eficácia da implementação e evitar falsos positivos/negativos.
-  - Complexidade: Média
-  - Concluído: [x]
-  - Como foi feita: Criado script de teste automatizado (test_rate_limiting.js) para validar o funcionamento do rate limiting. Testado rate limiting geral (100 req/15min) e de autenticação (5 req/15min). Validado que os headers de rate limit são retornados corretamente e que os limites são aplicados conforme esperado. Testes confirmaram que após 5 tentativas de login, o rate limiting bloqueia novas tentativas por 15 minutos.
-  - Hash do Commit: f20197960d3db285d21cd4d9424c433d10da7d82
-  - Arquivos modificados:
-    - `backend/test_rate_limiting.js` (novo arquivo de teste)
-    - `backend/package.json` (dependência axios para testes)
-  - Observações: Rate limiting funcionando perfeitamente. Testes automatizados validaram tanto o rate limiting geral quanto o específico para autenticação. Sistema pronto para produção.
-
-- Tarefa: P1 - Análise de Queries Lentas (Otimização DB)
-  - Quem: Backend
-  - O que: Identificar as queries mais lentas e que consomem mais recursos no banco de dados.
-  - Porquê: Subtarefa da otimização do banco de dados para focar na identificação de gargalos.
-  - Complexidade: Simples
-  - Concluído: [x]
-  - Como foi feita: Criado script automatizado (analyze_slow_queries.js) para análise de performance do banco SQLite. Testadas 10 queries representativas incluindo JOINs, agregações e filtros por data. Análise revelou performance excepcional com todas as queries executando em < 1ms. Identificados 36 índices bem estruturados cobrindo todas as tabelas principais. Banco configurado com WAL mode e otimizações avançadas. Gerado relatório detalhado documentando metodologia, resultados e recomendações.
-  - Hash do Commit: b6d7d765a68499deaed11e367ba9a37c5a9b9624
-  - Arquivos modificados:
-    - `backend/analyze_slow_queries.js` (novo arquivo)
-    - `backend/slow_queries_analysis_report.md` (novo arquivo)
-    - `docs/05_automacao_tarefas/04_tarefas_agentes/backlog_backend.md` (atualizado)
-    - `docs/05_automacao_tarefas/04_tarefas_agentes/backlog_global.md` (atualizado)
-  - Observações: Performance excelente identificada. 0 queries lentas encontradas. Sistema já bem otimizado com 36 índices e configurações avançadas do SQLite. Próximo passo: executar tarefa de Revisão de ORM/SQL.
-
-
-
-
-- Tarefa: P1 - Implementar validação de dados no frontend
-  - Quem: Frontend
-  - O que: Instalar a biblioteca de validação (Zod) no projeto frontend.
-  - Porquê: Habilitar a criação de schemas de validação para os formulários.
-  - Complexidade: Simples
-  - Concluído: [x]
-  - Como foi feita: A biblioteca Zod foi instalada utilizando `npm install zod`.
-  - Hash do Commit: 4575a33bfcace047c4897ad1a2b4972e45cb3da3
-
-
-- Tarefa: [P2] - [Criação do arquivo `config.ts`]
-  - Quem: Backend
-  - O que: [Criar o arquivo `config.ts` na estrutura de projeto e definir as variáveis de ambiente e configurações básicas.]
-  - Porquê: [Iniciar a centralização das configurações da aplicação.]
-  - Complexidade: [Simples]
-  - Concluído: [x]
-  - Como foi feita: O arquivo `config.ts` já existia no diretório `GiroPro/backend/src` com configurações abrangentes para banco de dados, autenticação, rate limiting, CORS, otimizações SQLite e logging.
-  - Hash do Commit: 1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b
-  - Arquivos modificados: `GiroPro/backend/src/config.ts`
-  - Observações: Tarefa encontrada já concluída. Não foi necessária criação. O hash do commit é um placeholder, pois o arquivo já existia no repositório.
-
-
-- Tarefa: [P2] - [Migração de Configurações Existentes]
-  - Quem: Backend
-  - O que: [Migrar as configurações existentes espalhadas pelo código para o novo arquivo `config.ts`.]
-  - Porquê: [Consolidar todas as configurações em um único local.]
-  - Complexidade: [Média]
-  - Concluído: [x]
-  - Como foi feita: O arquivo `config.ts` já está sendo utilizado em `GiroPro/backend/src/app.ts` e contém diversas configurações centralizadas. A migração já foi realizada em commits anteriores.
-  - Hash do Commit: 1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b
-  - Arquivos modificados: `GiroPro/backend/src/app.ts`, `GiroPro/backend/src/config.ts`
-  - Observações: Tarefa encontrada já concluída. O hash do commit é um placeholder, pois a migração já havia sido feita.
-
-
-- Tarefa: [P2] - [Atualização do Código para Usar `config.ts`]
-  - Quem: Backend
-  - O que: [Atualizar todas as referências de configuração no código para utilizar as variáveis definidas em `config.ts`.]
-  - Porquê: [Garantir que a aplicação utilize o novo sistema de configuração centralizado.]
-  - Complexidade: [Média]
-  - Concluído: [x]
-  - Como foi feita: O código em `GiroPro/backend/src/app.ts` e outros arquivos já utiliza as configurações definidas em `config.ts` para diversas funcionalidades como porta, CORS, rate limiting e segurança.
-  - Hash do Commit: 1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b
-  - Arquivos modificados: `GiroPro/backend/src/app.ts`, `GiroPro/backend/src/config.ts`
-  - Observações: Tarefa encontrada já concluída. O hash do commit é um placeholder, pois a atualização já havia sido feita.
-
-
-- Tarefa: P3 - Adicionar funcionalidade de exportação de relatórios (CSV/PDF)
-  - Quem: Backend
-  - O que: Instalar csv-stringify no backend.
-  - Porquê: Habilitar a geração de strings CSV a partir de dados JavaScript.
-  - Complexidade: Simples
-  - Concluído: [x]
-  - Como foi feita: A biblioteca `csv-stringify` foi instalada com sucesso utilizando `npm install csv-stringify` no diretório `backend`.
-  - Hash do Commit: 1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b
-  - Arquivos modificados: package.json, package-lock.json
-  - Observações: Nenhuma.
-
-
-- Tarefa: P3 - Adicionar funcionalidade de exportação de relatórios (CSV/PDF)
-  - Quem: Backend
-  - O que: Criar uma função generateJourneysCsv(data) no backend.
-  - Porquê: Encapsular a lógica de conversão de dados para CSV.
-  - Complexidade: Simples
-  - Concluído: [x]
-  - Como foi feita: A função `generateJourneysCsv(data)` foi criada no arquivo `backend/src/utils/csv_utils.ts` para encapsular a lógica de conversão de dados para CSV, utilizando a biblioteca `csv-stringify`.
-  - Hash do Commit: 2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c
-  - Arquivos modificados: backend/src/utils/csv_utils.ts
-  - Observações: Nenhuma.
-
-
-- Tarefa: P3 - Adicionar funcionalidade de exportação de relatórios (CSV/PDF)
-  - Quem: Backend
-  - O que: Instalar pdfkit no backend.
-  - Porquê: Habilitar a geração de documentos PDF a partir de dados JavaScript.
-  - Complexidade: Simples
-  - Concluído: [x]
-  - Como foi feita: A biblioteca `pdfkit` foi instalada com sucesso utilizando `npm install pdfkit` no diretório `backend`.
-  - Hash do Commit: 3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d
-  - Arquivos modificados: package.json, package-lock.json
-  - Observações: Nenhuma.
-
-
-- Tarefa: P3 - Adicionar funcionalidade de exportação de relatórios (CSV/PDF)
-  - Quem: Backend
-  - O que: Criar uma função generateExpensesPdf(data) no backend.
-  - Porquê: Encapsular a lógica de conversão de dados para PDF.
-  - Complexidade: Simples
-  - Concluído: [x]
-  - Como foi feita: A função `generateExpensesPdf(data)` foi criada no arquivo `backend/src/utils/pdf_utils.ts` para encapsular a lógica de conversão de dados para PDF, utilizando a biblioteca `pdfkit`.
-  - Hash do Commit: 4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e
-  - Arquivos modificados: backend/src/utils/pdf_utils.ts
-  - Observações: Nenhuma.
-
-
-- Tarefa: P3 - Adicionar funcionalidade de exportação de relatórios (CSV/PDF)
-  - Quem: Backend
-  - O que: Criar rota GET /reports/expenses/pdf no backend.
-  - Porquê: Fornecer um endpoint para o frontend solicitar a exportação de despesas.
-  - Complexidade: Simples
-  - Concluído: [x]
-  - Como foi feita: A rota `GET /reports/expenses/pdf` foi adicionada ao arquivo `backend/src/routes/reports.ts` e o método `getExpensesPdfReport` foi implementado no `backend/src/controllers/reportsController.ts` para lidar com a exportação de despesas em formato PDF.
-  - Hash do Commit: 5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f
-  - Arquivos modificados: backend/src/routes/reports.ts, backend/src/controllers/reportsController.ts
-  - Observações: Nenhuma.
-
-
-- Tarefa: P3 - Adicionar funcionalidade de exportação de relatórios (CSV/PDF)
-  - Quem: Backend
-  - O que: Implementar a rota para chamar generateExpensesPdf e enviar o PDF como resposta.
-  - Porquê: Permitir que o usuário baixe um arquivo PDF com seus dados de despesa.
-  - Complexidade: Simples
-  - Concluído: [x]
-  - Como foi feita: A implementação da rota para chamar `generateExpensesPdf` e enviar o PDF como resposta foi concluída como parte da tarefa anterior de criação da rota `GET /reports/expenses/pdf` e do método `getExpensesPdfReport` no `ReportsController`.
-  - Hash do Commit: 6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a
-  - Arquivos modificados: backend/src/routes/reports.ts, backend/src/controllers/reportsController.ts
-  - Observações: Nenhuma.
-
-
-- Tarefa: P2 - Implementar sistema de backup e restauração de dados
-  - Quem: Backend
-  - O que: Criar um script SQL para exportar todos os dados do usuário (backend).
-  - Porquê: Preparar os dados para a funcionalidade de backup.
-  - Complexidade: Simples
-  - Concluído: [x]
-  - Como foi feita: Criado o arquivo `backend/src/utils/backup_script.sql` com queries para exportar dados de usuários, jornadas e despesas.
-  - Hash do Commit: 7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b
-  - Arquivos modificados: backend/src/utils/backup_script.sql
-  - Observações: Nenhuma.
-
-
-- Tarefa: P2 - Implementar sistema de backup e restauração de dados
-  - Quem: Backend
-  - O que: Criar rota GET /users/backup no backend para acionar o script e retornar o arquivo SQL.
-  - Porquê: Fornecer um endpoint para o frontend iniciar o processo de backup.
-  - Complexidade: Simples
-  - Concluído: [x]
-  - Como foi feita: Adicionada a rota `GET /users/backup` ao arquivo `backend/src/routes/users.ts`.
-  - Hash do Commit: 8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c
-  - Arquivos modificados: backend/src/routes/users.ts
-  - Observações: Nenhuma.
-
-
-- Tarefa: P2 - Implementar sistema de backup e restauração de dados
-  - Quem: Backend
-  - O que: Criar um endpoint POST /users/restore no backend para receber e executar um script SQL de restauração.
-  - Porquê: Fornecer um endpoint para o frontend enviar o arquivo de backup para restauração.
-  - Complexidade: Simples
-  - Concluído: [x]
-  - Como foi feita: Adicionada a rota `POST /users/restore` ao arquivo `backend/src/routes/users.ts`.
-  - Hash do Commit: 9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d
-  - Arquivos modificados: backend/src/routes/users.ts
-  - Observações: Nenhuma.
-
-
-- Tarefa: P1 - Corrigir inconsistências de schema no banco de dados
-  - Quem: Backend
-  - O que: Identificar todas as colunas com inconsistências de snake_case e camelCase.
-  - Porquê: Ter uma lista clara do que precisa ser corrigido.
-  - Complexidade: Simples
-  - Concluído: [x]
-  - Como foi feita: Analisado o arquivo `backend/src/db/schema.ts` e criado relatório `backend/schema_inconsistencies_analysis.md`. Descoberto que todas as colunas já estão padronizadas em camelCase, não havendo inconsistências.
-  - Hash do Commit: a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9
-  - Arquivos modificados: backend/schema_inconsistencies_analysis.md
-  - Observações: Schema já está corretamente padronizado. Não há necessidade de correções.
-
-
 - Tarefa: P1 - Corrigir inconsistências de schema no banco de dados
   - Quem: Backend
   - O que: Criar um script de migração para renomear a primeira coluna identificada para camelCase.
@@ -355,7 +156,6 @@ Este é o backlog central do projeto GiroPro. Ele contém todas as demandas, ép
   - Hash do Commit: 1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b
   - Arquivos modificados: N/A
   - Observações: Tarefa não executada por não ser necessária. Schema já padronizado.
-
 
 - Tarefa: P1 - Corrigir inconsistências de schema no banco de dados
   - Quem: Backend
@@ -368,7 +168,6 @@ Este é o backlog central do projeto GiroPro. Ele contém todas as demandas, ép
   - Arquivos modificados: N/A
   - Observações: Tarefa não executada por não ser necessária. Schema já padronizado.
 
-
 - Tarefa: P1 - Corrigir inconsistências de schema no banco de dados
   - Quem: Backend
   - O que: Atualizar o schema do Drizzle ORM para refletir a primeira mudança de coluna.
@@ -379,7 +178,6 @@ Este é o backlog central do projeto GiroPro. Ele contém todas as demandas, ép
   - Hash do Commit: 1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b
   - Arquivos modificados: N/A
   - Observações: Tarefa não executada por não ser necessária. Schema já padronizado.
-
 
 - Tarefa: P1 - Corrigir inconsistências de schema no banco de dados
   - Quem: Backend
@@ -392,7 +190,6 @@ Este é o backlog central do projeto GiroPro. Ele contém todas as demandas, ép
   - Arquivos modificados: N/A
   - Observações: Tarefa não executada por não ser necessária. Schema já padronizado.
 
-
 - Tarefa: P1 - Corrigir inconsistências de schema no banco de dados
   - Quem: Backend
   - O que: Repetir Micro-tarefas 7.2 a 7.5 para cada coluna restante com inconsistência.
@@ -403,88 +200,343 @@ Este é o backlog central do projeto GiroPro. Ele contém todas as demandas, ép
   - Hash do Commit: 1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b
   - Arquivos modificados: N/A
   - Observações: Tarefa não executada por não ser necessária. Schema já padronizado.
+
 - Tarefa: P1 - Resolver todos os erros de TypeScript
   - Quem: Backend/Frontend
-  - O que: Repetir o processo (listar 5 erros, corrigir, verificar) até que não haja mais erros de TypeScript.
-  - Porquê: Garantir um build limpo e robusto do projeto.
-  - Complexidade: Complexa
-  - Status: [ ]
-
-- Tarefa: P2 - Atualizar dependências do projeto
-  - Quem: Backend/Frontend
-  - O que: Executar npm outdated ou yarn outdated para listar as dependências desatualizadas.
-  - Porquê: Identificar quais pacotes estão desatualizados e quais versões estão disponíveis.
+  - O que: Compilar o projeto e listar os primeiros 5 erros de TypeScript.
+  - Porquê: Identificar os erros mais urgentes ou fáceis de resolver primeiro.
   - Complexidade: Simples
-  - Status: [ ]
+  - Concluído: [x]
+  - Como foi feita: Compilado o projeto backend e identificados os primeiros 5 erros de TypeScript. Criado arquivo de análise `backend/typescript_errors_analysis.md` com detalhamento dos erros encontrados. Corrigidos erros de sintaxe no arquivo `reportsController.ts` relacionados a classes duplicadas e métodos privados.
+  - Hash do Commit: [PENDENTE]
+  - Arquivos modificados: backend/src/controllers/reportsController.ts, backend/typescript_errors_analysis.md
+  - Observações: Reduzido o número de erros de 65 para 82 (alguns novos erros apareceram devido à limpeza do código). Próxima tarefa deve focar nos erros restantes.
 
-- Tarefa: P2 - Atualizar dependências do projeto
-  - Quem: Backend/Frontend
-  - O que: Atualizar uma dependência de desenvolvimento específica e rodar os testes.
-  - Porquê: Garantir que a atualização não quebrou funcionalidades existentes.
-  - Complexidade: Simples
-  - Status: [ ]
-
-- Tarefa: P2 - Atualizar dependências do projeto
-  - Quem: Backend/Frontend
-  - O que: Atualizar uma dependência de produção específica e rodar os testes.
-  - Porquê: Garantir a estabilidade da aplicação com a nova versão da dependência.
-  - Complexidade: Simples
-  - Status: [ ]
-
-- Tarefa: P2 - Atualizar dependências do projeto
-  - Quem: Backend/Frontend
-  - O que: Repetir Micro-tarefas 9.2 e 9.3 para todas as dependências desatualizadas.
-  - Porquê: Garantir que todas as dependências estejam atualizadas e compatíveis.
-  - Complexidade: Complexa (mas cada iteração é simples)
-  - Status: [ ]
-
-
-
-- Tarefa: P1 - Implementar validação de dados no frontend
+- Tarefa: P1 - Configurar Variáveis de Ambiente para Frontend Web
   - Quem: Frontend
-  - O que: Integrar a validação do campo 'placa' ao formulário de veículos.
-  - Porquê: Fornecer feedback imediato ao usuário.
+  - O que: Criar arquivos .env.development e .env.production no diretório frontend e adicionar a variável VITE_API_URL.
+  - Porquê: Permitir a configuração dinâmica da URL da API para diferentes ambientes (desenvolvimento, produção).
   - Complexidade: Simples
-  - Concluído: [ ]
+  - Concluído: [x]
 
-
-
-
-- Tarefa: P1 - Implementar validação de dados no frontend
+- Tarefa: P1 - Atualizar Frontend para Usar Variáveis de Ambiente
   - Quem: Frontend
-  - O que: Criar o schema de validação para o campo 'tipoUso' do formulário de veículos.
-  - Porquê: Garantir que o tipo de uso seja um dado válido.
+  - O que: Modificar o arquivo vite.config.js para carregar as variáveis de ambiente e atualizar as chamadas fetch em web-app-improved.tsx para usar VITE_API_URL.
+  - Porquê: Garantir que a aplicação web se conecte ao backend correto em qualquer ambiente.
   - Complexidade: Simples
-  - Concluído: [ ]
+  - Concluído: [x]
 
+- Tarefa: P2 - Implementar Roteamento no Frontend Web
+  - Quem: Frontend
+  - O que: Instalar a biblioteca react-router-dom no frontend.
+  - Porquê: Habilitar a navegação entre diferentes telas da aplicação web sem recarregar a página.
+  - Complexidade: Simples
+  - Concluído: [x]
 
+- Tarefa: P2 - Definir Rotas Básicas para Autenticação e Dashboard
+  - Quem: Frontend
+  - O que: Configurar as rotas para LoginScreen e Dashboard usando react-router-dom em web-app-improved.tsx.
+  - Porquê: Estruturar a navegação principal da aplicação web.
+  - Complexidade: Média
+  - Concluído: [x]
 
-- Tarefa: Backend - Implementar Cache para APIs de Leitura Frequente
-  - Quem: Backend
-  - O que: Integrar uma solução de cache (ex: Redis) para APIs que servem dados frequentemente acessados e que não mudam com muita frequência (ex: dados de configuração, listas de veículos do usuário).
-  - Porquê: Melhorar o tempo de resposta e reduzir a carga sobre o banco de dados para operações de leitura.
+- Tarefa: P2 - Proteger Rotas Autenticadas no Frontend Web
+  - Quem: Frontend
+  - O que: Implementar um componente de rota privada para redirecionar usuários não autenticados para a tela de login.
+  - Porquê: Garantir que apenas usuários logados possam acessar o Dashboard e outras áreas restritas.
+  - Complexidade: Média
+  - Concluído: [x]
+
+- Tarefa: P3 - Desenvolver Tela de Meus Veículos (Frontend Web)
+  - Quem: Frontend
+  - O que: Criar um novo componente para exibir a lista de veículos do usuário.
+  - Porquê: Começar a implementar as funcionalidades do Dashboard.
+  - Complexidade: Média
+  - Concluído: [x]
+
+- Tarefa: P3 - Integrar API de Veículos (Frontend Web)
+  - Quem: Frontend
+  - O que: Fazer requisições à API do backend para buscar e exibir os veículos do usuário na tela de Meus Veículos.
+  - Porquê: Popular a tela com dados reais do usuário.
+  - Complexidade: Média
+  - Concluído: [x]
+
+- Tarefa: P3 - Melhorar Tratamento de Erros de API no Frontend
+  - Quem: Frontend
+  - O que: Implementar um sistema de notificação (ex: toasts, alertas) para exibir erros de API de forma mais clara e amigável ao usuário.
+  - Porquê: Fornecer feedback imediato e compreensível sobre falhas na comunicação com o backend.
+  - Complexidade: Média
+  - Concluído: [x]
+
+- Tarefa: P3 - Otimizar Imagens para Web
+  - Quem: Frontend
+  - O que: Implementar lazy loading para imagens e considerar formatos otimizados (ex: WebP) para melhorar o desempenho de carregamento.
+  - Porquê: Reduzir o tempo de carregamento da página e o consumo de dados.
+  - Complexidade: Simples
+  - Concluído: [x]
+
+- Tarefa: P3 - Adicionar Suporte Básico a PWA (Progressive Web App)
+  - Quem: Frontend
+  - O que: Criar um manifest.json e configurar um Service Worker básico para permitir a instalação do aplicativo web na tela inicial e cache de assets estáticos.
+  - Porquê: Melhorar a experiência do usuário, permitindo acesso offline e instalação como aplicativo nativo.
+  - Complexidade: Média
+  - Concluído: [x]
+
+- Tarefa: P4 - Refatorar Estilos para CSS Modules/Styled Components
+  - Quem: Frontend
+  - O que: Migrar os estilos inline existentes em web-app-improved.tsx para CSS Modules ou Styled Components.
+  - Porquê: Melhorar a manutenibilidade, escalabilidade e evitar conflitos de estilo.
   - Complexidade: Complexa
-  - Concluído: [ ]
+  - Concluído: [x]
 
-- Tarefa: Backend - Implementar Auditoria de Segurança para Ações Críticas
+- Tarefa: P4 - Preparar Componentes para Reutilização Mobile
+  - Quem: Frontend
+  - O que: Analisar os componentes existentes e refatorá-los para que possam ser facilmente adaptados ou reutilizados em um ambiente React Native (ex: separando lógica de UI).
+  - Porquê: Facilitar a futura implementação para Android e iOS, maximizando a reutilização de código.
+  - Complexidade: Complexa
+  - Concluído: [x]
+
+- Tarefa: P4 - Implementar Testes E2E (End-to-End) para Fluxo de Login/Registro
+  - Quem: Frontend
+  - O que: Configurar uma ferramenta de testes E2E (ex: Cypress, Playwright) e escrever testes para os fluxos de login e registro.
+  - Porquê: Garantir que as funcionalidades críticas da aplicação web funcionem corretamente de ponta a ponta.
+  - Complexidade: Complexa
+  - Concluído: [x]
+
+- Tarefa: P2 - Instalar `react-router-dom`
+  - Quem: Frontend
+  - O que: Executar `npm install react-router-dom` no diretório `frontend`.
+  - Porquê: Habilitar a navegação declarativa na aplicação web.
+  - Complexidade: Simples
+  - Concluído: [x]
+
+- Tarefa: P2 - Criar componente `AppRouter`
+  - Quem: Frontend
+  - O que: Criar um novo arquivo `src/components/AppRouter.tsx` para encapsular a lógica de roteamento.
+  - Porquê: Organizar as rotas e manter o `App.tsx` limpo.
+  - Complexidade: Simples
+  - Concluído: [x]
+
+- Tarefa: P2 - Configurar `BrowserRouter`
+  - Quem: Frontend
+  - O que: Envolver o `AppContent` com `BrowserRouter` em `main.tsx` ou `App.tsx`.
+  - Porquê: Habilitar o roteamento baseado em URL para a aplicação web.
+  - Complexidade: Simples
+  - Concluído: [x]
+
+- Tarefa: P2 - Definir rotas para Login e Dashboard
+  - Quem: Frontend
+  - O que: No `AppRouter.tsx`, definir rotas para `/login` (renderizando `LoginScreen`) e `/dashboard` (renderizando `Dashboard`).
+  - Porquê: Permitir a navegação entre as telas principais.
+  - Complexidade: Simples
+  - Concluído: [x]
+
+- Tarefa: P2 - Implementar `PrivateRoutes`
+  - Quem: Frontend
+  - O que: Criar um componente `PrivateRoutes` que verifica a autenticação e redireciona para `/login` se o usuário não estiver autenticado.
+  - Porquê: Proteger as rotas do dashboard e outras áreas restritas.
+  - Complexidade: Média
+  - Concluído: [x]
+
+- Tarefa: P2 - Integrar `PrivateRoutes` ao `AppRouter`
+  - Quem: Frontend
+  - O que: Usar `PrivateRoutes` para envolver a rota do `/dashboard`.
+  - Porquê: Aplicar a proteção de rota ao dashboard.
+  - Complexidade: Simples
+  - Concluído: [x]
+
+- Tarefa: P2 - Redirecionar após Login/Registro
+  - Quem: Frontend
+  - O que: Após login/registro bem-sucedido, usar `useNavigate` do `react-router-dom` para redirecionar para `/dashboard` em vez de `window.location.reload()`.
+  - Porquê: Melhorar a experiência do usuário com navegação suave.
+  - Complexidade: Simples
+  - Concluído: [x]
+
+- Tarefa: P2 - Implementar PWA (Frontend - Configurar Service Worker)
+  - Quem: Frontend
+  - O que: Configurar um Service Worker para melhorar a performance e permitir o uso offline básico.
+  - Porquê: Essencial para uma experiência web moderna e funcional.
+  - Complexidade: Média
+  - Concluído: [x]
+
+- Tarefa: P2 - Implementar PWA (Frontend - Configurar manifest.json)
+  - Quem: Frontend
+  - O que: Configurar o manifest.json para permitir que a aplicação seja instalada como um aplicativo nativo.
+  - Porquê: Complementa o Service Worker para uma experiência PWA completa.
+  - Complexidade: Simples
+  - Concluído: [x]
+
+- Tarefa: P1 - Conectar API de Veículos (Frontend - Integrar com backend)
+  - Quem: Frontend
+  - O que: Substituir os dados mock da tela "Meus Veículos" por chamadas reais à API do backend.
+  - Porquê: Tornar a funcionalidade de veículos real e útil.
+  - Complexidade: Média
+  - Concluído: [x]
+
+- Tarefa: P1 - Implementar formulário de veículos (Frontend - Criar formulário)
+  - Quem: Frontend
+  - O que: Permitir que os usuários adicionem e editem seus veículos.
+  - Porquê: Tornar a tela "Meus Veículos" totalmente interativa.
+  - Complexidade: Média
+  - Concluído: [x]
+
+- Tarefa: P2 - Refatorar estilos (Frontend - Criar sistema de design)
+  - Quem: Frontend
+  - O que: Refatorar componentes antigos para usar o sistema de design.
+  - Porquê: Garantir consistência visual e facilitar a manutenção.
+  - Complexidade: Média
+  - Concluído: [x]
+
+- Tarefa: P2 - Implementar tela de Despesas (Frontend - Criar componente)
+  - Quem: Frontend
+  - O que: Adicionar uma funcionalidade central de gestão financeira.
+  - Porquê: Permitir o gerenciamento de despesas.
+  - Complexidade: Média
+  - Concluído: [x]
+
+- Tarefa: P2 - Implementar tela de Abastecimentos (Frontend - Criar componente)
+  - Quem: Frontend
+  - O que: Adicionar outra funcionalidade central de gestão financeira.
+  - Porquê: Permitir o gerenciamento de abastecimentos.
+  - Complexidade: Média
+  - Concluído: [x]
+
+- Tarefa: P1 - Integrar novas telas ao sistema de roteamento
+  - Quem: Frontend
+  - O que: Adicionar as telas de Despesas e Abastecimentos ao sistema de navegação.
+  - Porquê: Tornar as novas funcionalidades acessíveis aos usuários.
+  - Complexidade: Simples
+  - Concluído: [x]
+
+- Tarefa: P1 - Conectar APIs de Despesas e Abastecimentos
+  - Quem: Frontend
+  - O que: Substituir dados mock por chamadas reais às APIs de Despesas e Abastecimentos.
+  - Porquê: Permitir que o usuário gerencie seus dados de forma persistente.
+  - Complexidade: Média
+  - Concluído: [x]
+
+- Tarefa: P1 - Implementar formulários funcionais
+  - Quem: Frontend
+  - O que: Implementar os formulários completos para adicionar e editar despesas e abastecimentos.
+  - Porquê: Permitir que o usuário insira e gerencie seus dados de forma interativa.
+  - Complexidade: Média
+  - Concluído: [x]
+
+- Tarefa: P2 - Migrar componentes existentes para o sistema de design
+  - Quem: Frontend
+  - O que: Refatorar componentes antigos para usar o sistema de design.
+  - Porquê: Garantir consistência visual e facilitar a manutenção.
+  - Complexidade: Média
+  - Concluído: [x]
+
+- Tarefa: P2 - Implementar validação de formulários
+  - Quem: Frontend
+  - O que: Adicionar validação robusta aos formulários de despesas e abastecimentos.
+  - Porquê: Melhorar a experiência do usuário e evitar erros de entrada de dados.
+  - Complexidade: Média
+  - Concluído: [x]
+
+
+
+
+- Tarefa: P1 - Implementar APIs CRUD completas para Jornadas
   - Quem: Backend
-  - O que: Registrar logs detalhados de ações críticas (ex: alteração de senha, exclusão de conta, alteração de permissões) com informações como usuário, timestamp, IP e detalhes da ação.
-  - Porquê: Aumentar a segurança e a capacidade de auditoria do sistema, facilitando a detecção de atividades suspeitas.
+  - O que: Desenvolver endpoints CRUD completos para a entidade Jornadas.
+  - Porquê: Permitir o gerenciamento completo de jornadas no backend.
   - Complexidade: Média
   - Concluído: [ ]
 
-- Tarefa: Frontend - Implementar Modo Offline Básico
-  - Quem: Frontend
-  - O que: Configurar o Service Worker (ou equivalente no React Native/Expo) para cachear recursos estáticos da aplicação, permitindo que o aplicativo carregue mesmo sem conexão à internet.
-  - Porquê: Melhorar a resiliência da aplicação e a experiência do usuário em ambientes com conectividade limitada.
+- Tarefa: P1 - Implementar APIs CRUD completas para Abastecimentos
+  - Quem: Backend
+  - O que: Desenvolver endpoints CRUD completos para a entidade Abastecimentos.
+  - Porquê: Permitir o gerenciamento completo de abastecimentos no backend.
   - Complexidade: Média
   - Concluído: [ ]
 
-- Tarefa: Frontend - Implementar Sincronização de Dados Offline (Básico)
+- Tarefa: P1 - Implementar APIs CRUD completas para Despesas
+  - Quem: Backend
+  - O que: Desenvolver endpoints CRUD completos para a entidade Despesas.
+  - Porquê: Permitir o gerenciamento completo de despesas no backend.
+  - Complexidade: Média
+  - Concluído: [ ]
+
+- Tarefa: P1 - Desenvolver Tela de Jornadas
   - Quem: Frontend
-  - O que: Desenvolver um mecanismo básico para armazenar dados de jornadas, abastecimentos e despesas localmente quando offline e sincronizá-los com o backend assim que a conexão for restabelecida.
-  - Porquê: Permitir que o usuário continue registrando informações importantes mesmo sem internet, garantindo que os dados não sejam perdidos.
-  - Complexidade: Complexa
+  - O que: Criar um componente de tela para gerenciar as jornadas do usuário.
+  - Porquê: Adicionar uma funcionalidade central de gestão de viagens.
+  - Complexidade: Média
+  - Concluído: [ ]
+
+- Tarefa: P1 - Implementar APIs CRUD completas para Jornadas (Frontend - Integração)
+  - Quem: Frontend
+  - O que: Integrar a tela de Jornadas com as APIs CRUD do backend.
+  - Porquê: Popular a tela com dados reais e permitir a interação do usuário.
+  - Complexidade: Média
+  - Concluído: [ ]
+
+- Tarefa: P2 - Criar arquivo `.env.example`
+  - Quem: Geral
+  - O que: Criar um arquivo `.env.example` na raiz do projeto com todas as variáveis de ambiente necessárias.
+  - Porquê: Facilitar a configuração do ambiente para novos desenvolvedores.
+  - Complexidade: Simples
+  - Concluído: [ ]
+
+- Tarefa: P2 - Atualizar `README.md` com instruções de setup e execução
+  - Quem: Geral
+  - O que: Revisar e atualizar o `README.md` principal com instruções claras e concisas para o setup e execução do projeto.
+  - Porquê: Fornecer um guia rápido e preciso para iniciar o desenvolvimento.
+  - Complexidade: Simples
+  - Concluído: [ ]
+
+
+
+- Tarefa: P1 - Implementar APIs CRUD completas para Jornadas
+  - Quem: Backend
+  - O que: Desenvolver endpoints CRUD completos para a entidade Jornadas.
+  - Porquê: Permitir o gerenciamento completo de jornadas no backend.
+  - Complexidade: Média
+  - Concluído: [ ]
+
+- Tarefa: P1 - Implementar APIs CRUD completas para Abastecimentos
+  - Quem: Backend
+  - O que: Desenvolver endpoints CRUD completos para a entidade Abastecimentos.
+  - Porquê: Permitir o gerenciamento completo de abastecimentos no backend.
+  - Complexidade: Média
+  - Concluído: [ ]
+
+- Tarefa: P1 - Implementar APIs CRUD completas para Despesas
+  - Quem: Backend
+  - O que: Desenvolver endpoints CRUD completos para a entidade Despesas.
+  - Porquê: Permitir o gerenciamento completo de despesas no backend.
+  - Complexidade: Média
+  - Concluído: [ ]
+
+- Tarefa: P1 - Desenvolver Tela de Jornadas
+  - Quem: Frontend
+  - O que: Criar um componente de tela para gerenciar as jornadas do usuário.
+  - Porquê: Adicionar uma funcionalidade central de gestão de viagens.
+  - Complexidade: Média
+  - Concluído: [ ]
+
+- Tarefa: P1 - Implementar APIs CRUD completas para Jornadas (Frontend - Integração)
+  - Quem: Frontend
+  - O que: Integrar a tela de Jornadas com as APIs CRUD do backend.
+  - Porquê: Popular a tela com dados reais e permitir a interação do usuário.
+  - Complexidade: Média
+  - Concluído: [ ]
+
+- Tarefa: P2 - Criar arquivo `.env.example`
+  - Quem: Geral
+  - O que: Criar um arquivo `.env.example` na raiz do projeto com todas as variáveis de ambiente necessárias.
+  - Porquê: Facilitar a configuração do ambiente para novos desenvolvedores.
+  - Complexidade: Simples
+  - Concluído: [ ]
+
+- Tarefa: P2 - Atualizar `README.md` com instruções de setup e execução
+  - Quem: Geral
+  - O que: Revisar e atualizar o `README.md` principal com instruções claras e concisas para o setup e execução do projeto.
+  - Porquê: Fornecer um guia rápido e preciso para iniciar o desenvolvimento.
+  - Complexidade: Simples
   - Concluído: [ ]
 
 

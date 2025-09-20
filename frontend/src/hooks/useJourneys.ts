@@ -4,7 +4,9 @@ import {
   JourneyFilter, 
   JourneySortOption, 
   UseJourneysReturn,
-  JourneyMetrics 
+  JourneyMetrics,
+  CreateJourneyRequest,
+  UpdateJourneyRequest
 } from '../types/journey';
 import { journeyService } from '../services/api';
 
@@ -192,6 +194,45 @@ export const useJourneys = (initialFilter?: JourneyFilter): UseJourneysReturn =>
     loadJourneys();
   }, [loadJourneys]);
 
+  const createJourney = useCallback(async (journeyData: CreateJourneyRequest) => {
+    try {
+      setLoading(true);
+      await journeyService.createJourney(journeyData);
+      await loadJourneys();
+    } catch (err: any) {
+      setError(err.message || "Erro ao criar jornada.");
+      console.error("Erro ao criar jornada:", err);
+    } finally {
+      setLoading(false);
+    }
+  }, [loadJourneys]);
+
+  const updateJourney = useCallback(async (id: string, journeyData: UpdateJourneyRequest) => {
+    try {
+      setLoading(true);
+      await journeyService.updateJourney(id, journeyData);
+      await loadJourneys();
+    } catch (err: any) {
+      setError(err.message || "Erro ao atualizar jornada.");
+      console.error("Erro ao atualizar jornada:", err);
+    } finally {
+      setLoading(false);
+    }
+  }, [loadJourneys]);
+
+  const deleteJourney = useCallback(async (id: string) => {
+    try {
+      setLoading(true);
+      await journeyService.deleteJourney(id);
+      await loadJourneys();
+    } catch (err: any) {
+      setError(err.message || "Erro ao excluir jornada.");
+      console.error("Erro ao excluir jornada:", err);
+    } finally {
+      setLoading(false);
+    }
+  }, [loadJourneys]);
+
   return {
     journeys: sortedJourneys,
     loading,
@@ -201,6 +242,9 @@ export const useJourneys = (initialFilter?: JourneyFilter): UseJourneysReturn =>
     filter: applyFilter,
     sort: applySort,
     metrics,
+    createJourney,
+    updateJourney,
+    deleteJourney,
   };
 };
 
