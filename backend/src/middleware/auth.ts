@@ -7,6 +7,7 @@ import jwt from 'jsonwebtoken';
 export interface AuthenticatedRequest extends Request {
   user?: { id: string; email: string; nome: string; role: string };
 }
+}
 
 export const authMiddleware = (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
   const token = req.header('Authorization')?.replace('Bearer ', '');

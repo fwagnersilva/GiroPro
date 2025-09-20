@@ -32,7 +32,7 @@ router.post('/refresh-token', AuthController.refreshToken);
 router.post("/change-password", authMiddleware, validate(changePasswordSchema), AuthController.changePassword);
 
 // GET /api/v1/auth/me
-router.get("/me", authMiddleware, roleMiddleware(["admin"]), AuthController.me);
+router.get("/me", authMiddleware, roleMiddleware(["admin"]), (req, res) => AuthController.me(req as AuthenticatedRequest, res));
 
 export { router as authRoutes };
 
