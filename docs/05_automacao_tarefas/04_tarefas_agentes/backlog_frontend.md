@@ -397,7 +397,11 @@ _**
   - O que: Criar uma função fetchDashboardSummary para buscar dados do dashboard.
   - Porquê: Encapsular a lógica de busca de dados para ser usada com useQuery.
   - Complexidade: Simples
-  - Concluído: Em Execução
+  - Concluído: [x]
+  - Como foi feita: Foi criado o arquivo `frontend/src/services/dashboardService.ts` com a função `fetchDashboardSummary` que encapsula a lógica de busca de dados do dashboard. A função aceita um parâmetro de período e retorna os dados tipados do dashboard.
+  - Hash do Commit: 31b160e5233a81f92fa7ba7a054ee6a6333394b7
+  - Arquivos modificados: frontend/src/services/dashboardService.ts
+  - Observações: A função está pronta para ser utilizada com o useQuery do React Query.
 
 - Tarefa: P2 - Otimizar o carregamento de dados no Dashboard
   - Quem: Frontend
