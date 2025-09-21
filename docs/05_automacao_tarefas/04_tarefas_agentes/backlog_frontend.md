@@ -283,15 +283,11 @@ _**
   - Porquê: Definir o ambiente e as opções de execução dos testes E2E.
   - Complexidade: Simples
   - Concluído: [x]
-<<<<<<< HEAD
   - Como foi feita: O arquivo `playwright.config.ts` já existia no diretório `frontend` com uma configuração inicial. Foi verificado e considerado como atendendo ao requisito da tarefa.
-  - Observações: Nenhuma.
-=======
-  - Como foi feita: O arquivo de configuração do Playwright já existia no projeto em `frontend/playwright.config.ts` com configurações adequadas para testes E2E, incluindo configuração para múltiplos navegadores e dispositivos móveis.
   - Hash do Commit: 0ad3af8d02d8e541c64f931604d4c76fabfef14a
-  - Arquivos modificados: frontend/playwright.config.ts (já existente)
+  - Arquivos modificados: frontend/playwright.config.ts
   - Observações: A configuração já estava presente no projeto, não foi necessário criar um novo arquivo.
->>>>>>> 16d7d26cf7632fde15417600829667883308dbf7
+
 
 - Tarefa: P3 - Implementar testes E2E para o fluxo de registro e login
   - Quem: Frontend
@@ -299,15 +295,11 @@ _**
   - Porquê: Verificar se a página de registro é acessível.
   - Complexidade: Simples
   - Concluído: [x]
-<<<<<<< HEAD
-  - Como foi feita: O teste E2E para navegar até a tela de registro já está implementado no arquivo `frontend/tests/e2e/auth.spec.ts`.
-  - Observações: Nenhuma.
-=======
   - Como foi feita: O teste E2E para navegar até a tela de registro já estava implementado no arquivo `frontend/tests/e2e/auth.spec.ts` com o teste "deve navegar até a tela de registro" que verifica a visibilidade do botão de registro, clica nele e valida o redirecionamento e campos visíveis.
   - Hash do Commit: e4caa8a777597271071a455e77fa3f588c6b746f
-  - Arquivos modificados: frontend/tests/e2e/auth.spec.ts (já existente)
+  - Arquivos modificados: frontend/tests/e2e/auth.spec.ts
   - Observações: O teste já estava implementado no projeto, cobrindo a navegação e validação da tela de registro.
->>>>>>> 16d7d26cf7632fde15417600829667883308dbf7
+
 
 - Tarefa: P3 - Implementar testes E2E para o fluxo de registro e login
   - Quem: Frontend
@@ -315,15 +307,11 @@ _**
   - Porquê: Simular a entrada de dados de um usuário real.
   - Complexidade: Simples
   - Concluído: [x]
-<<<<<<< HEAD
-  - Como foi feita: O teste E2E para preencher o formulário de registro com campos válidos já está implementado no arquivo `frontend/tests/e2e/auth.spec.ts`.
-  - Observações: Nenhuma.
-=======
   - Como foi feita: O teste E2E para preencher o formulário de registro já estava implementado no arquivo `frontend/tests/e2e/auth.spec.ts` com o teste "deve preencher o formulário de registro com campos válidos" que preenche os campos nome, email e senha e valida os valores inseridos.
   - Hash do Commit: e4caa8a777597271071a455e77fa3f588c6b746f
-  - Arquivos modificados: frontend/tests/e2e/auth.spec.ts (já existente)
+  - Arquivos modificados: frontend/tests/e2e/auth.spec.ts
   - Observações: O teste já estava implementado, cobrindo o preenchimento e validação dos campos do formulário de registro.
->>>>>>> 16d7d26cf7632fde15417600829667883308dbf7
+
 
 - Tarefa: P3 - Implementar testes E2E para o fluxo de registro e login
   - Quem: Frontend
@@ -331,15 +319,11 @@ _**
   - Porquê: Simular a ação final do usuário no formulário.
   - Complexidade: Simples
   - Concluído: [x]
-<<<<<<< HEAD
-  - Como foi feita: O teste E2E para submeter o formulário de registro já está implementado no arquivo `frontend/tests/e2e/auth.spec.ts`.
-  - Observações: Nenhuma.
-=======
   - Como foi feita: O teste E2E para submeter o formulário de registro já estava implementado no arquivo `frontend/tests/e2e/auth.spec.ts` com o teste "deve submeter o formulário de registro" que preenche os campos e clica no botão de submissão.
   - Hash do Commit: e4caa8a777597271071a455e77fa3f588c6b746f
-  - Arquivos modificados: frontend/tests/e2e/auth.spec.ts (já existente)
+  - Arquivos modificados: frontend/tests/e2e/auth.spec.ts
   - Observações: O teste já estava implementado, cobrindo a submissão completa do formulário de registro.
->>>>>>> 16d7d26cf7632fde15417600829667883308dbf7
+
 
 - Tarefa: P3 - Implementar testes E2E para o fluxo de registro e login
   - Quem: Frontend
@@ -391,7 +375,7 @@ _**
   - O que: Instalar react-query no projeto frontend.
   - Porquê: Habilitar o uso de hooks para gerenciamento de estado de dados e cache.
   - Complexidade: Simples
-  - Concluído: [ ]
+  - Concluído: Em Execução
 
 - Tarefa: P2 - Otimizar o carregamento de dados no Dashboard
   - Quem: Frontend
