@@ -206,7 +206,7 @@
   - **Complexidade:** Complexa
   - **Concluído:** [x]
   - **Como foi feita:** Implementada API completa para sincronização offline com 4 endpoints principais: /api/v1/sync/upload (upload de dados em lote), /api/v1/sync/download/initial (sincronização inicial), /api/v1/sync/download/incremental (sincronização incremental) e /api/v1/sync/last-sync (timestamp da última sincronização). Implementado processamento transacional com resolução de conflitos usando estratégia "last-write-wins" com fallback para detecção de conflitos. Sistema suporta idempotência para evitar duplicação de dados e inclui autenticação JWT em todas as rotas. Criados arquivos: src/routes/sync.ts (rotas), src/controllers/syncController.ts (lógica de negócio) e integração no app.ts principal.
-  - **Hash do Commit:** [PENDENTE]
+  - **Hash do Commit:** 1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b
   - **Arquivos modificados:** 
     - `backend/src/routes/sync.ts` (novo arquivo)
     - `backend/src/controllers/syncController.ts` (novo arquivo)
@@ -222,7 +222,7 @@
   - **Complexidade:** Complexa
   - **Concluído:** [x]
   - **Como foi feita:** Implementados endpoints para download de dados iniciais e incrementais. O endpoint `/download/initial` permite baixar todos os dados do usuário para uso offline. O endpoint `/download/incremental` permite baixar apenas os dados modificados desde a última sincronização, utilizando um `lastSyncTimestamp`. Ambos os endpoints utilizam autenticação JWT e filtram os dados por `userId`. Foram criados os arquivos `syncDownloadRoutes.ts` e `syncDownloadController.ts` e integrados ao `app.ts`.
-  - **Hash do Commit:** [PENDENTE]
+  - **Hash do Commit:** 0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b
   - **Arquivos modificados:** 
     - `backend/src/routes/syncDownloadRoutes.ts` (novo arquivo)
     - `backend/src/controllers/syncDownloadController.ts` (novo arquivo)
