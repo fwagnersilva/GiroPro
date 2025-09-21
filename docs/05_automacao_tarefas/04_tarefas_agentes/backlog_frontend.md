@@ -386,14 +386,18 @@ _**
   - O que: Configurar QueryClientProvider no componente raiz do frontend.
   - Porquê: Disponibilizar o contexto do React Query para toda a aplicação.
   - Complexidade: Simples
-  - Concluído: Em Execução
+  - Concluído: [x]
+  - Como foi feita: O QueryClientProvider foi adicionado ao arquivo `App.tsx`, envolvendo o ToastProvider e NavigationContainer. Foi criada uma instância do QueryClient com configurações padrão de retry (2 tentativas) e staleTime (5 minutos).
+  - Hash do Commit: 7fde0fce04492c774e6742395d32ea8d5e933478
+  - Arquivos modificados: frontend/App.tsx
+  - Observações: O React Query agora está disponível globalmente na aplicação.
 
 - Tarefa: P2 - Otimizar o carregamento de dados no Dashboard
   - Quem: Frontend
   - O que: Criar uma função fetchDashboardSummary para buscar dados do dashboard.
   - Porquê: Encapsular a lógica de busca de dados para ser usada com useQuery.
   - Complexidade: Simples
-  - Concluído: [ ]
+  - Concluído: Em Execução
 
 - Tarefa: P2 - Otimizar o carregamento de dados no Dashboard
   - Quem: Frontend
