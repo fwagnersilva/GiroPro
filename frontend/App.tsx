@@ -2,6 +2,7 @@ import React from 'react';
 import { ToastProvider } from './src/contexts/ToastContext';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import LoginScreen from './src/screens/LoginScreen';
 import RegisterScreen from './src/screens/RegisterScreen';
 import DashboardScreen from './src/screens/DashboardScreen';
@@ -27,10 +28,21 @@ import InsightsScreen from './src/screens/InsightsScreen';
 
 const Stack = createStackNavigator();
 
+// Criar instância do QueryClient
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: 2,
+      staleTime: 5 * 60 * 1000, // 5 minutos
+    },
+  },
+});
+
 const App: React.FC = () => {
 
   return (
-    <ToastProvider>
+    <QueryClientProvider client={queryClient}>
+      <ToastProvider>
       <NavigationContainer>
         <Stack.Navigator initialRouteName="Login" screenOptions={{ headerShown: false }}>
           <Stack.Screen name="Login" component={LoginScreen} />
@@ -57,7 +69,8 @@ const App: React.FC = () => {
 
         </Stack.Navigator>
       </NavigationContainer>
-    </ToastProvider>
+      </ToastProvider>
+    </QueryClientProvider>
   );
 };
 

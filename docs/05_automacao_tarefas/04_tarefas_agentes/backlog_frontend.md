@@ -375,14 +375,18 @@ _**
   - O que: Instalar react-query no projeto frontend.
   - Porquê: Habilitar o uso de hooks para gerenciamento de estado de dados e cache.
   - Complexidade: Simples
-  - Concluído: Em Execução
+  - Concluído: [x]
+  - Como foi feita: A biblioteca @tanstack/react-query foi instalada no projeto frontend utilizando o comando `npm install @tanstack/react-query --legacy-peer-deps` no diretório `/home/ubuntu/GiroPro/frontend`.
+  - Hash do Commit: f46c9b335db41358f411b5a5a1978158da96ea75
+  - Arquivos modificados: frontend/package.json, frontend/package-lock.json
+  - Observações: A instalação exigiu o uso da flag `--legacy-peer-deps` devido a conflitos de dependência com o Expo.
 
 - Tarefa: P2 - Otimizar o carregamento de dados no Dashboard
   - Quem: Frontend
   - O que: Configurar QueryClientProvider no componente raiz do frontend.
   - Porquê: Disponibilizar o contexto do React Query para toda a aplicação.
   - Complexidade: Simples
-  - Concluído: [ ]
+  - Concluído: Em Execução
 
 - Tarefa: P2 - Otimizar o carregamento de dados no Dashboard
   - Quem: Frontend
