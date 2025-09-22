@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import {
   View,
   Text,
@@ -12,11 +12,12 @@ import {
 import { useAuth } from '../contexts/AuthContext';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../types';
-import FormInput, { validators, combineValidators } from '../components/FormInput';
-import LoadingSpinner from '../components/LoadingSpinner';
-import Icon from '../components/Icon';
+import LoginHeader from '../components/LoginHeader';
+import LoginForm from '../components/LoginForm';
 import Alert from '../utils/alert';
 import { showErrorToast } from '../utils/toastUtils';
+import { useLoginState } from '../hooks/useLoginState';
+import { useLoginValidation } from '../hooks/useLoginValidation';
 
 type LoginScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Login'>;
 
@@ -25,63 +26,105 @@ interface Props {
 }
 
 const LoginScreen: React.FC<Props> = ({ navigation }) => {
-  const [email, setEmail] = useState('');
-  const [senha, setSenha] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
-  const [rememberMe, setRememberMe] = useState(false);
   const { signIn } = useAuth();
+  
+  // Hooks customizados para gerenciar estado e validação
+  const {
+    email,
+    senha,
+    loading,
+    showPassword,
+    rememberMe,
+    setEmail,
+    setSenha,
+    setLoading,
+    togglePasswordVisibility,
+    toggleRememberMe,
+    clearPassword,
+    initializeRememberMe,
+  } = useLoginState();
 
-  // Animação para entrada da tela
-  const fadeAnim = new Animated.Value(0);
-  const slideAnim = new Animated.Value(50);
+  const { isFormValid } = useLoginValidation({ email, senha });
+
+  // Animação para entrada da tela - memoizada para performance
+  const fadeAnim = useMemo(() => new Animated.Value(0), []);
+  const slideAnim = useMemo(() => new Animated.Value(50), []);
 
   React.useEffect(() => {
+    // Inicializar "Lembrar-me"
+    initializeRememberMe();
+
+    // Animação otimizada com menor duração
     Animated.parallel([
       Animated.timing(fadeAnim, {
         toValue: 1,
-        duration: 800,
+        duration: 600, // Reduzido de 800ms para 600ms
         useNativeDriver: true,
       }),
       Animated.timing(slideAnim, {
         toValue: 0,
-        duration: 800,
+        duration: 600, // Reduzido de 800ms para 600ms
         useNativeDriver: true,
       }),
     ]).start();
-  }, []);
+  }, [fadeAnim, slideAnim, initializeRememberMe]);
 
-  const handleLogin = async () => {
-    // Validação básica
-    if (!email.trim()) {
-      Alert.alert('Erro', 'Por favor, informe seu email');
-      return;
-    }
-
-    if (!senha.trim()) {
-      Alert.alert('Erro', 'Por favor, informe sua senha');
+  const handleLogin = useCallback(async () => {
+    if (!isFormValid) {
+      Alert.alert('Erro', 'Por favor, verifique os dados informados');
       return;
     }
 
     try {
       setLoading(true);
-      await signIn({ email: email.trim(), senha });
+      await signIn({ email: email.trim(), senha }, rememberMe);
     } catch (error: any) {
-      showErrorToast(error.message || "Erro ao fazer login");
+      // Limpar campo de senha após erro
+      clearPassword();
+      
+      // Mensagens de erro mais específicas
+      const getErrorMessage = (errorMsg: string): string => {
+        if (errorMsg.includes('Credenciais inválidas') || 
+            errorMsg.includes('Email ou senha incorretos') ||
+            errorMsg.includes('Usuário não encontrado')) {
+          return "Email ou senha incorretos. Verifique suas credenciais e tente novamente.";
+        } else if (errorMsg.includes('Conta temporariamente bloqueada')) {
+          return "Conta temporariamente bloqueada devido a muitas tentativas de login. Tente novamente em 15 minutos.";
+        } else if (errorMsg.includes('Conta inativa')) {
+          return "Sua conta está inativa ou suspensa. Entre em contato com o suporte.";
+        } else if (errorMsg.includes('Email inválido')) {
+          return "Formato de email inválido. Verifique e tente novamente.";
+        } else if (errorMsg.includes('rede') || errorMsg.includes('timeout')) {
+          return "Problema de conexão. Verifique sua internet e tente novamente.";
+        }
+        return errorMsg || "Erro inesperado ao fazer login. Tente novamente.";
+      };
+      
+      showErrorToast(getErrorMessage(error.message));
     } finally {
       setLoading(false);
     }
-  };
+  }, [email, senha, rememberMe, isFormValid, signIn, setLoading, clearPassword]);
 
-  const navigateToRegister = () => {
+  const navigateToRegister = useCallback(() => {
     navigation.navigate('Register');
-  };
+  }, [navigation]);
 
-  const togglePasswordVisibility = () => {
+  const navigateToForgotPassword = useCallback(() => {
+    navigation.navigate('ForgotPassword');
+  }, [navigation]);
+
+  const togglePasswordVisibility = useCallback(() => {
     setShowPassword(!showPassword);
-  };
+  }, [showPassword]);
 
-  const isFormValid = email.trim() !== '' && senha.trim() !== '';
+  const toggleRememberMe = useCallback(() => {
+    setRememberMe(!rememberMe);
+  }, [rememberMe]);
+
+  const isFormValid = useMemo(() => {
+    return email.trim() !== '' && senha.trim() !== '';
+  }, [email, senha]);
 
   return (
     <KeyboardAvoidingView
@@ -98,79 +141,32 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
             },
           ]}
         >
-          <View style={styles.header}>
-            <Text style={styles.title}>GiroPro</Text>
-            <Text style={styles.subtitle}>Gestão financeira para motoristas</Text>
+          <LoginHeader />
+
+          <LoginForm
+            email={email}
+            senha={senha}
+            loading={loading}
+            showPassword={showPassword}
+            rememberMe={rememberMe}
+            isFormValid={isFormValid}
+            onEmailChange={setEmail}
+            onPasswordChange={setSenha}
+            onTogglePasswordVisibility={togglePasswordVisibility}
+            onToggleRememberMe={toggleRememberMe}
+            onLogin={handleLogin}
+            onForgotPassword={navigateToForgotPassword}
+          />
+
+          <View style={styles.dividerContainer}>
+            <View style={styles.divider} />
+            <Text style={styles.dividerText}>ou</Text>
+            <View style={styles.divider} />
           </View>
 
-          <View style={styles.form}>
-            <FormInput
-              label="Email"
-              placeholder="Digite seu email"
-              value={email}
-              onChangeText={setEmail}
-              keyboardType="email-address"
-              autoCapitalize="none"
-              required
-              leftIcon="mail-outline"
-              validation={combineValidators(validators.required, validators.email)}
-              testID="email-input"
-            />
-
-            <FormInput
-              label="Senha"
-              placeholder="Digite sua senha"
-              value={senha}
-              onChangeText={setSenha}
-              secureTextEntry={!showPassword}
-              required
-              leftIcon="lock-closed-outline"
-              rightIcon={showPassword ? "eye-off-outline" : "eye-outline"}
-              onRightIconPress={togglePasswordVisibility}
-              validation={validators.required}
-              testID="password-input"
-            />
-
-            <View style={styles.optionsContainer}>
-              <TouchableOpacity
-                style={styles.rememberMeContainer}
-                onPress={() => setRememberMe(!rememberMe)}
-              >
-                {rememberMe ? (
-                  <Icon name="checkmark-outline" size={24} color="#007AFF" />
-                ) : (
-                  <Icon name="square-outline" size={24} color="#8E8E93" />
-                )}
-                <Text style={styles.rememberMeText}>Lembrar-me</Text>
-              </TouchableOpacity>
-
-              <TouchableOpacity onPress={() => Alert.alert('Em breve', 'Funcionalidade em desenvolvimento')}>
-                <Text style={styles.forgotPasswordText}>Esqueceu sua senha?</Text>
-              </TouchableOpacity>
-            </View>
-
-            <TouchableOpacity
-              style={[styles.loginButton, !isFormValid && styles.loginButtonDisabled]}
-              onPress={handleLogin}
-              disabled={!isFormValid}
-            >
-              {loading ? (
-                <LoadingSpinner color="#FFFFFF" />
-              ) : (
-                <Text style={styles.loginButtonText}>Entrar</Text>
-              )}
-            </TouchableOpacity>
-
-            <View style={styles.dividerContainer}>
-              <View style={styles.divider} />
-              <Text style={styles.dividerText}>ou</Text>
-              <View style={styles.divider} />
-            </View>
-
-            <TouchableOpacity style={styles.registerButton} onPress={navigateToRegister}>
-              <Text style={styles.registerButtonText}>Não tem conta? <Text style={styles.registerLink}>Cadastre-se</Text></Text>
-            </TouchableOpacity>
-          </View>
+          <TouchableOpacity style={styles.registerButton} onPress={navigateToRegister}>
+            <Text style={styles.registerButtonText}>Não tem conta? <Text style={styles.registerLink}>Cadastre-se</Text></Text>
+          </TouchableOpacity>
         </Animated.View>
       </ScrollView>
     </KeyboardAvoidingView>
@@ -200,59 +196,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 3,
-  },
-  header: {
-    alignItems: 'center',
-    marginBottom: 32,
-  },
-  title: {
-    fontSize: 36,
-    fontWeight: 'bold',
-    color: '#007AFF',
-    marginBottom: 8,
-  },
-  subtitle: {
-    fontSize: 18,
-    color: '#8E8E93',
-    textAlign: 'center',
-  },
-  form: {
-    width: '100%',
-  },
-  optionsContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 24,
-  },
-  rememberMeContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  rememberMeText: {
-    marginLeft: 8,
-    fontSize: 16,
-    color: '#000000',
-  },
-  forgotPasswordText: {
-    fontSize: 16,
-    color: '#007AFF',
-  },
-  loginButton: {
-    backgroundColor: '#007AFF',
-    borderRadius: 12,
-    paddingVertical: 16,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: 16,
-  },
-  loginButtonDisabled: {
-    backgroundColor: '#A9D3FF',
-  },
-  loginButtonText: {
-    color: '#FFFFFF',
-    fontSize: 18,
-    fontWeight: '600',
   },
   dividerContainer: {
     flexDirection: 'row',
