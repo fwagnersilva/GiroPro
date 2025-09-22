@@ -7,6 +7,7 @@ export interface AuthenticatedRequest extends Request {
   user?: {
     id: string;
     email: string;
+    nome: string;
     role: 'admin' | 'user' | 'guest';
   };
 }
@@ -20,14 +21,14 @@ export const authenticateToken = (req: AuthenticatedRequest, res: Response, next
     return res.status(401).json({ error: 'Token de acesso requerido' });
   }
 
-  jwt.verify(token, config.jwt.secret, (err: any, user: any) => {
+  jwt.verify(token, config.auth.jwtSecret, (err: any, user: any) => {
     if (err) {
       logger.warn('Token inválido ou expirado', { token: token.substring(0, 10) + '...', error: err.message });
       return res.status(403).json({ error: 'Token inválido ou expirado' });
     }
 
     req.user = user;
-    logger.info('Usuário autenticado com sucesso', { userId: user.id, role: user.role });
+    logger.info("Usuário autenticado com sucesso", { userId: user.id, role: user.role });
     next();
   });
 };
@@ -54,7 +55,7 @@ export const authorizeRoles = (...allowedRoles: Array<'admin' | 'user' | 'guest'
       userRole: req.user.role, 
       route: req.path 
     });
-    next();
+    return next();
   };
 };
 

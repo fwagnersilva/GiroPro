@@ -1,28 +1,18 @@
-const logger = new Logger();
-import { Router } from 'express';
-import { authMiddleware } from '../middlewares/auth';
+import { Router, Request, Response, NextFunction } from 'express';
+import { authMiddleware, roleMiddleware } from '../middlewares/auth';
 import { backupService } from '../services/backupService';
 import { performanceService } from '../services/performanceService';
 import { cacheService } from '../services/cacheService';
-import { Logger } from "../utils/logger";
+import logger from "../utils/logger";
 
 const router = Router();
 
 // Middleware de autenticação para todas as rotas admin
-router.use(authMiddleware);
+router.use(authMiddleware as any);
 
-// Middleware para verificar se o usuário é admin
-const adminOnly = (req: any, res: any, next: any) => {
-  if (!req.user?.isAdmin) {
-    return res.status(403).json({
-      error: 'Acesso negado. Apenas administradores podem acessar esta funcionalidade.',
-      code: 'ADMIN_REQUIRED'
-    });
-  }
-  next();
-};
 
-router.use(adminOnly);
+
+router.use(roleMiddleware(["admin"]) as any);
 
 // GET /api/v1/admin/health - Status detalhado do sistema
 router.get('/health', async (req, res) => {
