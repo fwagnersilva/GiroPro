@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { JourneyService } from '../services/journeyService';
 import { CreateJourneyRequest, UpdateJourneyRequest, JourneyFilters } from '../types';
-import { Logger } from "../utils/logger";
+import Logger from "../utils/logger";
 import { Cache } from '../utils/cache';
 import { z } from 'zod';
 import { performance } from 'perf_hooks';
@@ -36,13 +36,7 @@ interface PaginationMeta {
   hasPrev: boolean;
 }
 
-interface AuthenticatedRequest extends Request {
-  user?: {
-    id: string;
-    email: string;
-    role?: string;
-  };
-}
+import { AuthenticatedRequest } from "../middlewares/authMiddleware";
 
 // ===============================
 // SCHEMAS DE VALIDAÇÃO
