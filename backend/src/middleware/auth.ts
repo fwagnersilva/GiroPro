@@ -1,7 +1,12 @@
+
+
+
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
-import { config } from '../config';
-import { AuthenticatedRequest, JWTPayload } from '../types/auth';
+
+export interface AuthenticatedRequest extends Request {
+  user?: { id: string; email: string; nome: string; role: string; };
+}
 
 export const authMiddleware = (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
   const token = req.header('Authorization')?.replace('Bearer ', '');
@@ -11,11 +16,11 @@ export const authMiddleware = (req: AuthenticatedRequest, res: Response, next: N
   }
 
   try {
-    const decoded = jwt.verify(token, config.auth.jwtSecret) as JWTPayload;
+    const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as any;
     req.user = decoded;
-    next();
+    return next();
   } catch (err) {
-    res.status(401).json({ message: 'Token is not valid' });
+    return res.status(401).json({ message: 'Token is not valid' });
   }
 };
 
@@ -24,7 +29,7 @@ export const roleMiddleware = (roles: string[]) => {
     if (!req.user || !roles.includes(req.user.role)) {
       return res.status(403).json({ message: 'Forbidden' });
     }
-    next();
+    return next();
   };
 };
 

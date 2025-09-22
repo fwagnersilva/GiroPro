@@ -6,10 +6,10 @@ export interface AuthenticatedRequest extends Request {
   user?: {
     id: string;
     email: string;
+    nome: string;
+    role: string;
   };
 }
-
-// Tipos para autenticação
 export interface RegisterRequest {
   nome?: string;
   email?: string;
@@ -29,6 +29,7 @@ export interface AuthResponse {
     nome: string;
     email: string;
     statusConta: string;
+    role: string;
   };
 }
 
@@ -337,16 +338,7 @@ export interface QueryParams {
   [key: string]: any; // Para filtros adicionais
 }
 
-declare global {
-  namespace Express {
-    interface Request {
-      user?: {
-        id: string;
-        email: string;
-      };
-    }
-  }
-}
+
 
 
 

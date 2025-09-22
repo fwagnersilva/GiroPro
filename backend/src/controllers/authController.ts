@@ -12,7 +12,7 @@ export class AuthController {
     try {
       const { email, senha, nome } = registerSchema.parse(req.body);
       const { token, user, refreshToken } = await AuthService.register({ email, senha, nome });
-      res.status(201).send({ success: true, message: 'Usuário registrado com sucesso', accessToken: token, user, refreshToken });
+      res.status(201).send({ success: true, message: 'Usuário registrado com sucesso', accessToken: token, user: { ...user, role: 'user' }, refreshToken });
     } catch (error: any) {
       if (error instanceof ValidationError) {
         console.error("Validation Error:", error);

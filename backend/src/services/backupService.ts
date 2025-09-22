@@ -1,5 +1,4 @@
-const logger = new Logger();
-import { exec } from 'child_process';
+import logger from "../utils/logger";d_process';
 import { promisify } from 'util';
 import * as fs from 'fs/promises';
 import * as path from 'path';

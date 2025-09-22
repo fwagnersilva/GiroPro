@@ -6,7 +6,8 @@ declare global {
       user?: {
         id: string;
         email: string;
-        // Adicione outras propriedades do objeto user aqui, se houver
+        nome: string;
+        role: string;
       };
     }
   }

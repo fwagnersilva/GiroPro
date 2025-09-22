@@ -1,6 +1,7 @@
-import { Router, Response } from 'express';
+import { Router } from 'express';
 import { AuthController } from '../controllers/authController';
-import { authMiddleware, roleMiddleware, AuthenticatedRequest } from '../middleware/auth';
+import { authMiddleware, roleMiddleware } from '../middleware/auth';
+import { AuthenticatedRequest } from '../types';
 
 import { validate } from '../middlewares/validateRequest';
 import { 
@@ -29,10 +30,10 @@ router.post('/reset-password', validate(resetPasswordSchema), AuthController.res
 router.post('/refresh-token', AuthController.refreshToken);
 
 // POST /api/v1/auth/change-password
-router.post('/change-password', authMiddleware, validate(changePasswordSchema), (req: AuthenticatedRequest, res) => AuthController.changePassword(req, res));
+router.post("/change-password", authMiddleware, validate(changePasswordSchema), AuthController.changePassword);
 
 // GET /api/v1/auth/me
-router.get("/me", authMiddleware, roleMiddleware(["admin"]), (req: AuthenticatedRequest, res) => AuthController.me(req, res));
+router.get("/me", authMiddleware, roleMiddleware(["admin"]), AuthController.me);
 
 export { router as authRoutes };
 
