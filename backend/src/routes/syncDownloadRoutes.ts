@@ -1,11 +1,11 @@
 import { Router } from 'express';
 import { downloadInitialData, downloadIncrementalData } from '../controllers/syncDownloadController';
-import { authenticateToken } from '../middlewares/auth';
+import { authMiddleware } from '../middlewares/auth';
 
 const router = Router();
 
-router.get('/download/initial', authenticateToken, downloadInitialData);
-router.get('/download/incremental', authenticateToken, downloadIncrementalData);
+router.get("/download/initial", authMiddleware, downloadInitialData);
+router.get("/download/incremental", authMiddleware, downloadIncrementalData);
 
 export default router;
 
