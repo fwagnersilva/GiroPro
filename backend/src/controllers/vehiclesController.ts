@@ -3,14 +3,7 @@ import { z } from "zod";
 import { db } from "../db";
 import { veiculos } from "../db/schema";
 import { eq, and, isNull, sql } from "drizzle-orm";
-
-// Interfaces
-interface AuthenticatedRequest extends Request {
-  user?: {
-    id: string;
-    email: string;
-  };
-}
+import { AuthenticatedRequest } from "../middlewares/authMiddleware";
 
 interface ApiResponse<T = any> {
   success: boolean;

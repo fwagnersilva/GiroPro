@@ -13,18 +13,18 @@ export interface AuthenticatedRequest extends Request {
 }
 
 export const authenticateToken = (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
-  const authHeader = req.headers['authorization'];
-  const token = authHeader && authHeader.split(' ')[1];
+  const authHeader = req.headers["authorization"];
+  const token = authHeader && authHeader.split(" ")[1];
 
   if (!token) {
-    logger.warn('Token de acesso não fornecido', { ip: req.ip, userAgent: req.get('User-Agent') });
-    return res.status(401).json({ error: 'Token de acesso requerido' });
+    logger.warn("Token de acesso não fornecido", { ip: req.ip, userAgent: req.get("User-Agent") });
+    return res.status(401).json({ error: "Token de acesso requerido" });
   }
 
   jwt.verify(token, config.auth.jwtSecret, (err: any, user: any) => {
     if (err) {
-      logger.warn('Token inválido ou expirado', { token: token.substring(0, 10) + '...', error: err.message });
-      return res.status(403).json({ error: 'Token inválido ou expirado' });
+      logger.warn("Token inválido ou expirado", { token: token.substring(0, 10) + "...", error: err.message });
+      return res.status(403).json({ error: "Token inválido ou expirado" });
     }
 
     req.user = user;
