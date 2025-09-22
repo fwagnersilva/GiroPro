@@ -1,5 +1,6 @@
-import { Router } from "express";
-import { authMiddleware } from "../middlewares/auth";
+import { Router, Request, Response, NextFunction } from "express";
+import { AuthenticatedRequest } from "../middlewares/authMiddleware";
+import { authenticateToken } from "../middlewares/authMiddleware";
 import { VehiclesController } from "../controllers/vehiclesController";
 import rateLimit from "express-rate-limit";
 
@@ -12,7 +13,7 @@ const vehiclesLimiter = rateLimit({
 });
 
 // Todas as rotas de veículos requerem autenticação
-router.use(authMiddleware);
+router.use(authenticateToken);
 // Apply rate limiter to all vehicle routes
 router.use(vehiclesLimiter);
 

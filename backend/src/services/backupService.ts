@@ -1,8 +1,8 @@
-import logger from "../utils/logger";d_process';
+import { exec } from 'child_process';
 import { promisify } from 'util';
 import * as fs from 'fs/promises';
 import * as path from 'path';
-import { Logger } from "../utils/logger";
+import logger from "../utils/logger";
 import { cacheService } from './cacheService';
 
 const execAsync = promisify(exec);
