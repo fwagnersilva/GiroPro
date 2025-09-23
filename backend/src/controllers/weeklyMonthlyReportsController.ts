@@ -1,7 +1,7 @@
 import { Response } from 'express';
 import { z } from 'zod';
 import { AuthenticatedRequest } from '../types/auth';
-import { Logger } from '../utils/logger';
+import logger from '../utils/logger';
 import { cacheService } from '../utils/cache';
 import { AppError } from '../utils/customErrors';
 import { asyncHandler } from '../utils/asyncHandler';
@@ -34,7 +34,7 @@ const monthlyReportSchema = baseReportSchema.extend({
 });
 
 export class WeeklyMonthlyReportsController {
-  private static logger = new Logger();
+
   private static readonly CACHE_TTL = 300; // 5 minutos
 
   /**
@@ -51,7 +51,7 @@ export class WeeklyMonthlyReportsController {
     let relatorio = await cacheService.get(cacheKey);
     
     if (!relatorio) {
-      WeeklyMonthlyReportsController.logger.info('Gerando relatório semanal', { userId, params });
+      logger.info('Gerando relatório semanal', { userId, params });
       
       relatorio = await ReportsService.generateWeeklyReport({
         userId,
@@ -95,7 +95,7 @@ export class WeeklyMonthlyReportsController {
     let relatorio = await cacheService.get(cacheKey);
     
     if (!relatorio) {
-      WeeklyMonthlyReportsController.logger.info('Gerando relatório mensal', { userId, params });
+      logger.info('Gerando relatório mensal', { userId, params });
       
       relatorio = await ReportsService.generateMonthlyReport({
         userId,
@@ -138,7 +138,7 @@ export class WeeklyMonthlyReportsController {
     let comparativo = await cacheService.get(cacheKey);
 
     if (!comparativo) {
-      WeeklyMonthlyReportsController.logger.info('Gerando comparativo semanal', { userId, params });
+      logger.info('Gerando comparativo semanal', { userId, params });
 
       comparativo = await ReportsService.generateWeeklyComparison({
         userId,
@@ -178,7 +178,7 @@ export class WeeklyMonthlyReportsController {
     let comparativo = await cacheService.get(cacheKey);
 
     if (!comparativo) {
-      WeeklyMonthlyReportsController.logger.info('Gerando comparativo mensal', { userId, params });
+      logger.info('Gerando comparativo mensal', { userId, params });
 
       comparativo = await ReportsService.generateMonthlyComparison({
         userId,
@@ -224,7 +224,7 @@ export class WeeklyMonthlyReportsController {
     let dashboard = await cacheService.get(cacheKey);
 
     if (!dashboard) {
-      WeeklyMonthlyReportsController.logger.info('Gerando dashboard', { userId, params });
+      logger.info('Gerando dashboard', { userId, params });
 
       // Executa consultas em paralelo para melhor performance
       const [currentWeek, currentMonth, comparison, alerts, goals] = await Promise.all([
@@ -278,7 +278,7 @@ export class WeeklyMonthlyReportsController {
     let analise: any; // Declarar 'analise' aqui
 
     if (!analise) {
-      WeeklyMonthlyReportsController.logger.info('Gerando análise de performance', { userId, params });
+      logger.info('Gerando análise de performance', { userId, params });
 
       analise = await ReportsService.getPerformanceMetrics(userId, dataInicio, dataFim, params.idVeiculo);
 
@@ -307,7 +307,7 @@ export class WeeklyMonthlyReportsController {
       incluir_graficos: z.boolean().default(true)
     }));
 
-    WeeklyMonthlyReportsController.logger.info('Iniciando exportação em lote', { userId, params });
+    logger.info('Iniciando exportação em lote', { userId, params });
 
     // Processa em background para relatórios grandes
     const jobId = await ReportsService.createBatchExportJob({
@@ -393,7 +393,7 @@ export class WeeklyMonthlyReportsController {
       clearedCount += count;
     }
 
-    WeeklyMonthlyReportsController.logger.info('Cache limpo', { userId, clearedCount });
+    logger.info('Cache limpo', { userId, clearedCount });
 
     res.json({
       success: true,
@@ -414,7 +414,7 @@ export class WeeklyMonthlyReportsController {
     const result = schema.safeParse(query);
     
     if (!result.success) {
-      WeeklyMonthlyReportsController.logger.warn('Validação falhou', { 
+      logger.warn('Validação falhou', { 
         errors: result.error.errors,
         query 
       });
@@ -462,7 +462,7 @@ export class WeeklyMonthlyReportsController {
         res.send(exportData);
       }
     } catch (error) {
-      WeeklyMonthlyReportsController.logger.error('Erro na exportação', { format, filename, error });
+      logger.error('Erro na exportação', { format, filename, error });
       throw new AppError('Erro ao gerar arquivo de exportação', 500);
     }
   }

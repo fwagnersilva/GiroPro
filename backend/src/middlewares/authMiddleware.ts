@@ -4,12 +4,7 @@ import { config } from '../config';
 import logger from '../utils/logger';
 
 export interface AuthenticatedRequest extends Request {
-  user?: {
-    id: string;
-    email: string;
-    nome: string;
-    role: 'admin' | 'user' | 'guest';
-  };
+  user?: any;
 }
 
 export const authenticateToken = (req: AuthenticatedRequest, res: Response, next: NextFunction) => {

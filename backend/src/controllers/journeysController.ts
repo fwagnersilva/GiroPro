@@ -1,12 +1,12 @@
 import { Request, Response } from 'express';
 import { JourneyService } from '../services/journeyService';
 import { CreateJourneyRequest, UpdateJourneyRequest, JourneyFilters } from '../types';
-import Logger from "../utils/logger";
+import logger from "../utils/logger";
 import { Cache } from '../utils/cache';
 import { z } from 'zod';
 import { performance } from 'perf_hooks';
 
-const logger = new Logger();
+
 
 // ===============================
 // TIPOS E INTERFACES OTIMIZADAS
