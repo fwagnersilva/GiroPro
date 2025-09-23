@@ -7,7 +7,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { useAuth } from '../contexts/AuthContext';
 
 // Importar telas (serão criadas em seguida)
-import LoginScreenRefactored from '../screens/LoginScreenRefactored';
+import LoginScreen from '../screens/LoginScreen';
 import RegisterScreenRefactored from "../screens/RegisterScreenRefactored";
 import DashboardScreenOptimized from '../screens/DashboardScreenOptimized';
 import VehiclesScreenOptimized from '../screens/VehiclesScreenOptimized';
@@ -18,6 +18,7 @@ import GoalsScreenOptimized from "../screens/GoalsScreenOptimized";
 import AchievementsScreenOptimized from "../screens/AchievementsScreenOptimized";
 import ProfileScreenOptimized from "../screens/ProfileScreenOptimized";
 import LoadingScreen from '../screens/LoadingScreen';
+import ForgotPasswordScreen from '../screens/ForgotPasswordScreen';
 
 import { RootStackParamList } from '../types';
 
@@ -31,7 +32,8 @@ const Tab = createBottomTabNavigator();
 const AuthStack = () => (
   <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName="Register">
     <Stack.Screen name="Register" component={RegisterScreenRefactored} />
-    <Stack.Screen name="Login" component={LoginScreenRefactored} />
+    <Stack.Screen name="Login" component={LoginScreen} />
+    <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
   </Stack.Navigator>
 );
 

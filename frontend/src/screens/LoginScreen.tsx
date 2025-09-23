@@ -158,6 +158,10 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
             onForgotPassword={navigateToForgotPassword}
           />
 
+          <TouchableOpacity onPress={navigateToForgotPassword} style={styles.forgotPasswordButton}>
+            <Text style={styles.forgotPasswordText}>Esqueci minha senha?</Text>
+          </TouchableOpacity>
+
           <View style={styles.dividerContainer}>
             <View style={styles.divider} />
             <Text style={styles.dividerText}>ou</Text>
@@ -222,6 +226,16 @@ const styles = StyleSheet.create({
   registerLink: {
     color: '#007AFF',
     fontWeight: '600',
+  },
+  forgotPasswordButton: {
+    alignSelf: 'flex-end',
+    marginTop: -10,
+    marginBottom: 10,
+  },
+  forgotPasswordText: {
+    color: '#007AFF',
+    fontSize: 14,
+    fontWeight: '500',
   },
 });
 
