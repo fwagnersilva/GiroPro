@@ -63,7 +63,7 @@
     "@types/pg": "^8.10.3",
     "@types/supertest": "^6.0.3",
     "@types/uuid": "^10.0.0",
-    "@typescript-eslint/eslint-plugin": "^6.9.0",
+    "@typescript-eslint/eslint-plugin": "^8.44.1",
     "@typescript-eslint/parser": "^6.9.0",
     "better-sqlite3": "^12.2.0",
     "drizzle-kit": "^0.31.4",
