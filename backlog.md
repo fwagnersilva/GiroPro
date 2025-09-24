@@ -88,14 +88,14 @@
   - O que: Criar um arquivo `.env.example` na raiz do projeto com todas as variáveis de ambiente necessárias.
   - Porquê: Facilitar a configuração do ambiente para novos desenvolvedores.
   - Complexidade: Simples
-  - Concluído: [ ]
+  - Concluído: [x]
 
 - Tarefa: P2 - Atualizar `README.md` com instruções de setup e execução
   - Quem: Geral
   - O que: Revisar e atualizar o `README.md` principal com instruções claras e concisas para o setup e execução do projeto.
   - Porquê: Fornecer um guia rápido e preciso para iniciar o desenvolvimento.
   - Complexidade: Simples
-  - Concluído: [ ]
+  - Concluído: [x]
 
 <<<<<<< Updated upstream
 - Tarefa: P2 - Instalar `react-router-dom`
@@ -278,14 +278,14 @@
   - O que: Criar um arquivo `.env.example` na raiz do projeto com todas as variáveis de ambiente necessárias.
   - Porquê: Facilitar a configuração do ambiente para novos desenvolvedores.
   - Complexidade: Simples
-  - Concluído: [ ]
+  - Concluído: [x]
 
 - Tarefa: P2 - Atualizar `README.md` com instruções de setup e execução
   - Quem: Geral
   - O que: Revisar e atualizar o `README.md` principal com instruções claras e concisas para o setup e execução do projeto.
   - Porquê: Fornecer um guia rápido e preciso para iniciar o desenvolvimento.
   - Complexidade: Simples
-  - Concluído: [ ]
+  - Concluído: [x]
 
 <<<<<<< Updated upstream
 - Tarefa: P2 - Instalar `react-router-dom`
