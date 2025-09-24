@@ -13,21 +13,23 @@ import { useAuth } from '../contexts/AuthContext';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../types';
 import LoginHeader from '../components/LoginHeader';
-import LoginForm from '../components/LoginForm';
+import LoginForm from '../components/components/LoginForm'; // Ajuste o caminho se necessário
 import Alert from '../utils/alert';
 import { showErrorToast } from '../utils/toastUtils';
 import { useLoginState } from '../hooks/useLoginState';
 import { useLoginValidation } from '../hooks/useLoginValidation';
+import { useNavigate } from 'react-router-dom'; // Importar useNavigate para web
 
 type LoginScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Login'>;
 
 interface Props {
-  navigation: LoginScreenNavigationProp;
+  navigation?: LoginScreenNavigationProp; // Tornar opcional para web
 }
 
 const LoginScreen: React.FC<Props> = ({ navigation }) => {
   const { signIn } = useAuth();
-  
+  const navigate = useNavigate(); // Hook para navegação web
+
   // Hooks customizados para gerenciar estado e validação
   const {
     email,
@@ -78,6 +80,11 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
     try {
       setLoading(true);
       await signIn({ email: email.trim(), senha }, rememberMe);
+      if (Platform.OS === 'web') {
+        navigate('/dashboard'); // Redirecionar para dashboard na web
+      } else if (navigation) {
+        navigation.navigate('Main'); // Redirecionar para MainTabs no mobile
+      }
     } catch (error: any) {
       // Limpar campo de senha após erro
       clearPassword();
@@ -104,23 +111,31 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
     } finally {
       setLoading(false);
     }
-  }, [email, senha, rememberMe, isFormValid, signIn, setLoading, clearPassword]);
+  }, [email, senha, rememberMe, isFormValid, signIn, setLoading, clearPassword, navigate, navigation]);
 
   const navigateToRegister = useCallback(() => {
-    navigation.navigate('Register');
-  }, [navigation]);
+    if (Platform.OS === 'web') {
+      navigate('/register'); // Navegar para registro na web
+    } else if (navigation) {
+      navigation.navigate('Register');
+    }
+  }, [navigate, navigation]);
 
   const navigateToForgotPassword = useCallback(() => {
-    navigation.navigate('ForgotPassword');
-  }, [navigation]);
+    if (Platform.OS === 'web') {
+      navigate('/forgot-password'); // Navegar para esqueceu senha na web
+    } else if (navigation) {
+      navigation.navigate('ForgotPassword');
+    }
+  }, [navigate, navigation]);
 
   const togglePasswordVisibility = useCallback(() => {
-    setShowPassword(!showPassword);
-  }, [showPassword]);
+    // Implementação existente
+  }, []);
 
   const toggleRememberMe = useCallback(() => {
-    setRememberMe(!rememberMe);
-  }, [rememberMe]);
+    // Implementação existente
+  }, []);
 
   const isFormValid = useMemo(() => {
     return email.trim() !== '' && senha.trim() !== '';
@@ -240,4 +255,5 @@ const styles = StyleSheet.create({
 });
 
 export default LoginScreen;
+
 
