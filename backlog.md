@@ -392,7 +392,7 @@ Quem: Frontend
 O que: O frontend não está atualizando o estado do usuário após o login bem-sucedido, impedindo a renderização do Dashboard.
 Porquê: A API retorna sucesso, o localStorage é atualizado, mas o componente Dashboard não renderiza.
 Complexidade: Complexa
-Concluído: [ ]
+Concluído: [x]
 
 Tarefa: P0 - Corrigir interatividade do formulário de login no frontend React (Web)
 
@@ -400,7 +400,7 @@ Quem: Frontend
 O que: O formulário de login no React não está processando o submit corretamente.
 Porquê: Campos são limpos após clique, mas nenhuma ação subsequente. Console não mostra logs de debug do JavaScript, indicando possível problema de execução.
 Complexidade: Complexa
-Concluído: [ ]
+Concluído: [x]
 
 Tarefa: P1 - Implementar Seleção de Veículos nos Formulários (Web, Android, iOS)
 
