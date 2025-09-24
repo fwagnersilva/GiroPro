@@ -250,14 +250,14 @@
   - O que: Substituir tags `<img>` por `ImageOptimizer` onde aplicável.
   - Porquê: Aplicar as otimizações de imagem em toda a aplicação.
   - Complexidade: Simples
-  - Concluído: [ ]
+  - Concluído: [x]
 
 - Tarefa: P3 - Criar `manifest.json`
   - Quem: Frontend
   - O que: Criar o arquivo `manifest.json` na raiz do diretório `public` do frontend com metadados básicos do PWA.
   - Porquê: Permitir que o navegador reconheça a aplicação como um PWA e ofereça a instalação.
   - Complexidade: Simples
-  - Concluído: [ ]
+  - Concluído: [x]
 
 - Tarefa: P3 - Configurar `Service Worker` básico
   - Quem: Frontend
