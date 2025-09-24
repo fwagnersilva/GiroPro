@@ -97,7 +97,7 @@
   - Complexidade: Simples
   - Concluído: [x]
 
-<<<<<<< Updated upstream
+
 - Tarefa: P2 - Instalar `react-router-dom`
   - Quem: Frontend
   - O que: Executar `npm install react-router-dom` no diretório `frontend`.
@@ -287,7 +287,7 @@
   - Complexidade: Simples
   - Concluído: [x]
 
-<<<<<<< Updated upstream
+
 - Tarefa: P2 - Instalar `react-router-dom`
   - Quem: Frontend
   - O que: Executar `npm install react-router-dom` no diretório `frontend`.
@@ -512,7 +512,7 @@
   - Complexidade: Média
   - Concluído: [ ]
 
-=======
+
 - Tarefa: P2 - Criar arquivo .env.example
   - Quem: Geral
   - O que: Criar um arquivo .env.example na raiz do projeto com todas as variáveis de ambiente necessárias.
