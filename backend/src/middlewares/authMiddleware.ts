@@ -66,11 +66,11 @@ export const requireAuth = (req: AuthenticatedRequest, res: Response, next: Next
 
 export const requireAdmin = [
   authenticateToken,
-  authorizeRoles('admin')
+  authorizeRoles("admin")
 ];
 
 export const requireUserOrAdmin = [
   authenticateToken,
-  authorizeRoles('user', 'admin')
+  authorizeRoles("user", "admin")
 ];
 

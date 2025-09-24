@@ -449,3 +449,24 @@ _**
   - Quem: Frontend
   - O que: Adicionar campo de entrada para o código TOTP na tela de
 
+
+
+
+
+
+
+- Tarefa: P1 - Desenvolver Tela de Jornadas
+  - Quem: Frontend
+  - O que: Criar um componente de tela para gerenciar as jornadas do usuário.
+  - Porquê: Adicionar uma funcionalidade central de gestão de viagens.
+  - Complexidade: Média
+  - Concluído: [ ]
+
+- Tarefa: P1 - Implementar APIs CRUD completas para Jornadas (Frontend - Integração)
+  - Quem: Frontend
+  - O que: Integrar a tela de Jornadas com as APIs CRUD do backend.
+  - Porquê: Popular a tela com dados reais e permitir a interação do usuário.
+  - Complexidade: Média
+  - Concluído: [ ]
+
+

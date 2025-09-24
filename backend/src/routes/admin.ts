@@ -1,5 +1,5 @@
 import { Router, Request, Response, NextFunction } from 'express';
-import { authMiddleware, roleMiddleware } from '../middlewares/auth';
+import { authenticateToken, authorizeRoles } from '../middlewares/authMiddleware';
 import { backupService } from '../services/backupService';
 import { performanceService } from '../services/performanceService';
 import { cacheService } from '../services/cacheService';
@@ -8,14 +8,11 @@ import logger from "../utils/logger";
 const router = Router();
 
 // Middleware de autenticação para todas as rotas admin
-router.use(authMiddleware as any);
-
-
-
-router.use(roleMiddleware(["admin"]) as any);
+router.use(authenticateToken);
+router.use(authorizeRoles("admin"));
 
 // GET /api/v1/admin/health - Status detalhado do sistema
-router.get('/health', async (req, res) => {
+router.get("/health", async (req, res) => {
   try {
     const health = await performanceService.getSystemHealth();
     const alerts = performanceService.getPerformanceAlerts();

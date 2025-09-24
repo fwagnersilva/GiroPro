@@ -284,3 +284,51 @@
   - **Arquivos modificados:** 
   - **Observações:** Integrar com o sistema de logging e monitoramento existente do projeto.
 
+
+
+- Tarefa: P1 - Implementar APIs CRUD completas para Jornadas
+  - Quem: Backend
+  - O que: Desenvolver endpoints CRUD completos para a entidade Jornadas.
+  - Porquê: Permitir o gerenciamento completo de jornadas no backend.
+  - Complexidade: Média
+  - Concluído: [ ]
+
+- Tarefa: P1 - Implementar APIs CRUD completas para Abastecimentos
+  - Quem: Backend
+  - O que: Desenvolver endpoints CRUD completos para a entidade Abastecimentos.
+  - Porquê: Permitir o gerenciamento completo de abastecimentos no backend.
+  - Complexidade: Média
+  - Concluído: [ ]
+
+- Tarefa: P1 - Implementar APIs CRUD completas para Despesas
+  - Quem: Backend
+  - O que: Desenvolver endpoints CRUD completos para a entidade Despesas.
+  - Porquê: Permitir o gerenciamento completo de despesas no backend.
+  - Complexidade: Média
+  - Concluído: [ ]
+
+
+
+
+- Tarefa: P1 - Implementar APIs CRUD completas para Jornadas
+  - Quem: Backend
+  - O que: Desenvolver endpoints CRUD completos para a entidade Jornadas.
+  - Porquê: Permitir o gerenciamento completo de jornadas no backend.
+  - Complexidade: Média
+  - Concluído: [ ]
+
+- Tarefa: P1 - Implementar APIs CRUD completas para Abastecimentos
+  - Quem: Backend
+  - O que: Desenvolver endpoints CRUD completos para a entidade Abastecimentos.
+  - Porquê: Permitir o gerenciamento completo de abastecimentos no backend.
+  - Complexidade: Média
+  - Concluído: [ ]
+
+- Tarefa: P1 - Implementar APIs CRUD completas para Despesas
+  - Quem: Backend
+  - O que: Desenvolver endpoints CRUD completos para a entidade Despesas.
+  - Porquê: Permitir o gerenciamento completo de despesas no backend.
+  - Complexidade: Média
+  - Concluído: [ ]
+
+

@@ -322,8 +322,8 @@ export class ReportsController {
         .where(and(
           eq(despesas.idUsuario, userId),
           isNull(despesas.deletedAt),
-          gte(despesas.dataDespesa, parsedDataInicio),
-          lte(despesas.dataDespesa, parsedDataFim),
+          gte(despesas.data, parsedDataInicio),
+          lte(despesas.data, parsedDataFim),
           idVeiculo ? eq(despesas.idVeiculo, idVeiculo) : undefined
         ))
         .orderBy(desc(despesas.dataDespesa));
@@ -433,8 +433,8 @@ export class ReportsController {
         .where(and(
           eq(despesas.idUsuario, userId),
           isNull(despesas.deletedAt),
-          gte(despesas.dataDespesa, parsedDataInicio),
-          lte(despesas.dataDespesa, parsedDataFim),
+          gte(despesas.data, parsedDataInicio),
+          lte(despesas.data, parsedDataFim),
           idVeiculo ? eq(despesas.idVeiculo, idVeiculo as string) : undefined
         ))
         .groupBy(despesas.tipoDespesa);

@@ -1,7 +1,7 @@
 import { dbConfig } from '../config/database';
-import { Logger } from '../utils/logger';
+import logger from '../utils/logger';
 
-const logger = new Logger();
+
 
 interface QueryAnalysis {
   query: string;
@@ -38,7 +38,7 @@ class SlowQueryAnalyzer {
       const executionTime = Date.now() - startTime;
       
       // Obter plano de execução
-      const explanation = this.db.prepare(`EXPLAIN QUERY PLAN ${query}`).all(...params);
+      const explanation = this.db.prepare(`EXPLAIN QUERY PLAN ${query}`).all(...params) as ExplainPlanRow[];
       
       const analysis: QueryAnalysis = {
         query,
@@ -218,14 +218,14 @@ class SlowQueryAnalyzer {
       WHERE type = 'index' 
       AND sql IS NOT NULL
       ORDER BY tbl_name, name
-    `).all();
+    `).all() as IndexInfo[];
 
     // Verificar estatísticas de uso (SQLite não tem estatísticas diretas, mas podemos simular)
     const indexAnalysis = indexes.map(index => {
       try {
         // Tentar usar EXPLAIN QUERY PLAN para ver se o índice seria usado
         const sampleQuery = `SELECT * FROM ${index.tbl_name} WHERE rowid = 1`;
-        const plan = this.db.prepare(`EXPLAIN QUERY PLAN ${sampleQuery}`).all();
+        const plan = this.db.prepare(`EXPLAIN QUERY PLAN ${sampleQuery}`).all() as ExplainPlanRow[];
         
         return {
           name: index.name,
@@ -339,4 +339,22 @@ if (require.main === module) {
       process.exit(1);
     });
 }
+
+
+
+interface ExplainPlanRow {
+  id: number;
+  parentid: number;
+  detail: string;
+}
+
+
+
+
+interface IndexInfo {
+  name: string;
+  sql: string;
+  tbl_name: string;
+}
+
 
