@@ -321,3 +321,14 @@ app.use(cors({
 **Versão:** 1.1  
 **Próxima atualização:** Após implementação de novas funcionalidades
 
+
+
+---
+
+## 🎯 **Funcionalidades Detalhadas**
+
+Para uma descrição completa e detalhada das funcionalidades do sistema, incluindo backend e frontend, consulte:
+
+- [Funcionalidades Detalhadas](docs/04_referencias/06_funcionalidades_detalhadas.md)
+
+
