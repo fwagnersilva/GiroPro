@@ -3,14 +3,7 @@ import { db } from '../db';
 import { usuarios, veiculos, jornadas, abastecimentos, despesas } from '../db/schema';
 import { eq, gt, and, isNull } from 'drizzle-orm';
 import logger from '../utils/logger';
-
-interface AuthenticatedRequest extends Request {
-  user?: {
-    id: string;
-    email: string;
-    role: string;
-  };
-}
+import { AuthenticatedRequest } from '../middlewares/authMiddleware';
 
 interface OfflineDataBatch {
   jornadas?: any[];
@@ -254,7 +247,7 @@ export const uploadOfflineData = async (req: AuthenticatedRequest, res: Response
 
     logger.info(`Sincronização offline processada para usuário ${userId}:`, results);
 
-    res.json({
+    return res.json({
       success: true,
       message: 'Dados sincronizados com sucesso',
       processed: results,
@@ -263,7 +256,7 @@ export const uploadOfflineData = async (req: AuthenticatedRequest, res: Response
 
   } catch (error) {
     logger.error('Erro no upload de dados offline:', error);
-    res.status(500).json({ 
+    return res.status(500).json({ 
       error: 'Erro interno do servidor',
       message: 'Falha ao processar dados offline'
     });
@@ -323,14 +316,14 @@ export const downloadInitialData = async (req: AuthenticatedRequest, res: Respon
 
     logger.info(`Sincronização inicial para usuário ${userId}: ${syncData.metadata.totalRecords} registros`);
 
-    res.json({
+    return res.json({
       success: true,
       data: syncData
     });
 
   } catch (error) {
     logger.error('Erro no download de dados iniciais:', error);
-    res.status(500).json({ 
+    return res.status(500).json({ 
       error: 'Erro interno do servidor',
       message: 'Falha ao buscar dados para sincronização inicial'
     });
@@ -399,14 +392,14 @@ export const downloadIncrementalData = async (req: AuthenticatedRequest, res: Re
 
     logger.info(`Sincronização incremental para usuário ${userId}: ${syncData.metadata.totalRecords} registros atualizados`);
 
-    res.json({
+    return res.json({
       success: true,
       data: syncData
     });
 
   } catch (error) {
     logger.error('Erro no download de dados incrementais:', error);
-    res.status(500).json({ 
+    return res.status(500).json({ 
       error: 'Erro interno do servidor',
       message: 'Falha ao buscar dados para sincronização incremental'
     });
@@ -459,7 +452,7 @@ export const getLastSyncTimestamp = async (req: AuthenticatedRequest, res: Respo
       ? Math.max(...timestamps.map(t => new Date(t).getTime()))
       : Date.now();
 
-    res.json({
+    return res.json({
       success: true,
       lastSyncTimestamp,
       lastSyncDate: new Date(lastSyncTimestamp).toISOString()
@@ -467,10 +460,11 @@ export const getLastSyncTimestamp = async (req: AuthenticatedRequest, res: Respo
 
   } catch (error) {
     logger.error('Erro ao obter timestamp da última sincronização:', error);
-    res.status(500).json({ 
+    return res.status(500).json({ 
       error: 'Erro interno do servidor',
       message: 'Falha ao obter timestamp da última sincronização'
     });
   }
 };
+
 

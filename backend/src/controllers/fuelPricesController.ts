@@ -4,9 +4,9 @@ import { AuthenticatedRequest } from '../types';
 
 import { FuelPricesService } from "../services/fuel_prices_service";
 import { cacheService } from "../services/cacheService";
-import { Logger } from "../utils/logger";
+import logger from "../utils/logger";
 
-const logger = new Logger();
+
 
 // ========== SCHEMAS DE VALIDAÇÃO ==========
 

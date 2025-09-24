@@ -1,7 +1,7 @@
 import { Router, Request, Response, NextFunction } from "express";
-import { AuthenticatedRequest } from "../middlewares/authMiddleware";
-import { authenticateToken } from "../middlewares/authMiddleware";
+import { AuthenticatedRequest, authenticateToken } from "../middlewares/authMiddleware";
 import { VehiclesController } from "../controllers/vehiclesController";
+import asyncHandler from "../utils/asyncHandler";
 import rateLimit from "express-rate-limit";
 
 const router = Router();
@@ -13,24 +13,24 @@ const vehiclesLimiter = rateLimit({
 });
 
 // Todas as rotas de veículos requerem autenticação
-router.use(authenticateToken);
+router.use(asyncHandler(authenticateToken));
 // Apply rate limiter to all vehicle routes
 router.use(vehiclesLimiter);
 
 // GET /api/v1/vehicles
-router.get("/", VehiclesController.getAll);
+router.get("/", asyncHandler(VehiclesController.getAll));
 
 // POST /api/v1/vehicles
-router.post("/", VehiclesController.create);
+router.post("/", asyncHandler(VehiclesController.create));
 
 // GET /api/v1/vehicles/:id
-router.get("/:id", VehiclesController.getById);
+router.get("/:id", asyncHandler(VehiclesController.getById));
 
 // PUT /api/v1/vehicles/:id
-router.put("/:id", VehiclesController.update);
+router.put("/:id", asyncHandler(VehiclesController.update));
 
 // DELETE /api/v1/vehicles/:id
-router.delete("/:id", VehiclesController.delete);
+router.delete("/:id", asyncHandler(VehiclesController.delete));
 
 export { router as vehicleRoutes };
 

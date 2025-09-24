@@ -1,6 +1,8 @@
 export type RootStackParamList = {
   Login: undefined;
   Register: undefined;
+  ForgotPassword: undefined;
+  ResetPassword: { token: string };
   Dashboard: undefined;
   Vehicles: undefined;
   Journeys: undefined;

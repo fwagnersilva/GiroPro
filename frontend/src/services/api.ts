@@ -62,11 +62,27 @@ api.interceptors.response.use(
 
 // Serviços de autenticação
 export const authService = {
-  async login(credentials: LoginRequest): Promise<AuthResponse> {
+  async login(credentials: LoginRequest, rememberMe: boolean = false): Promise<AuthResponse> {
     const response = await api.post<ApiResponse<AuthResponse>>('/auth/login', credentials);
     if (response.data.success && response.data.data) {
-      await AsyncStorage.setItem('authToken', response.data.data.token);
-      await AsyncStorage.setItem('user', JSON.stringify(response.data.data.user));
+      // Armazenar token com configuração de persistência baseada em "Lembrar-me"
+      if (rememberMe) {
+        // Para "Lembrar-me", usar localStorage (persistente)
+        await AsyncStorage.setItem('authToken', response.data.data.token);
+        await AsyncStorage.setItem('user', JSON.stringify(response.data.data.user));
+        await AsyncStorage.setItem('rememberMe', 'true');
+        
+        // Armazenar refresh token para sessões estendidas
+        if (response.data.data.refreshToken) {
+          await AsyncStorage.setItem('refreshToken', response.data.data.refreshToken);
+        }
+      } else {
+        // Para sessão normal, usar sessionStorage (temporário)
+        await AsyncStorage.setItem('authToken', response.data.data.token);
+        await AsyncStorage.setItem('user', JSON.stringify(response.data.data.user));
+        await AsyncStorage.removeItem('rememberMe');
+        await AsyncStorage.removeItem('refreshToken');
+      }
       return response.data.data;
     }
     throw new Error('Erro no login'); },
@@ -83,6 +99,8 @@ export const authService = {
   async logout(): Promise<void> {
     await AsyncStorage.removeItem('authToken');
     await AsyncStorage.removeItem('user');
+    await AsyncStorage.removeItem('rememberMe');
+    await AsyncStorage.removeItem('refreshToken');
   },
 
   async getCurrentUser(): Promise<User | null> {
@@ -96,6 +114,20 @@ export const authService = {
 
   async getStoredToken(): Promise<string | null> {
     return await AsyncStorage.getItem('authToken');
+  },
+
+  async requestPasswordReset(email: string): Promise<void> {
+    const response = await api.post<ApiResponse<void>>('/auth/request-password-reset', { email });
+    if (!response.data.success) {
+      throw new Error(response.data.error?.message || 'Erro ao solicitar recuperação de senha');
+    }
+  },
+
+  async resetPassword(token: string, newPassword: string): Promise<void> {
+    const response = await api.post<ApiResponse<void>>('/auth/reset-password', { token, newPassword });
+    if (!response.data.success) {
+      throw new Error(response.data.error?.message || 'Erro ao redefinir senha');
+    }
   },
 };
 
