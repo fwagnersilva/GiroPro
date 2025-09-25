@@ -1,9 +1,16 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { View, StyleSheet } from 'react-native';
+
 import LoginScreen from '../screens/LoginScreen';
 import Dashboard from '../screens/Dashboard';
-import RegisterScreen from '../screens/RegisterScreen'; // Importar RegisterScreen
-import ForgotPasswordScreen from '../screens/ForgotPasswordScreen'; // Importar ForgotPasswordScreen
+import JourneysScreen from '../screens/JourneysScreen';
+import VehiclesScreen from '../screens/VehiclesScreen';
+import ExpensesScreen from '../screens/ExpensesScreen';
+import FuelingsScreen from '../screens/FuelingsScreen';
+import RegisterScreen from '../screens/RegisterScreen';
+import ForgotPasswordScreen from '../screens/ForgotPasswordScreen';
+import Sidebar from './Sidebar';
 import { useAuth } from '../contexts/AuthContext';
 
 interface PrivateRouteProps {
@@ -15,27 +22,89 @@ const PrivateRoute: React.FC<PrivateRouteProps> = ({ children }) => {
   return isAuthenticated ? children : <Navigate to="/login" replace />;
 };
 
+const DashboardLayout: React.FC<{ children: JSX.Element }> = ({ children }) => {
+  return (
+    <View style={styles.dashboardContainer}>
+      <Sidebar />
+      <View style={styles.mainContent}>
+        {children}
+      </View>
+    </View>
+  );
+};
+
 const AppRouter: React.FC = () => {
   return (
     <Router>
       <Routes>
         <Route path="/login" element={<LoginScreen />} />
-        <Route path="/register" element={<RegisterScreen />} /> {/* Nova rota para registro */}
-        <Route path="/forgot-password" element={<ForgotPasswordScreen />} /> {/* Nova rota para esqueceu senha */}
+        <Route path="/register" element={<RegisterScreen />} />
+        <Route path="/forgot-password" element={<ForgotPasswordScreen />} />
         <Route
-          path="/dashboard/*"
+          path="/dashboard"
           element={
             <PrivateRoute>
-              <Dashboard />
+              <DashboardLayout>
+                <Dashboard />
+              </DashboardLayout>
             </PrivateRoute>
           }
         />
-        <Route path="*" element={<Navigate to="/dashboard" replace />} /> {/* Redirecionar para dashboard se autenticado, caso contrário para login */}
+        <Route
+          path="/dashboard/journeys"
+          element={
+            <PrivateRoute>
+              <DashboardLayout>
+                <JourneysScreen />
+              </DashboardLayout>
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/dashboard/vehicles"
+          element={
+            <PrivateRoute>
+              <DashboardLayout>
+                <VehiclesScreen />
+              </DashboardLayout>
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/dashboard/expenses"
+          element={
+            <PrivateRoute>
+              <DashboardLayout>
+                <ExpensesScreen />
+              </DashboardLayout>
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/dashboard/fuelings"
+          element={
+            <PrivateRoute>
+              <DashboardLayout>
+                <FuelingsScreen />
+              </DashboardLayout>
+            </PrivateRoute>
+          }
+        />
       </Routes>
     </Router>
   );
 };
 
-export default AppRouter;
+const styles = StyleSheet.create({
+  dashboardContainer: {
+    flex: 1,
+    flexDirection: 'row',
+  },
+  mainContent: {
+    flex: 1,
+    marginLeft: 256, // Largura do sidebar
+  },
+});
 
+export default AppRouter;
 

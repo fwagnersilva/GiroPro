@@ -79,51 +79,47 @@ const Dashboard = () => {
             </h1>
             <p style={{
               fontSize: "16px",
-              color: "#666",
-              margin: "0"
+              color: "#6C757D",
+              margin: 0
             }}>
-              Bem-vindo, {user?.nome}!
+              Bem-vindo, Usuário Teste!
             </p>
           </div>
           <button
             onClick={signOut}
             style={{
-              padding: "12px 24px",
               backgroundColor: "#FF3B30",
-              color: "white",
-              border: "none",
+              color: "#FFFFFF",
+              padding: "10px 20px",
               borderRadius: "8px",
+              border: "none",
+              cursor: "pointer",
               fontSize: "16px",
-              fontWeight: "600",
-              cursor: "pointer"
+              fontWeight: "600"
             }}
           >
             Sair
           </button>
         </div>
 
-        {loadingData ? (
-          <div style={{ textAlign: "center", padding: "40px" }}>
-            <p>Carregando dados...</p>
-          </div>
-        ) : dashboardData ? (
-          <div>
-            {/* Métricas Principais */}
-            <div style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
-              gap: "16px",
-              marginBottom: "24px"
-            }}>
+        {/* Main Metrics */}
+        <div style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
+          gap: "24px",
+          marginBottom: "32px"
+        }}>
+          {dashboardData?.metricas_principais && (
+            <>
               <div style={{
-                backgroundColor: "#E8F5E8",
-                padding: "20px",
+                backgroundColor: "#E6F7ED",
                 borderRadius: "12px",
-                border: "1px solid #34C759"
+                padding: "20px",
+                border: "1px solid #52C41A"
               }}>
                 <h3 style={{
-                  fontSize: "16px",
-                  color: "#34C759",
+                  fontSize: "18px",
+                  color: "#52C41A",
                   margin: "0 0 8px 0"
                 }}>
                   Faturamento Bruto
@@ -131,22 +127,22 @@ const Dashboard = () => {
                 <p style={{
                   fontSize: "24px",
                   fontWeight: "bold",
-                  color: "#333",
-                  margin: "0"
+                  color: "#52C41A",
+                  margin: 0
                 }}>
-                  {formatCurrency(dashboardData.metricas_principais?.faturamento_bruto || 0)}
+                  {formatCurrency(dashboardData.metricas_principais.faturamento_bruto)}
                 </p>
               </div>
 
               <div style={{
-                backgroundColor: "#FFE8E8",
-                padding: "20px",
+                backgroundColor: "#FFF1F0",
                 borderRadius: "12px",
-                border: "1px solid #FF3B30"
+                padding: "20px",
+                border: "1px solid #F5222D"
               }}>
                 <h3 style={{
-                  fontSize: "16px",
-                  color: "#FF3B30",
+                  fontSize: "18px",
+                  color: "#F5222D",
                   margin: "0 0 8px 0"
                 }}>
                   Total de Despesas
@@ -154,22 +150,22 @@ const Dashboard = () => {
                 <p style={{
                   fontSize: "24px",
                   fontWeight: "bold",
-                  color: "#333",
-                  margin: "0"
+                  color: "#F5222D",
+                  margin: 0
                 }}>
-                  {formatCurrency(dashboardData.metricas_principais?.total_despesas || 0)}
+                  {formatCurrency(dashboardData.metricas_principais.total_despesas)}
                 </p>
               </div>
 
               <div style={{
-                backgroundColor: "#E8F4FF",
-                padding: "20px",
+                backgroundColor: "#E6F7FF",
                 borderRadius: "12px",
-                border: "1px solid #007AFF"
+                padding: "20px",
+                border: "1px solid #1890FF"
               }}>
                 <h3 style={{
-                  fontSize: "16px",
-                  color: "#007AFF",
+                  fontSize: "18px",
+                  color: "#1890FF",
                   margin: "0 0 8px 0"
                 }}>
                   Lucro Líquido
@@ -177,29 +173,29 @@ const Dashboard = () => {
                 <p style={{
                   fontSize: "24px",
                   fontWeight: "bold",
-                  color: "#333",
-                  margin: "0"
+                  color: "#1890FF",
+                  margin: "0 0 4px 0"
                 }}>
-                  {formatCurrency(dashboardData.metricas_principais?.lucro_liquido || 0)}
+                  {formatCurrency(dashboardData.metricas_principais.lucro_liquido)}
                 </p>
                 <p style={{
                   fontSize: "14px",
-                  color: "#666",
-                  margin: "4px 0 0 0"
+                  color: "#1890FF",
+                  margin: 0
                 }}>
-                  Margem: {(dashboardData.metricas_principais?.margem_lucro || 0).toFixed(1)}%
+                  Margem: {dashboardData.metricas_principais.margem_lucro}%
                 </p>
               </div>
 
               <div style={{
-                backgroundColor: "#FFF4E8",
-                padding: "20px",
+                backgroundColor: "#FFFBE6",
                 borderRadius: "12px",
-                border: "1px solid #FF9500"
+                padding: "20px",
+                border: "1px solid #FAAD14"
               }}>
                 <h3 style={{
-                  fontSize: "16px",
-                  color: "#FF9500",
+                  fontSize: "18px",
+                  color: "#FAAD14",
                   margin: "0 0 8px 0"
                 }}>
                   Ganho por Hora
@@ -207,63 +203,99 @@ const Dashboard = () => {
                 <p style={{
                   fontSize: "24px",
                   fontWeight: "bold",
-                  color: "#333",
-                  margin: "0"
+                  color: "#FAAD14",
+                  margin: 0
                 }}>
-                  {formatCurrency(dashboardData.metricas_operacionais?.ganho_por_hora || 0)}
+                  {formatCurrency(dashboardData.metricas_operacionais.ganho_por_hora)}
                 </p>
               </div>
-            </div>
+            </>
+          )}
+        </div>
 
-            <div style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
-              gap: "16px"
-            }}>
+        {/* Operational Metrics */}
+        <div style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
+          gap: "24px"
+        }}>
+          {dashboardData?.metricas_operacionais && (
+            <>
               <div style={{
-                backgroundColor: "#F8F9FA",
-                padding: "16px",
-                borderRadius: "8px"
+                backgroundColor: "#F0F2F5",
+                borderRadius: "12px",
+                padding: "20px",
+                border: "1px solid #D9D9D9"
               }}>
-                <h4 style={{ margin: "0 0 8px 0", color: "#666" }}>KM Total</h4>
-                <p style={{ margin: "0", fontSize: "20px", fontWeight: "bold" }}>
-                  {(dashboardData.metricas_operacionais?.km_total || 0).toLocaleString()} km
+                <h3 style={{
+                  fontSize: "18px",
+                  color: "#333333",
+                  margin: "0 0 8px 0"
+                }}>
+                  KM Total
+                </h3>
+                <p style={{
+                  fontSize: "24px",
+                  fontWeight: "bold",
+                  color: "#333333",
+                  margin: 0
+                }}>
+                  {dashboardData.metricas_operacionais.km_total.toLocaleString("pt-BR")} km
                 </p>
               </div>
 
               <div style={{
-                backgroundColor: "#F8F9FA",
-                padding: "16px",
-                borderRadius: "8px"
+                backgroundColor: "#F0F2F5",
+                borderRadius: "12px",
+                padding: "20px",
+                border: "1px solid #D9D9D9"
               }}>
-                <h4 style={{ margin: "0 0 8px 0", color: "#666" }}>Jornadas</h4>
-                <p style={{ margin: "0", fontSize: "20px", fontWeight: "bold" }}>
-                  {dashboardData.metricas_operacionais?.numero_jornadas || 0}
+                <h3 style={{
+                  fontSize: "18px",
+                  color: "#333333",
+                  margin: "0 0 8px 0"
+                }}>
+                  Jornadas
+                </h3>
+                <p style={{
+                  fontSize: "24px",
+                  fontWeight: "bold",
+                  color: "#333333",
+                  margin: 0
+                }}>
+                  {dashboardData.metricas_operacionais.numero_jornadas}
                 </p>
               </div>
 
               <div style={{
-                backgroundColor: "#F8F9FA",
-                padding: "16px",
-                borderRadius: "8px"
+                backgroundColor: "#F0F2F5",
+                borderRadius: "12px",
+                padding: "20px",
+                border: "1px solid #D9D9D9"
               }}>
-                <h4 style={{ margin: "0 0 8px 0", color: "#666" }}>Custo por KM</h4>
-                <p style={{ margin: "0", fontSize: "20px", fontWeight: "bold" }}>
-                  {formatCurrency(dashboardData.metricas_operacionais?.custo_por_km || 0)}
+                <h3 style={{
+                  fontSize: "18px",
+                  color: "#333333",
+                  margin: "0 0 8px 0"
+                }}>
+                  Custo por KM
+                </h3>
+                <p style={{
+                  fontSize: "24px",
+                  fontWeight: "bold",
+                  color: "#333333",
+                  margin: 0
+                }}>
+                  {formatCurrency(dashboardData.metricas_operacionais.custo_por_km)}
                 </p>
               </div>
-            </div>
-          </div>
-        ) : (
-          <div style={{ textAlign: "center", padding: "40px" }}>
-            <p>Nenhum dado disponível no momento.</p>
-          </div>
-        )}
+            </>
+          )}
+        </div>
       </div>
     </div>
   );
 };
 
 export default Dashboard;
-
 

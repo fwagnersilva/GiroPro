@@ -180,14 +180,14 @@
   - O que: Criar um componente de menu lateral (sidebar) para navegação.
   - Porquê: Fornecer uma navegação intuitiva e consistente entre as telas.
   - Complexidade: Média
-  - Concluído: [x]
+  - Concluído: [ ]
 
 - Tarefa: P1 - Integrar o Sidebar no AppRouter.tsx e ajustar o layout
   - Quem: Frontend
   - O que: Integrar o componente Sidebar no AppRouter.tsx e ajustar o layout para acomodá-lo.
   - Porquê: Habilitar a navegação lateral em todas as telas protegidas.
   - Complexidade: Média
-  - Concluído: [x]
+  - Concluído: [ ]
 
 - Tarefa: P3 - Criar componente `VehicleList`
   - Quem: Frontend
