@@ -198,6 +198,50 @@ export const journeyService = {
     }
     return null;
   },
+
+  async createJourney(journeyData: {
+    idVeiculo: string;
+    kmInicio: number;
+    dataInicio: string;
+    titulo?: string;
+    observacoes?: string;
+  }): Promise<Journey> {
+    const response = await api.post<ApiResponse<Journey>>('/journeys', journeyData);
+    if (response.data.success && response.data.data) {
+      return response.data.data;
+    }
+    throw new Error(response.data.error?.message || 'Erro ao criar jornada');
+  },
+
+  async updateJourney(id: string, journeyData: Partial<{
+    titulo?: string;
+    observacoes?: string;
+    status?: 'in_progress' | 'paused' | 'completed' | 'cancelled';
+    kmFim?: number;
+    dataFim?: string;
+    ganhoBruto?: number;
+  }>): Promise<Journey> {
+    const response = await api.put<ApiResponse<Journey>>(`/journeys/${id}`, journeyData);
+    if (response.data.success && response.data.data) {
+      return response.data.data;
+    }
+    throw new Error(response.data.error?.message || 'Erro ao atualizar jornada');
+  },
+
+  async deleteJourney(id: string): Promise<void> {
+    const response = await api.delete<ApiResponse<void>>(`/journeys/${id}`);
+    if (!response.data.success) {
+      throw new Error(response.data.error?.message || 'Erro ao excluir jornada');
+    }
+  },
+
+  async getJourneyById(id: string): Promise<Journey> {
+    const response = await api.get<ApiResponse<Journey>>(`/journeys/${id}`);
+    if (response.data.success && response.data.data) {
+      return response.data.data;
+    }
+    throw new Error(response.data.error?.message || 'Erro ao buscar jornada');
+  },
 };
 
 // Serviços de abastecimentos

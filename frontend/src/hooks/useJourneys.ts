@@ -24,8 +24,8 @@ export const useJourneys = (initialFilter?: JourneyFilter): UseJourneysReturn =>
     try {
       setLoading(true);
       setError(null);
-      const response = await journeyService.getJourneys();
-      setAllJourneys(response.data);
+      const journeys = await journeyService.getJourneys();
+      setAllJourneys(journeys);
     } catch (err: any) {
       setError(err.message || "Erro ao carregar jornadas. Tente novamente.");
       console.error("Erro ao carregar jornadas:", err);
