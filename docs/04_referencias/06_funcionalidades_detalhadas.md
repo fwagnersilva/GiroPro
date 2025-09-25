@@ -1,165 +1,188 @@
-# Documentação Detalhada das Funcionalidades do Sistema GiroPro
+# Funcionalidades do Sistema GiroPro
 
-## 1. Introdução
+## 1. Frontend
 
-Este documento tem como objetivo fornecer uma visão abrangente e detalhada das funcionalidades implementadas no sistema GiroPro. Ele serve como um guia essencial para desenvolvedores, stakeholders e qualquer pessoa interessada em compreender o escopo técnico e operacional da aplicação. O GiroPro é uma plataforma desenvolvida para gerenciamento de frotas e controle financeiro de veículos para motoristas e empresas..
+### 1.1. Telas de Autenticação
 
-### 1.1. Propósito do Documento
+#### `LoginScreen` / `LoginScreenOptimized`
 
-O propósito principal deste documento é consolidar informações sobre as capacidades do sistema, desde as APIs de backend até as interfaces de usuário no frontend, incluindo componentes reutilizáveis e áreas para desenvolvimento futuro. A documentação visa facilitar o onboarding de novos membros da equipe, a manutenção do sistema e o planejamento de futuras expansões.
+*   **Resumo**: A `LoginScreen` é a interface primária para autenticação de usuários. Sua função é validar credenciais e iniciar a sessão do usuário, sendo um ponto crítico para a segurança do sistema. Para desenvolvedores, é essencial entender a integração com o endpoint `/auth/login` do backend e as validações de entrada para garantir a integridade do processo de autenticação.
+*   **Campos**:
+    *   `email`: Endereço de e-mail do usuário (string).
+    *   `senha`: Senha do usuário (string).
+*   **Validações**:
+    *   `email`: Formato de e-mail válido.
+    *   `senha`: Mínimo de 8 caracteres.
+*   **Ações**:
+    *   Botão "Entrar": Submete o formulário para a API de login.
+    *   Link "Esqueceu sua senha?": Navega para a tela de recuperação de senha.
+    *   Checkbox "Lembrar-me": Mantém o usuário logado.
 
-## 2. Funcionalidades do Backend (APIs)
+#### `RegisterScreen` / `RegisterScreenOptimized`
 
-O backend do GiroPro é construído em uma arquitetura modular, oferecendo uma série de APIs RESTful que suportam todas as operações do frontend e interações com o banco de dados. Cada módulo é projetado para ser escalável e eficiente.
+*   **Resumo**: A `RegisterScreen` é a interface para a criação de novas contas de usuário. Sua função é coletar informações essenciais e registrá-las no sistema, integrando-se ao endpoint `/auth/register` do backend. Para desenvolvedores, é crucial garantir a correta validação de todos os campos e a segurança no armazenamento das credenciais, além de lidar com possíveis erros de registro, como e-mails duplicados.
+*   **Campos**:
+    *   `nome`: Nome do usuário (string).
+    *   `email`: Endereço de e-mail do usuário (string).
+    *   `senha`: Senha do usuário (string).
+    *   `confirmarSenha`: Confirmação da senha (string).
+*   **Validações**:
+    *   `nome`: Campo obrigatório.
+    *   `email`: Formato de e-mail válido e único no sistema.
+    *   `senha`: Mínimo de 8 caracteres, com letras maiúsculas, minúsculas, números e caracteres especiais.
+    *   `confirmarSenha`: Deve ser igual ao campo `senha`.
+*   **Ações**:
+    *   Botão "Registrar": Submete o formulário para a API de registro.
+
+#### `ChangePasswordScreen`
+
+*   **Resumo**: A `ChangePasswordScreen` é vital para a segurança da conta, permitindo que os usuários atualizem suas senhas. Para desenvolvedores, a implementação deve focar na comunicação segura com o backend para atualização de credenciais, garantindo que a nova senha atenda aos requisitos de segurança e que a autenticação do usuário seja verificada antes da alteração.
+*   **Campos**:
+    *   `senhaAtual`: Senha atual do usuário (string).
+    *   `novaSenha`: Nova senha do usuário (string).
+    *   `confirmarNovaSenha`: Confirmação da nova senha (string).
+*   **Validações**:
+    *   `senhaAtual`: Deve corresponder à senha atual do usuário.
+    *   `novaSenha`: Mínimo de 8 caracteres, com os mesmos requisitos da tela de registro.
+    *   `confirmarNovaSenha`: Deve ser igual ao campo `novaSenha`.
+*   **Ações**:
+    *   Botão "Alterar Senha": Submete o formulário para a API de alteração de senha.
+
+### 1.2. Telas de Dashboard
+
+#### `DashboardScreen` / `DashboardScreenOptimized`
+
+*   **Resumo**: A `DashboardScreen` é a interface central para a visualização de métricas operacionais e financeiras. Sua função é consolidar dados de diversos módulos (veículos, abastecimentos, despesas) e apresentá-los de forma gráfica e resumida. Para desenvolvedores, é crucial entender como esta tela consome dados dos endpoints `/dashboard/summary`, `/dashboard/evolution` e `/dashboard/vehicles` do backend, e como os componentes visuais são renderizados para refletir o estado atual da frota e as tendências financeiras.
+*   **Componentes**:
+    *   Card de Lucratividade: Exibe o lucro líquido do período.
+    *   Gráfico de Evolução: Mostra a evolução de receitas e despesas.
+    *   Lista de Veículos: Apresenta um resumo dos veículos cadastrados.
+    *   Botões de Ação Rápida: Atalhos para adicionar abastecimento, despesa ou viagem.
+
+### 1.3. Telas de Veículos
+
+#### `VehiclesScreen` / `VehiclesScreenOptimized`
+
+*   **Resumo**: A `VehiclesScreen` é a interface principal para o gerenciamento da frota de veículos. Sua função é permitir operações CRUD (Criar, Ler, Atualizar, Deletar) sobre os registros de veículos, interagindo diretamente com o endpoint `/vehicles` do backend. Para desenvolvedores, é crucial implementar validações robustas nos campos de entrada e garantir a correta manipulação dos dados para manter a integridade do inventário de veículos e impactar precisamente os cálculos de custos e desempenho.
+*   **Funcionalidades**:
+    *   Listagem de veículos cadastrados.
+    *   Adição de novos veículos.
+    *   Edição de informações de veículos existentes.
+    *   Remoção de veículos.
+
+#### `MultiVehicleScreen`
+
+*   **Resumo**: A `MultiVehicleScreen` é projetada para otimizar a experiência de usuários com múltiplas frotas, permitindo a seleção e alternância eficiente entre veículos. Para desenvolvedores, é crucial entender como esta tela gerencia o estado do veículo selecionado, pois essa escolha impacta diretamente os dados exibidos em outras seções do aplicativo. A implementação deve garantir uma transição fluida e a correta atualização das informações dependentes do veículo ativo.
+*   **Funcionalidades**:
+    *   Exibição de todos os veículos em formato de grade ou lista.
+    *   Seleção de um veículo para visualizar detalhes.
+
+## 2. Backend
 
 ### 2.1. Módulo de Autenticação (`/auth`)
 
-O módulo de autenticação é responsável por gerenciar o acesso dos usuários ao sistema, garantindo segurança e integridade. Ele inclui as seguintes funcionalidades:
+Este módulo é a espinha dorsal da segurança do sistema, responsável por gerenciar o ciclo de vida da autenticação e autorização dos usuários. Para desenvolvedores, compreender a arquitetura deste módulo é fundamental para integrar novas funcionalidades que dependam de acesso seguro e para implementar políticas de segurança robustas. Ele lida com a criação de contas, login e gerenciamento de sessões, garantindo que apenas usuários válidos possam acessar recursos protegidos.
 
-O módulo de autenticação é responsável por gerenciar o acesso dos usuários ao sistema, garantindo segurança e integridade. Ele oferece funcionalidades essenciais como o **Registro de Usuário (`POST /register`)**, que permite a criação de novas contas, e o **Login de Usuário (`POST /login`)**, que autentica usuários existentes e emite tokens de acesso para sessões seguras. Além disso, o sistema permite a **Recuperação de Perfil (`GET /me`)**, onde usuários autenticados podem acessar suas próprias informações. Um recurso planejado é a **Recuperação de Senha**, que permitirá aos usuários redefinir suas senhas através de um fluxo seguro, envolvendo o envio de e-mails com tokens de recuperação e interfaces dedicadas para redefinição, conforme detalhado no Backlog da Tela de Login.
+*   `POST /register`: **Função**: Permite a criação de novas contas de usuário. **Importância**: Essencial para a expansão da base de usuários e para a integração de novos clientes.
+*   `POST /login`: **Função**: Autentica usuários existentes, verificando credenciais e emitindo tokens de sessão. **Importância**: Garante o acesso seguro e controlado às funcionalidades do sistema.
+*   `GET /me`: **Função**: Retorna os dados do perfil do usuário atualmente autenticado. **Importância**: Permite que o frontend personalize a experiência do usuário e exiba informações relevantes.
 
 ### 2.2. Módulo de Dashboard (`/dashboard`)
 
-O módulo de dashboard fornece dados agregados e métricas chave para a visualização do desempenho e informações relevantes para o usuário.
+Este módulo é a fonte de dados agregados e métricas de desempenho para o frontend. Para desenvolvedores, entender os endpoints aqui é crucial para construir dashboards precisos e responsivos, que forneçam insights em tempo real sobre a performance da frota. Ele consolida informações de outros módulos para apresentar uma visão holística.
 
-O módulo de dashboard fornece dados agregados e métricas chave para a visualização do desempenho e informações relevantes para o usuário. Ele oferece um **Resumo de Lucratividade e Métricas Chave (`GET /summary`)**, que proporciona um panorama financeiro rápido, incluindo lucro líquido, custos totais, receitas e outras métricas importantes. Além disso, disponibiliza **Dados para Gráficos de Evolução Temporal (`GET /evolution`)**, que são estruturados para a construção de gráficos que mostram a evolução de métricas ao longo do tempo (diário, semanal, mensal). Complementarmente, permite o **Comparativo de Desempenho entre Veículos (`GET /vehicles`)**, auxiliando na tomada de decisões sobre eficiência e custos ao comparar a performance de diferentes veículos registrados.
+*   `GET /summary`: **Função**: Retorna um resumo consolidado de lucratividade e métricas financeiras chave. **Importância**: Fornece os dados para o card principal do dashboard, permitindo uma visão rápida da saúde financeira.
+*   `GET /evolution`: **Função**: Retorna dados estruturados para a construção de gráficos de evolução temporal. **Importância**: Essencial para visualizar tendências e padrões de desempenho ao longo do tempo.
+*   `GET /vehicles`: **Função**: Retorna dados para comparar o desempenho entre diferentes veículos. **Importância**: Permite identificar veículos mais eficientes ou problemáticos, auxiliando na gestão da frota.
+
+
+
+
 
 ### 2.3. Módulo de Veículos (`/vehicles`)
 
-Este módulo gerencia todas as informações relacionadas aos veículos do usuário.
+Este módulo é o coração da gestão de frotas no sistema, fornecendo uma API completa para o ciclo de vida dos veículos. Para desenvolvedores, é crucial entender a estrutura de dados dos veículos e as validações aplicadas, pois a integridade deste módulo impacta diretamente os cálculos de custos, análises de desempenho e a integração com módulos como abastecimentos e despesas. A robustez das operações CRUD aqui é fundamental para a confiabilidade de todo o sistema.
 
-Este módulo gerencia todas as informações relacionadas aos veículos do usuário. Ele oferece um **CRUD Completo de Veículos**, suportando a criação, leitura, atualização e exclusão de registros de veículos, incluindo detalhes como marca, modelo, ano, placa e tipo de combustível. Adicionalmente, o sistema permite o **Gerenciamento Multi-veículo**, onde um único usuário pode cadastrar e gerenciar múltiplos veículos em sua conta, conta de forma eficiente.
+*   **CRUD Completo de Veículos**: **Função**: Permite a criação, leitura, atualização e exclusão de registros de veículos (marca, modelo, ano, placa, tipo de combustível). **Importância**: Garante a integridade e a atualidade dos dados da frota. As operações de escrita (POST, PUT, DELETE) requerem validação robusta de dados.
+*   **Gerenciamento Multi-veículo**: **Função**: Suporta o cadastro e gerenciamento de múltiplos veículos por um único usuário. **Importância**: Essencial para usuários com frotas, permitindo a segregação e análise individualizada de dados por veículo.
+
+
+
+
+### 1.4. Telas de Abastecimentos
+
+#### `FuelingsScreen`
+
+*   **Resumo**: A `FuelingsScreen` é crucial para o registro e acompanhamento de abastecimentos, impactando diretamente o cálculo de custos e a análise de eficiência de combustível. Para desenvolvedores, é fundamental garantir a precisão dos dados de entrada (data, valor, volume, odômetro) e a correta associação com o veículo. A tela interage com o endpoint `/fuelings` do backend para operações CRUD, e a validação de dados é vital para a integridade das métricas.
+*   **Funcionalidades**:
+    *   Registro de novos abastecimentos (data, valor, volume, odômetro).
+    *   Listagem de abastecimentos anteriores.
+    *   Edição e exclusão de registros.
+
+
+
 
 ### 2.4. Módulo de Abastecimentos (`/fuelings`)
 
-Responsável pelo registro e acompanhamento dos abastecimentos dos veículos.
+Este módulo é o pilar para a gestão de custos de combustível, fornecendo uma API para registrar, consultar, atualizar e remover dados de abastecimento. Para desenvolvedores, a precisão e a integridade dos dados são cruciais, pois eles alimentam métricas de consumo e eficiência. A implementação deve garantir validações rigorosas e a correta associação dos abastecimentos aos veículos, impactando diretamente a confiabilidade dos relatórios financeiros.
 
-O módulo de abastecimentos é responsável pelo registro e acompanhamento dos abastecimentos dos veículos. Ele oferece um **CRUD de Registros de Abastecimentos**, permitindo adicionar, visualizar, modificar e remover detalhes de cada abastecimento, como data, local, quantidade de litros, valor por litro e odômetro. Além disso, mantém um **Histórico Detalhado de Abastecimentos**, que é um registro cronológico de todos os abastecimentos realizados, facilitando a consulta e análise.
+*   `POST /`: **Função**: Cria um novo registro de abastecimento. **Importância**: Permite a inserção de novos dados de abastecimento, que são a base para as análises de consumo e custo.
+*   `GET /`: **Função**: Retorna uma lista de todos os abastecimentos registrados. **Importância**: Fornece um histórico completo de abastecimentos para análise e visualização.
+*   `PUT /:id`: **Função**: Atualiza um registro de abastecimento existente. **Importância**: Garante a correção de dados e a manutenção da precisão do histórico.
+*   `DELETE /:id`: **Função**: Remove um registro de abastecimento. **Importância**: Permite a exclusão de registros incorretos ou duplicados.
+
+
+
 
 ### 2.5. Módulo de Despesas (`/expenses`)
 
-Gerencia todas as despesas associadas aos veículos ou à operação geral.
+Este módulo é essencial para o controle financeiro detalhado, oferecendo uma API para gerenciar despesas operacionais e pessoais. Para desenvolvedores, a correta categorização e registro das despesas são cruciais para análises de lucratividade e otimização de custos. A implementação deve focar na robustez das operações CRUD e na validação de dados para garantir a integridade financeira do sistema.
 
-O módulo de despesas gerencia todas as despesas associadas aos veículos ou à operação geral. Ele oferece um **CRUD de Registros de Despesas**, permitindo adicionar, visualizar, modificar e remover diferentes tipos de despesas, como manutenção, pedágios e estacionamento, com detalhes de valor e data. Além disso, armazena um **Histórico Detalhado de Despesas**, que é um registro completo de todas as despesas registradas, facilitando o controle financeiro.
+*   `POST /`: **Função**: Cria um novo registro de despesa. **Importância**: Permite a inserção de novos dados financeiros, essenciais para o acompanhamento de gastos.
+*   `GET /`: **Função**: Retorna uma lista de todas as despesas registradas. **Importância**: Fornece um histórico completo de despesas para análise e visualização.
+*   `PUT /:id`: **Função**: Atualiza um registro de despesa existente. **Importância**: Garante a correção de dados e a manutenção da precisão do histórico financeiro.
+*   `DELETE /:id`: **Função**: Remove um registro de despesa. **Importância**: Permite a exclusão de registros incorretos ou duplicados.
 
-### 2.6. Módulo de Viagens (`/journeys`)
 
-Controla o registro e o histórico das viagens realizadas.
 
-O módulo de viagens controla o registro e o histórico das viagens realizadas. Ele oferece um **CRUD de Registros de Viagens/Jornadas**, permitindo criar, visualizar, atualizar e excluir informações detalhadas sobre as viagens, como início, fim, distância percorrida e consumo de combustível. Complementarmente, mantém um **Histórico Detalhado de Viagens**, que é um registro completo de todas as jornadas realizadas, facilitando a análise de rotas e desempenho.
+
+### 2.6. Módulo de Viagens (`/trips`)
+
+Este módulo é fundamental para o planejamento e controle logístico, oferecendo uma API para gerenciar viagens. Para desenvolvedores, é essencial entender como as rotas, distâncias e tempos de deslocamento são registrados e processados, pois esses dados são cruciais para a otimização de custos e a análise de eficiência da frota. A implementação deve garantir a precisão geográfica e temporal dos registros.
+
+*   `POST /`: **Função**: Cria um novo registro de viagem. **Importância**: Permite o registro de novas viagens, essencial para o planejamento e controle logístico.
+*   `GET /`: **Função**: Retorna uma lista de todas as viagens registradas. **Importância**: Fornece um histórico completo de viagens para análise e visualização.
+*   `PUT /:id`: **Função**: Atualiza um registro de viagem existente. **Importância**: Garante a correção de dados e a manutenção da precisão do histórico de viagens.
+*   `DELETE /:id`: **Função**: Remove um registro de viagem. **Importância**: Permite a exclusão de registros incorretos ou duplicados.
+
+
+
 
 ### 2.7. Módulo de Relatórios (`/reports`)
 
-Oferece funcionalidades para a geração de relatórios e análises.
+Este módulo atua como o motor analítico do sistema, transformando dados brutos em insights estratégicos. Para desenvolvedores, é crucial entender como os dados são agregados e processados para gerar relatórios precisos e relevantes. A correta implementação dos endpoints aqui é vital para que o frontend possa apresentar informações confiáveis sobre a performance da frota, auxiliando na identificação de oportunidades de otimização e na tomada de decisões baseadas em dados.
 
-O módulo de relatórios oferece funcionalidades robustas para a geração de análises e insights. Ele permite a **Geração de Relatórios Semanais e Mensais**, produzindo resumos periódicos do desempenho financeiro e operacional do usuário. Além disso, inclui **Funcionalidades de Analytics Avançados**, que fornecem ferramentas para análises mais profundas dos dados, auxiliando na identificação de tendências e padrões importantes para a gestão de veículos.
+*   `GET /financial-summary`: **Função**: Gera um resumo financeiro completo, incluindo receitas, despesas e lucratividade. **Importância**: Oferece uma visão macro da saúde financeira da operação.
+*   `GET /vehicle-performance`: **Função**: Gera relatórios detalhados sobre o desempenho individual de cada veículo. **Importância**: Permite a identificação de veículos com baixo desempenho ou custos elevados.
+*   `GET /expense-analysis`: **Função**: Analisa as despesas por categoria e período. **Importância**: Ajuda a identificar os principais focos de custo e a encontrar oportunidades de economia.
+
+
+
 
 ### 2.8. Módulo de Gamificação (`/gamification`)
 
-Projetado para aumentar o engajamento do usuário através de elementos de jogo.
+Este módulo é estratégico para aumentar o engajamento e a retenção de usuários, aplicando princípios de gamificação. Para desenvolvedores, é crucial entender a API para gerenciar conquistas e classificações, pois ela permite a integração de novos desafios e recompensas, incentivando a interação contínua e a melhoria do desempenho do usuário. A correta implementação aqui impacta diretamente a motivação e a fidelidade dos usuários.
 
-O módulo de gamificação é projetado para aumentar o engajamento do usuário através de elementos de jogo. Ele implementa um **Sistema de Conquistas**, que recompensa os usuários por atingirem metas ou marcos específicos no uso do aplicativo. Além disso, permite a **Definição e Acompanhamento de Metas**, onde os usuários podem estabelecer seus próprios objetivos, como economia de combustível ou redução de despesas, e monitorar seu progresso de forma interativa.
+*   `GET /achievements`: **Função**: Fornece uma API para listar todas as conquistas disponíveis e o progresso do usuário em relação a elas. **Importância**: Permite que o frontend exiba o status de gamificação do usuário, incentivando a conclusão de tarefas e a interação contínua.
+*   `GET /leaderboard`: **Função**: Retorna dados para construir classificações de usuários com base em métricas de desempenho (ex: distância percorrida, economia de combustível). **Importância**: Essencial para a criação de um ambiente competitivo e social, motivando os usuários a melhorar seu desempenho.
+
+
+
 
 ### 2.9. Módulo de Preços de Combustível (`/fuel-prices`)
 
-Fornece informações sobre os preços dos combustíveis.
+Este módulo é crucial para a otimização de custos e a tomada de decisões estratégicas relacionadas a abastecimentos, fornecendo dados atualizados sobre os preços dos combustíveis. Para desenvolvedores, é fundamental entender como os dados de localização são utilizados para buscar e apresentar preços relevantes, e como o histórico de preços pode ser integrado para análises preditivas. A precisão e a disponibilidade desses dados impactam diretamente a capacidade do usuário de economizar e planejar eficientemente.
 
-O módulo de preços de combustível fornece informações essenciais para os usuários. Ele permite a **Consulta de Preços de Combustível**, onde os usuários podem verificar os preços atuais de diferentes tipos de combustível. Adicionalmente, oferece um **Histórico de Preços de Combustível**, que armazena e exibe a variação dos preços ao longo do tempo, auxiliando na tomada de decisões sobre quando e onde abastecer.
-
-### 2.10. Módulo de Notificações (`/notifications`)
-
-Gerencia o sistema de alertas e comunicações dentro do aplicativo.
-
-O módulo de notificações gerencia o sistema de alertas e comunicações dentro do aplicativo. Ele implementa um **Sistema de Notificações** robusto, capaz de enviar alertas importantes, lembretes e informações relevantes diretamente para o usuário, mantendo-o sempre atualizado sobre eventos críticos ou novidades na plataforma.
-
-### 2.11. Módulo de Insights (`/insights`)
-
-Oferece análises inteligentes e sugestões personalizadas.
-
-O módulo de insights oferece análises inteligentes e sugestões personalizadas. Ele é responsável pela **Geração de Análises e Sugestões Personalizadas**, fornecendo recomendações baseadas nos dados do usuário para otimizar o uso do veículo, economizar custos e melhorar a eficiência geral, transformando dados brutos em ações práticas.
-
-## 3. Funcionalidades do Frontend (Telas)
-
-O frontend do GiroPro é desenvolvido para oferecer uma experiência de usuário intuitiva e responsiva, com telas otimizadas para diferentes dispositivos.
-
-### 3.1. Telas de Autenticação
-
-As telas de autenticação do GiroPro são projetadas para garantir um acesso seguro e intuitivo ao sistema. A **`LoginScreen`**, com sua versão otimizada **`LoginScreenOptimized`**, oferece uma interface para o login de usuários, incluindo campos para e-mail e senha, melhorias de feedback de erro e a conveniente opção "Lembrar-me". Para novos usuários, a **`RegisterScreen`**, também disponível em uma versão **`RegisterScreenOptimized`**, proporciona uma experiência de cadastro fluida e com feedback visual aprimorado. Além disso, a **`ChangePasswordScreen`** permite que os usuários alterem suas senhas de forma segura, seja após a autenticação ou como parte de um fluxo de recuperação de senha.
-
-### 3.2. Telas de Dashboard
-
-As telas de Dashboard são o coração da visualização de dados no GiroPro. A **`DashboardScreen`**, com sua versão aprimorada **`DashboardScreenOptimized`**, serve como a tela principal, exibindo um resumo conciso das informações do usuário, como lucratividade, gráficos de evolução e comparativos de veículos. A versão `Optimized` eleva a experiência do usuário com uma hierarquia visual aprimorada, um fluxo de ações otimizado, responsividade avançada para diversos dispositivos, microinterações e animações fluidas, além de um sistema de feedback aprimorado. Complementarmente, a **`LoadingScreen`** é exibida durante o carregamento de dados ou a inicialização da aplicação, garantindo uma experiência de espera mais agradável e informativa para o usuário.
-
-### 3.3. Telas de Veículos
-
-As telas de Veículos permitem aos usuários gerenciar sua frota de forma eficaz. A **`VehiclesScreen`**, com sua versão otimizada **`VehiclesScreenOptimized`**, oferece a capacidade de visualizar, adicionar, editar e remover veículos, proporcionando uma interface eficiente para o gerenciamento de múltiplos veículos. Além disso, a **`MultiVehicleScreen`** é uma tela dedicada que facilita a gestão e a alternância entre os diversos veículos cadastrados, otimizando a experiência do usuário que possui mais de um veículo.
-
-### 3.4. Telas de Abastecimentos
-
-As telas de Abastecimentos são dedicadas ao registro e acompanhamento do consumo de combustível. A **`FuelingsScreen`**, com sua versão otimizada **`FuelingsScreenOptimized`**, exibe a lista de todos os abastecimentos registrados, podendo incluir filtros e opções de ordenação para facilitar a análise. Para registrar novos abastecimentos, o sistema oferece a **`AddFuelingScreen`**, que em sua versão **`AddFuelingScreenOptimized`**, aprimora a usabilidade do formulário e inclui validação de dados em tempo real. O **`FuelingHistoryScreen`** apresenta um histórico detalhado de todos os abastecimentos, enquanto o **`FuelPricesScreen`** exibe informações sobre os preços de combustível, podendo incluir gráficos de tendência para auxiliar na decisão de compra.
-
-### 3.5. Telas de Despesas
-
-As telas de Despesas permitem o gerenciamento detalhado de todos os gastos associados aos veículos ou à operação. A **`ExpensesScreen`**, com sua versão otimizada **`ExpensesScreenOptimized`**, lista todas as despesas registradas, podendo oferecer funcionalidades avançadas de categorização e busca para facilitar a organização financeira. Para o registro de novos gastos, a **`AddExpenseScreen`**, em sua versão **`AddExpenseScreenOptimized`**, proporciona um formulário intuitivo com validação de dados, aprimorando a experiência de entrada. O **`ExpenseHistoryScreen`** oferece um histórico completo de todas as despesas, permitindo uma visão clara dos padrões de gastos ao longo do tempo.
-
-### 3.6. Telas de Viagens
-
-As telas de Viagens são essenciais para o registro e acompanhamento das jornadas realizadas. A **`JourneysScreen`**, com sua versão otimizada **`JourneysScreenOptimized`**, exibe uma lista de todas as viagens registradas, podendo incorporar funcionalidades de mapa ou visualização de rota para uma melhor compreensão do trajeto. O **`JourneyHistoryScreen`** complementa, apresentando um histórico detalhado de todas as viagens, permitindo aos usuários revisar informações como datas, distâncias percorridas e consumo de combustível por jornada.
-
-### 3.7. Telas de Relatórios
-
-A **`ReportsScreen`** é a tela dedicada à exibição dos relatórios gerados pelo sistema. Nela, os usuários podem visualizar análises financeiras e operacionais, com opções de personalização para ajustar os dados exibidos e funcionalidades de exportação para formatos diversos, facilitando o compartilhamento e a análise externa.
-
-### 3.8. Telas de Gamificação
-
-As telas de Gamificação são projetadas para motivar e engajar os usuários através de elementos lúdicos. A **`GoalsScreen`**, com sua versão otimizada **`GoalsScreenOptimized`**, permite que os usuários definam e acompanhem suas metas, oferecendo visualizações de progresso mais interativas para mantê-los motivados. Complementarmente, a **`AchievementsScreen`**, disponível também em uma versão **`AchievementsScreenOptimized`**, exibe as conquistas alcançadas pelo usuário, celebrando seus marcos e incentivando a continuidade do uso do aplicativo.
-
-### 3.9. Telas de Perfil
-
-A **`ProfileScreen`**, com sua versão otimizada **`ProfileScreenOptimized`**, é a tela onde o usuário pode visualizar e editar suas informações de perfil. Esta tela oferece a flexibilidade para atualizar dados pessoais e, na versão `Optimized`, pode incluir configurações avançadas para personalizar a experiência do aplicativo.
-
-### 3.10. Telas de Insights
-
-A **`InsightsScreen`** é a tela onde o sistema apresenta análises inteligentes e sugestões personalizadas para o usuário. Esta funcionalidade visa transformar dados brutos em informações acionáveis, ajudando o usuário a tomar decisões mais informadas sobre a gestão de seus veículos e finanças.
-
-### 3.11. Telas de Onboarding
-
-A **`OnboardingScreen`** é uma sequência de telas cuidadosamente elaboradas para guiar o novo usuário pela aplicação. Seu objetivo é introduzir as principais funcionalidades do GiroPro de forma didática e interativa, garantindo uma primeira experiência positiva e facilitando a adaptação ao sistema.
-
-## 4. Componentes Reutilizáveis
-
-O projeto GiroPro faz uso extensivo de componentes reutilizáveis para garantir consistência, modularidade e eficiência no desenvolvimento.
-
-### 4.1. Componentes de UI (Interface do Usuário)
-
-Os **Componentes de UI (Interface do Usuário)** são a base visual do GiroPro, garantindo uma experiência consistente e responsiva. O **`FormInput`** é um componente genérico e versátil para campos de entrada de formulário, oferecendo suporte robusto a validação e adaptabilidade a diferentes tipos de input. Para melhorar a percepção de performance durante operações assíncronas, o sistema utiliza o **`LoadingSpinner`** como um indicador visual de carregamento e o **`SkeletonLoader`**, um componente de placeholder que simula o layout do conteúdo enquanto ele está sendo carregado. A responsividade da aplicação é assegurada pelo **`ResponsiveContainer`**, um contêiner inteligente que se adapta dinamicamente a diversos tamanhos de tela, proporcionando uma visualização otimizada em qualquer dispositivo.
-
-### 4.2. Componentes de Funcionalidades
-
-Os **Componentes de Funcionalidades** estendem as capacidades do GiroPro, oferecendo módulos especializados. O **`EnhancedDashboard`** representa uma versão aprimorada do dashboard, integrando funcionalidades avançadas de visualização de dados e interação para uma análise mais profunda. Para análises de dados mais complexas, o **`AdvancedAnalytics`** fornece um componente robusto para exibir gráficos interativos e tabelas dinâmicas. O **`WeeklyMonthlyReports`** é um componente dedicado à visualização e geração de relatórios periódicos, enquanto o **`InsightsPanel`** exibe sugestões e recomendações personalizadas, transformando dados em conselhos práticos. O sistema de notificações é composto pelo **`NotificationBell`**, um ícone que indica novas mensagens, e o **`NotificationCenter`**, um hub centralizado para o usuário visualizar e gerenciar todos os seus alertas. O **`MultiVehicleSelector`** facilita a seleção e alternância entre veículos cadastrados, e o **`SearchAndFilter`** é um componente genérico para busca e filtragem de dados em listas e tabelas. Para exibir históricos de forma eficiente, o **`HistoryList`** gerencia listas de abastecimentos, despesas e viagens com paginação ou rolagem infinita. Por fim, o **`OnboardingWizard`** é um assistente passo a passo que guia novos usuários através da configuração inicial e introdução às funcionalidades do aplicativo.
-
-## 5. Gaps Identificados e Próximos Passos
-
-Esta seção aborda as lacunas existentes no projeto e as áreas que requerem atenção ou desenvolvimento futuro, conforme identificado na análise da documentação existente.
-
-### 5.1. Problemas Técnicos
-
-A seção de **Problemas Técnicos** detalha desafios cruciais que afetam a estabilidade e o desenvolvimento do GiroPro. A **inconsistência no schema do banco de dados**, com a mistura de padrões `snake_case` e `camelCase` nos nomes das colunas, tem gerado erros de tipagem. Embora análises prévias sugiram uma padronização, a atenção contínua a este ponto é vital para a robustez do sistema. Outro ponto crítico são os **erros de TypeScript que impedem o build** completo do projeto, exigindo revisão e correção para garantir a integridade do código. A **configuração de ambiente incompleta** tem causado dificuldades na configuração inicial, indicando a necessidade de aprimorar a documentação de setup ou automatizar o processo. Por fim, o **Docker não funcional no ambiente atual** em alguns ambientes de desenvolvimento impacta a padronização e a facilidade de deploy, sendo um obstáculo a ser superado.
-
-### 5.2. Funcionalidades Potencialmente Faltantes
-
-A seção de **Funcionalidades Potencialmente Faltantes** destaca áreas de oportunidade para o futuro desenvolvimento do GiroPro. A **integração com APIs externas de preços de combustível** pode ser expandida para além da consulta atual, explorando fontes mais robustas e dados em tempo real. A implementação de um **sistema de backup/sincronização de dados** é crucial para garantir a segurança e a disponibilidade das informações do usuário através de mecanismos automáticos. A capacidade de **exportação de dados para formatos diversos (CSV, PDF, etc.)** facilitaria a análise externa e o compartilhamento de relatórios. O desenvolvimento de **configurações avançadas do usuário** permitiria a personalização de preferências, temas e notificações. Por fim, o **suporte offline para funcionalidades críticas** é uma expansão importante, permitindo que os usuários realizem operações essenciais mesmo sem conexão à internet, com sincronização posterior.
-
-### 5.3. Testes
-
-A seção de **Testes** aborda a estratégia de garantia de qualidade do GiroPro. Atualmente, existem **testes unitários parciais implementados**, mas é fundamental aumentar a **cobertura de testes completa para todas as funcionalidades**, expandindo tanto os testes unitários quanto os de integração para garantir a estabilidade e a correção do sistema. Além disso, é necessário desenvolver **testes de integração abrangentes** que cubram os fluxos completos entre frontend e backend. Por fim, a implementação de **testes E2E (End-to-End) para os fluxos principais da aplicação** é crucial para validar a experiência do usuário de ponta a ponta, simulando interações reais e assegurando que o sistema funcione conforme o esperado em cenários de uso típicos.
-
-## 6. Status Geral do Projeto
-
-*   **Backend**: A estrutura do backend está completa, mas ainda enfrenta desafios relacionados a problemas de build e tipagem que precisam ser resolvidos para garantir a estabilidade.
-*   **Frontend**: O frontend possui uma estrutura robusta e completa, com versões otimizadas de telas e componentes, focando na experiência do usuário e responsividade.
-*   **Banco de Dados**: A configuração do banco de dados tem sido uma área de atenção devido a inconsistências de schema, que estão sendo gradualmente abordadas para garantir a integridade dos dados.
-*   **Deploy**: O processo de deploy ainda não foi totalmente testado ou otimizado devido aos problemas técnicos e de configuração identificados, sendo uma prioridade para futuras etapas.
-
-Este documento será atualizado conforme o projeto evolui e novas funcionalidades são implementadas ou refinadas.
+*   `GET /`: **Função**: Retorna os preços de combustível para uma determinada localização. **Importância**: Permite que o usuário encontre os postos de combustível mais baratos em sua região.
+*   `GET /history`: **Função**: Retorna o histórico de preços de combustível para uma determinada localização. **Importância**: Ajuda o usuário a identificar tendências de preços e a planejar seus abastecimentos de forma mais estratégica.
 
