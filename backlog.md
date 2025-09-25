@@ -175,6 +175,20 @@
     - frontend/src/screens/LoginScreen.tsx
     - frontend/src/screens/RegisterScreen.tsx
 
+- Tarefa: P1 - Criar o componente Sidebar.tsx
+  - Quem: Frontend
+  - O que: Criar um componente de menu lateral (sidebar) para navegação.
+  - Porquê: Fornecer uma navegação intuitiva e consistente entre as telas.
+  - Complexidade: Média
+  - Concluído: [x]
+
+- Tarefa: P1 - Integrar o Sidebar no AppRouter.tsx e ajustar o layout
+  - Quem: Frontend
+  - O que: Integrar o componente Sidebar no AppRouter.tsx e ajustar o layout para acomodá-lo.
+  - Porquê: Habilitar a navegação lateral em todas as telas protegidas.
+  - Complexidade: Média
+  - Concluído: [x]
+
 - Tarefa: P3 - Criar componente `VehicleList`
   - Quem: Frontend
   - O que: Criar um novo componente `src/components/VehicleList.tsx` para exibir a lista de veículos.
