@@ -53,35 +53,35 @@
   - O que: Desenvolver endpoints CRUD completos para a entidade Veículos.
   - Porquê: Permitir o gerenciamento completo de veículos no backend.
   - Complexidade: Média
-  - Concluído: [ ]
+  - Concluído: [x]
 
 - Tarefa: P1 - Implementar APIs CRUD completas para Abastecimentos
   - Quem: Backend
   - O que: Desenvolver endpoints CRUD completos para a entidade Abastecimentos.
   - Porquê: Permitir o gerenciamento completo de abastecimentos no backend.
   - Complexidade: Média
-  - Concluído: [ ]
+  - Concluído: [x]
 
 - Tarefa: P1 - Implementar APIs CRUD completas para Despesas
   - Quem: Backend
   - O que: Desenvolver endpoints CRUD completos para a entidade Despesas.
   - Porquê: Permitir o gerenciamento completo de despesas no backend.
   - Complexidade: Média
-  - Concluído: [ ]
+  - Concluído: [x]
 
 - Tarefa: P1 - Desenvolver Tela de Jornadas
   - Quem: Frontend
   - O que: Criar um componente de tela para gerenciar as jornadas do usuário.
   - Porquê: Adicionar uma funcionalidade central de gestão de viagens.
   - Complexidade: Média
-  - Concluído: [ ]
+  - Concluído: [x]
 
 - Tarefa: P1 - Implementar APIs CRUD completas para Jornadas (Frontend - Integração)
   - Quem: Frontend
   - O que: Integrar a tela de Jornadas com as APIs CRUD do backend.
   - Porquê: Popular a tela com dados reais e permitir a interação do usuário.
   - Complexidade: Média
-  - Concluído: [ ]
+  - Concluído: [x]
 
 - Tarefa: P2 - Criar arquivo `.env.example`
   - Quem: Geral
