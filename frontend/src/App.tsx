@@ -1,24 +1,17 @@
 import React from 'react';
-import { AuthProvider, useAuth } from './contexts/AuthContext';
-import LoginScreen from './screens/LoginScreen';
-import Dashboard from './screens/Dashboard';
+import { Platform } from 'react-native';
+import { AuthProvider } from './contexts/AuthContext';
+import AppNavigator from './navigation/AppNavigator'; // Para mobile
+import AppRouter from './components/AppRouter'; // Para web
 
 const App = () => {
-  const { isAuthenticated, loading } = useAuth();
-
-  if (loading) {
-    return <div>Carregando...</div>;
-  }
-
-  return isAuthenticated ? <Dashboard /> : <LoginScreen />;
+  return (
+    <AuthProvider>
+      {Platform.OS === 'web' ? <AppRouter /> : <AppNavigator />}
+    </AuthProvider>
+  );
 };
 
-const Root = () => (
-  <AuthProvider>
-    <App />
-  </AuthProvider>
-);
-
-export default Root;
+export default App;
 
 

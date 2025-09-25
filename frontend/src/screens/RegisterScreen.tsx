@@ -14,11 +14,12 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../types';
 import FormInput, { validators, combineValidators } from '../components/FormInput';
 import { showErrorToast } from '../utils/toastUtils';
+import { useNavigate } from 'react-router-dom'; // Importar useNavigate para web
 
 type RegisterScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Register'>;
 
 interface Props {
-  navigation: RegisterScreenNavigationProp;
+  navigation?: RegisterScreenNavigationProp; // Tornar opcional para web
 }
 
 const RegisterScreen: React.FC<Props> = ({ navigation }) => {
@@ -28,6 +29,7 @@ const RegisterScreen: React.FC<Props> = ({ navigation }) => {
   const [confirmarSenha, setConfirmarSenha] = useState('');
   const [loading, setLoading] = useState(false);
   const { signUp } = useAuth();
+  const navigate = useNavigate(); // Hook para navegação web
 
   const handleRegister = useCallback(async () => {
     if (!nome.trim() || !email.trim() || !senha.trim() || !confirmarSenha.trim()) {
@@ -48,16 +50,25 @@ const RegisterScreen: React.FC<Props> = ({ navigation }) => {
     setLoading(true);
     try {
       await signUp({ nome, email, senha });
+      if (Platform.OS === 'web') {
+        navigate('/login'); // Redirecionar para login na web após registro
+      } else if (navigation) {
+        navigation.navigate('Login'); // Redirecionar para Login no mobile
+      }
     } catch (error: any) {
       showErrorToast(error.message || "Erro ao criar conta");
     } finally {
       setLoading(false);
     }
-  }, [nome, email, senha, confirmarSenha, signUp]);
+  }, [nome, email, senha, confirmarSenha, signUp, navigate, navigation]);
 
   const navigateToLogin = useCallback(() => {
-    navigation.navigate('Login');
-  }, [navigation]);
+    if (Platform.OS === 'web') {
+      navigate('/login');
+    } else if (navigation) {
+      navigation.navigate('Login');
+    }
+  }, [navigate, navigation]);
 
   const isFormValid = useMemo(() => 
     nome.trim() !== '' && 
