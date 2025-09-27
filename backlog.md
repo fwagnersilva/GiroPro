@@ -281,3 +281,42 @@
   - Concluído: [ ]
 
 
+
+
+
+# Problema: Renderização do Menu Lateral (Sidebar) na Web
+
+## Épico: Correção e Implementação do Menu Lateral Multiplataforma
+
+### História de Usuário: Como usuário, quero ver e interagir com o menu lateral de navegação em todas as plataformas (Web, Android, iOS) para acessar as funcionalidades do sistema.
+
+#### Tarefas:
+
+- Tarefa: P1 - Investigar problema de renderização do Sidebar (Web)
+  - Quem: Frontend
+  - O que: Diagnosticar a causa raiz da não renderização do menu lateral (sidebar) na versão web da aplicação.
+  - Porquê: Garantir que o menu de navegação seja exibido corretamente e funcione em todas as plataformas.
+  - Complexidade: Alta
+  - Concluído: [ ]
+  - Microtarefas:
+    - Verificar configuração do React Native Web (`babel.config.js`, `webpack.config.js` ou `vite.config.js`, aliases, transpilação).
+    - Revisar dependências e incompatibilidades entre `react-native`, `react-native-web`, `react-router-dom`, `@expo/vector-icons`.
+    - Analisar `App.tsx` e `AppRouter.tsx` para estilos conflitantes (`overflow: hidden`, `position`, `z-index`, `display`).
+    - Inspecionar detalhadamente o DOM e estilos computados no navegador para o sidebar.
+    - Monitorar console do navegador para erros/avisos relacionados à renderização de componentes ou estilos.
+    - Testar renderização condicional de um componente simples no local do sidebar.
+    - Isolar estilos do sidebar para verificar se o problema é de layout ou de renderização.
+
+- Tarefa: P1 - Implementar solução para o Sidebar (Web)
+  - Quem: Frontend
+  - O que: Desenvolver e integrar uma solução funcional para o menu lateral (sidebar) na versão web da aplicação.
+  - Porquê: Fornecer uma navegação intuitiva e consistente entre as telas, conforme o design proposto.
+  - Complexidade: Alta
+  - Concluído: [ ]
+  - Microtarefas:
+    - Reavaliar a abordagem multiplataforma para o Sidebar (componente web específico vs. React Native Web).
+    - Ajustar o layout do `DashboardLayout` para acomodar o sidebar fixo e o conteúdo principal (Flexbox/Grid CSS, `marginLeft`/`paddingLeft`).
+    - Testar a navegação entre todas as telas do menu após a implementação.
+    - Garantir que o design do sidebar esteja conforme o exemplo fornecido.
+
+
