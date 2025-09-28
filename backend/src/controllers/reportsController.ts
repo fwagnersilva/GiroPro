@@ -306,10 +306,10 @@ export class ReportsController {
       const despesasDetalhadas = await db
         .select({
           id: despesas.id,
-          data: despesas.data,
+          dataDespesa: despesas.dataDespesa,
           descricao: despesas.descricao,
-          valor: despesas.valor,
-          categoria: despesas.categoria,
+          valorDespesa: despesas.valorDespesa,
+          tipoDespesa: despesas.tipoDespesa,
           veiculo: {
             id: veiculos.id,
             marca: veiculos.marca,
@@ -322,8 +322,8 @@ export class ReportsController {
         .where(and(
           eq(despesas.idUsuario, userId),
           isNull(despesas.deletedAt),
-          gte(despesas.data, parsedDataInicio),
-          lte(despesas.data, parsedDataFim),
+          gte(despesas.dataDespesa, parsedDataInicio),
+          lte(despesas.dataDespesa, parsedDataFim),
           idVeiculo ? eq(despesas.idVeiculo, idVeiculo) : undefined
         ))
         .orderBy(desc(despesas.dataDespesa));
@@ -433,8 +433,8 @@ export class ReportsController {
         .where(and(
           eq(despesas.idUsuario, userId),
           isNull(despesas.deletedAt),
-          gte(despesas.data, parsedDataInicio),
-          lte(despesas.data, parsedDataFim),
+          gte(despesas.dataDespesa, parsedDataInicio),
+          lte(despesas.dataDespesa, parsedDataFim),
           idVeiculo ? eq(despesas.idVeiculo, idVeiculo as string) : undefined
         ))
         .groupBy(despesas.tipoDespesa);
@@ -475,7 +475,7 @@ export class ReportsController {
       const consumoCombustivel = await db
         .select({
           id: abastecimentos.id,
-          data: abastecimentos.data,
+          dataAbastecimento: abastecimentos.dataAbastecimento,
           litros: abastecimentos.litros,
           valorTotal: abastecimentos.valorTotal,
           precoPorLitro: abastecimentos.precoPorLitro,
@@ -491,11 +491,11 @@ export class ReportsController {
         .where(and(
           eq(abastecimentos.idUsuario, userId),
           isNull(abastecimentos.deletedAt),
-          gte(abastecimentos.data, parsedDataInicio),
-          lte(abastecimentos.data, parsedDataFim),
+          gte(abastecimentos.dataAbastecimento, parsedDataInicio),
+          lte(abastecimentos.dataAbastecimento, parsedDataFim),
           idVeiculo ? eq(abastecimentos.idVeiculo, idVeiculo as string) : undefined
         ))
-        .orderBy(desc(abastecimentos.data));
+        .orderBy(desc(abastecimentos.dataAbastecimento));
 
       return res.status(200).json({
         success: true,

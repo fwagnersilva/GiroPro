@@ -12,7 +12,8 @@ import {
 import { useAuth } from '../contexts/AuthContext';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../types';
-import FormInput, { validators, combineValidators } from '../components/FormInput';
+import FormInput from '../components/FormInput';
+import { validators, combineValidators } from '../components/FormInput/FormInput.web';
 import { showErrorToast } from '../utils/toastUtils';
 import { useNavigate } from 'react-router-dom'; // Importar useNavigate para web
 

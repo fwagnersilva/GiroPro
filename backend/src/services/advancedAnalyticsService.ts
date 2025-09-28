@@ -66,7 +66,7 @@ export class AdvancedAnalyticsService {
       const fuelMetrics = await db
         .select({
           totalAbastecimentos: count(abastecimentos.id),
-          totalLitros: sum(abastecimentos.quantidadeLitros),
+          totalLitros: sum(abastecimentos.litros),
           totalGastoCombustivel: sum(abastecimentos.valorTotal),
           mediaValorLitro: avg(abastecimentos.valorLitro),
         })

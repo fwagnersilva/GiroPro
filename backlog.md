@@ -297,15 +297,14 @@
   - O que: Diagnosticar a causa raiz da não renderização do menu lateral (sidebar) na versão web da aplicação.
   - Porquê: Garantir que o menu de navegação seja exibido corretamente e funcione em todas as plataformas.
   - Complexidade: Alta
-  - Concluído: [ ]
+  - Concluído: [x]
+  - Descobertas:
+    - O ponto de entrada da aplicação (`main.tsx`) estava carregando um componente (`NewLoginScreen`) diferente do esperado (`App.tsx`), ignorando completamente a estrutura de roteamento e os componentes como `AppRouter` e `Sidebar`.
+    - Erros de compilação foram encontrados em `api.ts` (funções CRUD fora do objeto `journeyService`) e `ForgotPasswordScreen.tsx` (importação incorreta de `authService`).
   - Microtarefas:
-    - Verificar configuração do React Native Web (`babel.config.js`, `webpack.config.js` ou `vite.config.js`, aliases, transpilação).
-    - Revisar dependências e incompatibilidades entre `react-native`, `react-native-web`, `react-router-dom`, `@expo/vector-icons`.
-    - Analisar `App.tsx` e `AppRouter.tsx` para estilos conflitantes (`overflow: hidden`, `position`, `z-index`, `display`).
-    - Inspecionar detalhadamente o DOM e estilos computados no navegador para o sidebar.
-    - Monitorar console do navegador para erros/avisos relacionados à renderização de componentes ou estilos.
-    - Testar renderização condicional de um componente simples no local do sidebar.
-    - Isolar estilos do sidebar para verificar se o problema é de layout ou de renderização.
+    - Corrigir o `main.tsx` para carregar `App.tsx` como ponto de entrada. (Concluído)
+    - Corrigir a estrutura do `api.ts` para que as funções CRUD de `journeyService` estejam dentro do objeto. (Concluído)
+    - Corrigir a importação em `ForgotPasswordScreen.tsx` para usar `../services/api`. (Concluído)
 
 - Tarefa: P1 - Implementar solução para o Sidebar (Web)
   - Quem: Frontend

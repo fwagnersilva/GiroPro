@@ -1,4 +1,5 @@
-import { Database } from 'better-sqlite3';
+import Database from 'better-sqlite3';
+import type { Database as BetterSqlite3Database } from 'better-sqlite3';
 import { drizzle } from 'drizzle-orm/better-sqlite3';
 import { migrate } from 'drizzle-orm/better-sqlite3/migrator';
 import * as schema from '../db/schema';
@@ -9,7 +10,7 @@ import path from 'path';
  */
 export class DatabaseConfig {
   private static instance: DatabaseConfig;
-  private db: Database;
+  private db: BetterSqlite3Database;
   private drizzleDb: ReturnType<typeof drizzle>;
 
   private constructor() {
@@ -48,7 +49,7 @@ export class DatabaseConfig {
     this.db.exec('ANALYZE');
   }
 
-  public getDatabase(): Database {
+  public getDatabase(): BetterSqlite3Database {
     return this.db;
   }
 
@@ -85,8 +86,8 @@ export class DatabaseConfig {
    * Verifica a integridade do banco de dados
    */
   public checkIntegrity(): boolean {
-    const result = this.db.prepare('PRAGMA integrity_check').get() as { integrity_check: string };
-    return result.integrity_check === 'ok';
+    const result = this.db.prepare("PRAGMA integrity_check").get() as { [key: string]: string };
+    return result["integrity_check"] === 'ok';
   }
 
   /**

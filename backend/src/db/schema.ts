@@ -89,8 +89,13 @@ export const jornadas = sqliteTable("jornadas", {
   kmFim: integer("kmFim"),
   
   ganhoBruto: integer("ganhoBruto"), // Em centavos
+  lucroLiquidoEstimado: integer("lucroLiquidoEstimado").default(0).notNull(),
+  margemLucro: real("margemLucro").default(0).notNull(),
   kmTotal: integer("kmTotal"), // Calculado: km_fim - km_inicio
   tempoTotal: integer("tempoTotal"), // Em minutos
+  duracaoMinutos: integer("duracaoMinutos"),
+  custoCombustivelEstimado: integer("custoCombustivelEstimado").default(0).notNull(),
+  outrasDespesas: integer("outrasDespesas").default(0).notNull(),
   
   observacoes: text("observacoes", { length: 500 }),
   
@@ -113,8 +118,9 @@ export const abastecimentos = sqliteTable("abastecimentos", {
   
   dataAbastecimento: integer("dataAbastecimento", { mode: "timestamp" }).notNull(),
   tipoCombustivel: fuelType.notNull(),
-  quantidadeLitros: real("quantidadeLitros").notNull(), // REAL para precisão
+  litros: real("litros").notNull(), // REAL para precisão
   valorLitro: integer("valorLitro").notNull(), // Em centavos
+  precoPorLitro: real("precoPorLitro").notNull(), // REAL para precisão
   valorTotal: integer("valorTotal").notNull(), // Em centavos
   kmAtual: integer("kmAtual"),
   nomePosto: text("nomePosto", { length: 100 }),

@@ -4,7 +4,7 @@ import { AuthenticatedRequest } from '../types/auth';
 import logger from '../utils/logger';
 import { cacheService } from '../utils/cache';
 import { AppError } from '../utils/customErrors';
-import { asyncHandler } from '../utils/asyncHandler';
+import asyncHandler from '../utils/asyncHandler';
 import { ReportsService } from '../services/reportsService';
 import { DateUtils } from '../utils/dateUtils';
 

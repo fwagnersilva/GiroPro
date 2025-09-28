@@ -16,6 +16,9 @@ const multiVehicleQuerySchema = z.object({
   ordenar_por: z.enum(['marca', 'modelo', 'ano', 'data_cadastro']).default('data_cadastro'),
   ordem: z.enum(['asc', 'desc']).default('desc'),
 });
+interface AuthenticatedRequest extends Request {
+  user?: { id: string; email: string; nome: string; role: string; };
+}
 
 interface DailyUsageData {
   data: string;
@@ -111,7 +114,7 @@ export class MultiVehicleController {
         // Métricas de abastecimentos
         const fuelingStats = await db
           .select({
-            total_litros: sum(abastecimentos.quantidadeLitros),
+            total_litros: sum(abastecimentos.litros),
             total_gasto: sum(abastecimentos.valorTotal),
             numero_abastecimentos: count(abastecimentos.id),
             ultimo_abastecimento: sql<Date>`MAX(${abastecimentos.dataAbastecimento})`,
@@ -453,7 +456,7 @@ export class MultiVehicleController {
       const fuelingHistory = await db
         .select({
           data: abastecimentos.dataAbastecimento,
-          quantidadeLitros: abastecimentos.quantidadeLitros,
+          litros: abastecimentos.litros,
           valorLitro: abastecimentos.valorLitro,
         })
         .from(abastecimentos)
@@ -505,7 +508,7 @@ fuelingHistory.forEach(fueling => {
           };
         }
         dailyUsage[date].abastecimentos++;
-        dailyUsage[date].quantidadeLitros += Number(fueling.quantidadeLitros) || 0;
+        dailyUsage[date].quantidadeLitros += Number(fueling.litros) || 0;
         dailyUsage[date].gasto_combustivel += Number(fueling.valorLitro) || 0;
       });
 

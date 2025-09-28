@@ -7,7 +7,7 @@ import AppRouter from './components/AppRouter'; // Para web
 const App = () => {
   return (
     <AuthProvider>
-      {Platform.OS === 'web' ? <AppRouter /> : <AppNavigator />}
+      <AppRouter />
     </AuthProvider>
   );
 };

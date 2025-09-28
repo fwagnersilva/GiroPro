@@ -1,10 +1,9 @@
-const logger = new Logger();
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
 import slowDown, { Options } from 'express-slow-down';
 import { Request, Response, NextFunction } from 'express';
-import { Logger } from '../utils/logger';
 import { cacheService } from '../services/cacheService';
+import logger from '../utils/logger';
 
 // Configuração do Helmet para segurança
 export const securityHeaders = helmet({

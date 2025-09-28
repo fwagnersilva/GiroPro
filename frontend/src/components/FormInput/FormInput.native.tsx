@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   TextInputProps,
 } from 'react-native';
-import Icon from './Icon';
+import Icon from '../../components/Icon';
 
 interface FormInputProps extends TextInputProps {
   label: string;

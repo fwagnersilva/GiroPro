@@ -7,11 +7,7 @@ import { ValidationError, NotFoundError, UnauthorizedError } from '../utils/cust
 
 // Interfaces para tipagem
 interface AuthenticatedRequest extends Request {
-  user?: {
-    id: string;
-    email: string; // Adicionado o campo email
-    [key: string]: any;
-  };
+  user?: { id: string; email: string; nome: string; role: string; };
 }
 
 interface Period {
@@ -185,7 +181,7 @@ export class AdvancedAnalyticsController {
       db
         .select({
           dataAbastecimento: abastecimentos.dataAbastecimento,
-          quantidadeLitros: abastecimentos.quantidadeLitros,
+          litros: abastecimentos.litros,
           valorTotal: abastecimentos.valorTotal,
           kmAtual: abastecimentos.kmAtual,
         })

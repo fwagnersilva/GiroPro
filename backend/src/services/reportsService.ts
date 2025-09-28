@@ -556,14 +556,14 @@ export class ReportsService {
         id: abastecimentos.id,
         dataAbastecimento: abastecimentos.dataAbastecimento,
         valorLitro: abastecimentos.valorLitro,
-        quantidadeLitros: abastecimentos.quantidadeLitros,
+        litros: abastecimentos.litros,
         valorTotal: abastecimentos.valorTotal,
       })
       .from(abastecimentos)
       .where(and(
         eq(abastecimentos.idUsuario, userId),
         isNull(abastecimentos.deletedAt),
-        sql`${abastecimentos.valorTotal} <> ${abastecimentos.valorLitro} * ${abastecimentos.quantidadeLitros}`
+        sql`${abastecimentos.valorTotal} <> ${abastecimentos.valorLitro} * ${abastecimentos.litros}`
       ));
 
     if (inconsistentFuelings.length > 0) {
@@ -574,7 +574,7 @@ export class ReportsService {
         details: inconsistentFuelings.map(a => ({
           id: a.id,
           data: a.dataAbastecimento,
-          valorCalculado: (Number(a.valorLitro) * Number(a.quantidadeLitros)).toFixed(2),
+          valorCalculado: (Number(a.valorLitro) * Number(a.litros)).toFixed(2),
           valorRegistrado: Number(a.valorTotal).toFixed(2),
         })),
       });

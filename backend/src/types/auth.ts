@@ -5,8 +5,7 @@ export interface AuthenticatedRequest extends Request {
     id: string;
     email: string;
     nome: string;
-    role: string;
-  };
+    role: string; };
 }
 
 export interface JWTPayload {

@@ -1,3 +1,4 @@
+
 import axios from 'axios';
 import AsyncStorage from '../utils/AsyncStorage.web';
 import { 
@@ -14,10 +15,10 @@ import {
 } from '../types';
 
 // Configuração base da API
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:3000/api/v1';
+const API_BASE_URL = process.env.VITE_API_URL || 'http://localhost:3000';
 
 const api = axios.create({
-  baseURL: API_BASE_URL,
+  baseURL: `${API_BASE_URL}/api/v1`,
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json',
@@ -85,7 +86,8 @@ export const authService = {
       }
       return response.data.data;
     }
-    throw new Error('Erro no login'); },
+    throw new Error('Erro no login'); 
+  },
 
   async register(userData: RegisterRequest): Promise<AuthResponse> {
     const response = await api.post<ApiResponse<AuthResponse>>('/auth/register', userData);
@@ -94,7 +96,8 @@ export const authService = {
       await AsyncStorage.setItem('user', JSON.stringify(response.data.data.user));
       return response.data.data;
     }
-    throw new Error('Erro no cadastro');  },
+    throw new Error('Erro no cadastro');  
+  },
 
   async logout(): Promise<void> {
     await AsyncStorage.removeItem('authToken');
@@ -476,232 +479,126 @@ export const fuelPricesService = {
     fonte?: string;
   }): Promise<any> {
     const response = await api.post<ApiResponse<any>>('/fuel-prices/report', priceData);
-    if (response.data.success && response.data.data) {
+    if (response.data.success) {
       return response.data.data;
     }
     throw new Error(response.data.error?.message || 'Erro ao reportar preço');
   },
 };
 
-// Serviços do dashboard
+// Serviço de Dashboard
 export const dashboardService = {
-  async getDashboardData(): Promise<DashboardData> {
-    const response = await api.get<ApiResponse<DashboardData>>('/dashboard');
+  async getDashboardData(params?: {
+    periodo?: '7d' | '30d' | '90d' | '1y' | 'custom';
+    data_inicio?: string;
+    data_fim?: string;
+    id_veiculo?: string;
+  }): Promise<DashboardData> {
+    const response = await api.get<ApiResponse<DashboardData>>('/dashboard', { params });
     if (response.data.success && response.data.data) {
       return response.data.data;
     }
     throw new Error(response.data.error?.message || 'Erro ao buscar dados do dashboard');
   },
+};
 
-  async getSummary(params?: {
-    periodo?: 'hoje' | 'semana' | 'mes' | 'ano' | 'personalizado';
-    data_inicio?: string;
-    data_fim?: string;
+// Serviço de Relatórios
+export const reportService = {
+  async generateReport(params: {
+    tipo_relatorio: 'desempenho_veiculo' | 'resumo_financeiro' | 'jornadas_detalhadas';
+    formato: 'pdf' | 'csv' | 'json';
+    data_inicio: string;
+    data_fim: string;
     id_veiculo?: string;
   }): Promise<any> {
-    const response = await api.get<ApiResponse<any>>('/dashboard/summary', { params });
+    const response = await api.get<ApiResponse<any>>('/reports/generate', {
+      params,
+      responseType: 'blob', // Importante para receber arquivos
+    });
+    if (response.status === 200) {
+      return response.data;
+    }
+    throw new Error('Erro ao gerar relatório');
+  },
+};
+
+// Serviço de Notificações
+export const notificationService = {
+  async getNotifications(params?: {
+    lida?: boolean;
+    page?: number;
+    limit?: number;
+  }): Promise<{ data: any[]; pagination: any }> {
+    const response = await api.get<ApiResponse<{ data: any[]; pagination: any }>>('/notifications', { params });
     if (response.data.success && response.data.data) {
       return response.data.data;
     }
-    throw new Error(response.data.error?.message || 'Erro ao buscar resumo do dashboard');
+    throw new Error(response.data.error?.message || 'Erro ao buscar notificações');
+  },
+
+  async markAsRead(id: string): Promise<void> {
+    const response = await api.patch<ApiResponse<void>>(`/notifications/${id}/read`);
+    if (!response.data.success) {
+      throw new Error(response.data.error?.message || 'Erro ao marcar notificação como lida');
+    }
+  },
+
+  async markAllAsRead(): Promise<void> {
+    const response = await api.patch<ApiResponse<void>>('/notifications/read-all');
+    if (!response.data.success) {
+      throw new Error(response.data.error?.message || 'Erro ao marcar todas as notificações como lidas');
+    }
+  },
+};
+
+// Serviço de Usuário
+export const userService = {
+  async getProfile(): Promise<User> {
+    const response = await api.get<ApiResponse<User>>('/user/profile');
+    if (response.data.success && response.data.data) {
+      return response.data.data;
+    }
+    throw new Error(response.data.error?.message || 'Erro ao buscar perfil do usuário');
+  },
+
+  async updateProfile(profileData: Partial<User>): Promise<User> {
+    const response = await api.put<ApiResponse<User>>('/user/profile', profileData);
+    if (response.data.success && response.data.data) {
+      // Atualizar dados do usuário no armazenamento local
+      const userString = await AsyncStorage.getItem('user');
+      if (userString) {
+        const user = JSON.parse(userString);
+        const updatedUser = { ...user, ...response.data.data };
+        await AsyncStorage.setItem('user', JSON.stringify(updatedUser));
+      }
+      return response.data.data;
+    }
+    throw new Error(response.data.error?.message || 'Erro ao atualizar perfil');
+  },
+
+  async changePassword(passwordData: { senha_atual: string; nova_senha: string }): Promise<void> {
+    const response = await api.put<ApiResponse<void>>('/user/change-password', passwordData);
+    if (!response.data.success) {
+      throw new Error(response.data.error?.message || 'Erro ao alterar senha');
+    }
+  },
+
+  async getPreferences(): Promise<any> {
+    const response = await api.get<ApiResponse<any>>('/user/preferences');
+    if (response.data.success && response.data.data) {
+      return response.data.data;
+    }
+    throw new Error(response.data.error?.message || 'Erro ao buscar preferências');
+  },
+
+  async updatePreferences(preferences: any): Promise<any> {
+    const response = await api.put<ApiResponse<any>>('/user/preferences', preferences);
+    if (response.data.success && response.data.data) {
+      return response.data.data;
+    }
+    throw new Error(response.data.error?.message || 'Erro ao atualizar preferências');
   },
 };
 
 export default api;
-export { api };
-
-// Alias para compatibilidade
-export const userService = authService;
-
-
-// Serviços de relatórios
-export const reportService = {
-  async getJourneyEarningsReport(params?: {
-    periodo?: 'hoje' | 'semana' | 'mes' | 'ano' | 'personalizado';
-    data_inicio?: string;
-    data_fim?: string;
-    id_veiculo?: string;
-    formato?: 'json' | 'csv';
-  }): Promise<any> {
-    const response = await api.get<ApiResponse<any>>('/reports/journey-earnings', { params });
-    if (response.data.success && response.data.data) {
-      return response.data.data;
-    }
-    throw new Error(response.data.error?.message || 'Erro ao gerar relatório de jornadas');
-  },
-
-  async getExpenseAnalysisReport(params?: {
-    periodo?: 'hoje' | 'semana' | 'mes' | 'ano' | 'personalizado';
-    data_inicio?: string;
-    data_fim?: string;
-    id_veiculo?: string;
-    formato?: 'json' | 'csv';
-  }): Promise<any> {
-    const response = await api.get<ApiResponse<any>>('/reports/expense-analysis', { params });
-    if (response.data.success && response.data.data) {
-      return response.data.data;
-    }
-    throw new Error(response.data.error?.message || 'Erro ao gerar relatório de despesas');
-  },
-
-  async getFuelConsumptionReport(params?: {
-    periodo?: 'hoje' | 'semana' | 'mes' | 'ano' | 'personalizado';
-    data_inicio?: string;
-    data_fim?: string;
-    id_veiculo?: string;
-    formato?: 'json' | 'csv';
-  }): Promise<any> {
-    const response = await api.get<ApiResponse<any>>('/reports/fuel-consumption', { params });
-    if (response.data.success && response.data.data) {
-      return response.data.data;
-    }
-    throw new Error(response.data.error?.message || 'Erro ao gerar relatório de combustível');
-  },
-
-  async downloadJourneyEarningsCSV(params?: {
-    periodo?: 'hoje' | 'semana' | 'mes' | 'ano' | 'personalizado';
-    data_inicio?: string;
-    data_fim?: string;
-    id_veiculo?: string;
-  }): Promise<Blob> {
-    const response = await api.get('/reports/journey-earnings', { 
-      params: { ...params, formato: 'csv' },
-      responseType: 'blob'
-    });
-    return response.data;
-  },
-
-  async downloadExpenseAnalysisCSV(params?: {
-    periodo?: 'hoje' | 'semana' | 'mes' | 'ano' | 'personalizado';
-    data_inicio?: string;
-    data_fim?: string;
-    id_veiculo?: string;
-  }): Promise<Blob> {
-    const response = await api.get('/reports/expense-analysis', { 
-      params: { ...params, formato: 'csv' },
-      responseType: 'blob'
-    });
-    return response.data;
-  },
-
-  async downloadFuelConsumptionCSV(params?: {
-    periodo?: 'hoje' | 'semana' | 'mes' | 'ano' | 'personalizado';
-    data_inicio?: string;
-    data_fim?: string;
-    id_veiculo?: string;
-  }): Promise<Blob> {
-    const response = await api.get('/reports/fuel-consumption', { 
-      params: { ...params, formato: 'csv' },
-      responseType: 'blob'
-    });
-    return response.data;
-  },
-
-  // Novos relatórios semanais e mensais
-  async getWeeklyReport(params?: {
-    data_inicio?: string;
-    data_fim?: string;
-    id_veiculo?: string;
-    formato?: 'json' | 'csv';
-  }): Promise<any> {
-    const response = await api.get<ApiResponse<any>>('/reports/weekly', { params });
-    if (response.data.success && response.data.data) {
-      return response.data.data;
-    }
-    throw new Error(response.data.error?.message || 'Erro ao gerar relatório semanal');
-  },
-
-  async getMonthlyReport(params?: {
-    data_inicio?: string;
-    data_fim?: string;
-    id_veiculo?: string;
-    formato?: 'json' | 'csv';
-  }): Promise<any> {
-    const response = await api.get<ApiResponse<any>>('/reports/monthly', { params });
-    if (response.data.success && response.data.data) {
-      return response.data.data;
-    }
-    throw new Error(response.data.error?.message || 'Erro ao gerar relatório mensal');
-  },
-
-  async getWeeklyComparison(params?: {
-    id_veiculo?: string;
-    numero_semanas?: number;
-  }): Promise<any> {
-    const response = await api.get<ApiResponse<any>>('/reports/weekly-comparison', { params });
-    if (response.data.success && response.data.data) {
-      return response.data.data;
-    }
-    throw new Error(response.data.error?.message || 'Erro ao gerar comparativo semanal');
-  },
-
-  async getMonthlyComparison(params?: {
-    id_veiculo?: string;
-    numero_meses?: number;
-  }): Promise<any> {
-    const response = await api.get<ApiResponse<any>>('/reports/monthly-comparison', { params });
-    if (response.data.success && response.data.data) {
-      return response.data.data;
-    }
-    throw new Error(response.data.error?.message || 'Erro ao gerar comparativo mensal');
-  },
-
-  async downloadWeeklyReportCSV(params?: {
-    data_inicio?: string;
-    data_fim?: string;
-    id_veiculo?: string;
-  }): Promise<Blob> {
-    const response = await api.get('/reports/weekly', { 
-      params: { ...params, formato: 'csv' },
-      responseType: 'blob'
-    });
-    return response.data;
-  },
-
-  async downloadMonthlyReportCSV(params?: {
-    data_inicio?: string;
-    data_fim?: string;
-    id_veiculo?: string;
-  }): Promise<Blob> {
-    const response = await api.get('/reports/monthly', { 
-      params: { ...params, formato: 'csv' },
-      responseType: 'blob'
-    });
-    return response.data;
-  },
-};
-
-
-
-  async createJourney(journeyData: { idVeiculo: string; dataInicio: string; kmInicio: number; observacoes?: string }): Promise<Journey> {
-    const response = await api.post<ApiResponse<Journey>>("/journeys", journeyData);
-    if (response.data.success && response.data.data) {
-      return response.data.data;
-    }
-    throw new Error(response.data.error?.message || "Erro ao criar jornada");
-  },
-
-  async getJourneyById(id: string): Promise<Journey> {
-    const response = await api.get<ApiResponse<Journey>>(`/journeys/${id}`);
-    if (response.data.success && response.data.data) {
-      return response.data.data;
-    }
-    throw new Error(response.data.error?.message || "Erro ao buscar jornada");
-  },
-
-  async updateJourney(id: string, journeyData: Partial<{ dataFim: string; kmFim: number; ganhoBruto: number; observacoes?: string }>): Promise<Journey> {
-    const response = await api.put<ApiResponse<Journey>>(`/journeys/${id}`, journeyData);
-    if (response.data.success && response.data.data) {
-      return response.data.data;
-    }
-    throw new Error(response.data.error?.message || "Erro ao atualizar jornada");
-  },
-
-  async deleteJourney(id: string): Promise<void> {
-    const response = await api.delete<ApiResponse<void>>(`/journeys/${id}`);
-    if (!response.data.success) {
-      throw new Error(response.data.error?.message || "Erro ao excluir jornada");
-    }
-  },
-
 

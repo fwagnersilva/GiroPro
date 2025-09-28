@@ -40,7 +40,7 @@ export default defineConfig({
     global: 'globalThis',
     __DEV__: JSON.stringify(true),
     'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development'),
-    'process.env.VITE_API_URL': JSON.stringify(process.env.VITE_API_URL),
+    'process.env.VITE_API_URL': JSON.stringify('http://localhost:3000'),
   },
 });
 

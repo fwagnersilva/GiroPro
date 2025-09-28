@@ -129,17 +129,7 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
     }
   }, [navigate, navigation]);
 
-  const togglePasswordVisibility = useCallback(() => {
-    // Implementação existente
-  }, []);
 
-  const toggleRememberMe = useCallback(() => {
-    // Implementação existente
-  }, []);
-
-  const isFormValid = useMemo(() => {
-    return email.trim() !== '' && senha.trim() !== '';
-  }, [email, senha]);
 
   return (
     <KeyboardAvoidingView

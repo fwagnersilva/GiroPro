@@ -50,7 +50,7 @@ describe('AuthMiddleware', () => {
 
     it('should call next() if token is valid', () => {
       const validUser = { id: '123', email: 'test@test.com', role: 'user' };
-      const validToken = jwt.sign(validUser, config.jwt.secret);
+      const validToken = jwt.sign(validUser, config.auth.jwtSecret);
       mockRequest.headers = { authorization: `Bearer ${validToken}` };
 
       authenticateToken(mockRequest as AuthenticatedRequest, mockResponse as Response, mockNext);

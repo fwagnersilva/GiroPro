@@ -7,3 +7,9 @@ export const showErrorToast = (message: string) => {
 
 
 
+
+
+export const showSuccessToast = (message: string) => {
+  const { showToast } = useToast();
+  showToast(message, "success");
+};

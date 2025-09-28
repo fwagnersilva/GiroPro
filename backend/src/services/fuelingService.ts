@@ -12,9 +12,10 @@ interface FuelingData {
   idVeiculo: string;
   dataAbastecimento: Date; // Date object
   kmAtual: number;
-  quantidadeLitros: number;
+  litros: number;
   valorTotal: number; // Em centavos
   valorLitro: number; // Em centavos
+  precoPorLitro: number; // Em centavos
   nomePosto: string | null;
   tipoCombustivel: "gasolina" | "etanol" | "diesel" | "gnv" | "flex";
   createdAt: Date; // Date object
@@ -27,9 +28,10 @@ interface CreateFuelingData {
   idVeiculo: string;
   dataAbastecimento: Date; // Date object
   kmAtual: number;
-  quantidadeLitros: number;
+  litros: number;
   valorTotal: number; // Em centavos
   valorLitro: number; // Em centavos
+  precoPorLitro: number; // Em centavos
   nomePosto: string | null;
   tipoCombustivel: "gasolina" | "etanol" | "diesel" | "gnv" | "flex";
 }
@@ -83,7 +85,7 @@ class FuelingUtils {
       throw new Error('Quilometragem deve ser um número válido e positivo');
     }
     
-    if (!Number.isFinite(data.quantidadeLitros) || data.quantidadeLitros <= 0) {
+    if (!Number.isFinite(data.litros) || data.litros <= 0) {
       throw new Error('Quantidade de litros deve ser um número válido e positivo');
     }
     
@@ -102,9 +104,10 @@ class FuelingUtils {
       idVeiculo: data.vehicleId,
       dataAbastecimento: new Date(data.data), // Convert Date to timestamp
       kmAtual: data.quilometragem,
-      quantidadeLitros: data.quantidadeLitros,
-      valorTotal: this.priceToCents(data.quantidadeLitros * data.precoPorLitro),
+      litros: data.litros,
+      valorTotal: this.priceToCents(data.litros * data.precoPorLitro),
       valorLitro: this.priceToCents(data.precoPorLitro),
+      precoPorLitro: this.priceToCents(data.precoPorLitro),
       nomePosto: data.posto?.trim() || null,
       tipoCombustivel: this.validateFuelType(data.tipoCombustivel),
     };
@@ -362,7 +365,7 @@ export class FuelingService {
 
       const totalFuelings = fuelings.length;
       const totalSpent = fuelings.reduce((sum, f) => sum + f.valorTotal, 0);
-      const totalLiters = fuelings.reduce((sum, f) => sum + f.quantidadeLitros, 0);
+      const totalLiters = fuelings.reduce((sum, f) => sum + f.litros, 0);
       const averagePrice = totalLiters > 0 ? totalSpent / totalLiters : 0;
       const lastFueling = fuelings.length > 0 ? Math.max(...fuelings.map(f => f.dataAbastecimento.getTime())) : undefined;
 
@@ -443,14 +446,14 @@ export class FuelingService {
         updateFields.kmAtual = updateData.quilometragem;
       }
 
-      if (updateData.quantidadeLitros !== undefined) {
-        if (!Number.isFinite(updateData.quantidadeLitros) || updateData.quantidadeLitros <= 0) {
+      if (updateData.litros !== undefined) {
+        if (!Number.isFinite(updateData.litros) || updateData.litros <= 0) {
           return {
             success: false,
             error: 'Quantidade de litros deve ser um número válido e positivo'
           };
         }
-        updateFields.quantidadeLitros = updateData.quantidadeLitros;
+        updateFields.litros = updateData.litros;
       }
 
       if (updateData.precoPorLitro !== undefined) {
@@ -463,7 +466,7 @@ export class FuelingService {
         updateFields.valorLitro = FuelingUtils.priceToCents(updateData.precoPorLitro);
         
         // Recalcular valor total se quantidade de litros também foi fornecida ou usar a existente
-        const litros = updateData.quantidadeLitros || existingFueling.data.quantidadeLitros;
+        const litros = updateData.litros || existingFueling.data.litros;
         updateFields.valorTotal = FuelingUtils.priceToCents(litros * updateData.precoPorLitro);
       }
 

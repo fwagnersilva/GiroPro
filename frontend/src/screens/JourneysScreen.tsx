@@ -191,7 +191,7 @@ const JourneysScreen: React.FC = ({ navigation }: any) => {
       `Tem certeza que deseja excluir a jornada "${journey.title}"?`,
       [
         { text: 'Cancelar', style: 'cancel' },
-        { text: 'Excluir', style: 'destructive', onPress: () => {
+        { text: 'Excluir', style: 'destructive', onPress: async () => {
           try {
             await deleteJourney(journey.id);
             Alert.alert("Sucesso", "Jornada excluída com sucesso!");

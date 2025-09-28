@@ -11,12 +11,13 @@ import {
 } from 'react-native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../types';
-import FormInput, { validators } from '../components/FormInput';
+import FormInput from '../components/FormInput';
+import { validators } from '../components/FormInput/FormInput.web';
 import LoadingSpinner from '../components/LoadingSpinner';
 import Icon from '../components/Icon';
 import Alert from '../utils/alert';
 import { showErrorToast, showSuccessToast } from '../utils/toastUtils';
-import { authService } from '../services/authService';
+import { authService } from '../services/api';
 
 type ForgotPasswordScreenNavigationProp = StackNavigationProp<RootStackParamList, 'ForgotPassword'>;
 

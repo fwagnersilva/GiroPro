@@ -1,4 +1,4 @@
-import { Logger } from '../utils/logger';
+import logger from '../utils/logger';
 import { Router } from 'express';
 import { AdvancedAnalyticsController } from '../controllers/advancedAnalyticsController';
 import { authMiddleware } from '../middlewares/auth';
