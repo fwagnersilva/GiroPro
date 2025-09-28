@@ -435,3 +435,155 @@ Esta seção detalha tarefas específicas e cruciais para garantir um lançament
 **Autor**: Manus AI  
 **Data**: 27 de Setembro de 2025
 
+
+
+
+---
+
+# Backlog de Tarefas para o GiroPro - Versão Estável (Revisado)
+
+Este documento apresenta um backlog de tarefas revisado para o lançamento de uma versão estável do sistema GiroPro, com base na análise detalhada das telas fornecidas pelo usuário e na estrutura do código-fonte disponível no GitHub.
+
+## 1. Análise Comparativa: Telas vs. Código-Fonte
+
+### 1.1. Funcionalidades Implementadas (Frontend e Backend)
+
+A análise do código-fonte do frontend (`frontend/src/screens/`) e do backend (`backend/src/routes/`, `backend/src/controllers/`) revela que a maioria das funcionalidades visíveis nas telas fornecidas já possui uma estrutura de código correspondente. As principais telas e suas respectivas implementações são:
+
+| Tela (base44.com) | Descrição | Arquivo(s) Frontend | Rotas Backend Associadas |
+|---|---|---|---|
+| `pasted_file_BoShu0_image.png` (Dashboard) | Dashboard principal com métricas financeiras e operacionais, seleção de período e ações rápidas. | `DashboardScreen.tsx` | `/api/v1/dashboard/summary` (implícita via `loadDashboardData` no frontend) |
+| `pasted_file_NealnH_image.png` (Jornadas) | Gerenciamento de jornadas, histórico, filtros e ações de iniciar/finalizar. | `JourneysScreen.tsx` | `/api/v1/journeys` (GET, POST, PUT, DELETE), `/api/v1/vehicles` (GET para seleção de veículo) |
+| `pasted_file_6wgBIS_image.png` (Abastecimentos) | Lista de abastecimentos com filtros e ações de edição/exclusão. | `FuelingHistoryScreen.tsx` | `/api/v1/fuelings` (GET, DELETE), `/api/v1/vehicles` (GET para filtros) |
+| `pasted_file_7N6skr_image.png` (Despesas) | Lista de despesas com ações de adição/exclusão. | `ExpensesScreen.tsx` | `/api/v1/expenses` (GET, DELETE), `/api/v1/vehicles` (GET para seleção de veículo) |
+| `pasted_file_d7FYbm_image.png` (Configurações - Veículos) | Gerenciamento de veículos (CRUD). | `VehiclesScreen.tsx` | `/api/v1/vehicles` (GET, POST, PUT, DELETE) |
+| `pasted_file_p2NHM2_image.png` (Configurações - Plataformas) | Gerenciamento de plataformas de trabalho. | (Não diretamente identificada, mas pode ser parte de `ProfileScreen.tsx` ou um componente de configuração geral) | (Provavelmente rotas em `/api/v1/users` ou `/api/v1/config`) |
+| `pasted_file_3IHQ6g_image.png` (Personalizações) | Configurações de cálculo de ganho líquido e futuras funcionalidades. | `ProfileScreen.tsx` (provável) | (Rotas em `/api/v1/users` ou `/api/v1/config` para salvar preferências) |
+| `pasted_file_hEun0q_image.png` (Modal Novo Veículo) | Formulário para adicionar/editar veículo. | (Modal dentro de `VehiclesScreen.tsx`) | `/api/v1/vehicles` (POST, PUT) |
+| `pasted_file_VvY7I9_image.png` (Modal Nova Despesa) | Formulário para adicionar despesa. | `AddExpenseScreen.tsx` | `/api/v1/expenses` (POST) |
+| `pasted_file_zGxnvc_image.png` (Modal Novo Abastecimento) | Formulário para adicionar abastecimento. | `AddFuelingScreen.tsx` | `/api/v1/fuelings` (POST) |
+| `pasted_file_J9KswY_image.png` (Jornada em Andamento) | Interface para finalizar jornada. | (Componente dentro de `JourneysScreen.tsx` ou `DashboardScreen.tsx`) | `/api/v1/journeys` (PUT para finalizar) |
+
+### 1.2. Observações Importantes do Código
+
+*   **Banco de Dados em Memória**: O arquivo `LEIA_PRIMEIRO.md` e a configuração do backend (`backend/src/app.ts` com `initializeTables()`) confirmam o uso de um banco de dados SQLite em memória para desenvolvimento. Isso é um ponto crítico para a estabilidade em produção.
+*   **Autenticação**: As rotas do backend utilizam `authMiddleware`, indicando que a autenticação (provavelmente via JWT, conforme `LEIA_PRIMEIRO.md`) está implementada.
+*   **Rate Limiting**: O backend possui `generalRateLimit` e `authRateLimit`, o que é uma boa prática de segurança.
+*   **Tratamento de Erros**: Existe um `errorHandler` global no backend, mas a granularidade e a robustez precisam ser verificadas.
+*   **Testes**: Há diretórios `__tests__` e `tests` tanto no frontend quanto no backend, sugerindo que testes unitários e/ou de integração podem existir, mas a cobertura e a qualidade precisam ser avaliadas.
+*   **Funcionalidades Futuras (Personalizações)**: A tela de personalizações lista funcionalidades como "Personalização de cores do dashboard", "Metas de faturamento mensal/diário", "Alertas de manutenção por quilometragem" e "Relatórios personalizados por período", que são importantes para o usuário e devem ser consideradas no backlog.
+
+## 2. Backlog de Tarefas Detalhado (Revisado)
+
+Com base na análise do código e das telas, o backlog de tarefas foi refinado para incluir itens que garantam a estabilidade e a completude do sistema para uma versão de lançamento.
+
+### 2.1. Épico: Infraestrutura e Persistência de Dados
+
+| ID | Tarefa | Descrição | Prioridade | Esforço Estimado | Status | Observações (Código Atual) |
+|---|---|---|---|---|---|---|
+| DP-001 | **Migrar DB para SQLite Persistente** | Alterar a configuração do banco de dados de `:memory:` para um arquivo `.db` persistente. | Alta | Médio | A Fazer | `LEIA_PRIMEIRO.md` e `backend/src/app.ts` confirmam DB em memória. Necessário alterar `SQLITE_DB_PATH` no `.env` e garantir que `initializeTables()` funcione com persistência. |
+| DP-002 | Criar scripts de migração de dados | Desenvolver scripts para migrar dados de usuários existentes (se houver) para o novo banco persistente. | Média | Médio | A Fazer | Não há indicação de scripts de migração no repositório. |
+| DP-003 | Implementar Backup e Restauração do DB | Funcionalidade de backup e restauração do banco de dados para segurança dos dados do usuário. | Média | Alto | A Fazer | Não há indicação de funcionalidade de backup/restauração. |
+| DP-004 | Configurar ORM para Produção | Revisar e otimizar a configuração do ORM (Drizzle, conforme `backend/drizzle/`) para uso em ambiente de produção, garantindo performance e segurança. | Média | Médio | A Fazer | Arquivos `drizzle.config.ts` e `drizzle.config.sqlite.ts` existem, mas a otimização para produção precisa ser verificada. |
+
+### 2.2. Épico: Autenticação e Autorização
+
+| ID | Tarefa | Descrição | Prioridade | Esforço Estimado | Status | Observações (Código Atual) |
+|---|---|---|---|---|---|---|
+| AA-001 | **Auditar e Fortalecer JWT** | Garantir que a geração, validação e expiração de JWTs estejam configuradas de forma segura, incluindo rotação de chaves e expiração adequada. | Alta | Médio | A Fazer | `LEIA_PRIMEIRO.md` menciona `JWT_SECRET` e `JWT_EXPIRES_IN`. `authMiddleware` em `backend/src/middlewares/auth.ts` é usado, mas a implementação precisa ser auditada. |
+| AA-002 | **Proteger Rotas Sensíveis** | Proteger todas as rotas sensíveis do backend com autenticação e autorização baseadas em JWT, verificando permissões quando necessário. | Alta | Médio | A Fazer | `authMiddleware` é aplicado em várias rotas, mas a cobertura total e a granularidade das permissões precisam ser verificadas. |
+| AA-003 | Implementar Fluxo de Recuperação de Senha | Desenvolver fluxo seguro de recuperação de senha (e-mail com token de redefinição). | Alta | Médio | A Fazer | `ForgotPasswordScreen.tsx` e `ResetPasswordScreen.tsx` existem no frontend, mas a implementação do backend (`backend/src/routes/auth.ts`) para envio de e-mail e validação de token precisa ser verificada/implementada. |
+| AA-004 | Gerenciamento de Sessões e Logout Seguro | Implementar gerenciamento de sessões para revogação de tokens e logout seguro. | Média | Médio | A Fazer | Não há indicação explícita de gerenciamento de sessões além da expiração do JWT. |
+
+### 2.3. Épico: Tratamento de Erros e Validações
+
+| ID | Tarefa | Descrição | Prioridade | Esforço Estimado | Status | Observações (Código Atual) |
+|---|---|---|---|---|---|---|
+| ER-001 | **Validação de Entrada de Dados (Frontend)** | Implementar validações robustas em todos os formulários do frontend, fornecendo feedback claro ao usuário. | Alta | Médio | A Fazer | `vehicleSchema` em `frontend/src/schemas/vehicleSchemas.ts` é usado em `VehiclesScreen.tsx`, mas a cobertura para outros formulários (jornadas, abastecimentos, despesas) precisa ser verificada. |
+| ER-002 | **Validação de Entrada de Dados (Backend)** | Implementar validações no backend para todos os endpoints da API, garantindo a integridade dos dados. | Alta | Médio | A Fazer | Schemas como `journeySchema` em `backend/src/schemas/` existem, mas a aplicação consistente em todos os controllers precisa ser verificada. |
+| ER-003 | Tratamento Global de Erros (Frontend) | Configurar um mecanismo global para capturar e exibir erros de forma amigável ao usuário. | Média | Médio | A Fazer | `Alert.alert` é usado em vários locais, mas um sistema global mais sofisticado pode ser benéfico. |
+| ER-004 | Tratamento Global de Erros (Backend) | Implementar um middleware de tratamento de erros no backend para respostas padronizadas e logging. | Média | Médio | A Fazer | `errorHandler` em `backend/src/middlewares/errorHandler.ts` já existe, mas sua abrangência e detalhamento precisam ser avaliados. |
+| ER-005 | Configurar Logging de Erros Detalhado | Configurar um sistema de logging robusto para registrar erros no backend, incluindo contexto e stack traces. | Baixa | Médio | A Fazer | `logger` em `backend/src/utils/logger.ts` é usado, mas a configuração para diferentes níveis de log e armazenamento precisa ser verificada. |
+
+### 2.4. Épico: Testes Automatizados
+
+| ID | Tarefa | Descrição | Prioridade | Esforço Estimado | Status | Observações (Código Atual) |
+|---|---|---|---|---|---|---|
+| TA-001 | Configurar Ambiente de Testes Completo | Configurar frameworks de testes (Jest, React Testing Library, Supertest, etc.) para frontend e backend, garantindo que rodem em CI/CD. | Alta | Médio | A Fazer | Diretórios `__tests__` e `tests` existem, `jest.config.js` também, indicando que o ambiente de testes já está parcialmente configurado. |
+| TA-002 | Escrever Testes Unitários (Backend) | Escrever testes unitários para as principais funções e serviços do backend. | Média | Alto | A Fazer | Não foi possível verificar a cobertura de testes existente. |
+| TA-003 | Escrever Testes Unitários (Frontend) | Escrever testes unitários para componentes e hooks do frontend. | Média | Alto | A Fazer | Não foi possível verificar a cobertura de testes existente. |
+| TA-004 | Escrever Testes de Integração (Backend) | Escrever testes de integração para os endpoints da API. | Média | Médio | A Fazer | Não foi possível verificar a cobertura de testes existente. |
+| TA-005 | Implementar Testes E2E (Cypress/Playwright) | Implementar testes end-to-end para os fluxos críticos do usuário. | Baixa | Alto | A Fazer | Não há indicação de testes E2E. |
+
+### 2.5. Épico: Usabilidade e Experiência do Usuário (UX)
+
+| ID | Tarefa | Descrição | Prioridade | Esforço Estimado | Status | Observações (Código Atual) |
+|---|---|---|---|---|---|---|
+| UX-001 | Aprimorar Feedback Visual | Implementar loaders, mensagens de sucesso/erro e estados de carregamento em todas as interações, de forma consistente. | Média | Médio | A Fazer | `LoadingSpinner` e `ActivityIndicator` são usados, mas a consistência e a experiência do usuário podem ser aprimoradas. |
+| UX-002 | Otimizar Responsividade | Garantir que todas as telas sejam totalmente responsivas em diferentes dispositivos e tamanhos de tela. | Média | Alto | A Fazer | `useResponsiveStyles` é usado, indicando preocupação com responsividade, mas a validação em diversos dispositivos é necessária. |
+| UX-003 | Implementar Personalização de Cores | Desenvolver a funcionalidade de personalização de cores do dashboard, conforme mencionado nas personalizações. | Baixa | Médio | A Fazer | Mencionada na tela de personalizações, mas não há implementação visível. |
+| UX-004 | Implementar Metas de Faturamento | Adicionar funcionalidade para definir e acompanhar metas de faturamento mensal/diário. | Média | Alto | A Fazer | Mencionada na tela de personalizações, não há implementação visível. |
+| UX-005 | Implementar Alertas de Manutenção | Criar sistema de alertas de manutenção baseado em quilometragem ou tempo. | Média | Alto | A Fazer | Mencionada na tela de personalizações, não há implementação visível. |
+| UX-006 | Desenvolver Relatórios Personalizados | Desenvolver módulo para geração de relatórios personalizados por período e tipo de dado. | Alta | Alto | A Fazer | `ReportsScreen.tsx` existe, mas a funcionalidade de personalização precisa ser verificada. |
+
+### 2.6. Épico: Desempenho e Otimização
+
+| ID | Tarefa | Descrição | Prioridade | Esforço Estimado | Status | Observações (Código Atual) |
+|---|---|---|---|---|---|---|
+| DE-001 | Otimização de Consultas SQL/ORM | Analisar e refatorar consultas SQL lentas no backend, utilizando índices e otimizações do ORM. | Média | Médio | A Fazer | Arquivos como `analyze_slow_queries.js` e `orm_sql_optimization_report.md` indicam que já houve preocupação com isso, mas a implementação contínua é necessária. |
+| DE-002 | Otimização de Carregamento Frontend | Implementar lazy loading, code splitting e otimização de imagens para reduzir o tempo de carregamento inicial. | Média | Médio | A Fazer | Não foi possível verificar a implementação dessas otimizações. |
+| DE-003 | Implementar Cache de Dados | Implementar cache para dados do dashboard e outras informações frequentemente acessadas no backend e/ou frontend. | Média | Médio | A Fazer | `dashboardCache` em `backend/src/middlewares/cache.ts` existe, mas a abrangência e eficácia precisam ser avaliadas. |
+
+### 2.7. Épico: Segurança Adicional
+
+| ID | Tarefa | Descrição | Prioridade | Esforço Estimado | Status | Observações (Código Atual) |
+|---|---|---|---|---|---|---|
+| SE-001 | Fortalecer Proteção contra XSS/CSRF | Implementar cabeçalhos de segurança e proteção contra XSS/CSRF, além de outras vulnerabilidades web. | Média | Médio | A Fazer | `helmet` é usado em `backend/src/app.ts`, o que já ajuda, mas uma auditoria de segurança completa é recomendada. |
+| SE-002 | Sanitização de Entradas | Garantir que todas as entradas de usuário sejam sanitizadas para prevenir ataques de injeção. | Alta | Médio | A Fazer | Validações de schema ajudam, mas a sanitização explícita em todas as entradas é crucial. |
+| SE-003 | Gerenciamento Seguro de Variáveis de Ambiente | Assegurar que as variáveis de ambiente sensíveis não sejam expostas no código-fonte ou em arquivos de configuração públicos. | Alta | Baixo | A Fazer | O uso de `.env` e `config.ts` é um bom começo, mas a revisão do `.env.example` e do processo de deploy é importante. |
+
+## 3. Recomendações Adicionais
+
+*   **Documentação Contínua**: Manter a documentação técnica e de usuário atualizada com as novas funcionalidades e decisões de arquitetura.
+*   **CI/CD**: Implementar um pipeline de Integração Contínua/Entrega Contínua robusto para automatizar testes, builds e deployments.
+*   **Monitoramento e Alertas**: Configurar ferramentas de monitoramento para acompanhar a performance da aplicação em produção, identificar erros e gargalos, e configurar alertas proativos.
+*   **Análise de Código Estática**: Integrar ferramentas de análise de código estática (ESLint, SonarQube) para manter a qualidade do código e identificar potenciais problemas de segurança e performance.
+
+## 4. Tarefas Focadas no Lançamento do Sistema Web
+
+Esta seção detalha tarefas específicas e cruciais para garantir um lançamento bem-sucedido do sistema GiroPro como uma aplicação web estável. Elas complementam o backlog geral, focando em aspectos de deploy, monitoramento e experiência do usuário em ambiente de produção.
+
+### 4.1. Épico: Preparação para Produção e Deploy
+
+| ID | Tarefa | Descrição | Prioridade | Esforço Estimado | Status |
+|---|---|---|---|---|---|
+| WEB-001 | **Configurar Ambiente de Produção** | Provisionar e configurar servidores/serviços de hospedagem (ex: AWS, Google Cloud, Vercel, Heroku) para o frontend e backend. | Altíssima | Alto | A Fazer |
+| WEB-002 | **Configurar Banco de Dados Persistente em Produção** | Migrar o banco de dados de desenvolvimento (em memória) para uma solução persistente e escalável em produção (ex: PostgreSQL, MySQL, SQLite persistente). | Altíssima | Alto | A Fazer |
+| WEB-003 | **Implementar CI/CD para Deploy Automatizado** | Configurar pipelines de Integração Contínua e Entrega Contínua para automatizar testes, build e deploy do frontend e backend. | Alta | Alto | A Fazer |
+| WEB-004 | **Configurar Domínio e Certificado SSL** | Adquirir e configurar um domínio personalizado e um certificado SSL (HTTPS) para o sistema web. | Alta | Médio | A Fazer |
+| WEB-005 | **Otimizar Configurações de Servidor Web** | Otimizar configurações do servidor web (ex: Nginx, Apache) para servir o frontend estático e proxy para o backend, incluindo compressão e cache. | Média | Médio | A Fazer |
+| WEB-006 | **Revisar e Otimizar Variáveis de Ambiente de Produção** | Garantir que todas as variáveis de ambiente sensíveis estejam configuradas corretamente e de forma segura para o ambiente de produção. | Alta | Baixo | A Fazer |
+
+### 4.2. Épico: Monitoramento e Suporte Pós-Lançamento
+
+| ID | Tarefa | Descrição | Prioridade | Esforço Estimado | Status |
+|---|---|---|---|---|---|
+| WEB-007 | **Configurar Monitoramento de Performance (APM)** | Integrar ferramentas de Application Performance Monitoring (APM) para monitorar a saúde, performance e erros do sistema em tempo real. | Alta | Médio | A Fazer |
+| WEB-008 | **Configurar Alertas de Erro e Disponibilidade** | Configurar alertas automáticos para notificar a equipe sobre erros críticos, indisponibilidade ou degradação de performance. | Alta | Médio | A Fazer |
+| WEB-009 | **Implementar Logging Centralizado** | Configurar um sistema de logging centralizado para coletar e analisar logs do frontend e backend em produção. | Média | Médio | A Fazer |
+| WEB-010 | **Plano de Resposta a Incidentes** | Desenvolver um plano de resposta a incidentes para lidar rapidamente com problemas em produção. | Média | Baixo | A Fazer |
+
+### 4.3. Épico: Otimização de Experiência Web
+
+| ID | Tarefa | Descrição | Prioridade | Esforço Estimado | Status |
+|---|---|---|---|---|---|
+| WEB-011 | **Otimização de SEO (Search Engine Optimization)** | Implementar práticas de SEO (meta tags, sitemap, robots.txt) para melhorar a visibilidade do sistema em motores de busca. | Baixa | Médio | A Fazer |
+| WEB-012 | **Análise de Acessibilidade (WCAG)** | Realizar uma auditoria de acessibilidade para garantir que o sistema seja utilizável por pessoas com deficiência. | Média | Médio | A Fazer |
+| WEB-013 | **Otimização de Performance Web (Core Web Vitals)** | Otimizar o frontend para atender aos Core Web Vitals do Google, melhorando a experiência do usuário e o ranking de busca. | Alta | Alto | A Fazer |
+| WEB-014 | **Configurar Análise de Uso (Analytics)** | Integrar ferramentas de análise de uso (ex: Google Analytics) para coletar dados sobre o comportamento do usuário. | Média | Baixo | A Fazer |
+
+---
+
+**Autor**: Manus AI  
+**Data**: 27 de Setembro de 2025
+
