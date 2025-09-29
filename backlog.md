@@ -257,8 +257,8 @@
         *   Verificar acessibilidade
     *   **Cenários de Teste:** Login com credenciais válidas; Login com credenciais inválidas; Validação de campos em tempo real; Persistência de sessão após reload; Logout e redirecionamento; Comportamento offline.
 
-6.  **Realizar Commit e Push das Alterações (Em Andamento)**
-    *   **Status:** Em Andamento
+6.  **Realizar Commit e Push das Alterações (Concluído)**
+    *   **Status:** Concluído
     *   **Objetivo:** Versionar e compartilhar as implementações.
     *   **Microtarefas:**
         *   Organizar commits por funcionalidade
