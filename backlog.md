@@ -205,8 +205,8 @@
         *   Atualizar `app/login.tsx` com os novos componentes
     *   **Considerações Multiplataforma:** Usar NativeWind/TailwindCSS, garantir compatibilidade com react-native-web, testar em diferentes tamanhos de tela.
 
-2.  **Implementar a Lógica de Estado e Validação para os Campos de Login (Pendente)**
-    *   **Status:** Pendente
+2.  **Implementar a Lógica de Estado e Validação para os Campos de Login (Concluído)**
+    *   **Status:** Concluído
     *   **Objetivo:** Gerenciar o estado dos campos e implementar validações robustas.
     *   **Microtarefas:**
         *   Implementar gerenciamento de estado com React hooks (useState, useReducer)
@@ -219,8 +219,8 @@
         *   Definir tipos de autenticação (`src/types/auth.ts`)
     *   **Validações a implementar:** Email: formato válido, não vazio; Senha: mínimo 8 caracteres, pelo menos 1 número; Feedback visual imediato; Prevenção de submit com dados inválidos.
 
-3.  **Desenvolver a Lógica de Autenticação (Pendente)**
-    *   **Status:** Pendente
+3.  **Desenvolver a Lógica de Autenticação (Em Andamento)**
+    *   **Status:** Em Andamento
     *   **Objetivo:** Implementar o processo de autenticação (simulado ou real).
     *   **Microtarefas:**
         *   Criar serviço de autenticação (`src/services/authService.ts`)
