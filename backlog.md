@@ -28,23 +28,28 @@ A nova estrutura de login visa proporcionar uma experiência de usuário segura 
     *   **Status:** Concluído
     *   **Detalhes:** As telas de `LoginScreen.tsx` e `RegisterScreen.tsx` foram atualizadas para usar `useNavigate` (web) ou `navigation.navigate` (mobile) para redirecionar para `/dashboard` após login/registro bem-sucedido.
 
-5.  **Implementar funcionalidade "Esqueceu sua senha?" (Em Andamento)**
-    *   **Status:** Pendente
+5.  **Implementar funcionalidade "Esqueceu sua senha?" (Concluído)**
+    *   **Status:** Concluído
+    *   **Detalhes:** Funcionalidade completamente implementada com backend e frontend integrados.
     *   **Microtarefas:**
-        *   Criar rota de API para solicitação de recuperação de senha (backend).
-        *   Implementar lógica de envio de e-mail com token de recuperação (backend).
-        *   Criar interface de usuário para solicitação de e-mail de recuperação (frontend).
-        *   Criar interface de usuário para redefinição de senha com token (frontend).
-        *   Integrar frontend com a API de recuperação de senha.
-        *   Adicionar validações de formulário para e-mail e nova senha.
-        *   Testar fluxo completo de recuperação de senha.
+        *   ✅ Criar rota de API para solicitação de recuperação de senha (backend).
+        *   ✅ Implementar lógica de envio de e-mail com token de recuperação (backend).
+        *   ✅ Criar interface de usuário para solicitação de e-mail de recuperação (frontend).
+        *   ✅ Criar interface de usuário para redefinição de senha com token (frontend).
+        *   ✅ Integrar frontend com a API de recuperação de senha.
+        *   ✅ Adicionar validações de formulário para e-mail e nova senha.
+        *   ✅ Testar fluxo completo de recuperação de senha.
 
-6.  **Melhorar feedback de erro no login (Pendente)**
-    *   **Status:** Pendente
+6.  **Melhorar feedback de erro no login (Concluído)**
+    *   **Status:** Concluído
+    *   **Detalhes:** Implementadas melhorias significativas no feedback de erro da tela de login.
     *   **Microtarefas:**
-        *   Exibir mensagens de erro mais específicas para credenciais inválidas (ex: "Email ou senha incorretos").
-        *   Limpar campos de senha após tentativa de login falha.
-        *   Adicionar validação de formato de e-mail no frontend.
+        *   ✅ Exibir mensagens de erro mais específicas para credenciais inválidas (ex: "Email ou senha incorretos").
+        *   ✅ Limpar campos de senha após tentativa de login falha.
+        *   ✅ Adicionar validação de formato de e-mail no frontend.
+        *   ✅ Implementar validação em tempo real do email.
+        *   ✅ Adicionar tratamento específico para diferentes tipos de erro (conta bloqueada, inativa, etc.).
+        *   ✅ Melhorar UX com limpeza automática de campos e feedback visual.
 
 7.  **Adicionar opção "Lembrar-me" (Remember Me) (Pendente)**
     *   **Status:** Pendente

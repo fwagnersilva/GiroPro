@@ -7,15 +7,55 @@ const LoginScreen: React.FC = () => {
   const [senha, setSenha] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [emailError, setEmailError] = useState('');
   const [isRegisterMode, setIsRegisterMode] = useState(false);
   const [nome, setNome] = useState('');
 
   const navigate = useNavigate();
   const { signIn } = useAuth();
 
+  // Validação de formato de email
+  const validateEmail = (email: string): boolean => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
+  // Função para limpar erros
+  const clearErrors = () => {
+    setError('');
+    setEmailError('');
+  };
+
+  // Validação em tempo real do email
+  const handleEmailChange = (value: string) => {
+    setEmail(value);
+    setEmailError('');
+    
+    if (value && !validateEmail(value)) {
+      setEmailError('Por favor, insira um email válido');
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
+    clearErrors();
+
+    // Validações antes do envio
+    if (!validateEmail(email)) {
+      setEmailError('Por favor, insira um email válido');
+      return;
+    }
+
+    if (!senha.trim()) {
+      setError('Por favor, insira sua senha');
+      return;
+    }
+
+    if (isRegisterMode && !nome.trim()) {
+      setError('Por favor, insira seu nome');
+      return;
+    }
+
     setLoading(true);
 
     try {
@@ -26,26 +66,54 @@ const LoginScreen: React.FC = () => {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ email, senha, nome }),
+          body: JSON.stringify({ email: email.toLowerCase().trim(), senha, nome: nome.trim() }),
         });
 
         const data = await response.json();
 
         if (data.success) {
-          setError('');
+          clearErrors();
           alert('Usuário cadastrado com sucesso! Faça login agora.');
           setIsRegisterMode(false);
           setNome('');
+          setSenha(''); // Limpar senha após registro
         } else {
-          setError(data.message || 'Erro ao cadastrar usuário');
+          // Mensagens de erro mais específicas para registro
+          if (data.message?.includes('Email já está em uso') || data.message?.includes('já está em uso')) {
+            setError('Este email já está cadastrado. Tente fazer login ou use outro email.');
+          } else if (data.message?.includes('senha')) {
+            setError('A senha deve ter pelo menos 8 caracteres, incluindo maiúscula, minúscula e número.');
+          } else {
+            setError(data.message || 'Erro ao cadastrar usuário. Tente novamente.');
+          }
         }
       } else {
         // Login
-        await signIn({ email, senha });
-        navigate('/dashboard');
+        try {
+          await signIn({ email: email.toLowerCase().trim(), senha });
+          navigate('/dashboard');
+        } catch (loginError: any) {
+          // Limpar senha após falha no login
+          setSenha('');
+          
+          // Mensagens de erro mais específicas para login
+          if (loginError.message?.includes('Credenciais inválidas') || 
+              loginError.message?.includes('Email ou senha incorretos') ||
+              loginError.message?.includes('inválidas')) {
+            setError('Email ou senha incorretos. Verifique suas credenciais e tente novamente.');
+          } else if (loginError.message?.includes('bloqueada') || loginError.message?.includes('tentativas')) {
+            setError('Conta temporariamente bloqueada devido a muitas tentativas. Tente novamente em 15 minutos.');
+          } else if (loginError.message?.includes('inativa') || loginError.message?.includes('suspensa')) {
+            setError('Sua conta está inativa. Entre em contato com o suporte.');
+          } else {
+            setError('Erro ao fazer login. Verifique sua conexão e tente novamente.');
+          }
+        }
       }
     } catch (error: any) {
-      setError(error.message || 'Erro ao processar solicitação');
+      // Limpar senha em caso de erro geral
+      setSenha('');
+      setError('Erro de conexão. Verifique sua internet e tente novamente.');
     } finally {
       setLoading(false);
     }
@@ -53,8 +121,9 @@ const LoginScreen: React.FC = () => {
 
   const toggleMode = () => {
     setIsRegisterMode(!isRegisterMode);
-    setError('');
+    clearErrors();
     setNome('');
+    setSenha(''); // Limpar senha ao trocar de modo
   };
 
   return (
@@ -85,11 +154,15 @@ const LoginScreen: React.FC = () => {
             type="email"
             id="email"
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={(e) => handleEmailChange(e.target.value)}
             required
-            style={styles.input}
-            autoComplete="off"
+            style={{
+              ...styles.input,
+              borderColor: emailError ? '#ff4444' : '#555',
+            }}
+            autoComplete="email"
           />
+          {emailError && <div style={styles.fieldError}>{emailError}</div>}
 
           <label htmlFor="senha" style={styles.label}>SENHA:</label>
           <input
@@ -207,6 +280,12 @@ const styles = {
     backgroundColor: '#331111',
     borderRadius: '4px',
     fontSize: '14px',
+  },
+  fieldError: {
+    color: '#ff4444',
+    fontSize: '12px',
+    marginTop: '5px',
+    marginBottom: '10px',
   },
   buttonContainer: {
     marginBottom: '20px',
