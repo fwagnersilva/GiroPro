@@ -1,26 +1,56 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { RememberMeStorage } from '../utils/rememberMeStorage';
 import { useDebounce } from '../hooks/useDebounce';
 
-// Regex pré-compilado para melhor performance
-const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+import AuthInput from '../components/Auth/AuthInput';
+import AuthButton from '../components/Auth/AuthButton';
+import AuthForm from '../components/Auth/AuthForm';
+import ToastNotification, { ToastType } from '../components/ToastNotification.web';
+import styles from './LoginScreen.styles';
+
+// Regex pré-compilado para melhor performance na validação de e-mail.
+const EMAIL_REGEX = /^[^
+@]+@[^
+@]+\.[^
+@]+$/;
 
 const LoginScreen: React.FC = () => {
+  // Estados para gerenciar os campos do formulário e o modo (login/cadastro).
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
   const [emailError, setEmailError] = useState('');
   const [isRegisterMode, setIsRegisterMode] = useState(false);
   const [nome, setNome] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
 
+  // Estados para gerenciar as notificações Toast.
+  const [toastVisible, setToastVisible] = useState(false);
+  const [toastMessage, setToastMessage] = useState('');
+  const [toastType, setToastType] = useState<ToastType>('error');
+
   const navigate = useNavigate();
   const { signIn } = useAuth();
 
-  // Carregar dados salvos do Remember Me ao inicializar
+  // Função para exibir notificações Toast de forma centralizada.
+  const showToast = useCallback((message: string, type: ToastType) => {
+    setToastMessage(message);
+    setToastType(type);
+    setToastVisible(true);
+  }, []);
+
+  // Função para esconder notificações Toast.
+  const hideToast = useCallback(() => {
+    setToastVisible(false);
+    setToastMessage('');
+  }, []);
+
+  // Efeito para carregar credenciais salvas do 
+
+
+Remember Me ao inicializar a tela.
   useEffect(() => {
     const loadSavedCredentials = async () => {
       try {
@@ -31,69 +61,70 @@ const LoginScreen: React.FC = () => {
           setRememberMe(savedData.rememberMe);
         }
       } catch (error) {
-        console.error('Erro ao carregar credenciais salvas:', error);
+        console.error("Erro ao carregar credenciais salvas:", error);
+        showToast("Erro ao carregar credenciais salvas.", "error");
       }
     };
 
     loadSavedCredentials();
-  }, []);
+  }, [showToast]);
 
-  // Memoizar função de validação de email
+  // Memoiza a função de validação de e-mail para evitar recriações desnecessárias.
   const validateEmail = useCallback((email: string): boolean => {
     return EMAIL_REGEX.test(email);
   }, []);
 
-  // Memoizar função para salvar Remember Me
+  // Memoiza a função para salvar ou remover as credenciais do Remember Me.
   const handleRememberMe = useCallback(async (email: string, remember: boolean) => {
     try {
       await RememberMeStorage.saveRememberMe(email, remember);
     } catch (error) {
-      console.error('Erro ao salvar/remover credenciais:', error);
+      console.error("Erro ao salvar/remover credenciais:", error);
+      showToast("Erro ao salvar credenciais.", "error");
     }
-  }, []);
+  }, [showToast]);
 
-  // Função para limpar erros (memoizada)
+  // Função para limpar mensagens de erro do formulário.
   const clearErrors = useCallback(() => {
-    setError('');
-    setEmailError('');
+    setEmailError("");
   }, []);
 
-  // Debounce para validação de email em tempo real
+  // Hook de debounce para atrasar a validação do e-mail, melhorando a experiência do usuário.
   const debouncedEmail = useDebounce(email, 300);
 
-  // Validação em tempo real do email com debounce
+  // Lida com a mudança do campo de e-mail, limpando o erro imediatamente para melhor UX.
   const handleEmailChange = useCallback((value: string) => {
     setEmail(value);
-    setEmailError(''); // Limpar erro imediatamente para melhor UX
+    setEmailError("");
   }, []);
 
-  // Efeito para validar email quando o valor debounced muda
+  // Efeito que dispara a validação do e-mail quando o valor debounced muda.
   useEffect(() => {
     if (debouncedEmail && !validateEmail(debouncedEmail)) {
-      setEmailError('Por favor, insira um email válido');
+      setEmailError("Por favor, insira um email válido");
     } else {
-      setEmailError('');
+      setEmailError("");
     }
   }, [debouncedEmail, validateEmail]);
 
-  // Memoizar handleSubmit para evitar re-criação desnecessária
+  // Lida com o envio do formulário (login ou cadastro).
   const handleSubmit = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
     clearErrors();
 
-    // Validações antes do envio
+    // Validações iniciais antes de tentar a requisição.
     if (!validateEmail(email)) {
-      setEmailError('Por favor, insira um email válido');
+      setEmailError("Por favor, insira um email válido");
       return;
     }
 
     if (!senha.trim()) {
-      setError('Por favor, insira sua senha');
+      showToast("Por favor, insira sua senha", "error");
       return;
     }
 
     if (isRegisterMode && !nome.trim()) {
-      setError('Por favor, insira seu nome');
+      showToast("Por favor, insira seu nome", "error");
       return;
     }
 
@@ -101,11 +132,11 @@ const LoginScreen: React.FC = () => {
 
     try {
       if (isRegisterMode) {
-        // Registro
-        const response = await fetch('http://localhost:3000/api/v1/auth/register', {
-          method: 'POST',
+        // Lógica para o modo de cadastro.
+        const response = await fetch("http://localhost:3000/api/v1/auth/register", {
+          method: "POST",
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
           body: JSON.stringify({ email: email.toLowerCase().trim(), senha, nome: nome.trim() }),
         });
@@ -114,123 +145,103 @@ const LoginScreen: React.FC = () => {
 
         if (data.success) {
           clearErrors();
-          alert('Usuário cadastrado com sucesso! Faça login agora.');
+          showToast("Usuário cadastrado com sucesso! Faça login agora.", "success");
           setIsRegisterMode(false);
-          setNome('');
-          setSenha(''); // Limpar senha após registro
+          setNome("");
+          setSenha(""); // Limpar senha após registro.
         } else {
-          // Mensagens de erro mais específicas para registro
-          if (data.message?.includes('Email já está em uso') || data.message?.includes('já está em uso')) {
-            setError('Este email já está cadastrado. Tente fazer login ou use outro email.');
-          } else if (data.message?.includes('senha')) {
-            setError('A senha deve ter pelo menos 8 caracteres, incluindo maiúscula, minúscula e número.');
+          // Tratamento de erros específicos para o cadastro.
+          if (data.message?.includes("Email já está em uso") || data.message?.includes("já está em uso")) {
+            showToast("Este email já está cadastrado. Tente fazer login ou use outro email.", "error");
+          } else if (data.message?.includes("senha")) {
+            showToast("A senha deve ter pelo menos 8 caracteres, incluindo maiúscula, minúscula e número.", "error");
           } else {
-            setError(data.message || 'Erro ao cadastrar usuário. Tente novamente.');
+            showToast(data.message || "Erro ao cadastrar usuário. Tente novamente.", "error");
           }
         }
       } else {
-        // Login
+        // Lógica para o modo de login.
         try {
           await signIn({ email: email.toLowerCase().trim(), senha });
           
-          // Salvar ou remover credenciais baseado no Remember Me
+          // Salva ou remove credenciais com base na opção "Lembrar-me".
           await handleRememberMe(email.toLowerCase().trim(), rememberMe);
           
-          navigate('/dashboard');
+          navigate("/dashboard"); // Redireciona para o dashboard após login bem-sucedido.
         } catch (loginError: any) {
-          // Limpar senha após falha no login
-          setSenha('');
+          setSenha(""); // Limpa a senha após falha no login por segurança.
           
-          // Mensagens de erro mais específicas para login
-          if (loginError.message?.includes('Credenciais inválidas') || 
-              loginError.message?.includes('Email ou senha incorretos') ||
-              loginError.message?.includes('inválidas')) {
-            setError('Email ou senha incorretos. Verifique suas credenciais e tente novamente.');
-          } else if (loginError.message?.includes('bloqueada') || loginError.message?.includes('tentativas')) {
-            setError('Conta temporariamente bloqueada devido a muitas tentativas. Tente novamente em 15 minutos.');
-          } else if (loginError.message?.includes('inativa') || loginError.message?.includes('suspensa')) {
-            setError('Sua conta está inativa. Entre em contato com o suporte.');
+          // Tratamento de erros específicos para o login.
+          if (loginError.message?.includes("Credenciais inválidas") || 
+              loginError.message?.includes("Email ou senha incorretos") ||
+              loginError.message?.includes("inválidas")) {
+            showToast("Email ou senha incorretos. Verifique suas credenciais e tente novamente.", "error");
+          } else if (loginError.message?.includes("bloqueada") || loginError.message?.includes("tentativas")) {
+            showToast("Conta temporariamente bloqueada devido a muitas tentativas. Tente novamente em 15 minutos.", "error");
+          } else if (loginError.message?.includes("inativa") || loginError.message?.includes("suspensa")) {
+            showToast("Sua conta está inativa. Entre em contato com o suporte.", "error");
           } else {
-            setError('Erro ao fazer login. Verifique sua conexão e tente novamente.');
+            showToast("Erro ao fazer login. Verifique sua conexão e tente novamente.", "error");
           }
         }
       }
     } catch (error: any) {
-      // Limpar senha em caso de erro geral
-      setSenha('');
-      setError('Erro de conexão. Verifique sua internet e tente novamente.');
+      setSenha(""); // Limpa a senha em caso de erro geral de conexão.
+      showToast("Erro de conexão. Verifique sua internet e tente novamente.", "error");
     } finally {
-      setLoading(false);
+      setLoading(false); // Finaliza o estado de carregamento.
     }
-  }, [email, senha, nome, isRegisterMode, rememberMe, validateEmail, clearErrors, handleRememberMe, signIn, navigate]);
+  }, [email, senha, nome, isRegisterMode, rememberMe, validateEmail, clearErrors, handleRememberMe, signIn, navigate, showToast]);
 
-  // Memoizar toggleMode
+  // Função para alternar entre os modos de login e cadastro.
   const toggleMode = useCallback(() => {
     setIsRegisterMode(!isRegisterMode);
     clearErrors();
-    setNome('');
-    setSenha(''); // Limpar senha ao trocar de modo
-    setRememberMe(false); // Limpar Remember Me ao trocar de modo
+    setNome("");
+    setSenha(""); // Limpa a senha ao trocar de modo.
+    setRememberMe(false); // Limpa a opção "Lembrar-me" ao trocar de modo.
   }, [isRegisterMode, clearErrors]);
-
-  // Memoizar estilos dinâmicos para evitar recriação
-  const emailInputStyle = useMemo(() => ({
-    ...styles.input,
-    borderColor: emailError ? '#ff4444' : '#555',
-  }), [emailError]);
-
-  const submitButtonStyle = useMemo(() => ({
-    ...styles.submitButton,
-    backgroundColor: loading ? '#555' : '#00bcd4',
-  }), [loading]);
 
   return (
     <div style={styles.container}>
       <div style={styles.formContainer}>
         <h1 style={styles.title}>
-          {isRegisterMode ? 'CADASTRO' : 'LOGIN'} - GiroPro
+          {isRegisterMode ? "CADASTRO" : "LOGIN"} - GiroPro
         </h1>
         
-        <form onSubmit={handleSubmit} style={styles.form}>
+        <AuthForm onSubmit={handleSubmit}>
           {isRegisterMode && (
-            <>
-              <label htmlFor="nome" style={styles.label}>NOME:</label>
-              <input
-                type="text"
-                id="nome"
-                value={nome}
-                onChange={(e) => setNome(e.target.value)}
-                required={isRegisterMode}
-                style={styles.input}
-                autoComplete="off"
-              />
-            </>
+            <AuthInput
+              id="nome"
+              label="NOME"
+              type="text"
+              value={nome}
+              onChange={setNome}
+              required={isRegisterMode}
+              autoComplete="off"
+            />
           )}
 
-          <label htmlFor="email" style={styles.label}>EMAIL:</label>
-          <input
-            type="email"
+          <AuthInput
             id="email"
+            label="EMAIL"
+            type="email"
             value={email}
-            onChange={(e) => handleEmailChange(e.target.value)}
+            onChange={handleEmailChange}
             required
-            style={emailInputStyle}
             autoComplete="email"
+            error={emailError}
           />
-          {emailError && <div style={styles.fieldError}>{emailError}</div>}
 
-          <label htmlFor="senha" style={styles.label}>SENHA:</label>
-          <input
-            type="password"
+          <AuthInput
             id="senha"
+            label="SENHA"
+            type="password"
             value={senha}
-            onChange={(e) => setSenha(e.target.value)}
+            onChange={setSenha}
             required
-            style={styles.input}
             autoComplete="off"
           />
-
-          {error && <div style={styles.error}>{error}</div>}
 
           {!isRegisterMode && (
             <div style={styles.rememberMeContainer}>
@@ -246,40 +257,31 @@ const LoginScreen: React.FC = () => {
             </div>
           )}
 
-          <div style={styles.buttonContainer}>
-            <button
-              type="submit"
-              disabled={loading}
-              style={submitButtonStyle}
-            >
-              {loading ? 'PROCESSANDO...' : (isRegisterMode ? 'CADASTRAR' : 'LOGIN')}
-            </button>
-          </div>
+          <AuthButton
+            type="submit"
+            text={loading ? "PROCESSANDO..." : (isRegisterMode ? "CADASTRAR" : "LOGIN")}
+            disabled={loading}
+            variant="primary"
+          />
 
-          <div style={styles.toggleContainer}>
-            <button
-              type="button"
-              onClick={toggleMode}
-              style={styles.toggleButton}
-            >
-              {isRegisterMode 
-                ? 'Já tem conta? Fazer LOGIN' 
-                : 'Não tem conta? CADASTRAR'}
-            </button>
-          </div>
+          <AuthButton
+            type="button"
+            text={isRegisterMode ? "Já tem conta? Fazer LOGIN" : "Não tem conta? CADASTRAR"}
+            onClick={toggleMode}
+            variant="text"
+          />
 
           {!isRegisterMode && (
             <div style={styles.forgotPasswordContainer}>
-              <button
+              <AuthButton
                 type="button"
-                onClick={() => navigate('/forgot-password')}
-                style={styles.forgotPasswordButton}
-              >
-                Esqueceu sua senha?
-              </button>
+                text="Esqueceu sua senha?"
+                onClick={() => navigate("/forgot-password")}
+                variant="text"
+              />
             </div>
           )}
-        </form>
+        </AuthForm>
 
         <div style={styles.credentialsInfo}>
           <p style={styles.credentialsTitle}>Credenciais de teste:</p>
@@ -287,150 +289,16 @@ const LoginScreen: React.FC = () => {
           <p style={styles.credentialsText}>Senha: Teste123@</p>
         </div>
       </div>
+      <ToastNotification
+        visible={toastVisible}
+        message={toastMessage}
+        type={toastType}
+        onHide={hideToast}
+      />
     </div>
   );
 };
 
-const styles = {
-  container: {
-    minHeight: '100vh',
-    backgroundColor: '#212121',
-    color: '#ffffff',
-    fontFamily: 'Arial, sans-serif',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: '20px',
-  },
-  formContainer: {
-    maxWidth: '400px',
-    width: '100%',
-    padding: '30px',
-    backgroundColor: '#333',
-    borderRadius: '8px',
-    boxShadow: '0 0 20px rgba(0, 0, 0, 0.3)',
-  },
-  title: {
-    textAlign: 'center' as const,
-    marginBottom: '30px',
-    fontSize: '24px',
-    fontWeight: 'bold',
-    color: '#00bcd4',
-  },
-  form: {
-    display: 'flex',
-    flexDirection: 'column' as const,
-  },
-  label: {
-    display: 'block',
-    marginBottom: '8px',
-    fontSize: '14px',
-    fontWeight: 'bold',
-  },
-  input: {
-    width: '100%',
-    padding: '12px',
-    marginBottom: '20px',
-    border: '1px solid #555',
-    backgroundColor: '#444',
-    color: '#fff',
-    borderRadius: '4px',
-    fontSize: '16px',
-    transition: 'border-color 0.3s',
-    boxSizing: 'border-box' as const,
-  },
-  error: {
-    color: '#ff4444',
-    marginBottom: '15px',
-    padding: '10px',
-    backgroundColor: '#331111',
-    borderRadius: '4px',
-    fontSize: '14px',
-  },
-  fieldError: {
-    color: '#ff4444',
-    fontSize: '12px',
-    marginTop: '5px',
-    marginBottom: '10px',
-  },
-  buttonContainer: {
-    marginBottom: '20px',
-  },
-  submitButton: {
-    width: '100%',
-    backgroundColor: '#00bcd4',
-    color: '#fff',
-    padding: '12px 20px',
-    border: 'none',
-    borderRadius: '4px',
-    cursor: 'pointer',
-    fontSize: '16px',
-    fontWeight: 'bold',
-    transition: 'background-color 0.3s',
-  },
-  toggleContainer: {
-    textAlign: 'center' as const,
-    marginBottom: '20px',
-  },
-  toggleButton: {
-    background: 'none',
-    border: 'none',
-    color: '#00bcd4',
-    cursor: 'pointer',
-    fontSize: '14px',
-    textDecoration: 'underline',
-  },
-  forgotPasswordContainer: {
-    textAlign: 'center' as const,
-    marginBottom: '20px',
-  },
-  forgotPasswordButton: {
-    background: 'none',
-    border: 'none',
-    color: '#00bcd4',
-    cursor: 'pointer',
-    fontSize: '14px',
-    textDecoration: 'underline',
-  },
-  rememberMeContainer: {
-    marginBottom: '20px',
-    display: 'flex',
-    alignItems: 'center',
-  },
-  rememberMeLabel: {
-    display: 'flex',
-    alignItems: 'center',
-    cursor: 'pointer',
-    fontSize: '14px',
-    color: '#ccc',
-  },
-  rememberMeCheckbox: {
-    marginRight: '8px',
-    width: '16px',
-    height: '16px',
-    accentColor: '#00bcd4',
-  },
-  rememberMeText: {
-    userSelect: 'none' as const,
-  },
-  credentialsInfo: {
-    marginTop: '20px',
-    padding: '15px',
-    backgroundColor: '#2a2a2a',
-    borderRadius: '4px',
-    textAlign: 'center' as const,
-  },
-  credentialsTitle: {
-    fontSize: '14px',
-    fontWeight: 'bold',
-    marginBottom: '8px',
-    color: '#00bcd4',
-  },
-  credentialsText: {
-    fontSize: '12px',
-    margin: '4px 0',
-    color: '#ccc',
-  },
-};
-
 export default LoginScreen;
+
+

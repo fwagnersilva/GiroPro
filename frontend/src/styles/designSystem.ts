@@ -35,6 +35,16 @@ export const colors = {
     hover: 'rgba(0, 122, 255, 0.1)',
     focus: 'rgba(0, 122, 255, 0.2)',
     disabled: '#F8F9FA'
+  },
+  
+  // Cores específicas para o tema escuro da tela de login
+  loginScreen: {
+    background: '#212121',
+    formBackground: '#333',
+    inputBackground: '#444',
+    inputBorder: '#555',
+    errorBackground: '#331111',
+    link: '#00bcd4', // Cor usada para botões de alternância e esqueceu senha
   }
 };
 
@@ -77,7 +87,19 @@ export const spacing = {
   xl: '24px',
   '2xl': '32px',
   '3xl': '48px',
-  '4xl': '64px'
+  '4xl': '64px',
+  
+  // Espaçamentos específicos para a tela de login
+  loginScreen: {
+    inputMarginBottom: '20px',
+    buttonMarginBottom: '10px',
+    errorMarginBottom: '15px',
+    padding: '20px',
+    formPadding: '30px',
+    titleMarginBottom: '30px',
+    credentialsMarginTop: '20px',
+    credentialsPadding: '15px',
+  }
 };
 
 export const borderRadius = {
@@ -264,4 +286,5 @@ export const globalCSS = `
     color: ${colors.neutral.text.primary};
   }
 `;
+
 

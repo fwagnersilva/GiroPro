@@ -68,8 +68,8 @@
         *   ✅ Reduzir re-renders desnecessários com memoização adequada.
         *   ✅ Garantir que animações sejam suaves e responsivas.
 
-9.  **Refatorar código da tela de login (se necessário) (Pendente)**
-    *   **Status:** Pendente
+9.  **Refatorar código da tela de login (se necessário) (Concluído)**
+    *   **Status:** Concluído
     *   **Microtarefas:**
         *   Revisar a estrutura do código para melhor legibilidade e manutenção.
         *   Garantir que os componentes estejam seguindo os padrões de design do projeto.
