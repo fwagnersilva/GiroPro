@@ -346,3 +346,43 @@
         *   `git commit -m "Adicionado épico de resolução de problemas de inicialização da aplicação web ao backlog."`
         *   `git push`
 
+
+
+
+### Épico: Resolução de Problemas de Renderização da Aplicação Web
+
+#### História de Usuário: Como desenvolvedor, quero que a aplicação web renderize corretamente o conteúdo, incluindo estilos e componentes, para que a interface de usuário seja visível e interativa.
+
+#### Tarefas:
+
+1.  **Investigar e Resolver Problema de Página em Branco (Pendente)**
+    *   **Status:** Pendente
+    *   **Detalhes:** A aplicação web inicia sem erros no console, mas a página permanece em branco, indicando que o conteúdo não está sendo renderizado.
+    *   **Microtarefas:**
+        *   Verificar a árvore de componentes renderizada no navegador (usando ferramentas de desenvolvedor).
+        *   Confirmar se o `app/_layout.tsx` e `app/index.tsx` estão sendo executados e retornando componentes válidos.
+        *   Analisar possíveis conflitos de renderização ou erros silenciosos que impedem a exibição do conteúdo.
+
+2.  **Configurar NativeWind para Web (Pendente)**
+    *   **Status:** Pendente
+    *   **Detalhes:** O `NativeWind` pode não estar aplicando os estilos corretamente na versão web, especialmente com a linha `NativeWindStyleSheet.setOutput({ default: 'native' });`.
+    *   **Microtarefas:**
+        *   Revisar a documentação do `NativeWind` para configuração específica de web em projetos Expo Router com Metro Bundler.
+        *   Verificar e ajustar o `tailwind.config.js` e `babel.config.js` para garantir a compatibilidade com a web.
+        *   Testar a aplicação de estilos básicos do Tailwind CSS em componentes simples.
+
+3.  **Revisar Configuração do Metro Bundler para Web (Pendente)**
+    *   **Status:** Pendente
+    *   **Detalhes:** Apesar da correção do erro de `entry file` e do MIME type, é fundamental garantir que o Metro Bundler esteja configurado de forma otimizada para a web.
+    *   **Microtarefas:**
+        *   Confirmar que o `metro.config.js` está configurado para lidar com assets e módulos de forma adequada para a web.
+        *   Verificar se há alguma configuração adicional necessária para o Metro Bundler servir corretamente todos os arquivos da aplicação web.
+
+4.  **Realizar Commit e Push das Alterações (Concluído)**
+    *   **Status:** Concluído
+    *   **Objetivo:** Versionar e compartilhar as implementações.
+    *   **Microtarefas:**
+        *   `git add backlog.md`
+        *   `git commit -m "Adicionado épico de resolução de problemas de renderização da aplicação web ao backlog."`
+        *   `git push`
+
