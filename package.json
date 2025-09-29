@@ -24,6 +24,7 @@
     "prepare": "husky install"
   },
   "dependencies": {
+    "@expo/webpack-config": "^19.0.0",
     "@react-native-async-storage/async-storage": "^2.2.0",
     "expo": "^49.0.5",
     "expo-constants": "~14.4.2",

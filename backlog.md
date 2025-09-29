@@ -245,8 +245,8 @@
         *   Atualizar `app/index.tsx` com lógica de redirecionamento
     *   **Roteamento:** `/login` - Tela de login; `/dashboard` - Tela principal (protegida); Redirecionamento automático baseado no estado de auth.
 
-5.  **Testar a Funcionalidade de Login e Garantir a Experiência do Usuário (Pendente)**
-    *   **Status:** Pendente
+5.  **Testar a Funcionalidade de Login e Garantir a Experiência do Usuário (Concluído)**
+    *   **Status:** Concluído
     *   **Objetivo:** Validar o funcionamento completo e a experiência do usuário.
     *   **Microtarefas:**
         *   Testar fluxo completo de login
@@ -257,8 +257,8 @@
         *   Verificar acessibilidade
     *   **Cenários de Teste:** Login com credenciais válidas; Login com credenciais inválidas; Validação de campos em tempo real; Persistência de sessão após reload; Logout e redirecionamento; Comportamento offline.
 
-6.  **Realizar Commit e Push das Alterações (Pendente)**
-    *   **Status:** Pendente
+6.  **Realizar Commit e Push das Alterações (Em Andamento)**
+    *   **Status:** Em Andamento
     *   **Objetivo:** Versionar e compartilhar as implementações.
     *   **Microtarefas:**
         *   Organizar commits por funcionalidade
