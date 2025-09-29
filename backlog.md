@@ -192,8 +192,8 @@
 
 #### Tarefas de Login (Prioridade Alta)
 
-1.  **Definir e Criar os Componentes de UI para a Tela de Login (Pendente)**
-    *   **Status:** Pendente
+1.  **Definir e Criar os Componentes de UI para a Tela de Login (Em Andamento)**
+    *   **Status:** Em Andamento
     *   **Objetivo:** Criar uma interface de usuário moderna e responsiva para a tela de login.
     *   **Microtarefas:**
         *   Criar componentes de input customizados para email/usuário e senha (`src/components/Input.tsx`)
