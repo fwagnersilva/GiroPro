@@ -1,31 +1,39 @@
-import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, Image } from 'react-native';
+import React from 'react';
+import { View, Text, TouchableOpacity } from 'react-native';
 import Input from './Input';
 import Button from './Button';
+import { useLoginForm } from '../hooks/useLoginForm';
 
 interface LoginFormProps {
-  onLogin: (email: string, password: string, rememberMe: boolean) => void;
+  onLogin: (email: string, password: string, rememberMe: boolean) => Promise<void>;
   onForgotPassword: () => void;
-  loading?: boolean;
-  error?: string;
 }
 
 const LoginForm: React.FC<LoginFormProps> = ({
   onLogin,
   onForgotPassword,
-  loading = false,
-  error
 }) => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [rememberMe, setRememberMe] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
+  const {
+    email,
+    password,
+    rememberMe,
+    isLoading,
+    errors,
+    touched,
+    setEmail,
+    setPassword,
+    setRememberMe,
+    setEmailTouched,
+    setPasswordTouched,
+    isFormValid,
+    handleSubmit,
+  } = useLoginForm();
 
-  const handleSubmit = () => {
-    onLogin(email, password, rememberMe);
+  const [showPassword, setShowPassword] = React.useState(false);
+
+  const onSubmit = () => {
+    handleSubmit(onLogin);
   };
-
-  const isFormValid = email.trim() !== '' && password.trim() !== '';
 
   return (
     <View className="flex-1 justify-center px-6 py-8 bg-white">
@@ -50,9 +58,11 @@ const LoginForm: React.FC<LoginFormProps> = ({
           placeholder="Digite seu email"
           value={email}
           onChangeText={setEmail}
+          onBlur={setEmailTouched}
           keyboardType="email-address"
           autoCapitalize="none"
           autoComplete="email"
+          error={touched.email ? errors.email : undefined}
           leftIcon={
             <View className="w-5 h-5 bg-gray-400 rounded-full" />
           }
@@ -64,8 +74,10 @@ const LoginForm: React.FC<LoginFormProps> = ({
           placeholder="Digite sua senha"
           value={password}
           onChangeText={setPassword}
+          onBlur={setPasswordTouched}
           secureTextEntry={!showPassword}
           autoComplete="password"
+          error={touched.password ? errors.password : undefined}
           leftIcon={
             <View className="w-5 h-5 bg-gray-400 rounded-full" />
           }
@@ -109,19 +121,19 @@ const LoginForm: React.FC<LoginFormProps> = ({
           </TouchableOpacity>
         </View>
 
-        {/* Mensagem de Erro */}
-        {error && (
+        {/* Mensagem de Erro Geral */}
+        {errors.general && (
           <View className="bg-red-50 border border-red-200 rounded-lg p-3 mb-4">
-            <Text className="text-red-700 text-sm text-center">{error}</Text>
+            <Text className="text-red-700 text-sm text-center">{errors.general}</Text>
           </View>
         )}
 
         {/* Botão de Login */}
         <Button
           title="Entrar"
-          onPress={handleSubmit}
-          loading={loading}
-          disabled={!isFormValid || loading}
+          onPress={onSubmit}
+          loading={isLoading}
+          disabled={!isFormValid || isLoading}
           containerClassName="mb-6"
         />
 
