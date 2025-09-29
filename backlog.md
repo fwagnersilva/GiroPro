@@ -1,14 +1,35 @@
-# Backlog Consolidado do Projeto GiroPro
+# Backlog Reestruturado do Projeto GiroPro
 
-# Tela de Login
+Este backlog foi reestruturado com foco na priorização da nova estrutura de login e autenticação, bem como na resolução dos problemas de renderização do menu lateral (Sidebar) na versão web. As tarefas foram organizadas para refletir um fluxo de desenvolvimento mais coeso, garantindo que a base de autenticação e navegação esteja sólida antes de avançar para outras funcionalidades.
 
-## Épico: Melhorias na Tela de Login
+## Visão Geral da Estrutura de Login e Autenticação
 
-### História de Usuário: Como usuário, quero poder fazer login de forma segura e eficiente para acessar o sistema.
+A nova estrutura de login visa proporcionar uma experiência de usuário segura e eficiente em todas as plataformas (Web, Android, iOS), utilizando `react-navigation` para mobile e `react-router-dom` para web, com uma abordagem unificada sempre que possível. O objetivo é ter um fluxo de autenticação robusto, com feedback claro para o usuário e proteção de rotas.
 
-#### Tarefas:
+### Épico: Implementação e Melhoria do Fluxo de Login e Autenticação
 
-1.  **Implementar funcionalidade "Esqueceu sua senha?"**
+#### História de Usuário: Como usuário, quero poder realizar login e registro de forma segura, com feedback claro e opções de recuperação de senha, para acessar as funcionalidades do sistema em qualquer plataforma.
+
+#### Tarefas de Login e Autenticação (Prioridade Alta)
+
+1.  **Configuração Inicial de Roteamento (Concluído)**
+    *   **Status:** Concluído
+    *   **Detalhes:** Instalação de `react-router-dom` e `react-native-web` para roteamento web, e dependências de `react-navigation` para mobile. Criação do componente `AppRouter` para encapsular a lógica de roteamento e configuração do `BrowserRouter` no `App.tsx` para web, e `AppNavigator` para mobile.
+
+2.  **Definição de Rotas Principais (Concluído)**
+    *   **Status:** Concluído
+    *   **Detalhes:** Rotas para `/login` (renderizando `LoginScreen`) e `/dashboard` (renderizando `Dashboard`) foram definidas no `AppRouter.tsx`. A rota `/dashboard` foi protegida por `PrivateRoutes`.
+
+3.  **Implementação de Rotas Privadas (Concluído)**
+    *   **Status:** Concluído
+    *   **Detalhes:** O componente `PrivateRoutes` foi implementado para verificar a autenticação do usuário e redirecionar para `/login` caso não esteja autenticado. Integrado ao `AppRouter.tsx` para proteger o dashboard.
+
+4.  **Redirecionamento Pós-Autenticação (Concluído)**
+    *   **Status:** Concluído
+    *   **Detalhes:** As telas de `LoginScreen.tsx` e `RegisterScreen.tsx` foram atualizadas para usar `useNavigate` (web) ou `navigation.navigate` (mobile) para redirecionar para `/dashboard` após login/registro bem-sucedido.
+
+5.  **Implementar funcionalidade "Esqueceu sua senha?" (Pendente)**
+    *   **Status:** Pendente
     *   **Microtarefas:**
         *   Criar rota de API para solicitação de recuperação de senha (backend).
         *   Implementar lógica de envio de e-mail com token de recuperação (backend).
@@ -18,304 +39,139 @@
         *   Adicionar validações de formulário para e-mail e nova senha.
         *   Testar fluxo completo de recuperação de senha.
 
-2.  **Melhorar feedback de erro no login**
+6.  **Melhorar feedback de erro no login (Pendente)**
+    *   **Status:** Pendente
     *   **Microtarefas:**
         *   Exibir mensagens de erro mais específicas para credenciais inválidas (ex: "Email ou senha incorretos").
         *   Limpar campos de senha após tentativa de login falha.
         *   Adicionar validação de formato de e-mail no frontend.
 
-3.  **Adicionar opção "Lembrar-me" (Remember Me)**
+7.  **Adicionar opção "Lembrar-me" (Remember Me) (Pendente)**
+    *   **Status:** Pendente
     *   **Microtarefas:**
         *   Implementar armazenamento seguro de token de autenticação (ex: AsyncStorage, LocalStorage) no frontend.
         *   Configurar API para aceitar token de "Lembrar-me" para sessões estendidas.
         *   Testar persistência do login após fechar e reabrir o aplicativo/navegador.
 
-4.  **Otimização de Performance da Tela de Login**
+8.  **Otimização de Performance da Tela de Login (Pendente)**
+    *   **Status:** Pendente
     *   **Microtarefas:**
         *   Analisar e otimizar o tempo de carregamento da tela.
         *   Reduzir o tamanho dos bundles JavaScript, se aplicável.
         *   Garantir que animações sejam suaves.
 
-5.  **Refatorar código da tela de login (se necessário)**
+9.  **Refatorar código da tela de login (se necessário) (Pendente)**
+    *   **Status:** Pendente
     *   **Microtarefas:**
         *   Revisar a estrutura do código para melhor legibilidade e manutenção.
         *   Garantir que os componentes estejam seguindo os padrões de design do projeto.
         *   Remover código duplicado ou não utilizado.
 
-6.  **Adicionar testes unitários e de integração para a tela de login**
+10. **Adicionar testes unitários e de integração para a tela de login (Pendente)**
+    *   **Status:** Pendente
     *   **Microtarefas:**
         *   Escrever testes unitários para os componentes da UI.
         *   Escrever testes de integração para o fluxo de login e autenticação.
         *   Configurar ambiente de CI/CD para rodar os testes automaticamente.
 
-- Tarefa: P1 - Implementar APIs CRUD completas para Veículos
-  - Quem: Backend
-  - O que: Desenvolver endpoints CRUD completos para a entidade Veículos.
-  - Porquê: Permitir o gerenciamento completo de veículos no backend.
-  - Complexidade: Média
-  - Concluído: [x]
+### Épico: Correção e Implementação do Menu Lateral Multiplataforma
 
-- Tarefa: P1 - Implementar APIs CRUD completas para Abastecimentos
-  - Quem: Backend
-  - O que: Desenvolver endpoints CRUD completos para a entidade Abastecimentos.
-  - Porquê: Permitir o gerenciamento completo de abastecimentos no backend.
-  - Complexidade: Média
-  - Concluído: [x]
+#### História de Usuário: Como usuário, quero ver e interagir com o menu lateral de navegação em todas as plataformas (Web, Android, iOS) para acessar as funcionalidades do sistema.
 
-- Tarefa: P1 - Implementar APIs CRUD completas para Despesas
-  - Quem: Backend
-  - O que: Desenvolver endpoints CRUD completos para a entidade Despesas.
-  - Porquê: Permitir o gerenciamento completo de despesas no backend.
-  - Complexidade: Média
-  - Concluído: [x]
+#### Tarefas do Sidebar (Prioridade Alta)
 
-- Tarefa: P1 - Desenvolver Tela de Jornadas
-  - Quem: Frontend
-  - O que: Criar um componente de tela para gerenciar as jornadas do usuário.
-  - Porquê: Adicionar uma funcionalidade central de gestão de viagens.
-  - Complexidade: Média
-  - Concluído: [x]
+1.  **Investigar problema de renderização do Sidebar (Web) (Concluído)**
+    *   **Status:** Concluído
+    *   **Descobertas:** O `main.tsx` estava carregando `NewLoginScreen` em vez de `App.tsx`, ignorando o roteamento. Erros de compilação em `api.ts` e `ForgotPasswordScreen.tsx` também foram corrigidos.
+    *   **Microtarefas Concluídas:** Corrigir `main.tsx` para carregar `App.tsx`, corrigir estrutura de `api.ts` e importação em `ForgotPasswordScreen.tsx`.
 
-- Tarefa: P1 - Implementar APIs CRUD completas para Jornadas (Frontend - Integração)
-  - Quem: Frontend
-  - O que: Integrar a tela de Jornadas com as APIs CRUD do backend.
-  - Porquê: Popular a tela com dados reais e permitir a interação do usuário.
-  - Complexidade: Média
-  - Concluído: [x]
+2.  **Criar o componente Sidebar.tsx (Pendente)**
+    *   **Status:** Pendente
+    *   **Detalhes:** Criar um componente de menu lateral (sidebar) para navegação, fornecendo uma navegação intuitiva e consistente entre as telas.
 
-- Tarefa: P2 - Criar arquivo `.env.example`
-  - Quem: Geral
-  - O que: Criar um arquivo `.env.example` na raiz do projeto com todas as variáveis de ambiente necessárias.
-  - Porquê: Facilitar a configuração do ambiente para novos desenvolvedores.
-  - Complexidade: Simples
-  - Concluído: [x]
+3.  **Integrar o Sidebar no AppRouter.tsx e ajustar o layout (Pendente)**
+    *   **Status:** Pendente
+    *   **Detalhes:** Integrar o componente Sidebar no `AppRouter.tsx` e ajustar o layout para acomodá-lo, habilitando a navegação lateral em todas as telas protegidas.
 
-- Tarefa: P2 - Atualizar `README.md` com instruções de setup e execução
-  - Quem: Geral
-  - O que: Revisar e atualizar o `README.md` principal com instruções claras e concisas para o setup e execução do projeto.
-  - Porquê: Fornecer um guia rápido e preciso para iniciar o desenvolvimento.
-  - Complexidade: Simples
-  - Concluído: [x]
+4.  **Implementar solução para o Sidebar (Web) (Pendente)**
+    *   **Status:** Pendente
+    *   **Microtarefas:**
+        *   Reavaliar a abordagem multiplataforma para o Sidebar (componente web específico vs. React Native Web).
+        *   Ajustar o layout do `DashboardLayout` para acomodar o sidebar fixo e o conteúdo principal (Flexbox/Grid CSS, `marginLeft`/`paddingLeft`).
+        *   Testar a navegação entre todas as telas do menu após a implementação.
+        *   Garantir que o design do sidebar esteja conforme o exemplo fornecido.
 
-- Tarefa: P2 - Instalar `react-router-dom`
-  - Quem: Frontend
-  - O que: Executar `npm install react-router-dom` no diretório `frontend`.
-  - Porquê: Habilitar a navegação declarativa na aplicação web.
-  - Complexidade: Simples
-  - Concluído: [x]
-  - Como foi feita: Instalado `react-router-dom` e `react-native-web` para suportar roteamento web em um projeto React Native. Também foram instaladas as dependências do `react-navigation` para o roteamento mobile.
-  - Hash do Commit: e4a938d3b4769407e800683398850eaa45a51b5f
-  - Arquivos modificados:
-    - frontend/package.json
+## Outras Tarefas Pendentes (Prioridade Média/Baixa)
 
-- Tarefa: P2 - Criar componente `AppRouter`
-  - Quem: Frontend
-  - O que: Criar um novo arquivo `src/components/AppRouter.tsx` para encapsular a lógica de roteamento.
-  - Porquê: Organizar as rotas e manter o `App.tsx` limpo.
-  - Complexidade: Simples
-  - Concluído: [x]
-  - Como foi feita: Criado o componente `AppRouter.tsx` para gerenciar as rotas da aplicação web, incluindo rotas públicas e privadas.
-  - Hash do Commit: e4a938d3b4769407e800683398850eaa45a51b5f
-  - Arquivos modificados:
-    - frontend/src/components/AppRouter.tsx
+### Épico: Gerenciamento de Veículos
 
-- Tarefa: P2 - Configurar `BrowserRouter`
-  - Quem: Frontend
-  - O que: Envolver o `AppContent` com `BrowserRouter` em `main.tsx` ou `App.tsx`.
-  - Porquê: Habilitar o roteamento baseado em URL para a aplicação web.
-  - Complexidade: Simples
-  - Concluído: [x]
-  - Como foi feita: O `App.tsx` foi modificado para renderizar o `AppRouter` (que contém o `BrowserRouter`) quando a plataforma for web, e o `AppNavigator` (do react-navigation) para plataformas móveis.
-  - Hash do Commit: e4a938d3b4769407e800683398850eaa45a51b5f
-  - Arquivos modificados:
-    - frontend/src/App.tsx
-
-- Tarefa: P2 - Definir rotas para Login e Dashboard
-  - Quem: Frontend
-  - O que: No `AppRouter.tsx`, definir rotas para `/login` (renderizando `LoginScreen`) e `/dashboard` (renderizando `Dashboard`).
-  - Porquê: Permitir a navegação entre as telas principais.
-  - Complexidade: Simples
-  - Concluído: [x]
-  - Como foi feita: As rotas para `/login` e `/dashboard` foram definidas no `AppRouter.tsx`, com a rota `/dashboard` protegida por `PrivateRoutes`.
-  - Hash do Commit: e4a938d3b4769407e800683398850eaa45a51b5f
-  - Arquivos modificados:
-    - frontend/src/components/AppRouter.tsx
-
-- Tarefa: P2 - Implementar `PrivateRoutes`
-  - Quem: Frontend
-  - O que: Criar um componente `PrivateRoutes` que verifica a autenticação e redireciona para `/login` se o usuário não estiver autenticado.
-  - Porquê: Proteger as rotas do dashboard e outras áreas restritas.
-  - Complexidade: Média
-  - Concluído: [x]
-  - Como foi feita: O componente `PrivateRoutes` foi implementado no `AppRouter.tsx` para verificar a autenticação do usuário antes de renderizar a rota do dashboard. Se o usuário não estiver autenticado, ele é redirecionado para a tela de login.
-  - Hash do Commit: e4a938d3b4769407e800683398850eaa45a51b5f
-  - Arquivos modificados:
-    - frontend/src/components/AppRouter.tsx
-
-- Tarefa: P2 - Integrar `PrivateRoutes` ao `AppRouter`
-  - Quem: Frontend
-  - O que: Usar `PrivateRoutes` para envolver a rota do `/dashboard`.
-  - Porquê: Aplicar a proteção de rota ao dashboard.
-  - Complexidade: Simples
-  - Concluído: [x]
-  - Como foi feita: A rota do `/dashboard` no `AppRouter.tsx` foi envolvida pelo componente `PrivateRoutes` para garantir que apenas usuários autenticados possam acessá-la.
-  - Hash do Commit: e4a938d3b4769407e800683398850eaa45a51b5f
-  - Arquivos modificados:
-    - frontend/src/components/AppRouter.tsx
-
-- Tarefa: P2 - Redirecionar após Login/Registro
-  - Quem: Frontend
-  - O que: Após login/registro bem-sucedido, usar `useNavigate` do `react-router-dom` para redirecionar para `/dashboard` em vez de `window.location.reload()`.
-  - Porquê: Melhorar a experiência do usuário com navegação suave.
-  - Complexidade: Simples
-  - Concluído: [x]
-  - Como foi feita: As telas de `LoginScreen.tsx` e `RegisterScreen.tsx` foram atualizadas para usar o hook `useNavigate` do `react-router-dom` para redirecionamento na plataforma web, e `navigation.navigate` para plataformas móveis.
-  - Hash do Commit: e4a938d3b4769407e800683398850eaa45a51b5f
-  - Arquivos modificados:
-    - frontend/src/screens/LoginScreen.tsx
-    - frontend/src/screens/RegisterScreen.tsx
-
-- Tarefa: P1 - Criar o componente Sidebar.tsx
-  - Quem: Frontend
-  - O que: Criar um componente de menu lateral (sidebar) para navegação.
-  - Porquê: Fornecer uma navegação intuitiva e consistente entre as telas.
-  - Complexidade: Média
-  - Concluído: [ ]
-
-- Tarefa: P1 - Integrar o Sidebar no AppRouter.tsx e ajustar o layout
-  - Quem: Frontend
-  - O que: Integrar o componente Sidebar no AppRouter.tsx e ajustar o layout para acomodá-lo.
-  - Porquê: Habilitar a navegação lateral em todas as telas protegidas.
-  - Complexidade: Média
-  - Concluído: [ ]
-
-- Tarefa: P3 - Criar componente `VehicleList`
-  - Quem: Frontend
-  - O que: Criar um novo componente `src/components/VehicleList.tsx` para exibir a lista de veículos.
-  - Porquê: Modularizar a interface do usuário e preparar para a integração da API.
-  - Complexidade: Simples
-  - Concluído: [ ]
-
-- Tarefa: P3 - Adicionar rota para `VehicleList`
-  - Quem: Frontend
-  - O que: Adicionar uma rota `/dashboard/vehicles` no `AppRouter.tsx` que renderize o `VehicleList`.
-  - Porquê: Permitir o acesso à tela de veículos através da navegação.
-  - Complexidade: Simples
-  - Concluído: [ ]
-
-- Tarefa: P3 - Criar serviço de API para Veículos
-  - Quem: Frontend
-  - O que: Criar um arquivo `src/services/vehicleService.ts` com funções para chamar a API de veículos do backend (ex: `getVehicles()`).
-  - Porquê: Centralizar a lógica de comunicação com a API de veículos.
-  - Complexidade: Média
-  - Concluído: [ ]
-
-- Tarefa: P3 - Integrar `vehicleService` ao `VehicleList`
-  - Quem: Frontend
-  - O que: No componente `VehicleList`, usar `useEffect` para chamar `vehicleService.getVehicles()` e exibir os dados.
-  - Porquê: Popular a lista de veículos com dados reais do backend.
-  - Complexidade: Média
-  - Concluído: [ ]
-
-- Tarefa: P3 - Adicionar tratamento de erro visual para `VehicleList`
-  - Quem: Frontend
-  - O que: Exibir uma mensagem de erro amigável se a API de veículos falhar.
-  - Porquê: Informar o usuário sobre problemas de carregamento de dados.
-  - Complexidade: Simples
-  - Concluído: [ ]
-
-- Tarefa: P3 - Adicionar estado de carregamento para `VehicleList`
-  - Quem: Frontend
-  - O que: Exibir um `LoadingSpinner` enquanto os veículos estão sendo carregados.
-  - Porquê: Melhorar a experiência do usuário durante o carregamento de dados.
-  - Complexidade: Simples
-  - Concluído: [ ]
-
-- Tarefa: P3 - Criar componente `ToastNotification`
-  - Quem: Frontend
-  - O que: Desenvolver um componente reutilizável para exibir mensagens de toast (sucesso, erro, informação).
-  - Porquê: Padronizar o feedback visual para o usuário em toda a aplicação.
-  - Complexidade: Média
-  - Concluído: [ ]
-
-- Tarefa: P3 - Integrar `ToastNotification` ao `AuthContext`
-  - Quem: Frontend
-  - O que: Usar `ToastNotification` para exibir mensagens de erro do `signIn` e `handleRegister`.
-  - Porquê: Fornecer feedback visual imediato para falhas de autenticação.
-  - Complexidade: Simples
-  - Concluído: [ ]
-
-- Tarefa: P3 - Integrar `ToastNotification` ao `vehicleService`
-  - Quem: Frontend
-  - O que: Usar `ToastNotification` para exibir erros de API no `vehicleService`.
-  - Porquê: Centralizar o tratamento de erros de API com feedback visual.
-  - Complexidade: Simples
-  - Concluído: [ ]
-
-- Tarefa: P3 - Criar componente `ImageOptimizer`
-  - Quem: Frontend
-  - O que: Desenvolver um componente que implemente lazy loading para imagens e, se possível, converta para WebP.
-  - Porquê: Otimizar o carregamento de imagens e melhorar a performance geral.
-  - Complexidade: Média
-  - Concluído: [ ]
-
-- Tarefa: P3 - Integrar `ImageOptimizer` aos componentes existentes
-  - Quem: Frontend
-  - O que: Substituir tags `<img>` por `ImageOptimizer` onde aplicável.
-  - Porquê: Aplicar as otimizações de imagem em toda a aplicação.
-  - Complexidade: Simples
-  - Concluído: [ ]
-
-- Tarefa: P3 - Criar `manifest.json`
-  - Quem: Frontend
-  - O que: Criar o arquivo `manifest.json` na raiz do diretório `public` do frontend com metadados básicos do PWA.
-  - Porquê: Permitir que o navegador reconheça a aplicação como um PWA e ofereça a instalação.
-  - Complexidade: Simples
-  - Concluído: [ ]
-
-- Tarefa: P3 - Configurar `Service Worker` básico
-  - Quem: Frontend
-  - O que: Criar um arquivo `src/service-worker.js` e registrá-lo em `main.tsx` para cachear assets estáticos.
-  - Porquê: Habilitar o cache offline e melhorar a resiliência da aplicação.
-  - Complexidade: Média
-  - Concluído: [ ]
-
-
-
-
-
-# Problema: Renderização do Menu Lateral (Sidebar) na Web
-
-## Épico: Correção e Implementação do Menu Lateral Multiplataforma
-
-### História de Usuário: Como usuário, quero ver e interagir com o menu lateral de navegação em todas as plataformas (Web, Android, iOS) para acessar as funcionalidades do sistema.
+#### História de Usuário: Como usuário, quero poder visualizar, adicionar, editar e remover veículos para gerenciar minha frota.
 
 #### Tarefas:
 
-- Tarefa: P1 - Investigar problema de renderização do Sidebar (Web)
-  - Quem: Frontend
-  - O que: Diagnosticar a causa raiz da não renderização do menu lateral (sidebar) na versão web da aplicação.
-  - Porquê: Garantir que o menu de navegação seja exibido corretamente e funcione em todas as plataformas.
-  - Complexidade: Alta
-  - Concluído: [x]
-  - Descobertas:
-    - O ponto de entrada da aplicação (`main.tsx`) estava carregando um componente (`NewLoginScreen`) diferente do esperado (`App.tsx`), ignorando completamente a estrutura de roteamento e os componentes como `AppRouter` e `Sidebar`.
-    - Erros de compilação foram encontrados em `api.ts` (funções CRUD fora do objeto `journeyService`) e `ForgotPasswordScreen.tsx` (importação incorreta de `authService`).
-  - Microtarefas:
-    - Corrigir o `main.tsx` para carregar `App.tsx` como ponto de entrada. (Concluído)
-    - Corrigir a estrutura do `api.ts` para que as funções CRUD de `journeyService` estejam dentro do objeto. (Concluído)
-    - Corrigir a importação em `ForgotPasswordScreen.tsx` para usar `../services/api`. (Concluído)
+1.  **Criar componente `VehicleList` (Pendente)**
+    *   **Status:** Pendente
+    *   **Detalhes:** Criar um novo componente `src/components/VehicleList.tsx` para exibir a lista de veículos.
 
-- Tarefa: P1 - Implementar solução para o Sidebar (Web)
-  - Quem: Frontend
-  - O que: Desenvolver e integrar uma solução funcional para o menu lateral (sidebar) na versão web da aplicação.
-  - Porquê: Fornecer uma navegação intuitiva e consistente entre as telas, conforme o design proposto.
-  - Complexidade: Alta
-  - Concluído: [ ]
-  - Microtarefas:
-    - Reavaliar a abordagem multiplataforma para o Sidebar (componente web específico vs. React Native Web).
-    - Ajustar o layout do `DashboardLayout` para acomodar o sidebar fixo e o conteúdo principal (Flexbox/Grid CSS, `marginLeft`/`paddingLeft`).
-    - Testar a navegação entre todas as telas do menu após a implementação.
-    - Garantir que o design do sidebar esteja conforme o exemplo fornecido.
+2.  **Adicionar rota para `VehicleList` (Pendente)**
+    *   **Status:** Pendente
+    *   **Detalhes:** Adicionar uma rota `/dashboard/vehicles` no `AppRouter.tsx` que renderize o `VehicleList`.
+
+3.  **Criar serviço de API para Veículos (Pendente)**
+    *   **Status:** Pendente
+    *   **Detalhes:** Criar um arquivo `src/services/vehicleService.ts` com funções para chamar a API de veículos do backend (ex: `getVehicles()`).
+
+4.  **Integrar `vehicleService` ao `VehicleList` (Pendente)**
+    *   **Status:** Pendente
+    *   **Detalhes:** No componente `VehicleList`, usar `useEffect` para chamar `vehicleService.getVehicles()` e exibir os dados.
+
+5.  **Adicionar tratamento de erro visual para `VehicleList` (Pendente)**
+    *   **Status:** Pendente
+    *   **Detalhes:** Exibir uma mensagem de erro amigável se a API de veículos falhar.
+
+6.  **Adicionar estado de carregamento para `VehicleList` (Pendente)**
+    *   **Status:** Pendente
+    *   **Detalhes:** Exibir um `LoadingSpinner` enquanto os veículos estão sendo carregados.
+
+### Épico: Notificações e Feedback ao Usuário
+
+#### História de Usuário: Como usuário, quero receber feedback visual claro sobre as ações que realizo e os erros que ocorrem no sistema.
+
+#### Tarefas:
+
+1.  **Criar componente `ToastNotification` (Pendente)**
+    *   **Status:** Pendente
+    *   **Detalhes:** Desenvolver um componente reutilizável para exibir mensagens de toast (sucesso, erro, informação).
+
+2.  **Integrar `ToastNotification` ao `AuthContext` (Pendente)**
+    *   **Status:** Pendente
+    *   **Detalhes:** Usar `ToastNotification` para exibir mensagens de erro do `signIn` e `handleRegister`.
+
+3.  **Integrar `ToastNotification` ao `vehicleService` (Pendente)**
+    *   **Status:** Pendente
+    *   **Detalhes:** Usar `ToastNotification` para exibir erros de API no `vehicleService`.
+
+### Épico: Otimização de Performance e PWA
+
+#### História de Usuário: Como usuário, quero que o aplicativo seja rápido, responsivo e funcione offline para uma melhor experiência.
+
+#### Tarefas:
+
+1.  **Criar componente `ImageOptimizer` (Pendente)**
+    *   **Status:** Pendente
+    *   **Detalhes:** Desenvolver um componente que implemente lazy loading para imagens e, se possível, converta para WebP.
+
+2.  **Integrar `ImageOptimizer` aos componentes existentes (Pendente)**
+    *   **Status:** Pendente
+    *   **Detalhes:** Substituir tags `<img>` por `ImageOptimizer` onde aplicável.
+
+3.  **Criar `manifest.json` (Pendente)**
+    *   **Status:** Pendente
+    *   **Detalhes:** Criar o arquivo `manifest.json` na raiz do diretório `public` do frontend com metadados básicos do PWA.
+
+4.  **Configurar `Service Worker` básico (Pendente)**
+    *   **Status:** Pendente
+    *   **Detalhes:** Criar um arquivo `src/service-worker.js` e registrá-lo em `main.tsx` para cachear assets estáticos.
+
 
 
