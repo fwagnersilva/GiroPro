@@ -269,3 +269,80 @@
 
 
 
+
+
+
+### Épico: Configuração e Inicialização da Aplicação Web
+
+#### História de Usuário: Como desenvolvedor, quero que a aplicação web inicie corretamente para poder testar e desenvolver funcionalidades.
+
+#### Tarefas:
+
+1.  **Investigar e Resolver `ConfigError: Cannot resolve entry file` (Pendente)**
+    *   **Status:** Pendente
+    *   **Detalhes:** O Metro Bundler está reportando `ConfigError: Cannot resolve entry file: The `main` field defined in your `package.json` points to an unresolvable or non-existent path.`, mesmo após a remoção do campo `main` e a criação de `Main.tsx`.
+    *   **Microtarefas:**
+        *   Verificar se o `package.json` está sendo lido corretamente após as alterações.
+        *   Investigar se há algum cache persistente do Expo ou Metro que precisa ser limpo de forma mais agressiva.
+        *   Garantir que o `Main.tsx` recém-criado está sendo reconhecido como ponto de entrada.
+        *   Consultar a documentação mais recente do Expo Router e Metro Bundler para web sobre a configuração do ponto de entrada.
+
+2.  **Corrigir Erro de MIME Type no Metro Bundler (Pendente)**
+    *   **Status:** Pendente
+    *   **Detalhes:** O `AppEntry.bundle` está sendo servido com `application/json` em vez de `application/javascript`, impedindo a execução do script no navegador.
+    *   **Microtarefas:**
+        *   Investigar a configuração do Metro Bundler para garantir que ele sirva arquivos JavaScript com o MIME type correto.
+        *   Verificar se há alguma configuração específica no `metro.config.js` ou `app.json` que possa estar causando isso.
+
+3.  **Verificar e Atualizar Dependências Problemáticas (Pendente)**
+    *   **Status:** Pendente
+    *   **Detalhes:** Durante o `expo upgrade`, alguns pacotes não foram atualizados automaticamente. É necessário verificar a compatibilidade e atualizar manualmente se necessário.
+    *   **Microtarefas:**
+        *   Revisar a lista de pacotes não atualizados (`@expo/webpack-config`, `nativewind`, etc.).
+        *   Consultar a documentação de cada pacote para verificar a compatibilidade com o Expo SDK 54 e React Native 0.81.
+        *   Atualizar os pacotes para versões compatíveis, se houver.
+        *   Testar a aplicação após cada atualização para identificar regressões.
+
+
+
+
+### Épico: Resolução de Problemas de Inicialização da Aplicação Web
+
+#### História de Usuário: Como desenvolvedor, quero que a aplicação web inicie corretamente para poder testar e desenvolver funcionalidades, superando os desafios de configuração e compatibilidade.
+
+#### Tarefas:
+
+1.  **Diagnosticar e Resolver `ConfigError: Cannot resolve entry file` (Pendente)**
+    *   **Status:** Pendente
+    *   **Detalhes:** O Metro Bundler continua reportando `ConfigError: Cannot resolve entry file: The `main` field defined in your `package.json` points to an unresolvable or non-existent path.`, mesmo após a remoção do campo `main` do `package.json` e a criação de um `Main.tsx` de fallback.
+    *   **Microtarefas:**
+        *   Verificar a ordem de leitura dos arquivos de configuração pelo Expo/Metro.
+        *   Explorar opções de configuração do `metro.config.js` para forçar o ponto de entrada.
+        *   Considerar a possibilidade de um `package.json` em cache ou um problema de resolução de módulos.
+        *   Pesquisar por soluções específicas para Expo SDK 54 e Expo Router com Metro Bundler para este erro.
+
+2.  **Corrigir Erro de MIME Type (`application/json`) para `AppEntry.bundle` (Pendente)**
+    *   **Status:** Pendente
+    *   **Detalhes:** O `AppEntry.bundle` está sendo servido com `application/json` em vez de `application/javascript`, impedindo a execução do script no navegador.
+    *   **Microtarefas:**
+        *   Investigar a configuração do Metro Bundler para garantir o `Content-Type` correto para arquivos JavaScript.
+        *   Verificar se há alguma configuração no `app.json` ou `metro.config.js` que afete o tipo MIME dos bundles.
+        *   Procurar por problemas conhecidos de MIME type com Expo SDK 54 e Metro Bundler para web.
+
+3.  **Verificar e Atualizar Dependências Problemáticas Pós-Upgrade (Pendente)**
+    *   **Status:** Pendente
+    *   **Detalhes:** Alguns pacotes não foram atualizados automaticamente durante o `expo upgrade` para o SDK 54, e podem estar causando incompatibilidades.
+    *   **Microtarefas:**
+        *   Revisar a lista completa de dependências e `devDependencies` no `package.json`.
+        *   Consultar a documentação de cada dependência para verificar a compatibilidade com Expo SDK 54 e React Native 0.81.
+        *   Atualizar manualmente as dependências para versões compatíveis, se aplicável.
+        *   Realizar testes de regressão após cada atualização de dependência.
+
+4.  **Garantir a Persistência das Alterações no Repositório (Concluído)**
+    *   **Status:** Concluído
+    *   **Detalhes:** Realizar `git add`, `git commit` e `git push` para salvar todas as alterações no `backlog.md` e outros arquivos modificados no repositório remoto.
+    *   **Microtarefas:**
+        *   `git add backlog.md`
+        *   `git commit -m "Adicionado épico de resolução de problemas de inicialização da aplicação web ao backlog."`
+        *   `git push`
+
