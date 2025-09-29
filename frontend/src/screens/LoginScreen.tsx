@@ -1,7 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { RememberMeStorage } from '../utils/rememberMeStorage';
+import { useDebounce } from '../hooks/useDebounce';
+
+// Regex pré-compilado para melhor performance
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 const LoginScreen: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -34,38 +38,46 @@ const LoginScreen: React.FC = () => {
     loadSavedCredentials();
   }, []);
 
-  // Salvar ou remover credenciais baseado no Remember Me
-  const handleRememberMe = async (email: string, remember: boolean) => {
+  // Memoizar função de validação de email
+  const validateEmail = useCallback((email: string): boolean => {
+    return EMAIL_REGEX.test(email);
+  }, []);
+
+  // Memoizar função para salvar Remember Me
+  const handleRememberMe = useCallback(async (email: string, remember: boolean) => {
     try {
       await RememberMeStorage.saveRememberMe(email, remember);
     } catch (error) {
       console.error('Erro ao salvar/remover credenciais:', error);
     }
-  };
+  }, []);
 
-  // Validação de formato de email
-  const validateEmail = (email: string): boolean => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
-  };
-
-  // Função para limpar erros
-  const clearErrors = () => {
+  // Função para limpar erros (memoizada)
+  const clearErrors = useCallback(() => {
     setError('');
     setEmailError('');
-  };
+  }, []);
 
-  // Validação em tempo real do email
-  const handleEmailChange = (value: string) => {
+  // Debounce para validação de email em tempo real
+  const debouncedEmail = useDebounce(email, 300);
+
+  // Validação em tempo real do email com debounce
+  const handleEmailChange = useCallback((value: string) => {
     setEmail(value);
-    setEmailError('');
-    
-    if (value && !validateEmail(value)) {
-      setEmailError('Por favor, insira um email válido');
-    }
-  };
+    setEmailError(''); // Limpar erro imediatamente para melhor UX
+  }, []);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  // Efeito para validar email quando o valor debounced muda
+  useEffect(() => {
+    if (debouncedEmail && !validateEmail(debouncedEmail)) {
+      setEmailError('Por favor, insira um email válido');
+    } else {
+      setEmailError('');
+    }
+  }, [debouncedEmail, validateEmail]);
+
+  // Memoizar handleSubmit para evitar re-criação desnecessária
+  const handleSubmit = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
     clearErrors();
 
@@ -150,15 +162,27 @@ const LoginScreen: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [email, senha, nome, isRegisterMode, rememberMe, validateEmail, clearErrors, handleRememberMe, signIn, navigate]);
 
-  const toggleMode = () => {
+  // Memoizar toggleMode
+  const toggleMode = useCallback(() => {
     setIsRegisterMode(!isRegisterMode);
     clearErrors();
     setNome('');
     setSenha(''); // Limpar senha ao trocar de modo
     setRememberMe(false); // Limpar Remember Me ao trocar de modo
-  };
+  }, [isRegisterMode, clearErrors]);
+
+  // Memoizar estilos dinâmicos para evitar recriação
+  const emailInputStyle = useMemo(() => ({
+    ...styles.input,
+    borderColor: emailError ? '#ff4444' : '#555',
+  }), [emailError]);
+
+  const submitButtonStyle = useMemo(() => ({
+    ...styles.submitButton,
+    backgroundColor: loading ? '#555' : '#00bcd4',
+  }), [loading]);
 
   return (
     <div style={styles.container}>
@@ -190,10 +214,7 @@ const LoginScreen: React.FC = () => {
             value={email}
             onChange={(e) => handleEmailChange(e.target.value)}
             required
-            style={{
-              ...styles.input,
-              borderColor: emailError ? '#ff4444' : '#555',
-            }}
+            style={emailInputStyle}
             autoComplete="email"
           />
           {emailError && <div style={styles.fieldError}>{emailError}</div>}
@@ -229,10 +250,7 @@ const LoginScreen: React.FC = () => {
             <button
               type="submit"
               disabled={loading}
-              style={{
-                ...styles.submitButton,
-                backgroundColor: loading ? '#555' : '#00bcd4',
-              }}
+              style={submitButtonStyle}
             >
               {loading ? 'PROCESSANDO...' : (isRegisterMode ? 'CADASTRAR' : 'LOGIN')}
             </button>
