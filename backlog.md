@@ -1,10 +1,4 @@
-# Backlog Reestruturado do Projeto GiroPro
-
-Este backlog foi reestruturado com foco na priorização da nova estrutura de login e autenticação, bem como na resolução dos problemas de renderização do menu lateral (Sidebar) na versão web. As tarefas foram organizadas para refletir um fluxo de desenvolvimento mais coeso, garantindo que a base de autenticação e navegação esteja sólida antes de avançar para outras funcionalidades.
-
-## Visão Geral da Estrutura de Login e Autenticação
-
-A nova estrutura de login visa proporcionar uma experiência de usuário segura e eficiente em todas as plataformas (Web, Android, iOS), utilizando `react-navigation` para mobile e `react-router-dom` para web, com uma abordagem unificada sempre que possível. O objetivo é ter um fluxo de autenticação robusto, com feedback claro para o usuário e proteção de rotas.
+# Backlog do Projeto GiroPro
 
 ### Épico: Implementação e Melhoria do Fluxo de Login e Autenticação
 
