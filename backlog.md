@@ -183,3 +183,90 @@
 
 
 
+
+
+
+### Épico: Implementação da Funcionalidade de Login (Boilerplate)
+
+#### História de Usuário: Como usuário, quero poder realizar login de forma segura e eficiente, com uma interface consistente em todas as plataformas, para acessar o sistema.
+
+#### Tarefas de Login (Prioridade Alta)
+
+1.  **Definir e Criar os Componentes de UI para a Tela de Login (Pendente)**
+    *   **Status:** Pendente
+    *   **Objetivo:** Criar uma interface de usuário moderna e responsiva para a tela de login.
+    *   **Microtarefas:**
+        *   Criar componentes de input customizados para email/usuário e senha (`src/components/Input.tsx`)
+        *   Implementar botão de login com estados (normal, loading, disabled) (`src/components/Button.tsx`)
+        *   Adicionar elementos visuais como logo, título e links auxiliares
+        *   Criar layout responsivo que funcione em Web, Android e iOS
+        *   Implementar validação visual dos campos (cores, ícones, mensagens)
+        *   Adicionar opções como "Lembrar-me" e "Esqueci minha senha"
+        *   Atualizar `app/login.tsx` com os novos componentes
+    *   **Considerações Multiplataforma:** Usar NativeWind/TailwindCSS, garantir compatibilidade com react-native-web, testar em diferentes tamanhos de tela.
+
+2.  **Implementar a Lógica de Estado e Validação para os Campos de Login (Pendente)**
+    *   **Status:** Pendente
+    *   **Objetivo:** Gerenciar o estado dos campos e implementar validações robustas.
+    *   **Microtarefas:**
+        *   Implementar gerenciamento de estado com React hooks (useState, useReducer)
+        *   Criar validações para email/usuário (formato, obrigatoriedade) (`src/utils/validation.ts`)
+        *   Implementar validação de senha (comprimento mínimo, caracteres especiais) (`src/utils/validation.ts`)
+        *   Adicionar feedback visual em tempo real
+        *   Gerenciar estados de loading e erro
+        *   Implementar debounce para validações
+        *   Criar hook `useLoginForm.ts` (`src/hooks/useLoginForm.ts`)
+        *   Definir tipos de autenticação (`src/types/auth.ts`)
+    *   **Validações a implementar:** Email: formato válido, não vazio; Senha: mínimo 8 caracteres, pelo menos 1 número; Feedback visual imediato; Prevenção de submit com dados inválidos.
+
+3.  **Desenvolver a Lógica de Autenticação (Pendente)**
+    *   **Status:** Pendente
+    *   **Objetivo:** Implementar o processo de autenticação (simulado ou real).
+    *   **Microtarefas:**
+        *   Criar serviço de autenticação (`src/services/authService.ts`)
+        *   Implementar chamadas para API de login (ou mock)
+        *   Gerenciar tokens de autenticação
+        *   Implementar persistência de sessão (`src/utils/storage.ts`)
+        *   Adicionar tratamento de erros de autenticação
+        *   Criar contexto de autenticação global (`src/contexts/AuthContext.tsx`)
+        *   Criar hook `useAuth.ts` (`src/hooks/useAuth.ts`)
+    *   **Funcionalidades:** Login com credenciais; Armazenamento seguro de tokens; Verificação de sessão ativa; Logout automático por expiração; Tratamento de erros de rede.
+
+4.  **Integrar a Funcionalidade de Login com o Roteamento (Pendente)**
+    *   **Status:** Pendente
+    *   **Objetivo:** Configurar navegação pós-login e proteção de rotas.
+    *   **Microtarefas:**
+        *   Criar rotas protegidas que requerem autenticação
+        *   Implementar redirecionamento pós-login
+        *   Configurar navegação condicional baseada no estado de auth
+        *   Criar tela de dashboard/home pós-login (`app/(auth)/dashboard.tsx`)
+        *   Implementar logout com redirecionamento
+        *   Atualizar `app/_layout.tsx` com proteção de rotas
+        *   Criar componente `ProtectedRoute.tsx` (`src/components/ProtectedRoute.tsx`)
+        *   Atualizar `app/index.tsx` com lógica de redirecionamento
+    *   **Roteamento:** `/login` - Tela de login; `/dashboard` - Tela principal (protegida); Redirecionamento automático baseado no estado de auth.
+
+5.  **Testar a Funcionalidade de Login e Garantir a Experiência do Usuário (Pendente)**
+    *   **Status:** Pendente
+    *   **Objetivo:** Validar o funcionamento completo e a experiência do usuário.
+    *   **Microtarefas:**
+        *   Testar fluxo completo de login
+        *   Verificar responsividade em diferentes dispositivos
+        *   Testar cenários de erro (credenciais inválidas, rede offline)
+        *   Validar persistência de sessão
+        *   Testar performance e tempos de resposta
+        *   Verificar acessibilidade
+    *   **Cenários de Teste:** Login com credenciais válidas; Login com credenciais inválidas; Validação de campos em tempo real; Persistência de sessão após reload; Logout e redirecionamento; Comportamento offline.
+
+6.  **Realizar Commit e Push das Alterações (Pendente)**
+    *   **Status:** Pendente
+    *   **Objetivo:** Versionar e compartilhar as implementações.
+    *   **Microtarefas:**
+        *   Organizar commits por funcionalidade
+        *   Escrever mensagens de commit descritivas
+        *   Atualizar documentação
+        *   Realizar push para o repositório
+        *   Criar pull request se necessário
+
+
+
