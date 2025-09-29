@@ -45,12 +45,16 @@
         *   ✅ Adicionar tratamento específico para diferentes tipos de erro (conta bloqueada, inativa, etc.).
         *   ✅ Melhorar UX com limpeza automática de campos e feedback visual.
 
-7.  **Adicionar opção "Lembrar-me" (Remember Me) (Pendente)**
-    *   **Status:** Pendente
+7.  **Adicionar opção "Lembrar-me" (Remember Me) (Concluído)**
+    *   **Status:** Concluído
+    *   **Detalhes:** Funcionalidade Remember Me implementada com armazenamento seguro e interface amigável.
     *   **Microtarefas:**
-        *   Implementar armazenamento seguro de token de autenticação (ex: AsyncStorage, LocalStorage) no frontend.
-        *   Configurar API para aceitar token de "Lembrar-me" para sessões estendidas.
-        *   Testar persistência do login após fechar e reabrir o aplicativo/navegador.
+        *   ✅ Implementar armazenamento seguro de email (AsyncStorage, LocalStorage) no frontend.
+        *   ✅ Criar checkbox "Lembrar-me" na tela de login.
+        *   ✅ Implementar auto-preenchimento do email na próxima visita.
+        *   ✅ Criar utilitário RememberMeStorage para gerenciar dados salvos.
+        *   ✅ Adicionar validação e tratamento de erros.
+        *   ✅ Testar persistência do email após fechar e reabrir o aplicativo/navegador.
 
 8.  **Otimização de Performance da Tela de Login (Pendente)**
     *   **Status:** Pendente

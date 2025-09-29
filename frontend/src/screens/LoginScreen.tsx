@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import { RememberMeStorage } from '../utils/rememberMeStorage';
 
 const LoginScreen: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -10,9 +11,37 @@ const LoginScreen: React.FC = () => {
   const [emailError, setEmailError] = useState('');
   const [isRegisterMode, setIsRegisterMode] = useState(false);
   const [nome, setNome] = useState('');
+  const [rememberMe, setRememberMe] = useState(false);
 
   const navigate = useNavigate();
   const { signIn } = useAuth();
+
+  // Carregar dados salvos do Remember Me ao inicializar
+  useEffect(() => {
+    const loadSavedCredentials = async () => {
+      try {
+        const savedData = await RememberMeStorage.loadRememberMe();
+        
+        if (savedData) {
+          setEmail(savedData.email);
+          setRememberMe(savedData.rememberMe);
+        }
+      } catch (error) {
+        console.error('Erro ao carregar credenciais salvas:', error);
+      }
+    };
+
+    loadSavedCredentials();
+  }, []);
+
+  // Salvar ou remover credenciais baseado no Remember Me
+  const handleRememberMe = async (email: string, remember: boolean) => {
+    try {
+      await RememberMeStorage.saveRememberMe(email, remember);
+    } catch (error) {
+      console.error('Erro ao salvar/remover credenciais:', error);
+    }
+  };
 
   // Validação de formato de email
   const validateEmail = (email: string): boolean => {
@@ -91,6 +120,10 @@ const LoginScreen: React.FC = () => {
         // Login
         try {
           await signIn({ email: email.toLowerCase().trim(), senha });
+          
+          // Salvar ou remover credenciais baseado no Remember Me
+          await handleRememberMe(email.toLowerCase().trim(), rememberMe);
+          
           navigate('/dashboard');
         } catch (loginError: any) {
           // Limpar senha após falha no login
@@ -124,6 +157,7 @@ const LoginScreen: React.FC = () => {
     clearErrors();
     setNome('');
     setSenha(''); // Limpar senha ao trocar de modo
+    setRememberMe(false); // Limpar Remember Me ao trocar de modo
   };
 
   return (
@@ -176,6 +210,20 @@ const LoginScreen: React.FC = () => {
           />
 
           {error && <div style={styles.error}>{error}</div>}
+
+          {!isRegisterMode && (
+            <div style={styles.rememberMeContainer}>
+              <label style={styles.rememberMeLabel}>
+                <input
+                  type="checkbox"
+                  checked={rememberMe}
+                  onChange={(e) => setRememberMe(e.target.checked)}
+                  style={styles.rememberMeCheckbox}
+                />
+                <span style={styles.rememberMeText}>Lembrar-me</span>
+              </label>
+            </div>
+          )}
 
           <div style={styles.buttonContainer}>
             <button
@@ -325,6 +373,27 @@ const styles = {
     cursor: 'pointer',
     fontSize: '14px',
     textDecoration: 'underline',
+  },
+  rememberMeContainer: {
+    marginBottom: '20px',
+    display: 'flex',
+    alignItems: 'center',
+  },
+  rememberMeLabel: {
+    display: 'flex',
+    alignItems: 'center',
+    cursor: 'pointer',
+    fontSize: '14px',
+    color: '#ccc',
+  },
+  rememberMeCheckbox: {
+    marginRight: '8px',
+    width: '16px',
+    height: '16px',
+    accentColor: '#00bcd4',
+  },
+  rememberMeText: {
+    userSelect: 'none' as const,
   },
   credentialsInfo: {
     marginTop: '20px',
