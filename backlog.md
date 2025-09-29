@@ -219,8 +219,8 @@
         *   Definir tipos de autenticação (`src/types/auth.ts`)
     *   **Validações a implementar:** Email: formato válido, não vazio; Senha: mínimo 8 caracteres, pelo menos 1 número; Feedback visual imediato; Prevenção de submit com dados inválidos.
 
-3.  **Desenvolver a Lógica de Autenticação (Em Andamento)**
-    *   **Status:** Em Andamento
+3.  **Desenvolver a Lógica de Autenticação (Concluído)**
+    *   **Status:** Concluído
     *   **Objetivo:** Implementar o processo de autenticação (simulado ou real).
     *   **Microtarefas:**
         *   Criar serviço de autenticação (`src/services/authService.ts`)
@@ -232,8 +232,8 @@
         *   Criar hook `useAuth.ts` (`src/hooks/useAuth.ts`)
     *   **Funcionalidades:** Login com credenciais; Armazenamento seguro de tokens; Verificação de sessão ativa; Logout automático por expiração; Tratamento de erros de rede.
 
-4.  **Integrar a Funcionalidade de Login com o Roteamento (Pendente)**
-    *   **Status:** Pendente
+4.  **Integrar a Funcionalidade de Login com o Roteamento (Em Andamento)**
+    *   **Status:** Em Andamento
     *   **Objetivo:** Configurar navegação pós-login e proteção de rotas.
     *   **Microtarefas:**
         *   Criar rotas protegidas que requerem autenticação
