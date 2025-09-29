@@ -10,6 +10,7 @@ import {
   Animated,
 } from 'react-native';
 import { StackNavigationProp } from '@react-navigation/stack';
+import { useNavigate } from 'react-router-dom';
 import { RootStackParamList } from '../types';
 import FormInput from '../components/FormInput';
 import { validators } from '../components/FormInput/FormInput.web';
@@ -22,13 +23,16 @@ import { authService } from '../services/api';
 type ForgotPasswordScreenNavigationProp = StackNavigationProp<RootStackParamList, 'ForgotPassword'>;
 
 interface Props {
-  navigation: ForgotPasswordScreenNavigationProp;
+  navigation?: ForgotPasswordScreenNavigationProp;
 }
 
 const ForgotPasswordScreen: React.FC<Props> = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
   const [emailSent, setEmailSent] = useState(false);
+
+  // Hook para navegação web
+  const navigate = useNavigate();
 
   // Animação para entrada da tela
   const fadeAnim = new Animated.Value(0);
@@ -75,7 +79,11 @@ const ForgotPasswordScreen: React.FC<Props> = ({ navigation }) => {
   };
 
   const navigateToLogin = () => {
-    navigation.navigate('Login');
+    if (Platform.OS === 'web') {
+      navigate('/login');
+    } else {
+      navigation?.navigate('Login');
+    }
   };
 
   const isFormValid = email.trim() !== '';

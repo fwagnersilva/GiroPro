@@ -10,21 +10,22 @@ import {
   Animated,
 } from 'react-native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { RouteProp } from '@react-navigation/native';
+import { RouteProp, useRoute } from '@react-navigation/native';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { RootStackParamList } from '../types';
 import FormInput, { validators, combineValidators } from '../components/FormInput';
 import LoadingSpinner from '../components/LoadingSpinner';
 import Icon from '../components/Icon';
 import Alert from '../utils/alert';
 import { showErrorToast, showSuccessToast } from '../utils/toastUtils';
-import { authService } from '../services/authService';
+import { authService } from '../services/api';
 
 type ResetPasswordScreenNavigationProp = StackNavigationProp<RootStackParamList, 'ResetPassword'>;
 type ResetPasswordScreenRouteProp = RouteProp<RootStackParamList, 'ResetPassword'>;
 
 interface Props {
-  navigation: ResetPasswordScreenNavigationProp;
-  route: ResetPasswordScreenRouteProp;
+  navigation?: ResetPasswordScreenNavigationProp;
+  route?: ResetPasswordScreenRouteProp;
 }
 
 const ResetPasswordScreen: React.FC<Props> = ({ navigation, route }) => {
@@ -35,18 +36,35 @@ const ResetPasswordScreen: React.FC<Props> = ({ navigation, route }) => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [token, setToken] = useState('');
 
+  // Hooks para web
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+
   // Animação para entrada da tela
   const fadeAnim = new Animated.Value(0);
   const slideAnim = new Animated.Value(50);
 
   useEffect(() => {
-    // Obter token dos parâmetros da rota
-    const resetToken = route.params?.token;
+    // Obter token dos parâmetros da rota (web ou mobile)
+    let resetToken = '';
+    
+    if (Platform.OS === 'web') {
+      resetToken = searchParams.get('token') || '';
+    } else {
+      resetToken = route?.params?.token || '';
+    }
+    
     if (resetToken) {
       setToken(resetToken);
     } else {
       Alert.alert('Erro', 'Token de redefinição inválido', [
-        { text: 'OK', onPress: () => navigation.navigate('Login') }
+        { text: 'OK', onPress: () => {
+          if (Platform.OS === 'web') {
+            navigate('/login');
+          } else {
+            navigation?.navigate('Login');
+          }
+        }}
       ]);
     }
 
@@ -62,7 +80,7 @@ const ResetPasswordScreen: React.FC<Props> = ({ navigation, route }) => {
         useNativeDriver: true,
       }),
     ]).start();
-  }, [route.params]);
+    }, [route?.params, searchParams, navigate, navigation]);
 
   const validatePassword = (password: string): string | null => {
     if (!password || password.length < 8) {
@@ -113,7 +131,11 @@ const ResetPasswordScreen: React.FC<Props> = ({ navigation, route }) => {
       
       // Navegar para login após sucesso
       setTimeout(() => {
-        navigation.navigate('Login');
+        if (Platform.OS === 'web') {
+          navigate('/login');
+        } else {
+          navigation?.navigate('Login');
+        }
       }, 2000);
     } catch (error: any) {
       showErrorToast(error.message || 'Erro ao redefinir senha');
@@ -123,7 +145,11 @@ const ResetPasswordScreen: React.FC<Props> = ({ navigation, route }) => {
   };
 
   const navigateToLogin = () => {
-    navigation.navigate('Login');
+    if (Platform.OS === 'web') {
+      navigate('/login');
+    } else {
+      navigation?.navigate('Login');
+    }
   };
 
   const isFormValid = newPassword.trim() !== '' && 

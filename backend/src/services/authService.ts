@@ -57,6 +57,15 @@ export class AuthService {
       const token = this.generateToken(newUser.id, newUser.email, newUser.nome, newUser.role);
       const refreshToken = this.generateRefreshToken(newUser.id);
 
+      // Enviar email de boas-vindas (não bloquear o registro se falhar)
+      try {
+        const { EmailService } = await import('./emailService');
+        await EmailService.sendWelcomeEmail(newUser.email, newUser.nome);
+      } catch (error) {
+        console.error('Erro ao enviar email de boas-vindas:', error);
+        // Não falhar o registro por causa do email
+      }
+
       return {
         token,
         refreshToken,
@@ -230,8 +239,9 @@ const [user] = await db
       // Gerar token de redefinição de senha (JWT com expiração curta)
       const resetToken = jwt.sign({ userId: user.id }, process.env.JWT_SECRET!, { expiresIn: '1h' });
 
-      // TODO: Enviar email com o link de redefinição de senha (contendo o resetToken)
-      console.log(`Link de redefinição de senha para ${email}: http://localhost:3000/reset-password?token=${resetToken}`);
+      // Enviar email com o link de redefinição de senha
+      const { EmailService } = await import('./emailService');
+      await EmailService.sendPasswordResetEmail(email, resetToken, user.nome);
   }
 
   static async resetPassword(token: string, newPassword: string): Promise<void> {

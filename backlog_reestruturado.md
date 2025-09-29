@@ -28,7 +28,7 @@ A nova estrutura de login visa proporcionar uma experiência de usuário segura 
     *   **Status:** Concluído
     *   **Detalhes:** As telas de `LoginScreen.tsx` e `RegisterScreen.tsx` foram atualizadas para usar `useNavigate` (web) ou `navigation.navigate` (mobile) para redirecionar para `/dashboard` após login/registro bem-sucedido.
 
-5.  **Implementar funcionalidade "Esqueceu sua senha?" (Em Andamento)**
+5.  **Implementar funcionalidade "Esqueceu sua senha?" (Pendente)**
     *   **Status:** Pendente
     *   **Microtarefas:**
         *   Criar rota de API para solicitação de recuperação de senha (backend).

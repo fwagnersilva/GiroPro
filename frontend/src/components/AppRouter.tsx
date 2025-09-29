@@ -11,6 +11,7 @@ import ExpensesScreen from '../screens/ExpensesScreen';
 import FuelingsScreen from '../screens/FuelingsScreen';
 import RegisterScreen from '../screens/RegisterScreen';
 import ForgotPasswordScreen from '../screens/ForgotPasswordScreen';
+import ResetPasswordScreen from '../screens/ResetPasswordScreen';
 import Sidebar from './Sidebar'; // Importa o Sidebar existente
 import { useAuth } from '../contexts/AuthContext';
 
@@ -67,6 +68,7 @@ const AppRouter: React.FC = () => {
         <Route path="/login" element={<LoginScreen />} />
         <Route path="/register" element={<RegisterScreen />} />
         <Route path="/forgot-password" element={<ForgotPasswordScreen />} />
+        <Route path="/reset-password" element={<ResetPasswordScreen />} />
         <Route
           path="/dashboard/*"
           element={

@@ -128,6 +128,18 @@ const LoginScreen: React.FC = () => {
                 : 'Não tem conta? CADASTRAR'}
             </button>
           </div>
+
+          {!isRegisterMode && (
+            <div style={styles.forgotPasswordContainer}>
+              <button
+                type="button"
+                onClick={() => navigate('/forgot-password')}
+                style={styles.forgotPasswordButton}
+              >
+                Esqueceu sua senha?
+              </button>
+            </div>
+          )}
         </form>
 
         <div style={styles.credentialsInfo}>
@@ -216,6 +228,18 @@ const styles = {
     marginBottom: '20px',
   },
   toggleButton: {
+    background: 'none',
+    border: 'none',
+    color: '#00bcd4',
+    cursor: 'pointer',
+    fontSize: '14px',
+    textDecoration: 'underline',
+  },
+  forgotPasswordContainer: {
+    textAlign: 'center' as const,
+    marginBottom: '20px',
+  },
+  forgotPasswordButton: {
     background: 'none',
     border: 'none',
     color: '#00bcd4',
