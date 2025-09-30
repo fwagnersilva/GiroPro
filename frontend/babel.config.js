@@ -1,13 +1,33 @@
-module.exports = function(api) {
+module.exports = function (api) {
   api.cache(true);
   return {
-    presets: ['babel-preset-expo'],
-    plugins: [
-      // O plugin do Reanimated DEVE ser o último da lista de plugins.
-      'react-native-reanimated/plugin',
-      ['react-native-web', { module: 'react-native-web' }],
-      'react-native-web-refresh-control',
+    presets: [
+      ['babel-preset-expo', { jsxImportSource: 'nativewind' }],
+      'nativewind/babel',
     ],
-
+    plugins: [
+      [
+        'module-resolver',
+        {
+          root: ['./'],
+          alias: {
+            '@': './src',
+            '@env': './src/lib/env.js',
+          },
+          extensions: [
+            '.ios.ts',
+            '.android.ts',
+            '.ts',
+            '.ios.tsx',
+            '.android.tsx',
+            '.tsx',
+            '.jsx',
+            '.js',
+            '.json',
+          ],
+        },
+      ],
+      'react-native-reanimated/plugin',
+    ],
   };
 };

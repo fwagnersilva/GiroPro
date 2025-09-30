@@ -1,31 +1,40 @@
 module.exports = {
-  testEnvironment: 'jsdom',
-  setupFilesAfterEnv: ['<rootDir>/src/setupTests.ts'],
-  testPathIgnorePatterns: [
-    '<rootDir>/node_modules/',
-    '<rootDir>/.expo/',
-  ],
-  moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json'],
-  testMatch: [
-    '**/__tests__/**/*.(ts|tsx|js)',
-    '**/*.(test|spec).(ts|tsx|js)',
-  ],
+  preset: 'jest-expo',
+  setupFilesAfterEnv: ['<rootDir>/jest-setup.ts'],
+  testMatch: ['**/?(*.)+(spec|test).ts?(x)'],
   collectCoverageFrom: [
     'src/**/*.{ts,tsx}',
-    '!src/**/*.d.ts',
-    '!src/index.ts',
-    '!src/setupTests.ts',
+    '!**/coverage/**',
+    '!**/node_modules/**',
+    '!**/babel.config.js',
+    '!**/jest.setup.js',
+    '!**/docs/**',
+    '!**/cli/**',
   ],
-  coverageDirectory: 'coverage',
-  coverageReporters: ['text', 'lcov', 'html'],
-  moduleNameMapper: {
-    '\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$': 'identity-obj-proxy',
-    '^react-native$': 'react-native-web',
-  },
-  transform: {
-    '^.+\\.(js|jsx|ts|tsx)$': 'babel-jest',
-  },
+  moduleFileExtensions: ['js', 'ts', 'tsx'],
   transformIgnorePatterns: [
-    "node_modules/(?!((jest-)?react-native|@react-native(-community)?)|expo(nent)?|@expo(nent)?/.*|react-navigation|@react-navigation/.*|@unimodules/.*|unimodules|sentry-expo|native-base|react-native-svg|@react-native-community|@react-native-masked-text|react-native-reanimated|@tanstack/react-query)",
+    `node_modules/(?!(?:.pnpm/)?((jest-)?react-native|@react-native(-community)?|expo(nent)?|@expo(nent)?/.*|@expo-google-fonts/.*|react-navigation|@react-navigation/.*|@unimodules/.*|unimodules|@sentry/.*|native-base|react-native-svg))`,
   ],
+  coverageReporters: ['json-summary', ['text', { file: 'coverage.txt' }]],
+  reporters: [
+    'default',
+    ['github-actions', { silent: false }],
+    'summary',
+    [
+      'jest-junit',
+      {
+        outputDirectory: 'coverage',
+        outputName: 'jest-junit.xml',
+        ancestorSeparator: ' › ',
+        uniqueOutputName: 'false',
+        suiteNameTemplate: '{filepath}',
+        classNameTemplate: '{classname}',
+        titleTemplate: '{title}',
+      },
+    ],
+  ],
+  coverageDirectory: '<rootDir>/coverage/',
+  moduleNameMapper: {
+    '^@/(.*)$': '<rootDir>/src/$1',
+  },
 };
