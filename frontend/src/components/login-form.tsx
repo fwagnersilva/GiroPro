@@ -78,6 +78,12 @@ export const LoginForm = ({ onSubmit = () => {} }: LoginFormProps) => {
           label="Login"
           onPress={handleSubmit(onSubmit)}
         />
+        
+        <View className="mt-4 items-center">
+          <Text className="text-blue-600 text-sm">
+            Esqueceu sua senha?
+          </Text>
+        </View>
       </View>
     </KeyboardAvoidingView>
   );
