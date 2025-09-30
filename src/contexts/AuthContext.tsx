@@ -1,4 +1,5 @@
 import React, { createContext, useReducer, useEffect, useContext, ReactNode } from 'react';
+import { useToast } from '../components/ToastNotification';
 import { AuthState, AuthContextType, LoginCredentials, RegisterCredentials, User, AuthTokens } from '../types/auth';
 import { loginApi, registerApi, refreshTokenApi, logoutApi } from '../services/authService';
 import { setAuthTokens, getAuthTokens, removeAuthTokens, setUser, getUser, removeUser } from '../utils/storage';
@@ -76,6 +77,7 @@ interface AuthProviderProps {
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [state, dispatch] = useReducer(authReducer, initialState);
+  const { showToast } = useToast();
 
   // Verifica o status de autenticação inicial ao carregar o aplicativo
   useEffect(() => {
@@ -126,7 +128,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       await setAuthTokens(tokens);
       dispatch({ type: 'LOGIN_SUCCESS', payload: { user, tokens } });
     } catch (err: any) {
-      dispatch({ type: 'AUTH_ERROR', payload: err.message || 'Erro ao fazer login' });
+      const errorMessage = err.message || 'Erro ao fazer login';
+      dispatch({ type: 'AUTH_ERROR', payload: errorMessage });
+      showToast({ message: errorMessage, type: 'error' });
       throw err; // Rejeita a promessa para que o componente chamador possa lidar com o erro
     }
   };
@@ -140,7 +144,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       await setAuthTokens(tokens);
       dispatch({ type: 'LOGIN_SUCCESS', payload: { user, tokens } });
     } catch (err: any) {
-      dispatch({ type: 'AUTH_ERROR', payload: err.message || 'Erro ao registrar' });
+      const errorMessage = err.message || 'Erro ao registrar';
+      dispatch({ type: 'AUTH_ERROR', payload: errorMessage });
+      showToast({ message: errorMessage, type: 'error' });
       throw err;
     }
   };
