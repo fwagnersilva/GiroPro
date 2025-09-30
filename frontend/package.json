@@ -45,7 +45,7 @@
     "@gorhom/bottom-sheet": "^5.0.5",
     "@hookform/resolvers": "^3.9.0",
     "@shopify/flash-list": "1.7.6",
-    "@tanstack/react-query": "^5.52.1",
+    "@tanstack/react-query": "^5.90.2",
     "app-icon-badge": "^0.1.2",
     "axios": "^1.7.5",
     "expo": "~53.0.12",
