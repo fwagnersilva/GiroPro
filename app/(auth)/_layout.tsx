@@ -7,6 +7,7 @@ export default function AuthLayout() {
     <ProtectedRoute>
       <Stack>
         <Stack.Screen name="dashboard" options={{ headerShown: false }} />
+        <Stack.Screen name="vehicles" options={{ headerShown: false }} />
       </Stack>
     </ProtectedRoute>
   );
