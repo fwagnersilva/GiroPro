@@ -62,6 +62,33 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
+        name="fuelings"
+        options={{
+          title: 'Abastecimentos',
+          headerShown: false,
+          tabBarIcon: ({ color }) => <FeedIcon color={color} />,
+          tabBarButtonTestID: 'fuelings-tab',
+        }}
+      />
+      <Tabs.Screen
+        name="expenses"
+        options={{
+          title: 'Despesas',
+          headerShown: false,
+          tabBarIcon: ({ color }) => <FeedIcon color={color} />,
+          tabBarButtonTestID: 'expenses-tab',
+        }}
+      />
+      <Tabs.Screen
+        name="trips"
+        options={{
+          title: 'Jornadas',
+          headerShown: false,
+          tabBarIcon: ({ color }) => <FeedIcon color={color} />,
+          tabBarButtonTestID: 'trips-tab',
+        }}
+      />
+      <Tabs.Screen
         name="style"
         options={{
           title: 'Style',
