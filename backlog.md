@@ -157,7 +157,7 @@
 
 3.  **Integrar `ToastNotification` ao `vehicleService` (Pendente)**
     *   **Status:** Pendente
-    *   **Detalhes:** Usar `ToastNotification` para exibir erros de API no `vehicleService`.
+    **Detalhes:** Usar `ToastNotification` para exibir erros de API no `vehicleService`.
 
 ### Épico: Otimização de Performance e PWA
 
@@ -278,111 +278,165 @@
 
 #### Tarefas:
 
-1.  **Investigar e Resolver `ConfigError: Cannot resolve entry file` (Pendente)**
+1.  **Investigar e Resolver `ConfigError: Cannot resolve entry file` (Concluído)**
+    *   **Status:** Concluído
+    *   **Detalhes:** O campo `"main": "Main.tsx"` foi removido do `package.json`. Um arquivo `metro.config.js` foi criado na raiz do projeto com a configuração padrão do Expo Metro.
+
+2.  **Corrigir Erro de MIME Type no Metro Bundler (Concluído)**
+    *   **Status:** Concluído
+    *   **Detalhes:** O arquivo `metro.config.js` foi modificado para incluir as extensões de arquivo `sourceExts` e `assetExts`. A configuração do `app.json` foi atualizada para usar `"bundler": "metro"`.
+
+3.  **Verificar e Atualizar Dependências Problemáticas (Concluído)**
+    *   **Status:** Concluído
+    *   **Detalhes:** O pacote `@expo/webpack-config` foi removido. `tailwindcss` foi atualizado para `^3.4.0`. `nativewind` foi revertido para `^4.0.0` e `react` e `react-dom` foram fixados em `18.2.0` para compatibilidade.
+
+4.  **Testar a aplicação após as correções e atualizações (Concluído)**
+    *   **Status:** Concluído
+    *   **Detalhes:** A aplicação web foi iniciada com sucesso e carregou sem erros de `ConfigError` ou `MIME Type`.
+
+
+### Épico: Implementação do Sistema de Login Completo
+
+#### História de Usuário: Como usuário, quero poder realizar login de forma segura e eficiente, com uma interface consistente em todas as plataformas, para acessar o sistema.
+
+#### Novas Tarefas de Login (Prioridade Alta)
+
+1.  **Implementar a Integração com a API de Autenticação Real (Pendente)**
     *   **Status:** Pendente
-    *   **Detalhes:** O Metro Bundler está reportando `ConfigError: Cannot resolve entry file: The `main` field defined in your `package.json` points to an unresolvable or non-existent path.`, mesmo após a remoção do campo `main` e a criação de `Main.tsx`.
+    *   **Detalhes:** Substituir a lógica de autenticação simulada por chamadas reais à API de backend para login e registro.
     *   **Microtarefas:**
-        *   Verificar se o `package.json` está sendo lido corretamente após as alterações.
-        *   Investigar se há algum cache persistente do Expo ou Metro que precisa ser limpo de forma mais agressiva.
-        *   Garantir que o `Main.tsx` recém-criado está sendo reconhecido como ponto de entrada.
-        *   Consultar a documentação mais recente do Expo Router e Metro Bundler para web sobre a configuração do ponto de entrada.
+        *   Configurar variáveis de ambiente para a URL da API.
+        *   Atualizar `authService.ts` para fazer requisições HTTP (e.g., com `axios` ou `fetch`).
+        *   Tratar respostas da API (sucesso, erro, códigos de status).
+        *   Implementar lógica de refresh token, se aplicável.
 
-2.  **Corrigir Erro de MIME Type no Metro Bundler (Pendente)**
+2.  **Gerenciar Sessão e Armazenamento de Tokens (Pendente)**
     *   **Status:** Pendente
-    *   **Detalhes:** O `AppEntry.bundle` está sendo servido com `application/json` em vez de `application/javascript`, impedindo a execução do script no navegador.
+    *   **Detalhes:** Implementar o armazenamento seguro de tokens de autenticação (JWT, etc.) e gerenciar o ciclo de vida da sessão do usuário.
     *   **Microtarefas:**
-        *   Investigar a configuração do Metro Bundler para garantir que ele sirva arquivos JavaScript com o MIME type correto.
-        *   Verificar se há alguma configuração específica no `metro.config.js` ou `app.json` que possa estar causando isso.
+        *   Utilizar `AsyncStorage` para React Native e `localStorage` para Web para armazenar tokens.
+        *   Criptografar tokens sensíveis, se necessário.
+        *   Implementar verificação de expiração de token e renovação automática.
+        *   Criar um mecanismo para limpar a sessão do usuário no logout.
 
-3.  **Verificar e Atualizar Dependências Problemáticas (Pendente)**
+3.  **Melhorias de UI/UX na Tela de Login (Pendente)**
     *   **Status:** Pendente
-    *   **Detalhes:** Durante o `expo upgrade`, alguns pacotes não foram atualizados automaticamente. É necessário verificar a compatibilidade e atualizar manualmente se necessário.
+    *   **Detalhes:** Refinar a interface e a experiência do usuário na tela de login, incluindo animações, feedback visual e acessibilidade.
     *   **Microtarefas:**
-        *   Revisar a lista de pacotes não atualizados (`@expo/webpack-config`, `nativewind`, etc.).
-        *   Consultar a documentação de cada pacote para verificar a compatibilidade com o Expo SDK 54 e React Native 0.81.
-        *   Atualizar os pacotes para versões compatíveis, se houver.
-        *   Testar a aplicação após cada atualização para identificar regressões.
+        *   Adicionar animações sutis para transições de estado (loading, erro).
+        *   Melhorar o feedback visual para validação de campos em tempo real.
+        *   Garantir que a tela seja totalmente acessível (leitura de tela, navegação por teclado).
+        *   Implementar um indicador de progresso global durante chamadas de API.
+
+4.  **Implementar Fluxo de Registro de Usuário (Pendente)**
+    *   **Status:** Pendente
+    *   **Detalhes:** Criar a tela e a lógica para o registro de novos usuários, integrando com a API de backend.
+    *   **Microtarefas:**
+        *   Criar componente `RegisterScreen.tsx`.
+        *   Implementar formulário de registro com validações (nome, email, senha, confirmação de senha).
+        *   Integrar com a API de registro de usuário.
+        *   Tratar feedback de sucesso e erro do registro.
+
+5.  **Configurar Testes E2E para o Fluxo de Login (Pendente)**
+    *   **Status:** Pendente
+    *   **Detalhes:** Configurar e escrever testes end-to-end para o fluxo completo de login e registro, garantindo a funcionalidade em todas as plataformas.
+    *   **Microtarefas:**
+        *   Escolher uma ferramenta de testes E2E (e.g., Detox para mobile, Cypress/Playwright para web).
+        *   Escrever cenários de teste para login bem-sucedido, login falho, recuperação de senha e registro.
+        *   Integrar os testes no pipeline de CI/CD.
 
 
 
+### Épico: Correção e Implementação do Menu Lateral Multiplataforma
 
-### Épico: Resolução de Problemas de Inicialização da Aplicação Web
+#### História de Usuário: Como usuário, quero ver e interagir com o menu lateral de navegação em todas as plataformas (Web, Android, iOS) para acessar as funcionalidades do sistema.
 
-#### História de Usuário: Como desenvolvedor, quero que a aplicação web inicie corretamente para poder testar e desenvolver funcionalidades, superando os desafios de configuração e compatibilidade.
+#### Tarefas do Sidebar (Prioridade Alta)
+
+1.  **Criar o componente Sidebar.tsx (Pendente)**
+    *   **Status:** Pendente
+    *   **Detalhes:** Criar um componente de menu lateral (sidebar) para navegação, fornecendo uma navegação intuitiva e consistente entre as telas.
+
+2.  **Integrar o Sidebar no AppRouter.tsx e ajustar o layout (Pendente)**
+    *   **Status:** Pendente
+    *   **Detalhes:** Integrar o componente Sidebar no `AppRouter.tsx` e ajustar o layout para acomodá-lo, habilitando a navegação lateral em todas as telas protegidas.
+
+3.  **Implementar solução para o Sidebar (Web) (Pendente)**
+    *   **Status:** Pendente
+    *   **Microtarefas:**
+        *   Reavaliar a abordagem multiplataforma para o Sidebar (componente web específico vs. React Native Web).
+        *   Ajustar o layout do `DashboardLayout` para acomodar o sidebar fixo e o conteúdo principal (Flexbox/Grid CSS, `marginLeft`/`paddingLeft`).
+        *   Testar a navegação entre todas as telas do menu após a implementação.
+        *   Garantir que o design do sidebar esteja conforme o exemplo fornecido.
+
+## Outras Tarefas Pendentes (Prioridade Média/Baixa)
+
+### Épico: Gerenciamento de Veículos
+
+#### História de Usuário: Como usuário, quero poder visualizar, adicionar, editar e remover veículos para gerenciar minha frota.
 
 #### Tarefas:
 
-1.  **Diagnosticar e Resolver `ConfigError: Cannot resolve entry file` (Pendente)**
+1.  **Criar componente `VehicleList` (Pendente)**
     *   **Status:** Pendente
-    *   **Detalhes:** O Metro Bundler continua reportando `ConfigError: Cannot resolve entry file: The `main` field defined in your `package.json` points to an unresolvable or non-existent path.`, mesmo após a remoção do campo `main` do `package.json` e a criação de um `Main.tsx` de fallback.
-    *   **Microtarefas:**
-        *   Verificar a ordem de leitura dos arquivos de configuração pelo Expo/Metro.
-        *   Explorar opções de configuração do `metro.config.js` para forçar o ponto de entrada.
-        *   Considerar a possibilidade de um `package.json` em cache ou um problema de resolução de módulos.
-        *   Pesquisar por soluções específicas para Expo SDK 54 e Expo Router com Metro Bundler para este erro.
+    *   **Detalhes:** Criar um novo componente `src/components/VehicleList.tsx` para exibir a lista de veículos.
 
-2.  **Corrigir Erro de MIME Type (`application/json`) para `AppEntry.bundle` (Pendente)**
+2.  **Adicionar rota para `VehicleList` (Pendente)**
     *   **Status:** Pendente
-    *   **Detalhes:** O `AppEntry.bundle` está sendo servido com `application/json` em vez de `application/javascript`, impedindo a execução do script no navegador.
-    *   **Microtarefas:**
-        *   Investigar a configuração do Metro Bundler para garantir o `Content-Type` correto para arquivos JavaScript.
-        *   Verificar se há alguma configuração no `app.json` ou `metro.config.js` que afete o tipo MIME dos bundles.
-        *   Procurar por problemas conhecidos de MIME type com Expo SDK 54 e Metro Bundler para web.
+    *   **Detalhes:** Adicionar uma rota `/dashboard/vehicles` no `AppRouter.tsx` que renderize o `VehicleList`.
 
-3.  **Verificar e Atualizar Dependências Problemáticas Pós-Upgrade (Pendente)**
+3.  **Criar serviço de API para Veículos (Pendente)**
     *   **Status:** Pendente
-    *   **Detalhes:** Alguns pacotes não foram atualizados automaticamente durante o `expo upgrade` para o SDK 54, e podem estar causando incompatibilidades.
-    *   **Microtarefas:**
-        *   Revisar a lista completa de dependências e `devDependencies` no `package.json`.
-        *   Consultar a documentação de cada dependência para verificar a compatibilidade com Expo SDK 54 e React Native 0.81.
-        *   Atualizar manualmente as dependências para versões compatíveis, se aplicável.
-        *   Realizar testes de regressão após cada atualização de dependência.
+    *   **Detalhes:** Criar um arquivo `src/services/vehicleService.ts` com funções para chamar a API de veículos do backend (ex: `getVehicles()`).
 
-4.  **Garantir a Persistência das Alterações no Repositório (Concluído)**
-    *   **Status:** Concluído
-    *   **Detalhes:** Realizar `git add`, `git commit` e `git push` para salvar todas as alterações no `backlog.md` e outros arquivos modificados no repositório remoto.
-    *   **Microtarefas:**
-        *   `git add backlog.md`
-        *   `git commit -m "Adicionado épico de resolução de problemas de inicialização da aplicação web ao backlog."`
-        *   `git push`
+4.  **Integrar `vehicleService` ao `VehicleList` (Pendente)**
+    *   **Status:** Pendente
+    *   **Detalhes:** No componente `VehicleList`, usar `useEffect` para chamar `vehicleService.getVehicles()` e exibir os dados.
 
+5.  **Adicionar tratamento de erro visual para `VehicleList` (Pendente)**
+    *   **Status:** Pendente
+    *   **Detalhes:** Exibir uma mensagem de erro amigável se a API de veículos falhar.
 
+6.  **Adicionar estado de carregamento para `VehicleList` (Pendente)**
+    *   **Status:** Pendente
+    *   **Detalhes:** Exibir um `LoadingSpinner` enquanto os veículos estão sendo carregados.
 
+### Épico: Notificações e Feedback ao Usuário
 
-### Épico: Resolução de Problemas de Renderização da Aplicação Web
-
-#### História de Usuário: Como desenvolvedor, quero que a aplicação web renderize corretamente o conteúdo, incluindo estilos e componentes, para que a interface de usuário seja visível e interativa.
+#### História de Usuário: Como usuário, quero receber feedback visual claro sobre as ações que realizo e os erros que ocorrem no sistema.
 
 #### Tarefas:
 
-1.  **Investigar e Resolver Problema de Página em Branco (Pendente)**
+1.  **Criar componente `ToastNotification` (Pendente)**
     *   **Status:** Pendente
-    *   **Detalhes:** A aplicação web inicia sem erros no console, mas a página permanece em branco, indicando que o conteúdo não está sendo renderizado.
-    *   **Microtarefas:**
-        *   Verificar a árvore de componentes renderizada no navegador (usando ferramentas de desenvolvedor).
-        *   Confirmar se o `app/_layout.tsx` e `app/index.tsx` estão sendo executados e retornando componentes válidos.
-        *   Analisar possíveis conflitos de renderização ou erros silenciosos que impedem a exibição do conteúdo.
+    *   **Detalhes:** Desenvolver um componente reutilizável para exibir mensagens de toast (sucesso, erro, informação).
 
-2.  **Configurar NativeWind para Web (Pendente)**
+2.  **Integrar `ToastNotification` ao `AuthContext` (Pendente)**
     *   **Status:** Pendente
-    *   **Detalhes:** O `NativeWind` pode não estar aplicando os estilos corretamente na versão web, especialmente com a linha `NativeWindStyleSheet.setOutput({ default: 'native' });`.
-    *   **Microtarefas:**
-        *   Revisar a documentação do `NativeWind` para configuração específica de web em projetos Expo Router com Metro Bundler.
-        *   Verificar e ajustar o `tailwind.config.js` e `babel.config.js` para garantir a compatibilidade com a web.
-        *   Testar a aplicação de estilos básicos do Tailwind CSS em componentes simples.
+    *   **Detalhes:** Usar `ToastNotification` para exibir mensagens de erro do `signIn` e `handleRegister`.
 
-3.  **Revisar Configuração do Metro Bundler para Web (Pendente)**
+3.  **Integrar `ToastNotification` ao `vehicleService` (Pendente)**
     *   **Status:** Pendente
-    *   **Detalhes:** Apesar da correção do erro de `entry file` e do MIME type, é fundamental garantir que o Metro Bundler esteja configurado de forma otimizada para a web.
-    *   **Microtarefas:**
-        *   Confirmar que o `metro.config.js` está configurado para lidar com assets e módulos de forma adequada para a web.
-        *   Verificar se há alguma configuração adicional necessária para o Metro Bundler servir corretamente todos os arquivos da aplicação web.
+    **Detalhes:** Usar `ToastNotification` para exibir erros de API no `vehicleService`.
 
-4.  **Realizar Commit e Push das Alterações (Concluído)**
-    *   **Status:** Concluído
-    *   **Objetivo:** Versionar e compartilhar as implementações.
-    *   **Microtarefas:**
-        *   `git add backlog.md`
-        *   `git commit -m "Adicionado épico de resolução de problemas de renderização da aplicação web ao backlog."`
-        *   `git push`
+### Épico: Otimização de Performance e PWA
 
+#### História de Usuário: Como usuário, quero que o aplicativo seja rápido, responsivo e funcione offline para uma melhor experiência.
+
+#### Tarefas:
+
+1.  **Criar componente `ImageOptimizer` (Pendente)**
+    *   **Status:** Pendente
+    *   **Detalhes:** Desenvolver um componente que implemente lazy loading para imagens e, se possível, converta para WebP.
+
+2.  **Integrar `ImageOptimizer` aos componentes existentes (Pendente)**
+    *   **Status:** Pendente
+    *   **Detalhes:** Substituir tags `<img>` por `ImageOptimizer` onde aplicável.
+
+3.  **Criar `manifest.json` (Pendente)**
+    *   **Status:** Pendente
+    *   **Detalhes:** Criar o arquivo `manifest.json` na raiz do diretório `public` do frontend com metadados básicos do PWA.
+
+4.  **Configurar `Service Worker` básico (Pendente)**
+    *   **Status:** Pendente
+    *   **Detalhes:** Criar um arquivo `src/service-worker.js` e registrá-lo em `main.tsx` para cachear assets estáticos.
