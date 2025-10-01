@@ -4,6 +4,7 @@ import type { SubmitHandler } from 'react-hook-form';
 import { useForm } from 'react-hook-form';
 import { KeyboardAvoidingView } from 'react-native-keyboard-controller';
 import * as z from 'zod';
+import { useNavigation } from '@react-navigation/native';
 
 import { Button, ControlledInput, Text, View } from '@/components/ui';
 
@@ -28,6 +29,7 @@ export type LoginFormProps = {
 };
 
 export const LoginForm = ({ onSubmit = () => {} }: LoginFormProps) => {
+  const navigation = useNavigation();
   const { handleSubmit, control } = useForm<FormType>({
     resolver: zodResolver(schema),
   });
@@ -80,7 +82,10 @@ export const LoginForm = ({ onSubmit = () => {} }: LoginFormProps) => {
         />
         
         <View className="mt-4 items-center">
-          <Text className="text-blue-600 text-sm">
+                    <Text
+            className="text-blue-600 text-sm"
+            onPress={() => navigation.navigate("ForgotPassword")}
+          >
             Esqueceu sua senha?
           </Text>
         </View>
