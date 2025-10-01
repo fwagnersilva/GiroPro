@@ -9,7 +9,7 @@ As seguintes métricas são apresentadas no dashboard de visão geral, fornecend
 *   **Faturamento Bruto (FB):** Representa a soma dos ganhos brutos de todas as jornadas finalizadas dentro do período de análise.
     `FB = SUM(jornadas.ganhoBruto) para jornadas.dataFim dentro do período.`
 
-*   **Total de Despesas (TD):** Corresponde à soma dos valores totais dos abastecimentos e dos valores das despesas diversas registradas no período.
+*   **Total de Despesas (TD):** Corresponde à soma dos valores totais dos abastecimentos (`abastecimentos.valorTotal` - custo total do abastecimento, incluindo o valor do combustível) e dos valores das despesas diversas (`despesas.valorDespesa`) registradas no período.
     `TD = SUM(abastecimentos.valorTotal) + SUM(despesas.valorDespesa) para abastecimentos.dataAbastecimento e despesas.dataDespesa dentro do período.`
 
 *   **Lucro Líquido (LL):** É o resultado da subtração do Total de Despesas do Faturamento Bruto, indicando o lucro real obtido após cobrir os custos.
@@ -21,11 +21,17 @@ As seguintes métricas são apresentadas no dashboard de visão geral, fornecend
 *   **Jornadas (Contagem):** Número total de jornadas concluídas no período.
     `Jornadas = COUNT(jornadas.id) para jornadas.dataFim dentro do período.`
 
-*   **Custo por KM Rodado (CKM):** Calcula o custo médio por quilômetro percorrido, obtido dividindo o Total de Despesas pelo KM Total Rodado. É uma métrica chave para avaliar a eficiência dos gastos.
-    `CKM = TD / KMT (se KMT > 0)`
+*   **Custo Abrangente por KM Rodado (CKM_Abrangente):** Calcula o custo médio por quilômetro percorrido, considerando todas as despesas (abastecimentos e outras despesas). É uma métrica chave para avaliar a eficiência dos gastos totais.
+    `CKM_Abrangente = TD / KMT (se KMT > 0)`
 
-*   **Ganho Médio por Jornada (GMJ):** Representa o ganho bruto médio por cada jornada finalizada no período.
-    `GMJ = FB / COUNT(jornadas.id) para jornadas.dataFim dentro do período (se COUNT(jornadas.id) > 0)`
+*   **Custo de Combustível por KM Rodado (CKM_Combustivel):** Calcula o custo médio por quilômetro percorrido, considerando apenas os gastos com combustível.
+    `CKM_Combustivel = SUM(abastecimentos.valorTotal) / KMT (se KMT > 0)`
+
+*   **Ganho Bruto Médio por Jornada (GBMJ):** Representa o ganho bruto médio por cada jornada finalizada no período.
+    `GBMJ = FB / COUNT(jornadas.id) para jornadas.dataFim dentro do período (se COUNT(jornadas.id) > 0)`
+
+*   **Lucro Líquido Médio por Jornada (LLMJ):** Representa o lucro líquido médio por cada jornada finalizada no período.
+    `LLMJ = LL / COUNT(jornadas.id) para jornadas.dataFim dentro do período (se COUNT(jornadas.id) > 0)`
 
 *   **Faturamento por Plataforma:** O faturamento por plataforma é registrado manualmente pelo motorista ao finalizar cada jornada. Os valores são somados para apresentar o total por plataforma no período selecionado. Este detalhe é armazenado na tabela `jornadasFaturamentoPorPlataforma` e agregado para exibição no dashboard.
 
@@ -46,12 +52,17 @@ Este relatório oferece uma análise mais granular do desempenho financeiro de c
 *   **Ganho Bruto da Jornada (GB_Jornada):** O valor total recebido por uma jornada antes da dedução de custos. Este valor é a soma dos faturamentos registrados para cada plataforma na tabela `jornadasFaturamentoPorPlataforma`.
     `GB_Jornada = SUM(jornadasFaturamentoPorPlataforma.valor) para a jornada específica.`
 
-*   **Custo Estimado de Combustível por Jornada (CEC_Jornada):** Uma estimativa do custo de combustível para uma jornada, baseada na quilometragem percorrida, no consumo médio do veículo e no preço médio do litro de combustível.
-    `CEC_Jornada = (KMT_Jornada / veiculos.mediaConsumo) * abastecimentos.valorLitroMedioPeriodo`
-    *   `veiculos.mediaConsumo` é uma média pré-calculada ou estimada do consumo do veículo.
-    *   `abastecimentos.valorLitroMedioPeriodo` é o preço médio do litro de combustível pago pelo usuário no período da jornada (em centavos).
+*   **Custo Estimado de Combustível por Jornada (CEC_Jornada):** Uma estimativa do custo de combustível para uma jornada, que pode ser calculada de duas formas:
+    1.  **Com Valor do Litro Informado na Jornada:** Se o motorista informar o `valorLitroCombustivelJornada` ao finalizar a jornada:
+        `CEC_Jornada = (KMT_Jornada / veiculos.mediaConsumoCadastrada) * jornadas.valorLitroCombustivelJornada`
+        *   `veiculos.mediaConsumoCadastrada`: Média de consumo (KM/L) cadastrada pelo usuário para o veículo.
+        *   `jornadas.valorLitroCombustivelJornada`: Valor do litro de combustível informado pelo motorista ao finalizar a jornada.
+    2.  **Com Média Real de Abastecimentos:** Se o `valorLitroCombustivelJornada` não for informado, o sistema utilizará a média real de consumo e preço do litro calculada a partir dos abastecimentos registrados para o veículo.
+        `CEC_Jornada = (KMT_Jornada / veiculos.mediaConsumoReal) * veiculos.precoLitroMedioReal`
+        *   `veiculos.mediaConsumoReal`: Média de consumo (KM/L) calculada dinamicamente a partir dos abastecimentos do veículo.
+        *   `veiculos.precoLitroMedioReal`: Preço médio do litro de combustível calculado dinamicamente a partir dos abastecimentos do veículo.
 
-*   **Lucro Líquido Estimado por Jornada (LLE_Jornada):** O lucro estimado de uma jornada após a dedução do custo estimado de combustível.
+*   **Lucro Líquido Estimado por Jornada (LLE_Jornada):** O lucro estimado de uma jornada após a dedução do custo estimado de combustível. As outras despesas não são consideradas neste cálculo para simplificação inicial.
     `LLE_Jornada = GB_Jornada - CEC_Jornada`
 
 ## 3. Relatório de Análise de Despesas
@@ -74,10 +85,10 @@ Focado especificamente nos gastos e eficiência relacionados ao combustível, qu
 *   **Total Gasto com Combustível (TGC):** Soma dos valores totais de todos os abastecimentos registrados no período.
     `TGC = SUM(abastecimentos.valorTotal) para abastecimentos.dataAbastecimento dentro do período.`
 
-*   **Média de Consumo (KM/Litro) por Veículo (MCV):** Calcula a eficiência do consumo de combustível de um veículo, dividindo a quilometragem total rodada pelo total de litros abastecidos.
+*   **Média de Consumo (KM/Litro) por Veículo (MCV):** Calcula a eficiência do consumo de combustível de um veículo, dividindo a quilometragem total rodada pelo total de litros abastecidos. Esta é a `veiculos.mediaConsumoReal`.
     `MCV(veiculo_id) = SUM(jornadas.kmTotal WHERE jornadas.idVeiculo = veiculo_id) / SUM(abastecimentos.quantidadeLitros WHERE abastecimentos.idVeiculo = veiculo_id) para o período.`
 
-*   **Preço Médio do Litro Pago (PMLP):** O preço médio que o motorista pagou por litro de combustível no período.
+*   **Preço Médio do Litro Pago (PMLP):** O preço médio que o motorista pagou por litro de combustível no período. Esta é a `veiculos.precoLitroMedioReal`.
     `PMLP = SUM(abastecimentos.valorTotal) / SUM(abastecimentos.quantidadeLitros) para o período.`
 
 *   **Total de Litros Abastecidos (TLA):** A soma da quantidade de litros de todos os abastecimentos no período.
@@ -87,11 +98,16 @@ Focado especificamente nos gastos e eficiência relacionados ao combustível, qu
 
 Os relatórios e dashboards são construídos a partir dos dados persistidos no banco de dados do GiroPro, utilizando as seguintes tabelas como fontes primárias:
 
-*   **`jornadas`**: Contém informações sobre as viagens realizadas, incluindo ganhos brutos, quilometragem rodada e tempo de jornada.
+*   **`jornadas`**: Contém informações sobre as viagens realizadas, incluindo ganhos brutos, quilometragem rodada, tempo de jornada e o `valorLitroCombustivelJornada` (se informado).
 *   **`jornadasFaturamentoPorPlataforma`**: Detalha o faturamento de cada jornada por plataforma.
 *   **`abastecimentos`**: Registra todos os detalhes dos abastecimentos, como gastos com combustível, quantidade de litros e quilometragem atual do veículo.
 *   **`despesas`**: Armazena informações sobre outras despesas do veículo e suas respectivas categorias.
-*   **`veiculos`**: Fornece dados cadastrais dos veículos, essenciais para cálculos como o consumo médio.
+*   **`veiculos`**: Fornece dados cadastrais dos veículos, incluindo `mediaConsumoCadastrada`, `mediaConsumoReal` e `precoLitroMedioReal`.
 *   **`plataformas`**: Contém as plataformas configuradas pelo usuário, sejam elas predefinidas ou customizadas.
 *   **`usuarios`**: Utilizada para associar todos os dados ao motorista correto e garantir a segregação das informações por usuário.
+
+---
+
+**Última atualização**: 01/10/2025
+**Versão**: 1.5
 
