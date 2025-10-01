@@ -22,22 +22,80 @@ backend/
 ### **Frontend (`/frontend`):**
 ```
 frontend/
+├── app/                # Estrutura de roteamento Expo Router
+│   ├── (auth)/         # Rotas protegidas (Dashboard, Jornadas, etc.)
+│   │   ├── _layout.tsx # Layout para rotas autenticadas (inclui Drawer Navigation)
+│   │   ├── dashboard.tsx # Tela principal após login
+│   │   ├── jornadas.tsx # Tela de Jornadas
+│   │   ├── abastecimentos.tsx # Tela de Abastecimentos
+│   │   ├── despesas.tsx # Tela de Despesas
+│   │   ├── vehicles.tsx # Tela de Veículos
+│   │   └── settings/   # Grupo de rotas para configurações
+│   │       ├── _layout.tsx # Layout para rotas de configurações
+│   │       ├── index.tsx # Redirecionamento para Perfil
+│   │       ├── perfil.tsx # Tela de Perfil
+│   │       ├── style.tsx # Tela de Estilo
+│   │       └── cadastro-plataformas.tsx # Tela de Cadastro de Plataformas
+│   ├── index.tsx       # Redirecionamento inicial para login
+│   └── login.tsx       # Tela de Login
 ├── src/
 │   ├── components/     # Componentes reutilizáveis (inclui ui/)
+│   │   ├── ToastNotification/ # Componente de notificação
 │   │   └── ui/         # Componentes de UI (Button, Card, Input, etc.)
 │   ├── contexts/       # Contextos (AuthContext.tsx)
+│   ├── hooks/          # Hooks personalizados (useAuth, useVehicleService)
+│   ├── services/       # Chamadas de API (authService.ts, vehicleService.ts)
 │   ├── styles/         # Sistema de Design (designSystem.ts)
 │   ├── utils/          # Utilitários (apiErrorHandler.ts)
-│   └── App.tsx         # Componente raiz da aplicação web
-├── web-app-improved.tsx # Ponto de entrada da aplicação web
-├── index.html          # Arquivo HTML principal
-├── public/             # Arquivos públicos (manifest.json)
+│   └── App.tsx         # Componente raiz da aplicação web (se aplicável)
+├── assets/             # Ativos da aplicação (ícones, imagens)
+├── public/             # Arquivos públicos (favicon, manifest.json)
 ├── .env.development    # Variáveis de ambiente de desenvolvimento
 ├── .env.production     # Variáveis de ambiente de produção
-└── package.json        # Dependências
+├── app.config.ts       # Configuração do Expo
+├── babel.config.js     # Configuração do Babel
+├── package.json        # Dependências e scripts
+└── pnpm-lock.yaml      # Lockfile do pnpm
 ```
 
-**Status Atual:** Aplicação web funcional com roteamento, telas de Veículos, Despesas e Abastecimentos, tratamento de erros e sistema de design. PWA configurado.
+**Status Atual:** Aplicação web funcional com roteamento `expo-router`, telas de Dashboard, Jornadas, Abastecimentos, Despesas, Veículos e um menu de Configurações aninhado (Perfil, Style, Cadastro de Plataformas). Implementado sistema de `ToastNotification` e integração com `AuthContext` e `vehicleService`. PWA configurado.
+
+---
+
+## 🚀 **Instalação e Inicialização do Sistema**
+
+### **Pré-requisitos:**
+*   Node.js (versão 18 ou superior)
+*   pnpm (gerenciador de pacotes)
+*   Git
+
+### **1. Clonar o Repositório:**
+```bash
+git clone https://github.com/fwagnersilva/GiroPro.git
+cd GiroPro
+```
+
+### **2. Configurar o Backend:**
+```bash
+cd backend
+pnpm install
+cp .env.example .env # Se existir um .env.example
+# Edite o arquivo .env com suas configurações (ex: JWT_SECRET, DB_PATH, PORT)
+pnpm start
+```
+O backend será iniciado na porta configurada (padrão: 3000).
+
+### **3. Configurar e Iniciar o Frontend:**
+```bash
+cd ../frontend
+pnpm install
+cp .env.development.example .env.development # Se existir um .env.development.example
+# Edite o arquivo .env.development com suas configurações (ex: API_URL, SECRET_KEY)
+pnpm exec cross-env APP_ENV=development expo start --web
+```
+O frontend será iniciado e acessível via navegador (geralmente em `http://localhost:8081`).
+
+**Nota:** O projeto frontend utiliza `expo-router` e `React Native Web`, o que permite o desenvolvimento multiplataforma. As variáveis de ambiente são gerenciadas via `cross-env` e arquivos `.env.<APP_ENV>`.
 
 ---
 
@@ -93,44 +151,56 @@ Para a documentação completa das APIs, consulte:
 
 ## 🎯 **Como Adicionar Novas Funcionalidades**
 
-### **1. Nova Tela (Frontend React/TypeScript):**
+### **1. Nova Tela (Frontend Expo Router / React Native Web):**
 ```typescript
-// 1. Criar arquivo em frontend/src/components/ ou frontend/src/screens/
-// Ex: frontend/src/components/NovaTela.tsx
+// 1. Criar arquivo de tela em frontend/app/(auth)/ ou em um subdiretório apropriado
+// Ex: frontend/app/(auth)/minha-nova-tela.tsx
 import React from 'react';
-import { Card, Button, typography, spacing, colors } from './ui'; // Importar componentes do Design System
+import { View, Text, StyleSheet } from 'react-native';
+import { Link } from 'expo-router';
 
-interface NovaTelaProps {
-  onBack?: () => void;
-}
-
-const NovaTela: React.FC<NovaTelaProps> = ({ onBack }) => {
+const MinhaNovaTelaScreen: React.FC = () => {
   return (
-    <div style={{
-      minHeight: '100vh',
-      backgroundColor: colors.neutral.background,
-      padding: spacing.xl
-    }}>
-      <Card style={{ maxWidth: '1200px', margin: '0 auto' }}>
-        <h1 style={{ fontSize: typography.fontSize['3xl'], color: colors.primary.main }}>Nova Tela</h1>
-        <p style={{ color: colors.neutral.text.primary }}>Conteúdo da nova tela aqui.</p>
-        {onBack && <Button variant="secondary" onClick={onBack}>Voltar</Button>}
-      </Card>
-    </div>
+    <View style={styles.container}>
+      <Text style={styles.title}>Minha Nova Tela</Text>
+      <Text style={styles.text}>Conteúdo da minha nova tela aqui.</Text>
+      <Link href="/dashboard" style={styles.link}>Voltar para o Dashboard</Link>
+    </View>
   );
 };
 
-export default NovaTela;
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#f0f0f0',
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 20,
+  },
+  text: {
+    fontSize: 16,
+    color: '#555',
+  },
+  link: {
+    marginTop: 20,
+    color: 'blue',
+    textDecorationLine: 'underline',
+  },
+});
 
-// 2. Adicionar rota em web-app-improved.tsx
-// Importar o componente
-// import NovaTela from './src/components/NovaTela';
+export default MinhaNovaTelaScreen;
 
-// Adicionar a rota dentro de <Routes>
-// <Route path="/nova-tela" element={<NovaTela onBack={() => navigate(-1)} />} />
+// 2. Adicionar a rota no layout apropriado (ex: frontend/app/(auth)/_layout.tsx)
+// <Drawer.Screen name="minha-nova-tela" options={{ headerShown: false, title: 'Minha Nova Tela' }} />
 
-// 3. Adicionar botão de navegação no Dashboard (opcional)
-// <Button variant="primary" onClick={() => navigate("/nova-tela")}>Nova Tela</Button>
+// 3. Adicionar um item de navegação no menu lateral (CustomDrawerContent em _layout.tsx)
+// <TouchableOpacity style={styles.drawerItem} onPress={() => navigation.navigate('minha-nova-tela')}>
+//   <Text style={styles.drawerItemText}>Minha Nova Tela</Text>
+// </TouchableOpacity>
 ```
 
 ### **2. Nova API (Backend):**
@@ -159,7 +229,7 @@ export const novaTabela = sqliteTable('nova_tabela', {
 });
 
 // 2. Executar migração
-npm run db:migrate
+pnpm run db:migrate
 ```
 
 ---
@@ -182,11 +252,11 @@ curl -X POST http://localhost:3000/api/v1/auth/login \
   -d '{"email":"teste@exemplo.com","senha":"Teste123!"}'
 ```
 
-### **Testes via Interface:**
-1. Acesse http://localhost:19006/elegant-login.html
-2. Preencha os campos de registro
-3. Clique em "Registrar"
-4. Teste o login com as credenciais criadas
+### **Testes via Interface (Frontend):**
+1.  Certifique-se de que o backend e o frontend estão rodando.
+2.  Acesse `http://localhost:8081` no seu navegador.
+3.  Na tela de login, você pode usar as credenciais de teste (ex: `test@example.com` / `password123`) ou registrar um novo usuário se a funcionalidade estiver disponível.
+4.  Navegue pelas telas usando o menu lateral para verificar as funcionalidades.
 
 ---
 
@@ -236,14 +306,14 @@ PORT=3000
 ### **Quando Resolver Dependências React Native:**
 ```bash
 # 1. Limpar cache
-npm cache clean --force
-rm -rf node_modules package-lock.json
+pnpm cache clean --force
+rm -rf node_modules pnpm-lock.yaml
 
 # 2. Reinstalar com versões compatíveis
-npm install --legacy-peer-deps
+pnpm install
 
 # 3. Testar build
-npx expo start --web
+pnpm exec expo start --web
 ```
 
 ### **Estrutura Mobile Futura:**
@@ -292,24 +362,23 @@ lsof -i :3000
 ls -la backend/.env
 
 # Reinstalar dependências
-cd backend && rm -rf node_modules && npm install
+cd backend && rm -rf node_modules && pnpm install
 ```
 
-### **Frontend com tela branca:**
+### **Frontend com tela branca ou erros de inicialização:**
 ```bash
-# Usar a versão HTML diretamente
-http://localhost:19006/elegant-login.html
-
-# Verificar console do navegador (F12)
-# Reinstalar dependências
-cd frontend && npm install --legacy-peer-deps
+# Verificar console do navegador (F12) para erros específicos.
+# Limpar cache e reinstalar dependências do frontend:
+cd frontend && pnpm cache clean --force && rm -rf node_modules pnpm-lock.yaml && pnpm install
+# Tentar iniciar novamente:
+pnpm exec cross-env APP_ENV=development expo start --web
 ```
 
 ### **Erro de CORS:**
 ```javascript
 // Adicionar no backend (já configurado)
 app.use(cors({
-  origin: ['http://localhost:19006', 'http://localhost:3000'],
+  origin: ['http://localhost:19006', 'http://localhost:8081'], // Atualizado para porta padrão do Expo Web
   credentials: true
 }));
 ```
@@ -317,8 +386,8 @@ app.use(cors({
 ---
 
 **Guia criado em:** 05 de Setembro de 2025  
-**Última atualização:** 20 de Setembro de 2025  
-**Versão:** 1.1  
+**Última atualização:** 30 de Setembro de 2025  
+**Versão:** 1.2  
 **Próxima atualização:** Após implementação de novas funcionalidades
 
 
@@ -330,5 +399,4 @@ app.use(cors({
 Para uma descrição completa e detalhada das funcionalidades do sistema, incluindo backend e frontend, consulte:
 
 - [Funcionalidades Detalhadas](docs/04_referencias/06_funcionalidades_detalhadas.md)
-
 
