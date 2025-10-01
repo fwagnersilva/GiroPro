@@ -1,81 +1,267 @@
 import React from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 import { useRouter } from 'expo-router';
+import { useAuth } from '../../src/contexts/AuthContext';
 
 const Dashboard = () => {
   const router = useRouter();
+  const { logout, user } = useAuth();
 
-  const handleLogout = () => {
-    // TODO: Implementar lógica de logout
-    console.log('Logout clicked');
-    router.push('/login');
+  const handleLogout = async () => {
+    await logout();
+    router.replace('/login' as any);
   };
 
   return (
-    <View className="flex-1 bg-gray-50">
+    <View style={styles.container}>
       {/* Header */}
-      <View className="bg-white shadow-sm px-6 py-4 flex-row justify-between items-center">
+      <View style={styles.header}>
         <View>
-          <Text className="text-2xl font-bold text-gray-900">Dashboard</Text>
-          <Text className="text-gray-600">Bem-vindo ao GiroPro</Text>
+          <Text style={styles.headerTitle}>Dashboard</Text>
+          <Text style={styles.headerSubtitle}>
+            Bem-vindo, {user?.name || user?.email || 'Usuário'}!
+          </Text>
         </View>
-        <TouchableOpacity
-          onPress={handleLogout}
-          className="bg-red-600 px-4 py-2 rounded-lg"
-        >
-          <Text className="text-white font-medium">Sair</Text>
+        <TouchableOpacity onPress={handleLogout} style={styles.logoutButton}>
+          <Text style={styles.logoutButtonText}>Sair</Text>
         </TouchableOpacity>
       </View>
 
       {/* Content */}
-      <View className="flex-1 px-6 py-8">
-        <View className="bg-white rounded-lg p-6 shadow-sm mb-6">
-          <Text className="text-lg font-semibold text-gray-900 mb-2">
-            🎉 Login realizado com sucesso!
-          </Text>
-          <Text className="text-gray-600">
+      <ScrollView style={styles.content}>
+        <View style={styles.welcomeCard}>
+          <Text style={styles.welcomeTitle}>🎉 Login realizado com sucesso!</Text>
+          <Text style={styles.welcomeText}>
             Você está agora logado no sistema GiroPro. Esta é uma tela protegida que só pode ser acessada após autenticação.
           </Text>
         </View>
 
         {/* Cards de funcionalidades */}
-        <View className="flex-row flex-wrap justify-between">
-          <View className="w-[48%] bg-blue-50 rounded-lg p-4 mb-4">
-            <View className="w-12 h-12 bg-blue-600 rounded-full items-center justify-center mb-3">
-              <Text className="text-white text-xl">🚗</Text>
+        <View style={styles.cardsContainer}>
+          <TouchableOpacity
+            style={[styles.card, styles.cardBlue]}
+            onPress={() => router.push('/vehicles' as any)}
+          >
+            <View style={[styles.cardIcon, styles.cardIconBlue]}>
+              <Text style={styles.cardIconText}>🚗</Text>
             </View>
-            <Text className="text-blue-900 font-semibold mb-1">Veículos</Text>
-            <Text className="text-blue-700 text-sm">Gerencie sua frota</Text>
-          </View>
+            <Text style={styles.cardTitle}>Jornadas</Text>
+            <Text style={styles.cardDescription}>Registre suas viagens</Text>
+          </TouchableOpacity>
 
-          <View className="w-[48%] bg-green-50 rounded-lg p-4 mb-4">
-            <View className="w-12 h-12 bg-green-600 rounded-full items-center justify-center mb-3">
-              <Text className="text-white text-xl">📊</Text>
+          <TouchableOpacity
+            style={[styles.card, styles.cardGreen]}
+            onPress={() => router.push('/abastecimentos' as any)}
+          >
+            <View style={[styles.cardIcon, styles.cardIconGreen]}>
+              <Text style={styles.cardIconText}>⛽</Text>
             </View>
-            <Text className="text-green-900 font-semibold mb-1">Relatórios</Text>
-            <Text className="text-green-700 text-sm">Visualize dados</Text>
-          </View>
+            <Text style={styles.cardTitle}>Abastecimentos</Text>
+            <Text style={styles.cardDescription}>Controle combustível</Text>
+          </TouchableOpacity>
 
-          <View className="w-[48%] bg-purple-50 rounded-lg p-4 mb-4">
-            <View className="w-12 h-12 bg-purple-600 rounded-full items-center justify-center mb-3">
-              <Text className="text-white text-xl">⚙️</Text>
+          <TouchableOpacity
+            style={[styles.card, styles.cardPurple]}
+            onPress={() => router.push('/despesas' as any)}
+          >
+            <View style={[styles.cardIcon, styles.cardIconPurple]}>
+              <Text style={styles.cardIconText}>💰</Text>
             </View>
-            <Text className="text-purple-900 font-semibold mb-1">Configurações</Text>
-            <Text className="text-purple-700 text-sm">Ajuste preferências</Text>
-          </View>
+            <Text style={styles.cardTitle}>Despesas</Text>
+            <Text style={styles.cardDescription}>Gerencie gastos</Text>
+          </TouchableOpacity>
 
-          <View className="w-[48%] bg-orange-50 rounded-lg p-4 mb-4">
-            <View className="w-12 h-12 bg-orange-600 rounded-full items-center justify-center mb-3">
-              <Text className="text-white text-xl">👤</Text>
+          <TouchableOpacity
+            style={[styles.card, styles.cardOrange]}
+            onPress={() => router.push('/vehicles' as any)}
+          >
+            <View style={[styles.cardIcon, styles.cardIconOrange]}>
+              <Text style={styles.cardIconText}>🚙</Text>
             </View>
-            <Text className="text-orange-900 font-semibold mb-1">Perfil</Text>
-            <Text className="text-orange-700 text-sm">Edite seus dados</Text>
+            <Text style={styles.cardTitle}>Veículos</Text>
+            <Text style={styles.cardDescription}>Cadastre veículos</Text>
+          </TouchableOpacity>
+        </View>
+
+        {/* Estatísticas rápidas */}
+        <View style={styles.statsContainer}>
+          <Text style={styles.statsTitle}>Resumo do Mês</Text>
+          <View style={styles.statsGrid}>
+            <View style={styles.statCard}>
+              <Text style={styles.statValue}>0</Text>
+              <Text style={styles.statLabel}>Jornadas</Text>
+            </View>
+            <View style={styles.statCard}>
+              <Text style={styles.statValue}>R$ 0,00</Text>
+              <Text style={styles.statLabel}>Despesas</Text>
+            </View>
+            <View style={styles.statCard}>
+              <Text style={styles.statValue}>0 km</Text>
+              <Text style={styles.statLabel}>Distância</Text>
+            </View>
+            <View style={styles.statCard}>
+              <Text style={styles.statValue}>0 L</Text>
+              <Text style={styles.statLabel}>Combustível</Text>
+            </View>
           </View>
         </View>
-      </View>
+      </ScrollView>
     </View>
   );
 };
 
-export default Dashboard;
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#f9fafb',
+  },
+  header: {
+    backgroundColor: '#fff',
+    paddingHorizontal: 24,
+    paddingVertical: 16,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    borderBottomWidth: 1,
+    borderBottomColor: '#e5e7eb',
+  },
+  headerTitle: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#111827',
+  },
+  headerSubtitle: {
+    fontSize: 14,
+    color: '#6b7280',
+    marginTop: 4,
+  },
+  logoutButton: {
+    backgroundColor: '#dc2626',
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 8,
+  },
+  logoutButtonText: {
+    color: '#fff',
+    fontWeight: '600',
+  },
+  content: {
+    flex: 1,
+    paddingHorizontal: 24,
+    paddingVertical: 32,
+  },
+  welcomeCard: {
+    backgroundColor: '#fff',
+    borderRadius: 12,
+    padding: 24,
+    marginBottom: 24,
+    borderWidth: 1,
+    borderColor: '#e5e7eb',
+  },
+  welcomeTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#111827',
+    marginBottom: 8,
+  },
+  welcomeText: {
+    fontSize: 14,
+    color: '#6b7280',
+    lineHeight: 20,
+  },
+  cardsContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+    marginBottom: 24,
+  },
+  card: {
+    width: '48%',
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 16,
+  },
+  cardBlue: {
+    backgroundColor: '#eff6ff',
+  },
+  cardGreen: {
+    backgroundColor: '#f0fdf4',
+  },
+  cardPurple: {
+    backgroundColor: '#faf5ff',
+  },
+  cardOrange: {
+    backgroundColor: '#fff7ed',
+  },
+  cardIcon: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 12,
+  },
+  cardIconBlue: {
+    backgroundColor: '#2563eb',
+  },
+  cardIconGreen: {
+    backgroundColor: '#16a34a',
+  },
+  cardIconPurple: {
+    backgroundColor: '#9333ea',
+  },
+  cardIconOrange: {
+    backgroundColor: '#ea580c',
+  },
+  cardIconText: {
+    fontSize: 24,
+  },
+  cardTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#111827',
+    marginBottom: 4,
+  },
+  cardDescription: {
+    fontSize: 12,
+    color: '#6b7280',
+  },
+  statsContainer: {
+    backgroundColor: '#fff',
+    borderRadius: 12,
+    padding: 24,
+    borderWidth: 1,
+    borderColor: '#e5e7eb',
+  },
+  statsTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#111827',
+    marginBottom: 16,
+  },
+  statsGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+  },
+  statCard: {
+    width: '48%',
+    backgroundColor: '#f9fafb',
+    borderRadius: 8,
+    padding: 16,
+    marginBottom: 12,
+    alignItems: 'center',
+  },
+  statValue: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#2563eb',
+    marginBottom: 4,
+  },
+  statLabel: {
+    fontSize: 12,
+    color: '#6b7280',
+  },
+});
 
+export default Dashboard;

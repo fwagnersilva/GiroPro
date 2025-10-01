@@ -20,9 +20,12 @@ const LoginForm: React.FC<LoginFormProps> = ({
   const [showPassword, setShowPassword] = React.useState(false);
 
   const handleSubmit = async () => {
+    console.log('handleSubmit called', { email, password, hasEmail: !!email, hasPassword: !!password });
     if (!email || !password) {
+      console.log('Email or password missing');
       return;
     }
+    console.log('Calling onLogin...');
     await onLogin(email, password, rememberMe);
   };
 
