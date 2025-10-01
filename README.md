@@ -66,18 +66,17 @@ Para configurar e executar o projeto GiroPro, siga os passos abaixo:
     Navegue até o diretório `backend`, instale as dependências e inicie o servidor.
     ```bash
     cd backend
-    npm install
-    npm run dev
+    pnpm install
+    pnpm start
     ```
 
 4.  **Configuração do Frontend:**
     Em um novo terminal, navegue até o diretório `frontend`, instale as dependências e inicie a aplicação.
     ```bash
     cd ../frontend
-    npm install
-    npm run dev
+    pnpm install
+    pnpm exec cross-env APP_ENV=development expo start --web
     ```
 
-Agora o backend e o frontend estarão rodando e acessíveis em `http://localhost:3000` e `http://localhost:5173` (ou portas configuradas no `.env`), respectivamente.
-
+Agora o backend e o frontend estarão rodando e acessíveis em `http://localhost:3000` e `http://localhost:8081` (ou portas configuradas no `.env`), respectivamente.
 
