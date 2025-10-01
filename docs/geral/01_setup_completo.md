@@ -11,7 +11,7 @@ O GiroPro é uma aplicação para gestão financeira de motoristas de aplicativo
 
 ### Ferramentas Necessárias
 - **Node.js**: versão 18+ (recomendado: 20.x)
-- **npm** ou **Yarn**: Gerenciadores de pacotes para Node.js.
+- **pnpm**: Gerenciador de pacotes para Node.js (utilizado no projeto)
 - **Git**: para controle de versão
 - **Docker**: Para a execução do banco de dados PostgreSQL e, opcionalmente, para conteinerizar o backend.
 - **Docker Compose**: Ferramenta para definir e executar aplicativos Docker multi-contêineres.
@@ -22,7 +22,6 @@ O GiroPro é uma aplicação para gestão financeira de motoristas de aplicativo
 - TypeScript and JavaScript Language Features
 - ESLint
 - Prettier - Code formatter
-- SQLite Viewer (se ainda usar SQLite em algum contexto)
 - React Native Tools
 
 ## Configuração do Ambiente
@@ -56,7 +55,7 @@ O backend do GiroPro é construído utilizando Node.js e TypeScript, fornecendo 
 #### 3.1. Instalação das Dependências
 ```bash
 cd backend
-npm install
+pnpm install
 ```
 
 #### 3.2. Configuração do Ambiente
@@ -103,35 +102,35 @@ As tabelas são criadas automaticamente na inicialização. Não são necessári
 **Para PostgreSQL (produção):**
 Execute as migrações do banco de dados para criar as tabelas:
 ```bash
-npm run db:migrate
+pnpm run db:migrate
 ```
 
-**ATENÇÃO - Interatividade do Script**: Durante a execução de `npm run db:migrate`, o script pode solicitar confirmação no terminal (ex: `Is historicoPrecoCombustivel table created or renamed from another table?`). **É crucial observar o terminal e responder com `+` (para criar) ou a opção apropriada para continuar a migração.** A falta de resposta pode fazer o script parecer travado.
+**ATENÇÃO - Interatividade do Script**: Durante a execução de `pnpm run db:migrate`, o script pode solicitar confirmação no terminal (ex: `Is historicoPrecoCombustivel table created or renamed from another table?`). **É crucial observar o terminal e responder com `+` (para criar) ou a opção apropriada para continuar a migração.** A falta de resposta pode fazer o script parecer travado.
 
 Comandos de migração adicionais disponíveis:
 ```bash
 # Gerar arquivos de migração baseados nas mudanças no schema
-npm run db:generate
+pnpm run db:generate
 
 # Verificar o status das migrações
-npm run db:check
+pnpm run db:check
 
 # Abrir o Drizzle Studio para visualizar/editar dados
-npm run db:studio
+pnpm run db:studio
 ```
 
 #### 3.4. Compilação e Execução
 
 Inicie o servidor backend em modo de desenvolvimento:
 ```bash
-npm run dev
+pnpm run dev
 ```
 O backend estará disponível em `http://localhost:3000` (ou na porta configurada).
 
 Para compilar e executar em modo de produção:
 ```bash
-npm run build
-npm start
+pnpm run build
+pnpm start
 ```
 
 ### 4. Configuração do Frontend
@@ -141,7 +140,7 @@ O frontend do GiroPro é um aplicativo móvel/web desenvolvido com React Native 
 #### 4.1. Instalação das Dependências
 ```bash
 cd ../frontend
-npm install
+pnpm install
 ```
 
 #### 4.2. Configuração do Ambiente
@@ -158,97 +157,19 @@ EXPO_PUBLIC_API_URL=http://localhost:3000/api/v1
 
 Para desenvolvimento web com Vite (recomendado):
 ```bash
-npm run web-vite
+pnpm run web-vite
 ```
 
 Para desenvolvimento com Expo (mobile):
 ```bash
-npm start
+pnpm start
 
 # Para Android
-npm run android
+pnpm run android
 
 # Para iOS
-npm run ios
+pnpm run ios
 ```
-
-## Estrutura do Projeto
-
-O repositório `GiroPro` possui a seguinte estrutura de diretórios relevante para a configuração do ambiente:
-
-### Backend (`/backend`)
-```
-backend/
-├── src/
-│   ├── controllers/          # Controladores das rotas
-│   ├── routes/              # Definições de rotas
-│   ├── middlewares/         # Middlewares customizados
-│   ├── schemas/             # Schemas de validação Zod
-│   ├── services/            # Lógica de negócio
-│   ├── db/                  # Configuração do banco
-│   ├── types/               # Tipos TypeScript
-│   ├── utils/               # Utilitários
-│   └── app.ts              # Aplicação principal
-├── drizzle/                 # Migrações do banco
-├── package.json
-├── tsconfig.json
-└── .env
-```
-
-### Frontend (`/frontend`)
-```
-frontend/
-├── src/
-│   ├── components/          # Componentes React Native
-│   ├── screens/            # Telas da aplicação
-│   ├── navigation/         # Configuração de navegação
-│   ├── services/           # Serviços de API
-│   ├── utils/              # Utilitários
-│   └── App.tsx            # Componente principal
-├── assets/                 # Recursos estáticos
-├── package.json
-└── app.json
-```
-
-### Outros Diretórios Relevantes
-
-- `docker-compose.yml`: Arquivo de configuração para orquestração de contêineres Docker.
-- `docs/`: Documentação adicional do projeto.
-- `scripts/`: Scripts de auxílio para configuração e execução.
-
-## Scripts Disponíveis
-
-### Backend
-| Script | Descrição |
-|--------|-----------|
-| `npm run dev` | Executar em modo desenvolvimento |
-| `npm run build` | Compilar TypeScript |
-| `npm start` | Executar versão compilada |
-| `npm test` | Executar todos os testes unitários e de integração |
-| `npm run test:watch` | Executar testes e os observar para mudanças |
-| `npm run test:coverage` | Executar testes e gerar um relatório de cobertura de código |
-| `npm run test:integration` | Executar apenas testes de integração |
-| `npm run test:e2e` | Executar apenas testes end-to-end |
-| `npm run test:ci` | Executar testes para integração contínua |
-| `npm run lint` | Executar o linter para verificar a qualidade do código |
-| `npm run format` | Formatar o código automaticamente |
-| `npm run db:generate` | Gerar migrações do banco de dados com Drizzle ORM |
-| `npm run db:migrate` | Aplicar as migrações ao banco de dados |
-| `npm run db:check` | Verificar a consistência do esquema do banco de dados |
-| `npm run db:studio` | Iniciar a interface de estúdio do Drizzle ORM |
-
-### Frontend
-| Script | Descrição |
-|--------|-----------|
-| `npm start` | Iniciar o servidor de desenvolvimento do Expo |
-| `npm run android` | Constrói e executa o aplicativo no emulador/dispositivo Android |
-| `npm run ios` | Constrói e executa o aplicativo no simulador/dispositivo iOS |
-| `npm run web` | Iniciar o aplicativo no navegador web (legado) |
-| `npm run web-vite` | Iniciar o aplicativo no navegador web com Vite (recomendado) |
-| `npm test` | Executar todos os testes unitários e de integração |
-| `npm run test:watch` | Executar testes e os observar para mudanças |
-| `npm run test:coverage` | Executar testes e gerar um relatório de cobertura de código |
-| `npm run test:ci` | Executar testes para integração contínua |
 
 ## Endpoints da API
 
@@ -259,9 +180,10 @@ frontend/
 | `/api/v1/auth` | * | Autenticação |
 | `/api/v1/users` | * | Usuários |
 | `/api/v1/vehicles` | * | Veículos |
-| `/api/v1/journeys` | * | Viagens |
+| `/api/v1/journeys` | * | Jornadas |
 | `/api/v1/fuelings` | * | Abastecimentos |
 | `/api/v1/expenses` | * | Despesas |
+| `/api/v1/platforms` | * | Plataformas (NOVO) |
 
 ### Testando a API
 ```bash
@@ -276,7 +198,7 @@ curl http://localhost:3000/api/test
 
 ### Pré-requisitos
 - [ ] Node.js (LTS) instalado
-- [ ] npm instalado
+- [ ] pnpm instalado
 - [ ] Git instalado
 - [ ] Docker Desktop (inclui Docker Engine e Docker Compose) instalado
 - [ ] Expo CLI instalado
@@ -284,16 +206,16 @@ curl http://localhost:3000/api/test
 
 ### Backend
 - [ ] `cd backend`
-- [ ] `npm install`
+- [ ] `pnpm install`
 - [ ] Criar e configurar `.env`
-- [ ] `npm run db:migrate`
-- [ ] `npm run dev`
+- [ ] `pnpm run db:migrate`
+- [ ] `pnpm run dev`
 
 ### Frontend
 - [ ] `cd ../frontend`
-- [ ] `npm install`
+- [ ] `pnpm install`
 - [ ] Criar e configurar `.env`
-- [ ] `npm run web-vite` (para web) ou `npm start` (para mobile)
+- [ ] `pnpm run web-vite` (para web) ou `pnpm start` (para mobile)
 
 ### Verificação
 - [ ] Backend rodando em http://localhost:3000
@@ -308,8 +230,8 @@ curl http://localhost:3000/api/test
 **Erros de Compilação TypeScript**:
 ```bash
 # Reinstalar dependências
-rm -rf node_modules package-lock.json
-npm install
+rm -rf node_modules pnpm-lock.yaml
+pnpm install
 
 # Verificar configuração TypeScript
 npx tsc --noEmit
@@ -324,7 +246,7 @@ docker-compose ps
 docker-compose logs postgres_db
 
 # Reinstalar dependências do Drizzle ORM e driver PG
-npm install drizzle-orm pg
+pnpm install drizzle-orm pg
 ```
 
 **Porta já em uso**:
@@ -341,7 +263,7 @@ kill -9 $(lsof -t -i:3000)
 **Porta já em uso (Vite)**:
 ```bash
 # Usar porta diferente
-npm run web-vite -- --port 19007
+pnpm run web-vite -- --port 19007
 ```
 
 **Erro de conexão com API**:
@@ -354,9 +276,9 @@ npm run web-vite -- --port 19007
 **Erros de Dependência**:
 ```bash
 # Limpar cache e reinstalar
-npm cache clean --force
-rm -rf node_modules package-lock.json
-npm install
+pnpm cache clean --force
+rm -rf node_modules pnpm-lock.yaml
+pnpm install
 ```
 
 **Problemas de Permissão** (Linux/macOS):
@@ -364,8 +286,8 @@ npm install
 # Tornar script executável
 chmod +x setup_sqlite.sh (se ainda usar)
 
-# Configurar npm para diretório local (evitar sudo)
-npm config set prefix ~/.npm-global
+# Configurar pnpm para diretório local (evitar sudo)
+pnpm config set prefix ~/.pnpm-global
 ```
 
 ## Desenvolvimento
@@ -373,8 +295,8 @@ npm config set prefix ~/.npm-global
 ### Fluxo de Trabalho Recomendado
 1. Criar branch para feature: `git checkout -b feature/nova-funcionalidade`
 2. Fazer alterações e commits frequentes
-3. Executar testes: `npm test`
-4. Verificar lint: `npm run lint`
+3. Executar testes: `pnpm test`
+4. Verificar lint: `pnpm run lint`
 5. Criar Pull Request
 
 ### Padrões de Código
@@ -389,19 +311,19 @@ npm config set prefix ~/.npm-global
 ### Executar Testes
 ```bash
 # Todos os testes
-npm test
+pnpm test
 
 # Testes em modo watch
-npm run test:watch
+pnpm run test:watch
 
 # Testes com coverage
-npm run test:coverage
+pnpm run test:coverage
 
 # Testes de integração
-npm run test:integration
+pnpm run test:integration
 
 # Testes E2E
-npm run test:e2e
+pnpm run test:e2e
 ```
 
 ## Deploy
@@ -410,12 +332,12 @@ npm run test:e2e
 ```bash
 # Backend
 cd backend
-npm run build
-npm start
+pnpm run build
+pnpm start
 
 # Frontend (Vite)
 cd frontend
-npm run build-vite
+pnpm run build-vite
 ```
 
 ### Variáveis de Ambiente para Produção
@@ -443,10 +365,10 @@ npm run build-vite
 
 Após configurar o ambiente com sucesso:
 
-1. **Explore a documentação**: Leia os guias em `docs/02_guias_como_fazer/`
-2. **Entenda a arquitetura**: Consulte `docs/03_explicacoes/01ArquiteturaGeral.md`
-3. **Veja as funcionalidades**: Confira `docs/04_referencias/05_funcionalidades_implementadas.md`
-4. **Contribua**: Consulte o `docs/progresso.md` para ver o que está sendo trabalhado
+1. **Explore a documentação**: Leia os guias em `docs/geral/`
+2. **Entenda a arquitetura**: Consulte `docs/geral/01_arquitetura_geral.md`
+3. **Veja as funcionalidades**: Confira `docs/geral/06_funcionalidades_detalhadas.md`
+4. **Contribua**: Consulte o `docs/geral/08_roadmap_do_projeto.md` para ver o que está sendo trabalhado
 
 ## Contato e Suporte
 
@@ -458,7 +380,6 @@ Para dúvidas ou problemas:
 
 ---
 
-**Última atualização**: 04/09/2025
-**Versão do guia**: 2.1
-
+**Última atualização**: 01/10/2025
+**Versão do guia**: 2.3
 

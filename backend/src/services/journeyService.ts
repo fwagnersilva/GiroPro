@@ -1,8 +1,17 @@
 import { db } from "../db";
-import { jornadas } from "../db/schema";
+import { jornadas, jornadasFaturamentoPorPlataforma, plataformas } from "../db/schema";
 import { eq, and, gte, lte, or, ne, sql, isNull } from "drizzle-orm";
 import { CreateJourneyRequest, UpdateJourneyRequest, JourneyFilters } from "../types";
 import crypto from 'crypto';
+
+export interface PlatformEarning {
+  platformId: string;
+  value: number; // Em centavos
+}
+
+export interface UpdateJourneyRequestWithPlatforms extends UpdateJourneyRequest {
+  faturamentoPorPlataforma?: PlatformEarning[];
+}
 
 export class JourneyService {
   static async createJourney(userId: string, journeyData: CreateJourneyRequest) {
@@ -24,8 +33,8 @@ export class JourneyService {
       const [newJourney] = await db.insert(jornadas).values(newJourneyData).returning();
       return newJourney;
     } catch (error) {
-      console.error('Erro ao criar jornada:', error);
-      throw new Error('Falha ao criar jornada');
+      console.error("Erro ao criar jornada:", error);
+      throw new Error("Falha ao criar jornada");
     }
   }
 
@@ -85,10 +94,10 @@ export class JourneyService {
         },
       };
     } catch (error) {
-      console.error('Erro ao buscar jornadas:', error);
+      console.error("Erro ao buscar jornadas:", error);
       return {
         success: false,
-        error: 'Falha ao buscar jornadas',
+        error: "Falha ao buscar jornadas",
       };
     }
   }
@@ -101,17 +110,17 @@ export class JourneyService {
       
       return journey || null;
     } catch (error) {
-      console.error('Erro ao buscar jornada:', error);
-      throw new Error('Falha ao buscar jornada');
+      console.error("Erro ao buscar jornada:", error);
+      throw new Error("Falha ao buscar jornada");
     }
   }
 
-  static async updateJourney(id: string, userId: string, journeyData: UpdateJourneyRequest) {
+  static async updateJourney(id: string, userId: string, journeyData: UpdateJourneyRequestWithPlatforms) {
     try {
       // Verificar se a jornada existe primeiro
       const existingJourney = await this.getJourneyById(id, userId);
       if (!existingJourney) {
-        throw new Error('Jornada não encontrada');
+        throw new Error("Jornada não encontrada");
       }
 
       const dataToUpdate: Partial<typeof jornadas.$inferInsert> = {};
@@ -129,7 +138,25 @@ export class JourneyService {
         }
       }
       
-      if (journeyData.ganhoBruto !== undefined) {
+      // Processar faturamento por plataforma
+      if (journeyData.faturamentoPorPlataforma && journeyData.faturamentoPorPlataforma.length > 0) {
+        let totalGanhoBruto = 0;
+        const faturamentoInserts = journeyData.faturamentoPorPlataforma.map(item => {
+          totalGanhoBruto += item.value;
+          return {
+            id: crypto.randomUUID(),
+            idJornada: id,
+            idPlataforma: item.platformId,
+            valor: item.value,
+            createdAt: new Date(),
+          };
+        });
+
+        // Inserir os faturamentos por plataforma
+        await db.insert(jornadasFaturamentoPorPlataforma).values(faturamentoInserts);
+        dataToUpdate.ganhoBruto = totalGanhoBruto;
+      } else if (journeyData.ganhoBruto !== undefined) {
+        // Manter compatibilidade se faturamentoPorPlataforma não for fornecido
         dataToUpdate.ganhoBruto = journeyData.ganhoBruto;
       }
       
@@ -154,7 +181,7 @@ export class JourneyService {
       
       return updatedJourney;
     } catch (error) {
-      console.error('Erro ao atualizar jornada:', error);
+      console.error("Erro ao atualizar jornada:", error);
       throw error;
     }
   }
@@ -167,8 +194,8 @@ export class JourneyService {
       
       return result.length > 0;
     } catch (error) {
-      console.error('Erro ao deletar jornada:', error);
-      throw new Error('Falha ao deletar jornada');
+      console.error("Erro ao deletar jornada:", error);
+      throw new Error("Falha ao deletar jornada");
     }
   }
 
@@ -183,11 +210,11 @@ export class JourneyService {
   }
 
   // Método adicional para finalizar uma jornada
-  static async finishJourney(id: string, userId: string, kmFim: number, ganhoBruto?: number, observacoes?: string) {
+  static async finishJourney(id: string, userId: string, kmFim: number, faturamentoPorPlataforma?: PlatformEarning[], observacoes?: string) {
     return await this.updateJourney(id, userId, {
       dataFim: new Date().toISOString(),
       kmFim,
-      ganhoBruto,
+      faturamentoPorPlataforma,
       observacoes
     });
   }
@@ -230,10 +257,9 @@ export class JourneyService {
 
       return result[0];
     } catch (error) {
-      console.error('Erro ao buscar estatísticas de jornada:', error);
-      throw new Error('Falha ao buscar estatísticas de jornada');
+      console.error("Erro ao buscar estatísticas de jornada:", error);
+      throw new Error("Falha ao buscar estatísticas de jornada");
     }
   }
 }
-
 

@@ -282,4 +282,45 @@ export const notificacoesRelations = relations(notificacoes, ({ one }) => ({
   usuario: one(usuarios, { fields: [notificacoes.userId], references: [usuarios.id] }),
 }));
 
+// ===============================
+// GERENCIAMENTO DE PLATAFORMAS
+// ===============================
+
+export const plataformas = sqliteTable("plataformas", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  idUsuario: text("idUsuario").notNull().references(() => usuarios.id, { onDelete: "cascade" }),
+  nome: text("nome", { length: 100 }).notNull(),
+  isPadrao: integer("isPadrao", { mode: "boolean" }).default(false).notNull(),
+  ativa: integer("ativa", { mode: "boolean" }).default(true).notNull(),
+  createdAt: integer("createdAt", { mode: "timestamp" }).default(sql`(unixepoch())`).notNull(),
+  updatedAt: integer("updatedAt", { mode: "timestamp" }).default(sql`(unixepoch())`).notNull(),
+  deletedAt: integer("deletedAt", { mode: "timestamp" }),
+}, (table) => ({
+  usuarioIdx: index("plataformas_usuario_idx").on(table.idUsuario),
+  nomeUnicoIdx: uniqueIndex("plataformas_nome_unico_idx").on(table.idUsuario, table.nome),
+}));
+
+export const plataformasRelations = relations(plataformas, ({ one, many }) => ({
+  usuario: one(usuarios, { fields: [plataformas.idUsuario], references: [usuarios.id] }),
+  // Adicionar relação com jornadas se o faturamento por plataforma for detalhado
+  // jornadasFaturamento: many(jornadasFaturamentoPorPlataforma),
+}));
+
+// Se for necessário detalhar o faturamento de cada jornada por plataforma, criar uma tabela pivô
+export const jornadasFaturamentoPorPlataforma = sqliteTable("jornadasFaturamentoPorPlataforma", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  idJornada: text("idJornada").notNull().references(() => jornadas.id, { onDelete: "cascade" }),
+  idPlataforma: text("idPlataforma").notNull().references(() => plataformas.id, { onDelete: "cascade" }),
+  valor: integer("valor").notNull(), // Valor faturado na plataforma para aquela jornada, em centavos
+  createdAt: integer("createdAt", { mode: "timestamp" }).default(sql`(unixepoch())`).notNull(),
+}, (table) => ({
+  jornadaPlataformaIdx: uniqueIndex("jornadasFaturamentoPorPlataforma_jornada_plataforma_idx").on(table.idJornada, table.idPlataforma),
+  jornadaIdx: index("jornadasFaturamentoPorPlataforma_jornada_idx").on(table.idJornada),
+  plataformaIdx: index("jornadasFaturamentoPorPlataforma_plataforma_idx").on(table.idPlataforma),
+}));
+
+export const jornadasFaturamentoPorPlataformaRelations = relations(jornadasFaturamentoPorPlataforma, ({ one }) => ({
+  jornada: one(jornadas, { fields: [jornadasFaturamentoPorPlataforma.idJornada], references: [jornadas.id] }),
+  plataforma: one(plataformas, { fields: [jornadasFaturamentoPorPlataforma.idPlataforma], references: [plataformas.id] }),
+}));
 

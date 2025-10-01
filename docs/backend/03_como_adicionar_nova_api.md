@@ -14,7 +14,7 @@ O backend do GiroPro é construído com Node.js, Express.js (como framework web)
 
 ## 2. Definindo o Schema do Banco de Dados (se necessário)
 
-Se a nova API envolver dados que ainda não estão no banco de dados, você precisará atualizar o schema. Siga o guia "Como Realizar uma Migração de Banco de Dados" (`docs/02_guias_como_fazer/02ComoRealizarMigracaoBancoDados.md`) para adicionar ou modificar tabelas e colunas em `src/db/schema.ts`.
+Se a nova API envolver dados que ainda não estão no banco de dados, você precisará atualizar o schema. Siga o guia "Como Realizar uma Migração de Banco de Dados" (`docs/backend/02_como_realizar_migracao_banco_dados.md`) para adicionar ou modificar tabelas e colunas em `src/db/schema.ts`.
 
 ## 3. Definindo os Tipos TypeScript (`src/types/index.ts`)
 
@@ -251,7 +251,12 @@ test('should create a new product', async () => {
 
 ## 8. Documentando a Nova API
 
-Atualize a documentação da API em `docs/04_referencias/02_api_endpoints.md` para incluir o novo endpoint, seus parâmetros, exemplos de requisição/resposta e qualquer informação relevante.
+Atualize a documentação da API em `docs/backend/02_api_documentation.md` para incluir o novo endpoint, seus parâmetros, exemplos de requisição/resposta e qualquer informação relevante.
 
 Seguindo estes passos, você poderá adicionar novas APIs ao GiroPro de forma organizada, testável e documentada.
+
+---
+
+**Última atualização**: 01/10/2025
+**Versão**: 1.1
 

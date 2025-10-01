@@ -2,6 +2,8 @@
 
 Este documento descreve a arquitetura de alto nível do projeto GiroPro, seus principais componentes e como eles interagem. O objetivo é fornecer uma visão clara da estrutura do sistema, facilitando o entendimento e a colaboração entre os desenvolvedores.
 
+Para uma visão das decisões arquiteturais chave e suas justificativas, consulte o [Diagrama de Decisões Arquiteturais](./diagrama_decisoes.png).
+
 ## 1. Visão Geral da Arquitetura
 
 O GiroPro é uma aplicação full-stack composta por um backend robusto e um frontend móvel, projetados para funcionar de forma integrada. A arquitetura segue um modelo de microsserviços lógicos, onde as responsabilidades são bem definidas entre as camadas.
@@ -71,10 +73,9 @@ sequenceDiagram
 *   **React Native com Expo**: Permite o desenvolvimento ágil de aplicações móveis para iOS e Android a partir de uma única base de código, acelerando o tempo de lançamento e reduzindo a complexidade de manutenção.
 *   **Padrões de Projeto**: A aplicação segue padrões de projeto bem estabelecidos (como MVC lógico no backend e componentes no frontend) para garantir a organização, a separação de responsabilidades e a facilidade de teste.
 *   **Foco em Performance**: A utilização de Redis para cache e a escolha de frameworks consolidados (Express.js, React Query) demonstram um compromisso com a entrega de uma experiência de usuário confiável e responsiva.
+*   **Gerenciamento de Plataformas**: Implementação de uma nova funcionalidade para que o usuário possa gerenciar suas plataformas de trabalho (Uber, 99, etc.), permitindo ativar/desativar as predefinidas e criar novas. Esta funcionalidade envolve novas tabelas no banco de dados (`plataformas`, `jornadasFaturamentoPorPlataforma`), serviços e controladores dedicados no backend, e uma interface de usuário correspondente no frontend.
 
 Esta arquitetura foi projetada para ser modular, escalável e de fácil manutenção, permitindo que o GiroPro evolua e se adapte às futuras necessidades do negócio e demandas.
-
-
 
 ## 4. Diagrama de Decisões Arquiteturais
 
@@ -82,4 +83,8 @@ Este diagrama visualiza as principais decisões arquiteturais tomadas no projeto
 
 ![Diagrama de Decisões Arquiteturais](diagrama_decisoes.png)
 
+---
+
+**Última atualização**: 01/10/2025
+**Versão**: 1.1
 

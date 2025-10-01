@@ -1,0 +1,116 @@
+import { Request, Response } from 'express';
+import { PlatformService } from '../services/platformService';
+import { AuthenticatedRequest } from '../types/auth';
+import { z } from 'zod';
+
+// Schemas de validação para plataformas
+const createPlatformSchema = z.object({
+  nome: z.string().min(1, "Nome da plataforma é obrigatório").max(100, "Nome da plataforma deve ter no máximo 100 caracteres"),
+  isPadrao: z.boolean().optional(),
+  ativa: z.boolean().optional(),
+});
+
+const updatePlatformSchema = z.object({
+  nome: z.string().min(1, "Nome da plataforma é obrigatório").max(100, "Nome da plataforma deve ter no máximo 100 caracteres").optional(),
+  ativa: z.boolean().optional(),
+});
+
+export class PlatformController {
+  static async createPlatform(req: AuthenticatedRequest, res: Response) {
+    try {
+      const userId = req.user?.id;
+      if (!userId) {
+        return res.status(401).send({ success: false, message: 'Usuário não autenticado.' });
+      }
+
+      const platformData = createPlatformSchema.parse(req.body);
+      const newPlatform = await PlatformService.createPlatform(userId, platformData);
+      res.status(201).send({ success: true, message: 'Plataforma criada com sucesso.', platform: newPlatform });
+    } catch (error: any) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).send({ success: false, message: 'Dados de entrada inválidos.', errors: error.errors });
+      }
+      console.error('Erro ao criar plataforma:', error);
+      res.status(500).send({ success: false, message: error.message || 'Ocorreu um erro interno no servidor.' });
+    }
+  }
+
+  static async getPlatforms(req: AuthenticatedRequest, res: Response) {
+    try {
+      const userId = req.user?.id;
+      if (!userId) {
+        return res.status(401).send({ success: false, message: 'Usuário não autenticado.' });
+      }
+
+      const platforms = await PlatformService.getPlatformsByUserId(userId);
+      res.status(200).send({ success: true, platforms });
+    } catch (error: any) {
+      console.error('Erro ao buscar plataformas:', error);
+      res.status(500).send({ success: false, message: error.message || 'Ocorreu um erro interno no servidor.' });
+    }
+  }
+
+  static async getPlatformById(req: AuthenticatedRequest, res: Response) {
+    try {
+      const userId = req.user?.id;
+      if (!userId) {
+        return res.status(401).send({ success: false, message: 'Usuário não autenticado.' });
+      }
+      const { id } = req.params;
+      const platform = await PlatformService.getPlatformById(userId, id);
+
+      if (!platform) {
+        return res.status(404).send({ success: false, message: 'Plataforma não encontrada.' });
+      }
+      res.status(200).send({ success: true, platform });
+    } catch (error: any) {
+      console.error('Erro ao buscar plataforma por ID:', error);
+      res.status(500).send({ success: false, message: error.message || 'Ocorreu um erro interno no servidor.' });
+    }
+  }
+
+  static async updatePlatform(req: AuthenticatedRequest, res: Response) {
+    try {
+      const userId = req.user?.id;
+      if (!userId) {
+        return res.status(401).send({ success: false, message: 'Usuário não autenticado.' });
+      }
+      const { id } = req.params;
+      const updateData = updatePlatformSchema.parse(req.body);
+
+      const updatedPlatform = await PlatformService.updatePlatform(userId, id, updateData);
+
+      if (!updatedPlatform) {
+        return res.status(404).send({ success: false, message: 'Plataforma não encontrada ou não pertence ao usuário.' });
+      }
+      res.status(200).send({ success: true, message: 'Plataforma atualizada com sucesso.', platform: updatedPlatform });
+    } catch (error: any) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).send({ success: false, message: 'Dados de entrada inválidos.', errors: error.errors });
+      }
+      console.error('Erro ao atualizar plataforma:', error);
+      res.status(500).send({ success: false, message: error.message || 'Ocorreu um erro interno no servidor.' });
+    }
+  }
+
+  static async deletePlatform(req: AuthenticatedRequest, res: Response) {
+    try {
+      const userId = req.user?.id;
+      if (!userId) {
+        return res.status(401).send({ success: false, message: 'Usuário não autenticado.' });
+      }
+      const { id } = req.params;
+
+      const deleted = await PlatformService.deletePlatform(userId, id);
+
+      if (!deleted) {
+        return res.status(404).send({ success: false, message: 'Plataforma não encontrada ou não pertence ao usuário.' });
+      }
+      res.status(200).send({ success: true, message: 'Plataforma excluída com sucesso.' });
+    } catch (error: any) {
+      console.error('Erro ao deletar plataforma:', error);
+      res.status(500).send({ success: false, message: error.message || 'Ocorreu um erro interno no servidor.' });
+    }
+  }
+}
+

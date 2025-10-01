@@ -1,18 +1,18 @@
 # Como Realizar uma Migração de Banco de Dados com Drizzle ORM
 
-Este guia detalha o procedimento para criar e aplicar novas migrações de banco de dados utilizando o Drizzle ORM no projeto GiroPro. Migrações são essenciais para gerenciar alterações no schema do banco de dados de forma controlada e versionada.
+Este guia detalha o procedimento para criar e aplicar novas migrações de banco de dados utilizando o Drizzle ORM no projeto GiroPro. Migrações são essenciais para gerenciar alterações no schema do banco de dados de forma controlada e versionada, garantindo a evolução da estrutura de dados de forma segura e eficiente.
 
 ## Pré-requisitos
 
 Antes de iniciar, certifique-se de que você tem:
 
-*   Node.js e npm instalados.
-*   O repositório GiroPro clonado e as dependências do backend instaladas (`npm install` no diretório `backend`).
+*   Node.js e pnpm instalados.
+*   O repositório GiroPro clonado e as dependências do backend instaladas (`pnpm install` no diretório `backend`).
 *   Conhecimento básico de TypeScript e Drizzle ORM.
 
 ## 1. Entendendo o Fluxo de Migração
 
-O Drizzle ORM utiliza um processo de migração baseado em snapshots. Basicamente, você:
+O Drizzle ORM utiliza um processo de migração baseado em snapshots, que permite um controle preciso sobre as alterações do esquema do banco de dados. O fluxo é o seguinte:
 
 1.  **Modifica o Schema**: Altera o arquivo `src/db/schema.ts` para refletir as mudanças desejadas na estrutura do banco de dados (ex: adicionar uma nova tabela, coluna, alterar tipos, etc.).
 2.  **Gera a Migração**: O Drizzle compara o schema atual com um snapshot anterior e gera um arquivo SQL (e um arquivo TypeScript correspondente) com as instruções para aplicar as diferenças.
@@ -41,13 +41,13 @@ export const usuarios = sqliteTable("usuarios", {
 Após modificar o `src/db/schema.ts`, você precisa gerar os arquivos de migração. Navegue até o diretório `backend` e execute o seguinte comando:
 
 ```bash
-npm run db:generate
+pnpm run db:generate
 ```
 
 Este comando fará o seguinte:
 
 *   Comparará o `src/db/schema.ts` com o estado atual do banco de dados (ou o último snapshot).
-*   Gerará um novo diretório com um timestamp (ex: `drizzle/0001_initial_schema.ts` e `drizzle/0001_initial_schema.sql`) contendo as instruções SQL para aplicar as mudanças.
+*   Gerará um novo diretório com um timestamp (ex: `drizzle/0001_initial_schema.ts` e `drizzle/0001_initial_schema.sql`) contendo as instruções SQL para aplicar as diferenças.
 *   Atualizará o arquivo `drizzle/meta/_journal.json` para registrar a nova migração.
 
 **Verifique os arquivos gerados**: É crucial revisar o arquivo `.sql` gerado para garantir que as alterações propostas são as esperadas e não há comandos destrutivos acidentais.
@@ -59,7 +59,7 @@ Com os arquivos de migração gerados e verificados, você pode aplicá-los ao s
 Execute o comando:
 
 ```bash
-npm run db:migrate
+pnpm run db:migrate
 ```
 
 **Nota Importante sobre Interatividade**: Este comando pode ser interativo, especialmente quando há operações que podem causar perda de dados (como renomeação de colunas). O Drizzle ORM pode solicitar confirmação manual para essas operações. Fique atento às mensagens no terminal e confirme as ações quando solicitado. **Para evitar interrupções em ambientes automatizados, considere as opções abaixo.**
@@ -73,7 +73,7 @@ Este comando:
 **Para Ambientes de CI/CD e Automação**: Se você precisar executar migrações em um ambiente automatizado (CI/CD) ou de forma não-interativa, o Drizzle ORM oferece a opção `--accept-data-loss` para o comando `migrate`. **Use esta flag com extrema cautela**, pois ela aceitará automaticamente qualquer perda de dados que possa ocorrer durante a migração. Exemplo:
 
 ```bash
-npm run db:migrate -- --accept-data-loss
+pnpm run db:migrate -- --accept-data-loss
 ```
 
 Alternativamente, para migrações que não envolvem perda de dados, o comando pode ser executado sem a flag interativa, dependendo da versão do Drizzle e da natureza da migração. Sempre teste em um ambiente de desenvolvimento antes de aplicar em produção.
@@ -85,7 +85,7 @@ Reverter migrações deve ser feito com extrema cautela, especialmente em ambien
 1.  **Remova os arquivos de migração gerados**: Exclua o diretório de migração mais recente em `drizzle/`.
 2.  **Edite o `drizzle/meta/_journal.json`**: Remova a entrada correspondente à migração que você acabou de excluir.
 3.  **Reverta as alterações no `src/db/schema.ts`**: Volte o arquivo `schema.ts` para o estado anterior à migração.
-4.  **Reconstrua o banco de dados (se necessário)**: Para um ambiente de desenvolvimento, a maneira mais segura de reverter completamente é deletar o arquivo `giropro.db` e rodar `npm run db:migrate` novamente para recriar o banco com o schema desejado.
+4.  **Reconstrua o banco de dados (se necessário)**: Para um ambiente de desenvolvimento, a maneira mais segura de reverter completamente é deletar o arquivo `giropro.db` e rodar `pnpm run db:migrate` novamente para recriar o banco com o schema desejado.
 
 ## 6. Dicas e Boas Práticas
 
@@ -96,4 +96,8 @@ Reverter migrações deve ser feito com extrema cautela, especialmente em ambien
 
 Ao seguir este guia, você poderá gerenciar as alterações no schema do banco de dados do GiroPro de forma eficiente e segura.
 
+---
+
+**Última atualização**: 01/10/2025
+**Versão**: 1.1
 

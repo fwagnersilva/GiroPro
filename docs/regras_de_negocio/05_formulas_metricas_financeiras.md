@@ -18,11 +18,16 @@ As seguintes métricas são apresentadas no dashboard de visão geral, fornecend
 *   **KM Total Rodado (KMT):** Soma da quilometragem total de todas as jornadas concluídas no período.
     `KMT = SUM(jornadas.kmTotal) para jornadas.dataFim dentro do período.`
 
+*   **Jornadas (Contagem):** Número total de jornadas concluídas no período.
+    `Jornadas = COUNT(jornadas.id) para jornadas.dataFim dentro do período.`
+
 *   **Custo por KM Rodado (CKM):** Calcula o custo médio por quilômetro percorrido, obtido dividindo o Total de Despesas pelo KM Total Rodado. É uma métrica chave para avaliar a eficiência dos gastos.
     `CKM = TD / KMT (se KMT > 0)`
 
 *   **Ganho Médio por Jornada (GMJ):** Representa o ganho bruto médio por cada jornada finalizada no período.
     `GMJ = FB / COUNT(jornadas.id) para jornadas.dataFim dentro do período (se COUNT(jornadas.id) > 0)`
+
+*   **Faturamento por Plataforma:** O faturamento por plataforma é registrado manualmente pelo motorista ao finalizar cada jornada. Os valores são somados para apresentar o total por plataforma no período selecionado. Este detalhe é armazenado na tabela `jornadasFaturamentoPorPlataforma` e agregado para exibição no dashboard.
 
 ## 2. Relatório Detalhado de Ganhos por Jornada
 
@@ -38,8 +43,8 @@ Este relatório oferece uma análise mais granular do desempenho financeiro de c
 *   **Tempo Total da Jornada (TT_Jornada):** A duração total da jornada em minutos.
     `TT_Jornada = jornadas.tempoTotal (calculado como dataFim - dataInicio em minutos)`
 
-*   **Ganho Bruto da Jornada (GB_Jornada):** O valor total recebido por uma jornada antes da dedução de custos.
-    `GB_Jornada = jornadas.ganhoBruto`
+*   **Ganho Bruto da Jornada (GB_Jornada):** O valor total recebido por uma jornada antes da dedução de custos. Este valor é a soma dos faturamentos registrados para cada plataforma na tabela `jornadasFaturamentoPorPlataforma`.
+    `GB_Jornada = SUM(jornadasFaturamentoPorPlataforma.valor) para a jornada específica.`
 
 *   **Custo Estimado de Combustível por Jornada (CEC_Jornada):** Uma estimativa do custo de combustível para uma jornada, baseada na quilometragem percorrida, no consumo médio do veículo e no preço médio do litro de combustível.
     `CEC_Jornada = (KMT_Jornada / veiculos.mediaConsumo) * abastecimentos.valorLitroMedioPeriodo`
@@ -83,8 +88,10 @@ Focado especificamente nos gastos e eficiência relacionados ao combustível, qu
 Os relatórios e dashboards são construídos a partir dos dados persistidos no banco de dados do GiroPro, utilizando as seguintes tabelas como fontes primárias:
 
 *   **`jornadas`**: Contém informações sobre as viagens realizadas, incluindo ganhos brutos, quilometragem rodada e tempo de jornada.
+*   **`jornadasFaturamentoPorPlataforma`**: Detalha o faturamento de cada jornada por plataforma.
 *   **`abastecimentos`**: Registra todos os detalhes dos abastecimentos, como gastos com combustível, quantidade de litros e quilometragem atual do veículo.
 *   **`despesas`**: Armazena informações sobre outras despesas do veículo e suas respectivas categorias.
 *   **`veiculos`**: Fornece dados cadastrais dos veículos, essenciais para cálculos como o consumo médio.
+*   **`plataformas`**: Contém as plataformas configuradas pelo usuário, sejam elas predefinidas ou customizadas.
 *   **`usuarios`**: Utilizada para associar todos os dados ao motorista correto e garantir a segregação das informações por usuário.
 

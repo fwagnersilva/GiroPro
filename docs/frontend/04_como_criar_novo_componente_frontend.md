@@ -157,9 +157,6 @@ describe('CustomButton', () => {
 
 Para componentes mais complexos ou reutilizáveis, considere adicionar documentação inline (JSDoc) ou criar um arquivo `README.md` dentro da pasta do componente explicando seu uso, props e exemplos. Isso facilita a vida de outros desenvolvedores que forem utilizá-lo.
 
-Seguindo estas diretrizes, você contribuirá para um frontend organizado, eficiente e fácil de manter no projeto GiroPro.
-
-
 ## 9. Diretrizes Adicionais para Componentes de Qualidade
 
 Para garantir que os novos componentes sigam as melhores práticas e se integrem perfeitamente ao projeto GiroPro, considere as seguintes diretrizes:
@@ -207,4 +204,8 @@ Testes são cruciais para garantir a qualidade e a estabilidade do seu component
 
 Ao incorporar estas diretrizes, você não apenas criará componentes funcionais, mas também contribuirá para a robustez, manutenibilidade e qualidade geral do projeto GiroPro.
 
+---
+
+**Última atualização**: 01/10/2025
+**Versão**: 1.1
 
