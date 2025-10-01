@@ -5,39 +5,54 @@ import { FocusAwareStatusBar, Text, View, Button, Input } from '@/components/ui'
 
 interface Vehicle {
   id: string;
+  idUsuario: string;
+  marca: string;
   modelo: string;
-  anoFabricacao: string;
-  anoModelo: string;
+  ano: number;
   placa: string;
-  tipoCombustivel: string;
+  tipoCombustivel: 'gasolina' | 'etanol' | 'diesel' | 'gnv' | 'flex';
+  tipoUso: 'proprio' | 'alugado' | 'financiado';
+  valorAluguel?: number; // em centavos
+  valorPrestacao?: number; // em centavos
+  mediaConsumo?: number;
 }
 
 export default function Vehicles() {
+  // Mock userId - substituir pela autenticação real
+  const userId = 'user-123';
+
   // Mock data
   const [vehicles, setVehicles] = useState<Vehicle[]>([
     {
       id: '1',
-      modelo: 'Honda Civic',
-      anoFabricacao: '2020',
-      anoModelo: '2020',
-      placa: 'ABC-1234',
-      tipoCombustivel: 'Gasolina'
+      idUsuario: userId,
+      marca: 'Honda',
+      modelo: 'Civic',
+      ano: 2020,
+      placa: 'ABC1234',
+      tipoCombustivel: 'gasolina',
+      tipoUso: 'proprio'
     },
     {
       id: '2',
-      modelo: 'Toyota Corolla',
-      anoFabricacao: '2019',
-      anoModelo: '2019',
-      placa: 'XYZ-5678',
-      tipoCombustivel: 'Flex'
+      idUsuario: userId,
+      marca: 'Toyota',
+      modelo: 'Corolla',
+      ano: 2019,
+      placa: 'XYZ5678',
+      tipoCombustivel: 'flex',
+      tipoUso: 'proprio'
     },
     {
       id: '3',
-      modelo: 'Ford Ka',
-      anoFabricacao: '2018',
-      anoModelo: '2018',
-      placa: 'DEF-9012',
-      tipoCombustivel: 'Flex'
+      idUsuario: userId,
+      marca: 'Ford',
+      modelo: 'Ka',
+      ano: 2018,
+      placa: 'DEF9012',
+      tipoCombustivel: 'flex',
+      tipoUso: 'alugado',
+      valorAluguel: 150000 // R$ 1500,00
     }
   ]);
 
@@ -45,20 +60,28 @@ export default function Vehicles() {
   const [showForm, setShowForm] = useState(false);
   const [editingVehicle, setEditingVehicle] = useState<Vehicle | null>(null);
   const [formData, setFormData] = useState({
+    marca: '',
     modelo: '',
-    anoFabricacao: '',
-    anoModelo: '',
+    ano: '',
     placa: '',
-    tipoCombustivel: 'Flex'
+    tipoCombustivel: 'flex' as Vehicle['tipoCombustivel'],
+    tipoUso: 'proprio' as Vehicle['tipoUso'],
+    valorAluguel: '',
+    valorPrestacao: '',
+    mediaConsumo: ''
   });
 
   const resetForm = () => {
     setFormData({
+      marca: '',
       modelo: '',
-      anoFabricacao: '',
-      anoModelo: '',
+      ano: '',
       placa: '',
-      tipoCombustivel: 'Flex'
+      tipoCombustivel: 'flex',
+      tipoUso: 'proprio',
+      valorAluguel: '',
+      valorPrestacao: '',
+      mediaConsumo: ''
     });
     setEditingVehicle(null);
     setShowForm(false);
@@ -72,11 +95,15 @@ export default function Vehicles() {
   const handleEditVehicle = (vehicle: Vehicle) => {
     setEditingVehicle(vehicle);
     setFormData({
+      marca: vehicle.marca,
       modelo: vehicle.modelo,
-      anoFabricacao: vehicle.anoFabricacao,
-      anoModelo: vehicle.anoModelo,
+      ano: vehicle.ano.toString(),
       placa: vehicle.placa,
-      tipoCombustivel: vehicle.tipoCombustivel
+      tipoCombustivel: vehicle.tipoCombustivel,
+      tipoUso: vehicle.tipoUso,
+      valorAluguel: vehicle.valorAluguel ? (vehicle.valorAluguel / 100).toFixed(2) : '',
+      valorPrestacao: vehicle.valorPrestacao ? (vehicle.valorPrestacao / 100).toFixed(2) : '',
+      mediaConsumo: vehicle.mediaConsumo?.toString() || ''
     });
     setShowForm(true);
   };
@@ -101,38 +128,59 @@ export default function Vehicles() {
 
   const handleSaveVehicle = () => {
     // Validações
-    if (!formData.modelo || !formData.anoFabricacao || !formData.anoModelo || !formData.placa) {
-      Alert.alert('Erro', 'Todos os campos são obrigatórios.');
+    if (!formData.marca || !formData.modelo || !formData.ano || !formData.placa) {
+      Alert.alert('Erro', 'Marca, modelo, ano e placa são obrigatórios.');
       return;
     }
 
-    // Validação de placa (formato brasileiro)
-    const placaRegex = /^[A-Z]{3}-\d{4}$/;
-    if (!placaRegex.test(formData.placa.toUpperCase())) {
-      Alert.alert('Erro', 'Formato de placa inválido. Use o formato ABC-1234.');
+    // Validação de placa (formato brasileiro - aceita antigo e Mercosul)
+    const placaRegex = /^[A-Z]{3}[0-9]{4}$|^[A-Z]{3}[0-9][A-Z][0-9]{2}$/;
+    const placaLimpa = formData.placa.toUpperCase().replace(/[-\s]/g, '');
+    
+    if (!placaRegex.test(placaLimpa)) {
+      Alert.alert('Erro', 'Formato de placa inválido. Use ABC1234 ou ABC1D23.');
       return;
     }
 
-    // Validação de anos
+    // Validação de ano
     const currentYear = new Date().getFullYear();
-    const anoFab = parseInt(formData.anoFabricacao);
-    const anoMod = parseInt(formData.anoModelo);
+    const ano = parseInt(formData.ano);
 
-    if (anoFab < 1900 || anoFab > currentYear + 1) {
-      Alert.alert('Erro', 'Ano de fabricação inválido.');
+    if (ano < 1900 || ano > currentYear + 1) {
+      Alert.alert('Erro', 'Ano inválido.');
       return;
     }
 
-    if (anoMod < 1900 || anoMod > currentYear + 1) {
-      Alert.alert('Erro', 'Ano do modelo inválido.');
+    // Validação de valores monetários condicionais
+    if (formData.tipoUso === 'alugado' && !formData.valorAluguel) {
+      Alert.alert('Erro', 'Informe o valor do aluguel.');
       return;
     }
+
+    if (formData.tipoUso === 'financiado' && !formData.valorPrestacao) {
+      Alert.alert('Erro', 'Informe o valor da prestação.');
+      return;
+    }
+
+    // Preparar dados do veículo
+    const vehicleData: Omit<Vehicle, 'id'> = {
+      idUsuario: userId,
+      marca: formData.marca,
+      modelo: formData.modelo,
+      ano: ano,
+      placa: placaLimpa,
+      tipoCombustivel: formData.tipoCombustivel,
+      tipoUso: formData.tipoUso,
+      valorAluguel: formData.valorAluguel ? Math.round(parseFloat(formData.valorAluguel) * 100) : undefined,
+      valorPrestacao: formData.valorPrestacao ? Math.round(parseFloat(formData.valorPrestacao) * 100) : undefined,
+      mediaConsumo: formData.mediaConsumo ? parseFloat(formData.mediaConsumo) : undefined
+    };
 
     if (editingVehicle) {
       // Editar veículo existente
       setVehicles(vehicles.map(v => 
         v.id === editingVehicle.id 
-          ? { ...editingVehicle, ...formData, placa: formData.placa.toUpperCase() }
+          ? { ...vehicleData, id: editingVehicle.id }
           : v
       ));
       Alert.alert('Sucesso', 'Veículo atualizado com sucesso!');
@@ -140,14 +188,20 @@ export default function Vehicles() {
       // Adicionar novo veículo
       const newVehicle: Vehicle = {
         id: Date.now().toString(),
-        ...formData,
-        placa: formData.placa.toUpperCase()
+        ...vehicleData
       };
       setVehicles([...vehicles, newVehicle]);
       Alert.alert('Sucesso', 'Veículo adicionado com sucesso!');
     }
 
     resetForm();
+  };
+
+  const formatCurrency = (value: number) => {
+    return new Intl.NumberFormat('pt-BR', {
+      style: 'currency',
+      currency: 'BRL'
+    }).format(value / 100);
   };
 
   return (
@@ -183,10 +237,22 @@ export default function Vehicles() {
 
             <View className="mb-4">
               <Text className="text-sm font-medium text-gray-700 mb-2">
-                Modelo
+                Marca *
               </Text>
               <Input
-                placeholder="Ex: Honda Civic, Toyota Corolla"
+                placeholder="Ex: Honda, Toyota, Ford"
+                value={formData.marca}
+                onChangeText={(text) => setFormData({...formData, marca: text})}
+                className="w-full"
+              />
+            </View>
+
+            <View className="mb-4">
+              <Text className="text-sm font-medium text-gray-700 mb-2">
+                Modelo *
+              </Text>
+              <Input
+                placeholder="Ex: Civic, Corolla, Ka"
                 value={formData.modelo}
                 onChangeText={(text) => setFormData({...formData, modelo: text})}
                 className="w-full"
@@ -196,25 +262,26 @@ export default function Vehicles() {
             <View className="flex-row mb-4">
               <View className="flex-1 mr-2">
                 <Text className="text-sm font-medium text-gray-700 mb-2">
-                  Ano de Fabricação
+                  Ano *
                 </Text>
                 <Input
                   placeholder="2020"
-                  value={formData.anoFabricacao}
-                  onChangeText={(text) => setFormData({...formData, anoFabricacao: text})}
+                  value={formData.ano}
+                  onChangeText={(text) => setFormData({...formData, ano: text})}
                   keyboardType="numeric"
                   className="w-full"
                 />
               </View>
               <View className="flex-1 ml-2">
                 <Text className="text-sm font-medium text-gray-700 mb-2">
-                  Ano do Modelo
+                  Placa *
                 </Text>
                 <Input
-                  placeholder="2020"
-                  value={formData.anoModelo}
-                  onChangeText={(text) => setFormData({...formData, anoModelo: text})}
-                  keyboardType="numeric"
+                  placeholder="ABC1234"
+                  value={formData.placa}
+                  onChangeText={(text) => setFormData({...formData, placa: text})}
+                  autoCapitalize="characters"
+                  maxLength={8}
                   className="w-full"
                 />
               </View>
@@ -222,35 +289,85 @@ export default function Vehicles() {
 
             <View className="mb-4">
               <Text className="text-sm font-medium text-gray-700 mb-2">
-                Placa
+                Tipo de Combustível *
               </Text>
-              <Input
-                placeholder="ABC-1234"
-                value={formData.placa}
-                onChangeText={(text) => setFormData({...formData, placa: text})}
-                autoCapitalize="characters"
-                className="w-full"
-              />
-            </View>
-
-            <View className="mb-4">
-              <Text className="text-sm font-medium text-gray-700 mb-2">
-                Tipo de Combustível
-              </Text>
-              <View className="flex-row space-x-2">
-                {['Flex', 'Gasolina', 'Etanol', 'Diesel'].map((tipo) => (
+              <View className="flex-row flex-wrap">
+                {(['flex', 'gasolina', 'etanol', 'diesel', 'gnv'] as const).map((tipo) => (
                   <Button
                     key={tipo}
                     onPress={() => setFormData({...formData, tipoCombustivel: tipo})}
                     variant={formData.tipoCombustivel === tipo ? 'default' : 'outline'}
-                    className="flex-1 mr-2"
+                    className="mr-2 mb-2 px-3 py-2"
                   >
-                    <Text className={formData.tipoCombustivel === tipo ? 'text-white' : 'text-gray-600'}>
-                      {tipo}
+                    <Text className={formData.tipoCombustivel === tipo ? 'text-white text-xs' : 'text-gray-600 text-xs'}>
+                      {tipo.charAt(0).toUpperCase() + tipo.slice(1)}
                     </Text>
                   </Button>
                 ))}
               </View>
+            </View>
+
+            <View className="mb-4">
+              <Text className="text-sm font-medium text-gray-700 mb-2">
+                Tipo de Uso *
+              </Text>
+              <View className="flex-row">
+                {(['proprio', 'alugado', 'financiado'] as const).map((tipo) => (
+                  <Button
+                    key={tipo}
+                    onPress={() => setFormData({...formData, tipoUso: tipo})}
+                    variant={formData.tipoUso === tipo ? 'default' : 'outline'}
+                    className="flex-1 mr-2"
+                  >
+                    <Text className={formData.tipoUso === tipo ? 'text-white text-xs' : 'text-gray-600 text-xs'}>
+                      {tipo.charAt(0).toUpperCase() + tipo.slice(1)}
+                    </Text>
+                  </Button>
+                ))}
+              </View>
+            </View>
+
+            {formData.tipoUso === 'alugado' && (
+              <View className="mb-4">
+                <Text className="text-sm font-medium text-gray-700 mb-2">
+                  Valor do Aluguel (R$) *
+                </Text>
+                <Input
+                  placeholder="1500.00"
+                  value={formData.valorAluguel}
+                  onChangeText={(text) => setFormData({...formData, valorAluguel: text})}
+                  keyboardType="decimal-pad"
+                  className="w-full"
+                />
+              </View>
+            )}
+
+            {formData.tipoUso === 'financiado' && (
+              <View className="mb-4">
+                <Text className="text-sm font-medium text-gray-700 mb-2">
+                  Valor da Prestação (R$) *
+                </Text>
+                <Input
+                  placeholder="800.00"
+                  value={formData.valorPrestacao}
+                  onChangeText={(text) => setFormData({...formData, valorPrestacao: text})}
+                  keyboardType="decimal-pad"
+                  className="w-full"
+                />
+              </View>
+            )}
+
+            <View className="mb-4">
+              <Text className="text-sm font-medium text-gray-700 mb-2">
+                Média de Consumo (km/l)
+              </Text>
+              <Input
+                placeholder="12.5"
+                value={formData.mediaConsumo}
+                onChangeText={(text) => setFormData({...formData, mediaConsumo: text})}
+                keyboardType="decimal-pad"
+                className="w-full"
+              />
             </View>
 
             <View className="flex-row space-x-2">
@@ -294,14 +411,26 @@ export default function Vehicles() {
                 <View className="flex-row justify-between items-start">
                   <View className="flex-1">
                     <Text className="font-semibold text-gray-900 text-lg mb-1">
-                      {vehicle.modelo}
+                      {vehicle.marca} {vehicle.modelo}
                     </Text>
                     <Text className="text-gray-600 mb-1">
-                      {vehicle.anoFabricacao}/{vehicle.anoModelo} • {vehicle.placa}
+                      {vehicle.ano} • {vehicle.placa}
+                    </Text>
+                    <Text className="text-gray-600 mb-1">
+                      Combustível: {vehicle.tipoCombustivel.charAt(0).toUpperCase() + vehicle.tipoCombustivel.slice(1)}
                     </Text>
                     <Text className="text-gray-600">
-                      Combustível: {vehicle.tipoCombustivel}
+                      Uso: {vehicle.tipoUso.charAt(0).toUpperCase() + vehicle.tipoUso.slice(1)}
+                      {vehicle.tipoUso === 'alugado' && vehicle.valorAluguel && 
+                        ` - ${formatCurrency(vehicle.valorAluguel)}/mês`}
+                      {vehicle.tipoUso === 'financiado' && vehicle.valorPrestacao && 
+                        ` - ${formatCurrency(vehicle.valorPrestacao)}/mês`}
                     </Text>
+                    {vehicle.mediaConsumo && (
+                      <Text className="text-gray-600">
+                        Consumo: {vehicle.mediaConsumo} km/l
+                      </Text>
+                    )}
                   </View>
                   <View className="flex-row space-x-2">
                     <Button
