@@ -11,7 +11,7 @@ const createPlatformSchema = z.object({
 });
 
 const updatePlatformSchema = z.object({
-  nome: z.string().min(1, "Nome da plataforma é obrigatório").max(100, "Nome da plataforma deve ter no máximo 100 caracteres").optional(),
+  nome: z.string().min(1, "Nome da plataforma é obrigatório").max(100, "Nome da plataforma deve ter no máximo 100 caracteres"),
   ativa: z.boolean().optional(),
 });
 
