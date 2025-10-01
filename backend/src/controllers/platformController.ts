@@ -15,6 +15,10 @@ const updatePlatformSchema = z.object({
   ativa: z.boolean().optional(),
 });
 
+type CreatePlatformRequest = z.infer<typeof createPlatformSchema>;
+
+type UpdatePlatformRequest = z.infer<typeof updatePlatformSchema>;
+
 export class PlatformController {
   static async createPlatform(req: AuthenticatedRequest, res: Response) {
     try {
@@ -23,15 +27,15 @@ export class PlatformController {
         return res.status(401).send({ success: false, message: 'Usuário não autenticado.' });
       }
 
-      const platformData = createPlatformSchema.parse(req.body);
+      const platformData: CreatePlatformRequest = createPlatformSchema.parse(req.body);
       const newPlatform = await PlatformService.createPlatform(userId, platformData);
-      res.status(201).send({ success: true, message: 'Plataforma criada com sucesso.', platform: newPlatform });
+      return res.status(201).send({ success: true, message: 'Plataforma criada com sucesso.', platform: newPlatform });
     } catch (error: any) {
       if (error instanceof z.ZodError) {
         return res.status(400).send({ success: false, message: 'Dados de entrada inválidos.', errors: error.errors });
       }
       console.error('Erro ao criar plataforma:', error);
-      res.status(500).send({ success: false, message: error.message || 'Ocorreu um erro interno no servidor.' });
+      return res.status(500).send({ success: false, message: error.message || 'Ocorreu um erro interno no servidor.' });
     }
   }
 
@@ -43,10 +47,10 @@ export class PlatformController {
       }
 
       const platforms = await PlatformService.getPlatformsByUserId(userId);
-      res.status(200).send({ success: true, platforms });
+      return res.status(200).send({ success: true, platforms });
     } catch (error: any) {
       console.error('Erro ao buscar plataformas:', error);
-      res.status(500).send({ success: false, message: error.message || 'Ocorreu um erro interno no servidor.' });
+      return res.status(500).send({ success: false, message: error.message || 'Ocorreu um erro interno no servidor.' });
     }
   }
 
@@ -62,10 +66,10 @@ export class PlatformController {
       if (!platform) {
         return res.status(404).send({ success: false, message: 'Plataforma não encontrada.' });
       }
-      res.status(200).send({ success: true, platform });
+      return res.status(200).send({ success: true, platform });
     } catch (error: any) {
       console.error('Erro ao buscar plataforma por ID:', error);
-      res.status(500).send({ success: false, message: error.message || 'Ocorreu um erro interno no servidor.' });
+      return res.status(500).send({ success: false, message: error.message || 'Ocorreu um erro interno no servidor.' });
     }
   }
 
@@ -76,20 +80,20 @@ export class PlatformController {
         return res.status(401).send({ success: false, message: 'Usuário não autenticado.' });
       }
       const { id } = req.params;
-      const updateData = updatePlatformSchema.parse(req.body);
+      const updateData: UpdatePlatformRequest = updatePlatformSchema.parse(req.body);
 
       const updatedPlatform = await PlatformService.updatePlatform(userId, id, updateData);
 
       if (!updatedPlatform) {
         return res.status(404).send({ success: false, message: 'Plataforma não encontrada ou não pertence ao usuário.' });
       }
-      res.status(200).send({ success: true, message: 'Plataforma atualizada com sucesso.', platform: updatedPlatform });
+      return res.status(200).send({ success: true, message: 'Plataforma atualizada com sucesso.', platform: updatedPlatform });
     } catch (error: any) {
       if (error instanceof z.ZodError) {
         return res.status(400).send({ success: false, message: 'Dados de entrada inválidos.', errors: error.errors });
       }
       console.error('Erro ao atualizar plataforma:', error);
-      res.status(500).send({ success: false, message: error.message || 'Ocorreu um erro interno no servidor.' });
+      return res.status(500).send({ success: false, message: error.message || 'Ocorreu um erro interno no servidor.' });
     }
   }
 
@@ -106,10 +110,10 @@ export class PlatformController {
       if (!deleted) {
         return res.status(404).send({ success: false, message: 'Plataforma não encontrada ou não pertence ao usuário.' });
       }
-      res.status(200).send({ success: true, message: 'Plataforma excluída com sucesso.' });
+      return res.status(200).send({ success: true, message: 'Plataforma excluída com sucesso.' });
     } catch (error: any) {
       console.error('Erro ao deletar plataforma:', error);
-      res.status(500).send({ success: false, message: error.message || 'Ocorreu um erro interno no servidor.' });
+      return res.status(500).send({ success: false, message: error.message || 'Ocorreu um erro interno no servidor.' });
     }
   }
 }
