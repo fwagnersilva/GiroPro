@@ -67,7 +67,7 @@
     "react": "19.0.0",
     "react-dom": "19.0.0",
     "react-error-boundary": "^4.0.13",
-    "react-hook-form": "^7.53.0",
+    "react-hook-form": "^7.63.0",
     "react-i18next": "^15.0.1",
     "react-native": "0.79.4",
     "react-native-edge-to-edge": "^1.6.0",
