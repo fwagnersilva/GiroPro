@@ -1,7 +1,7 @@
 import React from 'react';
 import { Stack, useRouter } from 'expo-router';
 import ProtectedRoute from '../../src/components/ProtectedRoute';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Platform } from 'react-native';
 import { useAuth } from '../../src/hooks/useAuth';
 
 // Componente Sidebar para o menu lateral (sempre visível no web)
@@ -24,7 +24,7 @@ const Sidebar = () => {
       <TouchableOpacity style={styles.sidebarItem} onPress={() => router.push('/despesas')}>
         <Text style={styles.sidebarItemText}>Despesas</Text>
       </TouchableOpacity>
-      {/* Menu de Configurações */} 
+      {/* Menu de Configurações */}
       <Text style={styles.sidebarSectionHeader}>Configurações</Text>
       <TouchableOpacity style={styles.sidebarSubItem} onPress={() => router.push('/settings/perfil')}>
         <Text style={styles.sidebarItemText}>Perfil</Text>
@@ -33,7 +33,8 @@ const Sidebar = () => {
         <Text style={styles.sidebarItemText}>Style</Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.sidebarSubItem} onPress={() => router.push('/settings/vehicles')}>
-        <Text style={styles.sidebarItemText}>Veículos</n></TouchableOpacity>
+        <Text style={styles.sidebarItemText}>Veículos</Text>
+      </TouchableOpacity>
       <TouchableOpacity style={styles.sidebarSubItem} onPress={() => router.push('/settings/cadastro-plataformas')}>
         <Text style={styles.sidebarItemText}>Cadastro de Plataformas</Text>
       </TouchableOpacity>
@@ -49,7 +50,7 @@ export default function AuthLayout() {
   return (
     <ProtectedRoute>
       <View style={styles.mainLayout}>
-        <Sidebar />
+        {Platform.OS === 'web' && <Sidebar />}
         <View style={styles.contentContainer}>
           <Stack>
             <Stack.Screen name="dashboard" options={{ headerShown: false }} />
@@ -76,6 +77,9 @@ const styles = StyleSheet.create({
     paddingTop: 50,
     borderRightWidth: 1,
     borderRightColor: '#eee',
+    // Adicionado para fixar o sidebar na web
+    position: Platform.OS === 'web' ? 'fixed' : 'relative',
+    height: '100%',
   },
   sidebarHeader: {
     fontSize: 24,
@@ -116,6 +120,8 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     flex: 1,
+    // Adicionado para compensar o sidebar fixo na web
+    marginLeft: Platform.OS === 'web' ? 240 : 0,
   },
 });
 
