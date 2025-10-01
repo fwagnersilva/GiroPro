@@ -1,46 +1,53 @@
-import React from 'react';
-import { Stack, useRouter } from 'expo-router';
+import React, { useState } from 'react';
+import { Stack, Drawer } from 'expo-router';
 import ProtectedRoute from '../../src/components/ProtectedRoute';
-import { View, Text, TouchableOpacity, StyleSheet, Platform } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { useAuth } from '../../src/hooks/useAuth';
 
-// Componente Sidebar para o menu lateral (sempre visível no web)
-const Sidebar = () => {
+// Componente CustomDrawerContent para o menu lateral
+const CustomDrawerContent = ({ navigation }) => {
   const { logout } = useAuth();
-  const router = useRouter();
+  const [settingsExpanded, setSettingsExpanded] = useState(false);
 
   return (
-    <View style={styles.sidebarContainer}>
-      <Text style={styles.sidebarHeader}>GiroPro</Text>
-      <TouchableOpacity style={styles.sidebarItem} onPress={() => router.push('/dashboard')}>
-        <Text style={styles.sidebarItemText}>Dashboard</Text>
+    <View style={styles.drawerContainer}>
+      <Text style={styles.drawerHeader}>GiroPro</Text>
+      <TouchableOpacity style={styles.drawerItem} onPress={() => navigation.navigate('dashboard')}>
+        <Text style={styles.drawerItemText}>Dashboard</Text>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.sidebarItem} onPress={() => router.push('/jornadas')}>
-        <Text style={styles.sidebarItemText}>Jornadas</Text>
+      <TouchableOpacity style={styles.drawerItem} onPress={() => navigation.navigate('jornadas')}>
+        <Text style={styles.drawerItemText}>Jornadas</Text>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.sidebarItem} onPress={() => router.push('/abastecimentos')}>
-        <Text style={styles.sidebarItemText}>Abastecimentos</Text>
+      <TouchableOpacity style={styles.drawerItem} onPress={() => navigation.navigate('abastecimentos')}>
+        <Text style={styles.drawerItemText}>Abastecimentos</Text>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.sidebarItem} onPress={() => router.push('/despesas')}>
-        <Text style={styles.sidebarItemText}>Despesas</Text>
-      </TouchableOpacity>
-      {/* Menu de Configurações */}
-      <Text style={styles.sidebarSectionHeader}>Configurações</Text>
-      <TouchableOpacity style={styles.sidebarSubItem} onPress={() => router.push('/settings/perfil')}>
-        <Text style={styles.sidebarItemText}>Perfil</Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.sidebarSubItem} onPress={() => router.push('/settings/style')}>
-        <Text style={styles.sidebarItemText}>Style</Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.sidebarSubItem} onPress={() => router.push('/settings/vehicles')}>
-        <Text style={styles.sidebarItemText}>Veículos</Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.sidebarSubItem} onPress={() => router.push('/settings/cadastro-plataformas')}>
-        <Text style={styles.sidebarItemText}>Cadastro de Plataformas</Text>
+      <TouchableOpacity style={styles.drawerItem} onPress={() => navigation.navigate('despesas')}>
+        <Text style={styles.drawerItemText}>Despesas</Text>
       </TouchableOpacity>
       
-      <TouchableOpacity style={[styles.sidebarItem, styles.logoutButton]} onPress={logout}>
-        <Text style={styles.sidebarItemText}>Sair</Text>
+      {/* Menu de Configurações com Submenu */}
+      <TouchableOpacity style={styles.drawerItem} onPress={() => setSettingsExpanded(!settingsExpanded)}>
+        <Text style={styles.drawerItemText}>Configurações {settingsExpanded ? '▲' : '▼'}</Text>
+      </TouchableOpacity>
+      {settingsExpanded && (
+        <View>
+          <TouchableOpacity style={styles.drawerSubItem} onPress={() => navigation.navigate('settings/perfil')}>
+            <Text style={styles.drawerItemText}>Perfil</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.drawerSubItem} onPress={() => navigation.navigate('settings/style')}>
+            <Text style={styles.drawerItemText}>Style</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.drawerSubItem} onPress={() => navigation.navigate('settings/vehicles')}>
+            <Text style={styles.drawerItemText}>Veículos</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.drawerSubItem} onPress={() => navigation.navigate('settings/cadastro-plataformas')}>
+            <Text style={styles.drawerItemText}>Cadastro de Plataformas</Text>
+          </TouchableOpacity>
+        </View>
+      )}
+      
+      <TouchableOpacity style={[styles.drawerItem, styles.logoutButton]} onPress={logout}>
+        <Text style={styles.drawerItemText}>Sair</Text>
       </TouchableOpacity>
     </View>
   );
@@ -49,39 +56,26 @@ const Sidebar = () => {
 export default function AuthLayout() {
   return (
     <ProtectedRoute>
-      <View style={styles.mainLayout}>
-        {Platform.OS === 'web' && <Sidebar />}
-        <View style={styles.contentContainer}>
-          <Stack>
-            <Stack.Screen name="dashboard" options={{ headerShown: false }} />
-            <Stack.Screen name="jornadas" options={{ headerShown: false }} />
-            <Stack.Screen name="abastecimentos" options={{ headerShown: false }} />
-            <Stack.Screen name="despesas" options={{ headerShown: false }} />
-            <Stack.Screen name="settings" options={{ headerShown: false }} />
-            <Stack.Screen name="vehicles" options={{ headerShown: false }} />
-          </Stack>
-        </View>
-      </View>
+      <Drawer drawerContent={CustomDrawerContent}>
+        <Drawer.Screen name="dashboard" options={{ headerShown: false, title: 'Dashboard' }} />
+        <Drawer.Screen name="jornadas" options={{ headerShown: false, title: 'Jornadas' }} />
+        <Drawer.Screen name="abastecimentos" options={{ headerShown: false, title: 'Abastecimentos' }} />
+        <Drawer.Screen name="despesas" options={{ headerShown: false, title: 'Despesas' }} />
+        <Drawer.Screen name="settings" options={{ headerShown: false, title: 'Configurações' }} />
+        {/* A rota 'vehicles' original foi movida para dentro de 'settings' */}
+        {/* <Drawer.Screen name="vehicles" options={{ headerShown: false, title: 'Veículos' }} /> */}
+      </Drawer>
     </ProtectedRoute>
   );
 }
 
 const styles = StyleSheet.create({
-  mainLayout: {
+  drawerContainer: {
     flex: 1,
-    flexDirection: 'row',
-  },
-  sidebarContainer: {
-    width: 240,
-    backgroundColor: '#f8f8f8',
     paddingTop: 50,
-    borderRightWidth: 1,
-    borderRightColor: '#eee',
-    // Adicionado para fixar o sidebar na web
-    position: Platform.OS === 'web' ? 'fixed' : 'relative',
-    height: '100%',
+    backgroundColor: '#fff',
   },
-  sidebarHeader: {
+  drawerHeader: {
     fontSize: 24,
     fontWeight: 'bold',
     padding: 20,
@@ -89,24 +83,24 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     color: '#333',
   },
-  sidebarItem: {
+  drawerItem: {
     paddingVertical: 15,
     paddingHorizontal: 20,
     borderBottomWidth: 1,
     borderBottomColor: '#eee',
   },
-  sidebarSubItem: {
+  drawerSubItem: {
     paddingVertical: 10,
     paddingHorizontal: 30,
     borderBottomWidth: 1,
     borderBottomColor: '#eee',
     backgroundColor: '#f9f9f9',
   },
-  sidebarItemText: {
+  drawerItemText: {
     fontSize: 18,
     color: '#555',
   },
-  sidebarSectionHeader: {
+  drawerSectionHeader: {
     fontSize: 16,
     fontWeight: 'bold',
     marginTop: 20,
@@ -117,11 +111,6 @@ const styles = StyleSheet.create({
   logoutButton: {
     marginTop: 30,
     backgroundColor: '#fdd',
-  },
-  contentContainer: {
-    flex: 1,
-    // Adicionado para compensar o sidebar fixo na web
-    marginLeft: Platform.OS === 'web' ? 240 : 0,
   },
 });
 

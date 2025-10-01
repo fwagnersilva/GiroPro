@@ -1,11 +1,9 @@
 import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
-import { useRouter, useNavigation } from 'expo-router';
-import { DrawerActions } from '@react-navigation/native';
+import { useRouter } from 'expo-router';
 
 const Dashboard = () => {
   const router = useRouter();
-  const navigation = useNavigation();
 
   const handleLogout = () => {
     // TODO: Implementar lógica de logout
@@ -13,17 +11,10 @@ const Dashboard = () => {
     router.push('/login');
   };
 
-  const openDrawer = () => {
-    navigation.dispatch(DrawerActions.openDrawer());
-  };
-
   return (
     <View className="flex-1 bg-gray-50">
       {/* Header */}
       <View className="bg-white shadow-sm px-6 py-4 flex-row justify-between items-center">
-        <TouchableOpacity onPress={openDrawer} className="p-2">
-          <Text className="text-blue-600 text-xl">☰</Text>
-        </TouchableOpacity>
         <View>
           <Text className="text-2xl font-bold text-gray-900">Dashboard</Text>
           <Text className="text-gray-600">Bem-vindo ao GiroPro</Text>
