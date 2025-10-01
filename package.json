@@ -1,7 +1,6 @@
 {
   "name": "react-native-boilerplate",
   "version": "1.0.0",
-  "main": "Main.tsx",
   "scripts": {
     "start": "expo start --dev-client",
     "dev:android": "expo start --android",

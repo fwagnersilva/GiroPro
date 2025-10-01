@@ -2,7 +2,7 @@ import React from 'react';
 import { View } from 'react-native';
 import { useRouter } from 'expo-router';
 import LoginForm from '../src/components/LoginForm';
-import { useAuth } from '../src/hooks/useAuth';
+import { useAuth } from '../src/contexts/AuthContext';
 
 const Login = () => {
   const router = useRouter();
@@ -25,7 +25,7 @@ const Login = () => {
   };
 
   return (
-    <View className="flex-1">
+    <View style={{ flex: 1 }}>
       <LoginForm
         onLogin={handleLogin}
         onForgotPassword={handleForgotPassword}
@@ -37,5 +37,3 @@ const Login = () => {
 };
 
 export default Login;
-
-

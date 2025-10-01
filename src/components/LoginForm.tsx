@@ -1,164 +1,299 @@
 import React from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
-import Input from './Input';
-import Button from './Button';
-import { useLoginForm } from '../hooks/useLoginForm';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native';
 
 interface LoginFormProps {
   onLogin: (email: string, password: string, rememberMe: boolean) => Promise<void>;
   onForgotPassword: () => void;
+  loading?: boolean;
+  error?: string | null;
 }
 
 const LoginForm: React.FC<LoginFormProps> = ({
   onLogin,
   onForgotPassword,
+  loading = false,
+  error = null,
 }) => {
-  const {
-    email,
-    password,
-    rememberMe,
-    isLoading,
-    errors,
-    touched,
-    setEmail,
-    setPassword,
-    setRememberMe,
-    setEmailTouched,
-    setPasswordTouched,
-    isFormValid,
-    handleSubmit,
-  } = useLoginForm();
-
+  const [email, setEmail] = React.useState('');
+  const [password, setPassword] = React.useState('');
+  const [rememberMe, setRememberMe] = React.useState(false);
   const [showPassword, setShowPassword] = React.useState(false);
 
-  const onSubmit = () => {
-    handleSubmit(onLogin);
+  const handleSubmit = async () => {
+    if (!email || !password) {
+      return;
+    }
+    await onLogin(email, password, rememberMe);
   };
 
   return (
-    <View className="flex-1 justify-center px-6 py-8 bg-white">
+    <View style={styles.container}>
       {/* Logo e Título */}
-      <View className="items-center mb-8">
-        <View className="w-20 h-20 bg-blue-600 rounded-full items-center justify-center mb-4">
-          <Text className="text-white text-2xl font-bold">GP</Text>
+      <View style={styles.header}>
+        <View style={styles.logo}>
+          <Text style={styles.logoText}>GP</Text>
         </View>
-        <Text className="text-3xl font-bold text-gray-900 mb-2">
-          Bem-vindo de volta
-        </Text>
-        <Text className="text-gray-600 text-center">
-          Entre com suas credenciais para acessar sua conta
-        </Text>
+        <Text style={styles.title}>Bem-vindo de volta</Text>
+        <Text style={styles.subtitle}>Entre com suas credenciais para acessar sua conta</Text>
       </View>
 
       {/* Formulário */}
-      <View className="w-full max-w-sm mx-auto">
+      <View style={styles.form}>
         {/* Campo Email */}
-        <Input
-          label="Email"
-          placeholder="Digite seu email"
-          value={email}
-          onChangeText={setEmail}
-          onBlur={setEmailTouched}
-          keyboardType="email-address"
-          autoCapitalize="none"
-          autoComplete="email"
-          error={touched.email ? errors.email : undefined}
-          leftIcon={
-            <View className="w-5 h-5 bg-gray-400 rounded-full" />
-          }
-        />
+        <View style={styles.inputContainer}>
+          <Text style={styles.label}>Email</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Digite seu email"
+            value={email}
+            onChangeText={setEmail}
+            keyboardType="email-address"
+            autoCapitalize="none"
+            autoComplete="email"
+          />
+        </View>
 
         {/* Campo Senha */}
-        <Input
-          label="Senha"
-          placeholder="Digite sua senha"
-          value={password}
-          onChangeText={setPassword}
-          onBlur={setPasswordTouched}
-          secureTextEntry={!showPassword}
-          autoComplete="password"
-          error={touched.password ? errors.password : undefined}
-          leftIcon={
-            <View className="w-5 h-5 bg-gray-400 rounded-full" />
-          }
-          rightIcon={
+        <View style={styles.inputContainer}>
+          <Text style={styles.label}>Senha</Text>
+          <View style={styles.passwordContainer}>
+            <TextInput
+              style={[styles.input, styles.passwordInput]}
+              placeholder="Digite sua senha"
+              value={password}
+              onChangeText={setPassword}
+              secureTextEntry={!showPassword}
+              autoComplete="password"
+            />
             <TouchableOpacity
               onPress={() => setShowPassword(!showPassword)}
-              className="p-1"
+              style={styles.showPasswordButton}
             >
-              <Text className="text-gray-500 text-xs">
+              <Text style={styles.showPasswordText}>
                 {showPassword ? 'Ocultar' : 'Mostrar'}
               </Text>
             </TouchableOpacity>
-          }
-        />
+          </View>
+        </View>
 
         {/* Opções */}
-        <View className="flex-row justify-between items-center mb-6">
+        <View style={styles.options}>
           {/* Lembrar-me */}
           <TouchableOpacity
-            className="flex-row items-center"
+            style={styles.rememberMe}
             onPress={() => setRememberMe(!rememberMe)}
           >
-            <View
-              className={`
-                w-5 h-5 border-2 rounded mr-2 items-center justify-center
-                ${rememberMe ? 'bg-blue-600 border-blue-600' : 'border-gray-300'}
-              `}
-            >
-              {rememberMe && (
-                <Text className="text-white text-xs">✓</Text>
-              )}
+            <View style={[styles.checkbox, rememberMe && styles.checkboxChecked]}>
+              {rememberMe && <Text style={styles.checkmark}>✓</Text>}
             </View>
-            <Text className="text-gray-700 text-sm">Lembrar-me</Text>
+            <Text style={styles.rememberMeText}>Lembrar-me</Text>
           </TouchableOpacity>
 
           {/* Esqueci minha senha */}
           <TouchableOpacity onPress={onForgotPassword}>
-            <Text className="text-blue-600 text-sm font-medium">
-              Esqueci minha senha
-            </Text>
+            <Text style={styles.forgotPassword}>Esqueci minha senha</Text>
           </TouchableOpacity>
         </View>
 
-        {/* Mensagem de Erro Geral */}
-        {errors.general && (
-          <View className="bg-red-50 border border-red-200 rounded-lg p-3 mb-4">
-            <Text className="text-red-700 text-sm text-center">{errors.general}</Text>
+        {/* Mensagem de Erro */}
+        {error && (
+          <View style={styles.errorContainer}>
+            <Text style={styles.errorText}>{error}</Text>
           </View>
         )}
 
         {/* Botão de Login */}
-        <Button
-          title="Entrar"
-          onPress={onSubmit}
-          loading={isLoading}
-          disabled={!isFormValid || isLoading}
-          containerClassName="mb-6"
-        />
+        <TouchableOpacity
+          style={[styles.button, loading && styles.buttonDisabled]}
+          onPress={handleSubmit}
+          disabled={loading || !email || !password}
+        >
+          {loading ? (
+            <ActivityIndicator color="#fff" />
+          ) : (
+            <Text style={styles.buttonText}>Entrar</Text>
+          )}
+        </TouchableOpacity>
 
         {/* Links auxiliares */}
-        <View className="items-center">
-          <Text className="text-gray-600 text-sm mb-2">
-            Não tem uma conta?
-          </Text>
+        <View style={styles.footer}>
+          <Text style={styles.footerText}>Não tem uma conta?</Text>
           <TouchableOpacity>
-            <Text className="text-blue-600 text-sm font-medium">
-              Criar conta
-            </Text>
+            <Text style={styles.createAccount}>Criar conta</Text>
           </TouchableOpacity>
         </View>
       </View>
 
       {/* Rodapé */}
-      <View className="items-center mt-8">
-        <Text className="text-gray-500 text-xs">
-          © 2024 GiroPro. Todos os direitos reservados.
-        </Text>
+      <View style={styles.copyright}>
+        <Text style={styles.copyrightText}>© 2024 GiroPro. Todos os direitos reservados.</Text>
       </View>
     </View>
   );
 };
 
-export default LoginForm;
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    paddingHorizontal: 24,
+    paddingVertical: 32,
+    backgroundColor: '#fff',
+  },
+  header: {
+    alignItems: 'center',
+    marginBottom: 32,
+  },
+  logo: {
+    width: 80,
+    height: 80,
+    backgroundColor: '#2563eb',
+    borderRadius: 40,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 16,
+  },
+  logoText: {
+    color: '#fff',
+    fontSize: 32,
+    fontWeight: 'bold',
+  },
+  title: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    color: '#111827',
+    marginBottom: 8,
+  },
+  subtitle: {
+    fontSize: 14,
+    color: '#6b7280',
+    textAlign: 'center',
+  },
+  form: {
+    width: '100%',
+    maxWidth: 400,
+    alignSelf: 'center',
+  },
+  inputContainer: {
+    marginBottom: 16,
+  },
+  label: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#374151',
+    marginBottom: 8,
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: '#d1d5db',
+    borderRadius: 8,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    fontSize: 16,
+    backgroundColor: '#fff',
+  },
+  passwordContainer: {
+    position: 'relative',
+  },
+  passwordInput: {
+    paddingRight: 80,
+  },
+  showPasswordButton: {
+    position: 'absolute',
+    right: 12,
+    top: 12,
+    padding: 4,
+  },
+  showPasswordText: {
+    color: '#6b7280',
+    fontSize: 12,
+  },
+  options: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 24,
+  },
+  rememberMe: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  checkbox: {
+    width: 20,
+    height: 20,
+    borderWidth: 2,
+    borderColor: '#d1d5db',
+    borderRadius: 4,
+    marginRight: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  checkboxChecked: {
+    backgroundColor: '#2563eb',
+    borderColor: '#2563eb',
+  },
+  checkmark: {
+    color: '#fff',
+    fontSize: 12,
+  },
+  rememberMeText: {
+    color: '#374151',
+    fontSize: 14,
+  },
+  forgotPassword: {
+    color: '#2563eb',
+    fontSize: 14,
+    fontWeight: '600',
+  },
+  errorContainer: {
+    backgroundColor: '#fef2f2',
+    borderWidth: 1,
+    borderColor: '#fecaca',
+    borderRadius: 8,
+    padding: 12,
+    marginBottom: 16,
+  },
+  errorText: {
+    color: '#dc2626',
+    fontSize: 14,
+    textAlign: 'center',
+  },
+  button: {
+    backgroundColor: '#2563eb',
+    paddingVertical: 14,
+    borderRadius: 8,
+    alignItems: 'center',
+    marginBottom: 24,
+  },
+  buttonDisabled: {
+    backgroundColor: '#93c5fd',
+  },
+  buttonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  footer: {
+    alignItems: 'center',
+  },
+  footerText: {
+    color: '#6b7280',
+    fontSize: 14,
+    marginBottom: 8,
+  },
+  createAccount: {
+    color: '#2563eb',
+    fontSize: 14,
+    fontWeight: '600',
+  },
+  copyright: {
+    alignItems: 'center',
+    marginTop: 32,
+  },
+  copyrightText: {
+    color: '#9ca3af',
+    fontSize: 12,
+  },
+});
 
+export default LoginForm;
