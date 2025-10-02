@@ -154,8 +154,8 @@ importers:
         specifier: ^19.2.2
         version: 19.8.1
       '@dev-plugins/react-query':
-        specifier: ^0.0.7
-        version: 0.0.7(@tanstack/react-query@5.90.2(react@19.0.0))(expo@53.0.23(@babel/core@7.28.4)(@expo/metro-runtime@5.0.5(react-native@0.79.4(@babel/core@7.28.4)(@types/react@19.0.14)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.4)(@types/react@19.0.14)(react@19.0.0))(react@19.0.0))
+        specifier: ^0.3.1
+        version: 0.3.1(@tanstack/react-query@5.90.2(react@19.0.0))(expo@53.0.23(@babel/core@7.28.4)(@expo/metro-runtime@5.0.5(react-native@0.79.4(@babel/core@7.28.4)(@types/react@19.0.14)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.4)(@types/react@19.0.14)(react@19.0.0))(react@19.0.0))
       '@eslint/eslintrc':
         specifier: ^3.3.1
         version: 3.3.1
@@ -870,11 +870,11 @@ packages:
     resolution: {integrity: sha512-/yCrWGCoA1SVKOks25EGadP9Pnj0oAIHGpl2wH2M2Y46dPM2ueb8wyCVOD7O3WCTkaJ0IkKvzhl1JY7+uCT2Dw==}
     engines: {node: '>=v18'}
 
-  '@dev-plugins/react-query@0.0.7':
-    resolution: {integrity: sha512-A54YRUEwSHjEl4OrnP9QDwbgx4XOzCIreqYfCzPB0E4EV5U7ykCdxsm6gNhfy5EQfNvkqzrSRhO8GsR8fCfxdw==}
+  '@dev-plugins/react-query@0.3.1':
+    resolution: {integrity: sha512-xmNfMIwHLhigE/usbGma+W/2G8bHRAfrP83nqTtjPMc7Rt2zSv1Ju3EK3KhkAh3WuHrUMpBIbNJdLgSc+K4tMg==}
     peerDependencies:
       '@tanstack/react-query': '*'
-      expo: '*'
+      expo: ^53.0.5
 
   '@egjs/hammerjs@2.0.17':
     resolution: {integrity: sha512-XQsZgjm2EcVUiZQf11UBJQfmZeEmOW8DpI1gsFeln6w0ae0ii4dMQEQ0kjl6DspdWX1aGY1/loyXnP0JS06e/A==}
@@ -7779,7 +7779,7 @@ snapshots:
       '@types/conventional-commits-parser': 5.0.1
       chalk: 5.6.2
 
-  '@dev-plugins/react-query@0.0.7(@tanstack/react-query@5.90.2(react@19.0.0))(expo@53.0.23(@babel/core@7.28.4)(@expo/metro-runtime@5.0.5(react-native@0.79.4(@babel/core@7.28.4)(@types/react@19.0.14)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.4)(@types/react@19.0.14)(react@19.0.0))(react@19.0.0))':
+  '@dev-plugins/react-query@0.3.1(@tanstack/react-query@5.90.2(react@19.0.0))(expo@53.0.23(@babel/core@7.28.4)(@expo/metro-runtime@5.0.5(react-native@0.79.4(@babel/core@7.28.4)(@types/react@19.0.14)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.4)(@types/react@19.0.14)(react@19.0.0))(react@19.0.0))':
     dependencies:
       '@tanstack/react-query': 5.90.2(react@19.0.0)
       expo: 53.0.23(@babel/core@7.28.4)(@expo/metro-runtime@5.0.5(react-native@0.79.4(@babel/core@7.28.4)(@types/react@19.0.14)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.4)(@types/react@19.0.14)(react@19.0.0))(react@19.0.0)
