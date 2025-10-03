@@ -81,6 +81,17 @@ const Dashboard = () => {
             <Text style={styles.cardTitle}>Veículos</Text>
             <Text style={styles.cardDescription}>Cadastre veículos</Text>
           </TouchableOpacity>
+
+          <TouchableOpacity
+            style={[styles.card, styles.cardTeal]}
+            onPress={() => router.push('/cadastro-plataformas' as any)}
+          >
+            <View style={[styles.cardIcon, styles.cardIconTeal]}>
+              <Text style={styles.cardIconText}>📱</Text>
+            </View>
+            <Text style={styles.cardTitle}>Plataformas</Text>
+            <Text style={styles.cardDescription}>Gerencie apps</Text>
+          </TouchableOpacity>
         </View>
 
         {/* Estatísticas rápidas */}
@@ -193,6 +204,9 @@ const styles = StyleSheet.create({
   cardOrange: {
     backgroundColor: '#fff7ed',
   },
+  cardTeal: {
+    backgroundColor: '#f0fdfa',
+  },
   cardIcon: {
     width: 48,
     height: 48,
@@ -212,6 +226,9 @@ const styles = StyleSheet.create({
   },
   cardIconOrange: {
     backgroundColor: '#ea580c',
+  },
+  cardIconTeal: {
+    backgroundColor: '#14b8a6',
   },
   cardIconText: {
     fontSize: 24,

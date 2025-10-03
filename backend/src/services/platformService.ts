@@ -1,5 +1,5 @@
 import { db } from "../db";
-import { plataformas, usuarios } from "../db/schema";
+import { plataformas, usuarios, jornadasFaturamentoPorPlataforma } from "../db/schema";
 import { eq, and, isNull } from "drizzle-orm";
 import crypto from 'crypto';
 
@@ -26,6 +26,42 @@ export interface Platform {
 }
 
 export class PlatformService {
+  /**
+   * Inicializa as plataformas padrão (Uber e 99) para um novo usuário
+   */
+  static async initializeDefaultPlatforms(userId: string): Promise<void> {
+    try {
+      const defaultPlatforms = ['Uber', '99'];
+      
+      for (const platformName of defaultPlatforms) {
+        // Verificar se já existe
+        const existing = await db.select().from(plataformas).where(
+          and(
+            eq(plataformas.idUsuario, userId),
+            eq(plataformas.nome, platformName),
+            isNull(plataformas.deletedAt)
+          )
+        );
+
+        if (existing.length === 0) {
+          await db.insert(plataformas).values({
+            id: crypto.randomUUID(),
+            idUsuario: userId,
+            nome: platformName,
+            isPadrao: true,
+            ativa: true,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+            deletedAt: null,
+          });
+        }
+      }
+    } catch (error) {
+      console.error("Erro ao inicializar plataformas padrão:", error);
+      throw error;
+    }
+  }
+
   static async createPlatform(userId: string, platformData: CreatePlatformRequest): Promise<Platform> {
     try {
       // Verificar se o nome da plataforma já existe para este usuário
@@ -137,6 +173,15 @@ export class PlatformService {
         throw new Error("Não é permitido deletar plataformas padrão. Apenas desativá-las.");
       }
 
+      // Verificar se existem referências em jornadas
+      const references = await db.select().from(jornadasFaturamentoPorPlataforma).where(
+        eq(jornadasFaturamentoPorPlataforma.idPlataforma, platformId)
+      );
+
+      if (references.length > 0) {
+        throw new Error("Não é possível excluir esta plataforma pois existem jornadas associadas a ela. Você pode desativá-la.");
+      }
+
       const [result] = await db.update(plataformas).set({
         deletedAt: new Date(),
         updatedAt: new Date(),
@@ -155,13 +200,32 @@ export class PlatformService {
     }
   }
 
+  /**
+   * Retorna apenas as plataformas ativas do usuário
+   */
+  static async getActivePlatforms(userId: string): Promise<Platform[]> {
+    try {
+      const result = await db.select().from(plataformas).where(
+        and(
+          eq(plataformas.idUsuario, userId),
+          eq(plataformas.ativa, true),
+          isNull(plataformas.deletedAt)
+        )
+      );
+      return result.map(this.mapToPlatform);
+    } catch (error) {
+      console.error("Erro ao buscar plataformas ativas:", error);
+      throw error;
+    }
+  }
+
   private static mapToPlatform(dbPlatform: typeof plataformas.$inferSelect): Platform {
     return {
       id: dbPlatform.id,
       idUsuario: dbPlatform.idUsuario,
       nome: dbPlatform.nome,
-      isPadrao: dbPlatform.isPadrao === 1, // SQLite armazena boolean como 0 ou 1
-      ativa: dbPlatform.ativa === 1,
+      isPadrao: Boolean(dbPlatform.isPadrao), // Converter para boolean
+      ativa: Boolean(dbPlatform.ativa), // Converter para boolean
       createdAt: new Date(dbPlatform.createdAt),
       updatedAt: new Date(dbPlatform.updatedAt),
       deletedAt: dbPlatform.deletedAt ? new Date(dbPlatform.deletedAt) : null,

@@ -11,7 +11,7 @@ const createPlatformSchema = z.object({
 });
 
 const updatePlatformSchema = z.object({
-  nome: z.string().min(1, "Nome da plataforma é obrigatório").max(100, "Nome da plataforma deve ter no máximo 100 caracteres"),
+  nome: z.string().min(1, "Nome da plataforma é obrigatório").max(100, "Nome da plataforma deve ter no máximo 100 caracteres").optional(),
   ativa: z.boolean().optional(),
 });
 
@@ -27,8 +27,8 @@ export class PlatformController {
         return res.status(401).send({ success: false, message: 'Usuário não autenticado.' });
       }
 
-      const platformData: CreatePlatformRequest = createPlatformSchema.parse(req.body);
-      const newPlatform = await PlatformService.createPlatform(userId, platformData);
+      const validatedData = createPlatformSchema.parse(req.body);
+      const newPlatform = await PlatformService.createPlatform(userId, validatedData as any);
       return res.status(201).send({ success: true, message: 'Plataforma criada com sucesso.', platform: newPlatform });
     } catch (error: any) {
       if (error instanceof z.ZodError) {
@@ -50,6 +50,21 @@ export class PlatformController {
       return res.status(200).send({ success: true, platforms });
     } catch (error: any) {
       console.error('Erro ao buscar plataformas:', error);
+      return res.status(500).send({ success: false, message: error.message || 'Ocorreu um erro interno no servidor.' });
+    }
+  }
+
+  static async getActivePlatforms(req: AuthenticatedRequest, res: Response) {
+    try {
+      const userId = req.user?.id;
+      if (!userId) {
+        return res.status(401).send({ success: false, message: 'Usuário não autenticado.' });
+      }
+
+      const platforms = await PlatformService.getActivePlatforms(userId);
+      return res.status(200).send({ success: true, platforms });
+    } catch (error: any) {
+      console.error('Erro ao buscar plataformas ativas:', error);
       return res.status(500).send({ success: false, message: error.message || 'Ocorreu um erro interno no servidor.' });
     }
   }

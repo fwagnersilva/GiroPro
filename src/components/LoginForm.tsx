@@ -4,6 +4,7 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet, ActivityIndicator 
 interface LoginFormProps {
   onLogin: (email: string, password: string, rememberMe: boolean) => Promise<void>;
   onForgotPassword: () => void;
+  onCreateAccount?: () => void;
   loading?: boolean;
   error?: string | null;
 }
@@ -11,6 +12,7 @@ interface LoginFormProps {
 const LoginForm: React.FC<LoginFormProps> = ({
   onLogin,
   onForgotPassword,
+  onCreateAccount,
   loading = false,
   error = null,
 }) => {
@@ -121,7 +123,7 @@ const LoginForm: React.FC<LoginFormProps> = ({
         {/* Links auxiliares */}
         <View style={styles.footer}>
           <Text style={styles.footerText}>Não tem uma conta?</Text>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={onCreateAccount}>
             <Text style={styles.createAccount}>Criar conta</Text>
           </TouchableOpacity>
         </View>

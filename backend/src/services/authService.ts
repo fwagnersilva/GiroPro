@@ -57,6 +57,15 @@ export class AuthService {
       const token = this.generateToken(newUser.id, newUser.email, newUser.nome, newUser.role);
       const refreshToken = this.generateRefreshToken(newUser.id);
 
+      // Inicializar plataformas padrão (Uber e 99)
+      try {
+        const { PlatformService } = await import('./platformService');
+        await PlatformService.initializeDefaultPlatforms(newUser.id);
+      } catch (error) {
+        console.error('Erro ao inicializar plataformas padrão:', error);
+        // Não falhar o registro por causa das plataformas
+      }
+
       // Enviar email de boas-vindas (não bloquear o registro se falhar)
       try {
         const { EmailService } = await import('./emailService');

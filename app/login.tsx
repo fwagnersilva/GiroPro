@@ -24,11 +24,16 @@ const Login = () => {
     console.log('Forgot password clicked');
   };
 
+  const handleCreateAccount = () => {
+    router.push('/register');
+  };
+
   return (
     <View style={{ flex: 1 }}>
       <LoginForm
         onLogin={handleLogin}
         onForgotPassword={handleForgotPassword}
+        onCreateAccount={handleCreateAccount}
         loading={isLoading}
         error={error || undefined}
       />
