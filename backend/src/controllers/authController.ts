@@ -10,8 +10,8 @@ import { z } from 'zod';
 export class AuthController {
   static async register(req: Request, res: Response) {
     try {
-      const { email, senha, nome } = registerSchema.parse(req.body);
-      const { token, user, refreshToken } = await AuthService.register({ email, senha, nome });
+      const { email, password, name, dateOfBirth, city } = registerSchema.parse(req.body);
+      const { token, user, refreshToken } = await AuthService.register({ email, password, name, dateOfBirth, city });
       res.status(201).send({ success: true, message: 'Usuário registrado com sucesso', accessToken: token, user: { ...user, role: 'user' }, refreshToken });
     } catch (error: any) {
       if (error instanceof ValidationError) {

@@ -7,10 +7,13 @@ import {
   StyleSheet,
   ActivityIndicator,
   ScrollView,
+  Platform,
 } from 'react-native';
+import { Picker } from '@react-native-picker/picker';
+import { BRAZILIAN_CITIES } from '../data/cities';
 
 interface RegisterFormProps {
-  onRegister: (nome: string, email: string, senha: string) => Promise<void>;
+  onRegister: (name: string, email: string, password: string, confirmPassword: string, dateOfBirth: string, city: string) => Promise<void>;
   onBackToLogin: () => void;
   loading?: boolean;
   error?: string | null;
@@ -26,6 +29,8 @@ const RegisterForm: React.FC<RegisterFormProps> = ({
   const [email, setEmail] = React.useState('');
   const [senha, setSenha] = React.useState('');
   const [confirmarSenha, setConfirmarSenha] = React.useState('');
+  const [dateOfBirth, setDateOfBirth] = React.useState('');
+  const [city, setCity] = React.useState('');
   const [showPassword, setShowPassword] = React.useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = React.useState(false);
   const [validationErrors, setValidationErrors] = React.useState<string[]>([]);
@@ -45,6 +50,28 @@ const RegisterForm: React.FC<RegisterFormProps> = ({
       errors.push('Email é obrigatório');
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       errors.push('Email inválido');
+    }
+
+    // Validar data de nascimento
+    if (!dateOfBirth.trim()) {
+      errors.push('Data de nascimento é obrigatória');
+    } else {
+      const birthDate = new Date(dateOfBirth);
+      const today = new Date();
+      const age = today.getFullYear() - birthDate.getFullYear();
+      
+      if (isNaN(birthDate.getTime())) {
+        errors.push('Data de nascimento inválida');
+      } else if (age < 18) {
+        errors.push('Você deve ter pelo menos 18 anos');
+      } else if (age > 120) {
+        errors.push('Data de nascimento inválida');
+      }
+    }
+
+    // Validar cidade
+    if (!city.trim()) {
+      errors.push('Cidade é obrigatória');
     }
 
     // Validar senha
@@ -68,10 +95,10 @@ const RegisterForm: React.FC<RegisterFormProps> = ({
       return;
     }
 
-    await onRegister(nome.trim(), email.trim().toLowerCase(), senha);
+    await onRegister(nome.trim(), email.trim().toLowerCase(), senha, confirmarSenha, dateOfBirth, city);
   };
 
-  const isFormValid = nome.trim() && email.trim() && senha && confirmarSenha;
+  const isFormValid = nome.trim() && email.trim() && senha && confirmarSenha && dateOfBirth.trim() && city.trim();
 
   return (
     <ScrollView style={styles.scrollContainer}>
@@ -114,6 +141,67 @@ const RegisterForm: React.FC<RegisterFormProps> = ({
               autoCapitalize="none"
               autoComplete="email"
             />
+          </View>
+
+          {/* Campo Data de Nascimento */}
+          <View style={styles.inputContainer}>
+            <Text style={styles.label}>Data de Nascimento *</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="DD/MM/AAAA"
+              value={dateOfBirth}
+              onChangeText={(text) => {
+                // Formatação automática da data
+                let formatted = text.replace(/\D/g, '');
+                if (formatted.length >= 2) {
+                  formatted = formatted.substring(0, 2) + '/' + formatted.substring(2);
+                }
+                if (formatted.length >= 5) {
+                  formatted = formatted.substring(0, 5) + '/' + formatted.substring(5, 9);
+                }
+                setDateOfBirth(formatted);
+              }}
+              keyboardType="numeric"
+              maxLength={10}
+            />
+          </View>
+
+          {/* Campo Cidade */}
+          <View style={styles.inputContainer}>
+            <Text style={styles.label}>Cidade *</Text>
+            {Platform.OS === 'web' ? (
+              <View style={styles.selectContainer}>
+                <select
+                  style={styles.webSelect}
+                  value={city}
+                  onChange={(e) => setCity(e.target.value)}
+                >
+                  <option value="">Selecione sua cidade</option>
+                  {BRAZILIAN_CITIES.map((cityOption) => (
+                    <option key={cityOption.displayName} value={cityOption.displayName}>
+                      {cityOption.displayName}
+                    </option>
+                  ))}
+                </select>
+              </View>
+            ) : (
+              <View style={styles.pickerContainer}>
+                <Picker
+                  selectedValue={city}
+                  onValueChange={(itemValue) => setCity(itemValue)}
+                  style={styles.picker}
+                >
+                  <Picker.Item label="Selecione sua cidade" value="" />
+                  {BRAZILIAN_CITIES.map((cityOption) => (
+                    <Picker.Item
+                      key={cityOption.displayName}
+                      label={cityOption.displayName}
+                      value={cityOption.displayName}
+                    />
+                  ))}
+                </Picker>
+              </View>
+            )}
           </View>
 
           {/* Campo Senha */}
@@ -372,6 +460,29 @@ const styles = StyleSheet.create({
   copyrightText: {
     color: '#9ca3af',
     fontSize: 12,
+  },
+  selectContainer: {
+    borderWidth: 1,
+    borderColor: '#d1d5db',
+    borderRadius: 8,
+    backgroundColor: '#fff',
+  },
+  webSelect: {
+    width: '100%',
+    padding: 12,
+    fontSize: 16,
+    border: 'none',
+    outline: 'none',
+    backgroundColor: 'transparent',
+  },
+  pickerContainer: {
+    borderWidth: 1,
+    borderColor: '#d1d5db',
+    borderRadius: 8,
+    backgroundColor: '#fff',
+  },
+  picker: {
+    height: 50,
   },
 });
 

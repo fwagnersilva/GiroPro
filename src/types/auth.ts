@@ -3,6 +3,8 @@ export interface User {
   email: string;
   name?: string;
   avatar?: string;
+  dateOfBirth?: string; // Adicionado campo para data de nascimento
+  city?: string; // Adicionado campo para cidade
   createdAt: string;
   updatedAt: string;
 }
@@ -23,7 +25,9 @@ export interface RegisterCredentials {
   email: string;
   password: string;
   confirmPassword: string;
-  name?: string;
+  name: string;
+  dateOfBirth: string; // Adicionado campo para data de nascimento
+  city: string; // Adicionado campo para cidade
 }
 
 export interface AuthState {
@@ -73,12 +77,16 @@ export interface RegisterFormState {
   password: string;
   confirmPassword: string;
   name: string;
+  dateOfBirth: string; // Adicionado campo para data de nascimento
+  city: string; // Adicionado campo para cidade
   isLoading: boolean;
   errors: {
     email?: string;
     password?: string;
     confirmPassword?: string;
     name?: string;
+    dateOfBirth?: string; // Adicionado campo para data de nascimento
+    city?: string; // Adicionado campo para cidade
     general?: string;
   };
   touched: {
@@ -86,6 +94,8 @@ export interface RegisterFormState {
     password: boolean;
     confirmPassword: boolean;
     name: boolean;
+    dateOfBirth: boolean; // Adicionado campo para data de nascimento
+    city: boolean; // Adicionado campo para cidade
   };
 }
 

@@ -30,6 +30,8 @@ export const usuarios = sqliteTable("usuarios", {
   senhaHash: text("senhaHash", { length: 255 }).notNull(),
   role: userRole.default("user").notNull(),
   statusConta: accountStatus.default("ativo").notNull(),
+  dataNascimento: integer("dataNascimento", { mode: "timestamp" }).notNull(), // Adicionado campo para data de nascimento
+  cidade: text("cidade", { length: 100 }).notNull(), // Adicionado campo para cidade
   dataCadastro: integer("dataCadastro", { mode: "timestamp" }).default(sql`(unixepoch())`).notNull(),
   
   // Gamificação

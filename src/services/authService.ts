@@ -29,11 +29,28 @@ export const loginApi = async (credentials: LoginCredentials): Promise<AuthRespo
 export const registerApi = async (credentials: any): Promise<AuthResponse> => {
   return new Promise((resolve, reject) => {
     setTimeout(() => {
-      if (credentials.email && credentials.password) {
+      if (credentials.email && credentials.password && credentials.dateOfBirth && credentials.city) {
+        // Validar idade mínima (18 anos)
+        const [day, month, year] = credentials.dateOfBirth.split('/').map(Number);
+        const birthDate = new Date(year, month - 1, day);
+        const today = new Date();
+        let age = today.getFullYear() - birthDate.getFullYear();
+        const m = today.getMonth() - birthDate.getMonth();
+        if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+          age--;
+        }
+        
+        if (age < 18) {
+          reject(new Error("Você deve ter pelo menos 18 anos para se cadastrar"));
+          return;
+        }
+        
         const user: User = {
           id: String(Math.random()),
           email: credentials.email,
           name: credentials.name || "Novo Usuário",
+          dateOfBirth: credentials.dateOfBirth,
+          city: credentials.city,
           createdAt: new Date().toISOString(),
           updatedAt: new Date().toISOString(),
         };
@@ -44,7 +61,7 @@ export const registerApi = async (credentials: any): Promise<AuthResponse> => {
         };
         resolve({ user, tokens });
       } else {
-        reject(new Error("Dados de registro inválidos"));
+        reject(new Error("Dados de registro inválidos - todos os campos são obrigatórios"));
       }
     }, 1000);
   });

@@ -11,9 +11,11 @@ export interface AuthenticatedRequest extends Request {
   };
 }
 export interface RegisterRequest {
-  nome?: string;
-  email?: string;
-  senha?: string;
+  name: string;
+  email: string;
+  password: string;
+  dateOfBirth: string;
+  city: string;
 }
 
 export interface LoginRequest {
@@ -30,6 +32,8 @@ export interface AuthResponse {
     email: string;
     statusConta: string;
     role: string;
+    dateOfBirth?: number;
+    cidade?: string;
   };
 }
 
@@ -38,8 +42,10 @@ export interface User {
   id: string;
   nome: string;
   email: string;
-  createdAt: Date;
-  updatedAt: Date;
+  dateOfBirth?: number; // timestamp
+  cidade?: string;
+  createdAt: number; // timestamp
+  updatedAt: number; // timestamp
 }
 
 // Tipos para veículos

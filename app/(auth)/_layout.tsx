@@ -52,10 +52,16 @@ const styles = StyleSheet.create({
   webContainer: {
     flex: 1,
     flexDirection: 'row',
-    height: '100vh',
+    height: Platform.select({
+      web: '100vh',
+      default: '100%',
+    }) as any,
   },
   contentContainer: {
     flex: 1,
-    overflow: 'auto',
+    overflow: Platform.select({
+      web: 'auto',
+      default: 'scroll',
+    }) as any,
   },
 });

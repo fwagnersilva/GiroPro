@@ -14,44 +14,45 @@ export class AuthService {
   private static readonly LOCKOUT_TIME = 15; // minutos
 
   static async register(data: RegisterRequest): Promise<AuthResponse> {
-    // Validações básicas
-      this.validateEmail(data.email);
-      this.validatePassword(data.senha);
-      this.validateName(data.nome);
+    // Verificar se o email já existe
+    const existingUser = await db
+      .select({ id: usuarios.id })
+      .from(usuarios)
+      .where(eq(usuarios.email, data.email.toLowerCase()))
+      .limit(1);
 
-      // Verificar se o email já existe
-      const existingUser = await db
-        .select({ id: usuarios.id })
-        .from(usuarios)
-        .where(eq(usuarios.email, data.email.toLowerCase()))
-        .limit(1);
+    if (existingUser.length > 0) {
+      throw new Error("Email já está em uso");
+    }
 
-      if (existingUser.length > 0) {
-        throw new Error('Email já está em uso');
-      }
+    // Hash da senha
+    const senhaHash = await bcrypt.hash(data.password, this.SALT_ROUNDS);
 
-      // Hash da senha
-      const senhaHash = await bcrypt.hash(data.senha, this.SALT_ROUNDS);
+    // Converter data de nascimento para formato Date
+    const [day, month, year] = data.dateOfBirth.split("/").map(Number);
+    const dateOfBirth = new Date(year, month - 1, day);
 
-      // Criar usuário
-      const [newUser] = await db
-        .insert(usuarios)
-        .values({
-          id: crypto.randomUUID(),
-          nome: data.nome,
-          email: data.email,
-          senhaHash: senhaHash,
-          statusConta: 'ativo',
-          dataCadastro: new Date(),
-          ultimaAtividade: new Date(),
-        })
-        .returning({
-          id: usuarios.id,
-          nome: usuarios.nome,
-          email: usuarios.email,
-          statusConta: usuarios.statusConta,
-          role: usuarios.role,
-        });
+    // Criar usuário
+    const [newUser] = await db
+      .insert(usuarios)
+      .values({
+        id: crypto.randomUUID(),
+        nome: data.name,
+        email: data.email,
+        senhaHash: senhaHash,
+        dataNascimento: dateOfBirth,
+        cidade: data.city,
+        statusConta: "ativo",
+        dataCadastro: new Date(),
+        ultimaAtividade: new Date(),
+      })
+      .returning({
+        id: usuarios.id,
+        nome: usuarios.nome,
+        email: usuarios.email,
+        statusConta: usuarios.statusConta,
+        role: usuarios.role,
+      });
 
       // Gerar tokens
       const token = this.generateToken(newUser.id, newUser.email, newUser.nome, newUser.role);
@@ -172,19 +173,21 @@ export class AuthService {
   }
 
   static async getUserById(userId: string) {
-const [user] = await db
-        .select({
-          id: usuarios.id,
-          nome: usuarios.nome,
-          email: usuarios.email,
-          role: usuarios.role,
-          statusConta: usuarios.statusConta,
-          dataCadastro: usuarios.dataCadastro,
-          ultimaAtividade: usuarios.ultimaAtividade,
-        })
-        .from(usuarios)
-        .where(eq(usuarios.id, userId))
-        .limit(1);
+    const [user] = await db
+      .select({
+        id: usuarios.id,
+        nome: usuarios.nome,
+        email: usuarios.email,
+        role: usuarios.role,
+        statusConta: usuarios.statusConta,
+        dataNascimento: usuarios.dataNascimento, // Adicionado
+        cidade: usuarios.cidade, // Adicionado
+        dataCadastro: usuarios.dataCadastro,
+        ultimaAtividade: usuarios.ultimaAtividade,
+      })
+      .from(usuarios)
+      .where(eq(usuarios.id, userId))
+      .limit(1);
 
       if (!user) {
         throw new Error("Usuário não encontrado");

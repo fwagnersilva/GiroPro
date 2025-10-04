@@ -8,10 +8,10 @@ const Register = () => {
   const router = useRouter();
   const { register, isLoading, error, clearError } = useAuth();
 
-  const handleRegister = async (nome: string, email: string, senha: string) => {
+  const handleRegister = async (name: string, email: string, password: string, confirmPassword: string, dateOfBirth: string, city: string) => {
     clearError();
     try {
-      await register({ nome, email, senha });
+      await register({ name, email, password, confirmPassword, dateOfBirth, city });
       // O redirecionamento será tratado pelo AuthContext
     } catch (err) {
       console.error('Registration failed:', err);
