@@ -313,7 +313,9 @@ export const jornadasFaturamentoPorPlataforma = sqliteTable("jornadasFaturamento
   id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
   idJornada: text("idJornada").notNull().references(() => jornadas.id, { onDelete: "cascade" }),
   idPlataforma: text("idPlataforma").notNull().references(() => plataformas.id, { onDelete: "cascade" }),
-  valor: integer("valor").notNull(), // Valor faturado na plataforma para aquela jornada, em centavos
+  valor: integer("valor").notNull(), // Valor total faturado na plataforma para aquela jornada, em centavos
+  valorAntesCorte: integer("valorAntesCorte"), // Valor faturado antes do horário de corte, em centavos
+  valorDepoisCorte: integer("valorDepoisCorte"), // Valor faturado depois do horário de corte, em centavos
   createdAt: integer("createdAt", { mode: "timestamp" }).default(sql`(unixepoch())`).notNull(),
 }, (table) => ({
   jornadaPlataformaIdx: uniqueIndex("jornadasFaturamentoPorPlataforma_jornada_plataforma_idx").on(table.idJornada, table.idPlataforma),

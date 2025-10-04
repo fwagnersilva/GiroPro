@@ -28,6 +28,11 @@ export interface PlatformRevenue {
   valor: number;
 }
 
+export interface SplitPlatformRevenue extends PlatformRevenue {
+  valorAntesCorte?: number;
+  valorDepoisCorte?: number;
+}
+
 export interface CreateJourneyData {
   idVeiculo: string;
   dataInicio: string;
@@ -36,7 +41,7 @@ export interface CreateJourneyData {
   kmFim?: number;
   ganhoBruto?: number;
   observacoes?: string;
-  plataformas?: PlatformRevenue[];
+  plataformas?: (PlatformRevenue | SplitPlatformRevenue)[];
 }
 
 export interface UpdateJourneyData extends Partial<CreateJourneyData> {}

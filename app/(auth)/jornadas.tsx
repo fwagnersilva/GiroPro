@@ -14,8 +14,12 @@ import { useRouter } from 'expo-router';
 import {
   getJourneys,
   createJourney,
+  updateJourney,
+  deleteJourney,
   Journey,
   PlatformRevenue,
+  SplitPlatformRevenue,
+  UpdateJourneyData,
 } from '../../src/services/journeyService';
 import { getActivePlatforms, Platform } from '../../src/services/platformService';
 import { getVehicles, Vehicle } from '../../src/services/vehicleService';
@@ -28,8 +32,10 @@ const JornadasScreen: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [showFinishModal, setShowFinishModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [selectedJourneyToFinish, setSelectedJourneyToFinish] = useState<Journey | null>(null);
+  const [selectedJourneyToEdit, setSelectedJourneyToEdit] = useState<Journey | null>(null);
 
   // Form state
   const [selectedVehicle, setSelectedVehicle] = useState('');
@@ -45,6 +51,13 @@ const JornadasScreen: React.FC = () => {
   const [finishPlatformRevenues, setFinishPlatformRevenues] = useState<{ [key: string]: string }>({});
   const [finishPlatformRevenuesBeforeCutoff, setFinishPlatformRevenuesBeforeCutoff] = useState<{ [key: string]: string }>({});
   const [finishPlatformRevenuesAfterCutoff, setFinishPlatformRevenuesAfterCutoff] = useState<{ [key: string]: string }>({});
+
+  // Edit journey form state
+  const [editKmFim, setEditKmFim] = useState('');
+  const [editObservacoes, setEditObservacoes] = useState('');
+  const [editPlatformRevenues, setEditPlatformRevenues] = useState<{ [key: string]: string }>({});
+  const [editPlatformRevenuesBeforeCutoff, setEditPlatformRevenuesBeforeCutoff] = useState<{ [key: string]: string }>({});
+  const [editPlatformRevenuesAfterCutoff, setEditPlatformRevenuesAfterCutoff] = useState<{ [key: string]: string }>({});
 
   useEffect(() => {
     loadData();
@@ -88,58 +101,31 @@ const JornadasScreen: React.FC = () => {
   const resetForm = () => {
     setSelectedVehicle('');
     setKmInicio('');
-    setKmFim('');
-    setDataInicio('');
-    setDataFim('');
     setObservacoes('');
-    setPlatformRevenues({});
   };
 
   const handleSubmit = async () => {
-    if (!selectedVehicle || !kmInicio || !dataInicio) {
+    if (!selectedVehicle || !kmInicio) {
       Alert.alert('Atenção', 'Preencha todos os campos obrigatórios');
-      return;
-    }
-
-    // Calcular ganho bruto total
-    const totalRevenue = Object.values(platformRevenues).reduce(
-      (sum, value) => sum + (parseFloat(value) || 0),
-      0
-    );
-
-    if (totalRevenue === 0) {
-      Alert.alert('Atenção', 'Informe o faturamento de pelo menos uma plataforma');
       return;
     }
 
     try {
       setIsSubmitting(true);
 
-      // Preparar dados das plataformas
-      const plataformasData: PlatformRevenue[] = Object.entries(platformRevenues)
-        .filter(([_, value]) => parseFloat(value) > 0)
-        .map(([idPlataforma, value]) => ({
-          idPlataforma,
-          valor: Math.round(parseFloat(value) * 100), // Converter para centavos
-        }));
-
       const journeyData = {
         idVeiculo: selectedVehicle,
-        dataInicio,
+        dataInicio: new Date().toISOString(), // Data de início automática
         kmInicio: parseInt(kmInicio),
-        ...(dataFim && { dataFim }),
-        ...(kmFim && { kmFim: parseInt(kmFim) }),
-        ganhoBruto: Math.round(totalRevenue * 100), // Converter para centavos
         ...(observacoes && { observacoes }),
-        plataformas: plataformasData,
       };
 
       await createJourney(journeyData);
-      Alert.alert('Sucesso', 'Jornada registrada com sucesso!');
+      Alert.alert('Sucesso', 'Jornada iniciada com sucesso!');
       handleCloseModal();
       await loadData();
     } catch (error: any) {
-      Alert.alert('Erro', error.message || 'Erro ao registrar jornada');
+      Alert.alert('Erro', error.message || 'Erro ao iniciar jornada');
     } finally {
       setIsSubmitting(false);
     }
@@ -157,7 +143,6 @@ const JornadasScreen: React.FC = () => {
           onPress: async () => {
             try {
               // Para cancelar, vamos deletar a jornada
-              const { deleteJourney } = await import('../../src/services/journeyService');
               await deleteJourney(journeyId);
               Alert.alert('Sucesso', 'Jornada cancelada com sucesso!');
               await loadData();
@@ -171,9 +156,8 @@ const JornadasScreen: React.FC = () => {
   };
 
   // Função para verificar se a jornada atravessa o horário de corte de uma plataforma
-  const checksCutoffTime = (journey: Journey, platformName: string): boolean => {
+  const checksCutoffTime = (journey: Journey, platformName: string, endDate: Date): boolean => {
     const startDate = new Date(journey.dataInicio);
-    const currentDate = new Date();
     
     // Definir horários de corte por plataforma
     const cutoffTimes: { [key: string]: number } = {
@@ -184,20 +168,52 @@ const JornadasScreen: React.FC = () => {
     const cutoffHour = cutoffTimes[platformName];
     if (cutoffHour === undefined) return false;
     
-    // Criar data do horário de corte no dia da jornada
-    const cutoffDate = new Date(startDate);
-    cutoffDate.setHours(cutoffHour, 0, 0, 0);
-    
-    // Se a jornada começou antes do horário de corte e está sendo finalizada depois
-    if (startDate < cutoffDate && currentDate > cutoffDate) {
-      return true;
+    // Ajustar a data de início para o fuso horário local e remover segundos/milissegundos
+    startDate.setSeconds(0, 0);
+    endDate.setSeconds(0, 0);
+
+    // Criar o ponto de corte no dia da data de início
+    const cutoffPointStartDay = new Date(startDate);
+    cutoffPointStartDay.setHours(cutoffHour, 0, 0, 0);
+
+    // Criar o ponto de corte no dia da data de fim
+    const cutoffPointEndDay = new Date(endDate);
+    cutoffPointEndDay.setHours(cutoffHour, 0, 0, 0);
+
+    // Cenário 1: Jornada começa e termina no mesmo dia, mas atravessa o horário de corte
+    // Ex: Uber, começa 03:00, termina 05:00 (mesmo dia)
+    if (startDate.toDateString() === endDate.toDateString()) {
+      return startDate < cutoffPointStartDay && endDate > cutoffPointStartDay;
     }
-    
-    // Se a jornada começou em um dia e está sendo finalizada no dia seguinte
-    const startDay = startDate.getDate();
-    const currentDay = currentDate.getDate();
-    if (startDay !== currentDay) {
-      return true;
+
+    // Cenário 2: Jornada começa em um dia e termina no dia seguinte ou mais tarde
+    // Verifica se o intervalo [startDate, endDate] contém o cutoffPointStartDay
+    // ou se o intervalo [startDate, endDate] contém o cutoffPointEndDay
+    const crossedCutoffOnStartDay = startDate < cutoffPointStartDay && endDate > cutoffPointStartDay;
+    const crossedCutoffOnEndDay = startDate < cutoffPointEndDay && endDate > cutoffPointEndDay;
+
+    // Se a jornada começou antes do horário de corte do dia de início e terminou depois do horário de corte do dia de início
+    // OU se a jornada começou antes do horário de corte do dia de fim e terminou depois do horário de corte do dia de fim
+    // OU se a jornada simplesmente atravessou a meia-noite e o horário de corte está entre startDate e endDate
+    if (startDate.toDateString() !== endDate.toDateString()) {
+      // Verifica se a jornada atravessa o cutoff do dia de início
+      if (startDate < cutoffPointStartDay && endDate > cutoffPointStartDay) return true;
+      
+      // Verifica se a jornada atravessa o cutoff do dia de fim
+      if (startDate < cutoffPointEndDay && endDate > cutoffPointEndDay) return true;
+
+      // Verifica se a jornada simplesmente passou pela meia-noite e o cutoff está no meio
+      // Ex: Começa dia 1 às 23h, termina dia 2 às 01h. Cutoff 00h.
+      // Ou Começa dia 1 às 03h, termina dia 2 às 05h. Cutoff 04h.
+      const tempDate = new Date(startDate);
+      while (tempDate < endDate) {
+        tempDate.setDate(tempDate.getDate() + 1);
+        const nextCutoff = new Date(tempDate);
+        nextCutoff.setHours(cutoffHour, 0, 0, 0);
+        if (startDate < nextCutoff && endDate > nextCutoff) {
+          return true;
+        }
+      }
     }
     
     return false;
@@ -215,10 +231,177 @@ const JornadasScreen: React.FC = () => {
   const handleCloseFinishModal = () => {
     setShowFinishModal(false);
     setSelectedJourneyToFinish(null);
-    setFinishKmFim('');
+    setFinishKmFim("");
     setFinishPlatformRevenues({});
     setFinishPlatformRevenuesBeforeCutoff({});
     setFinishPlatformRevenuesAfterCutoff({});
+  };
+
+  const handleFinishSubmit = async () => {
+    if (!selectedJourneyToFinish) return;
+
+    if (!finishKmFim) {
+      Alert.alert("Atenção", "Informe a quilometragem final.");
+      return;
+    }
+
+    const finalKmFim = parseInt(finishKmFim);
+    if (isNaN(finalKmFim) || finalKmFim <= selectedJourneyToFinish.kmInicio) {
+      Alert.alert("Atenção", "A quilometragem final deve ser um número válido e maior que a quilometragem inicial.");
+      return;
+    }
+
+    let totalRevenue = 0;
+    const finalPlatformRevenues: SplitPlatformRevenue[] = [];
+
+    const endDate = new Date(); // Data de fim da jornada (agora)
+    
+    platforms.forEach(platform => {
+      const crossesCutoff = checksCutoffTime(selectedJourneyToFinish, platform.nome, endDate);
+
+      if (crossesCutoff) {
+        const revenueBefore = parseFloat(finishPlatformRevenuesBeforeCutoff[platform.id] || "0");
+        const revenueAfter = parseFloat(finishPlatformRevenuesAfterCutoff[platform.id] || "0");
+        
+        if (revenueBefore > 0 || revenueAfter > 0) {
+          finalPlatformRevenues.push({
+            idPlataforma: platform.id,
+            valor: Math.round((revenueBefore + revenueAfter) * 100), // Total para a plataforma
+            valorAntesCorte: revenueBefore > 0 ? Math.round(revenueBefore * 100) : undefined,
+            valorDepoisCorte: revenueAfter > 0 ? Math.round(revenueAfter * 100) : undefined,
+          });
+          totalRevenue += (revenueBefore + revenueAfter);
+        }
+      } else {
+        const revenue = parseFloat(finishPlatformRevenues[platform.id] || "0");
+        if (revenue > 0) {
+          finalPlatformRevenues.push({
+            idPlataforma: platform.id,
+            valor: Math.round(revenue * 100),
+          });
+          totalRevenue += revenue;
+        }
+      }
+    });
+
+    if (totalRevenue === 0) {
+      Alert.alert("Atenção", "Informe o faturamento de pelo menos uma plataforma.");
+      return;
+    }
+
+    try {
+      setIsSubmitting(true);
+
+      const updateData: UpdateJourneyData = {
+        dataFim: new Date().toISOString(), // Data de fim automática
+        kmFim: finalKmFim,
+        ganhoBruto: Math.round(totalRevenue * 100),
+        plataformas: finalPlatformRevenues,
+        // TODO: Adicionar campos para faturamento antes/depois do corte no updateData se o backend suportar
+      };
+
+      await updateJourney(selectedJourneyToFinish.id, updateData);
+      Alert.alert("Sucesso", "Jornada finalizada com sucesso!");
+      handleCloseFinishModal();
+      await loadData();
+    } catch (error: any) {
+      Alert.alert("Erro", error.message || "Erro ao finalizar jornada.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleEditJourney = (journey: Journey) => {
+    setSelectedJourneyToEdit(journey);
+    setEditKmFim(journey.kmFim?.toString() || '');
+    setEditObservacoes(journey.observacoes || '');
+    setEditPlatformRevenues({});
+    setEditPlatformRevenuesBeforeCutoff({});
+    setEditPlatformRevenuesAfterCutoff({});
+    setShowEditModal(true);
+  };
+
+  const handleCloseEditModal = () => {
+    setShowEditModal(false);
+    setSelectedJourneyToEdit(null);
+    setEditKmFim('');
+    setEditObservacoes('');
+    setEditPlatformRevenues({});
+    setEditPlatformRevenuesBeforeCutoff({});
+    setEditPlatformRevenuesAfterCutoff({});
+  };
+
+  const handleEditSubmit = async () => {
+    if (!selectedJourneyToEdit) return;
+
+    if (!editKmFim) {
+      Alert.alert("Atenção", "Informe a quilometragem final.");
+      return;
+    }
+
+    const finalKmFim = parseInt(editKmFim);
+    if (isNaN(finalKmFim) || finalKmFim <= selectedJourneyToEdit.kmInicio) {
+      Alert.alert("Atenção", "A quilometragem final deve ser um número válido e maior que a quilometragem inicial.");
+      return;
+    }
+
+    let totalRevenue = 0;
+    const finalPlatformRevenues: SplitPlatformRevenue[] = [];
+
+    const endDate = selectedJourneyToEdit.dataFim ? new Date(selectedJourneyToEdit.dataFim) : new Date();
+    
+    platforms.forEach(platform => {
+      const crossesCutoff = checksCutoffTime(selectedJourneyToEdit, platform.nome, endDate);
+
+      if (crossesCutoff) {
+        const revenueBefore = parseFloat(editPlatformRevenuesBeforeCutoff[platform.id] || "0");
+        const revenueAfter = parseFloat(editPlatformRevenuesAfterCutoff[platform.id] || "0");
+        
+        if (revenueBefore > 0 || revenueAfter > 0) {
+          finalPlatformRevenues.push({
+            idPlataforma: platform.id,
+            valor: Math.round((revenueBefore + revenueAfter) * 100),
+            valorAntesCorte: revenueBefore > 0 ? Math.round(revenueBefore * 100) : undefined,
+            valorDepoisCorte: revenueAfter > 0 ? Math.round(revenueAfter * 100) : undefined,
+          });
+          totalRevenue += (revenueBefore + revenueAfter);
+        }
+      } else {
+        const revenue = parseFloat(editPlatformRevenues[platform.id] || "0");
+        if (revenue > 0) {
+          finalPlatformRevenues.push({
+            idPlataforma: platform.id,
+            valor: Math.round(revenue * 100),
+          });
+          totalRevenue += revenue;
+        }
+      }
+    });
+
+    if (totalRevenue === 0) {
+      Alert.alert("Atenção", "Informe o faturamento de pelo menos uma plataforma.");
+      return;
+    }
+
+    try {
+      setIsSubmitting(true);
+
+      const updateData: UpdateJourneyData = {
+        kmFim: finalKmFim,
+        ganhoBruto: Math.round(totalRevenue * 100),
+        observacoes: editObservacoes,
+        plataformas: finalPlatformRevenues,
+      };
+
+      await updateJourney(selectedJourneyToEdit.id, updateData);
+      Alert.alert("Sucesso", "Jornada editada com sucesso!");
+      handleCloseEditModal();
+      await loadData();
+    } catch (error: any) {
+      Alert.alert("Erro", error.message || "Erro ao editar jornada.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const formatCurrency = (value: number) => {
@@ -256,7 +439,7 @@ const JornadasScreen: React.FC = () => {
       <ScrollView style={styles.content}>
         {/* Botão adicionar */}
         <TouchableOpacity style={styles.addButton} onPress={handleOpenModal}>
-          <Text style={styles.addButtonText}>+ Nova Jornada</Text>
+          <Text style={styles.addButtonText}>+ Iniciar Jornada</Text>
         </TouchableOpacity>
 
         {/* Lista de jornadas */}
@@ -264,7 +447,7 @@ const JornadasScreen: React.FC = () => {
           <View style={styles.emptyState}>
             <Text style={styles.emptyStateText}>Nenhuma jornada registrada</Text>
             <Text style={styles.emptyStateSubtext}>
-              Toque em "Nova Jornada" para começar
+              Toque em "Iniciar Jornada" para começar
             </Text>
           </View>
         ) : (
@@ -301,7 +484,7 @@ const JornadasScreen: React.FC = () => {
                 )}
                 
                 {/* Botões de ação para jornadas ativas */}
-                {isActive && (
+                {isActive ? (
                   <View style={styles.journeyActions}>
                     <TouchableOpacity
                       style={[styles.actionButton, styles.cancelButton]}
@@ -314,6 +497,16 @@ const JornadasScreen: React.FC = () => {
                       onPress={() => handleFinishJourney(journey)}
                     >
                       <Text style={styles.finishButtonText}>Finalizar Jornada</Text>
+                    </TouchableOpacity>
+                  </View>
+                ) : (
+                  /* Botão de edição para jornadas finalizadas */
+                  <View style={styles.journeyActions}>
+                    <TouchableOpacity
+                      style={[styles.actionButton, styles.editButton]}
+                      onPress={() => handleEditJourney(journey)}
+                    >
+                      <Text style={styles.editButtonText}>Editar</Text>
                     </TouchableOpacity>
                   </View>
                 )}
@@ -335,7 +528,7 @@ const JornadasScreen: React.FC = () => {
             <TouchableOpacity onPress={handleCloseModal}>
               <Text style={styles.modalCloseButton}>✕ Fechar</Text>
             </TouchableOpacity>
-            <Text style={styles.modalTitle}>Nova Jornada</Text>
+            <Text style={styles.modalTitle}>Iniciar Jornada</Text>
           </View>
 
           <ScrollView style={styles.modalContent}>
@@ -366,78 +559,19 @@ const JornadasScreen: React.FC = () => {
               </View>
             </View>
 
-            {/* Data e KM */}
-            <View style={styles.formRow}>
-              <View style={[styles.formGroup, { flex: 1 }]}>
-                <Text style={styles.formLabel}>Data Início *</Text>
-                <TextInput
-                  style={styles.input}
-                  placeholder="DD/MM/AAAA"
-                  value={dataInicio}
-                  onChangeText={setDataInicio}
-                />
-              </View>
-              <View style={[styles.formGroup, { flex: 1 }]}>
-                <Text style={styles.formLabel}>KM Início *</Text>
-                <TextInput
-                  style={styles.input}
-                  placeholder="0"
-                  keyboardType="numeric"
-                  value={kmInicio}
-                  onChangeText={setKmInicio}
-                />
-              </View>
-            </View>
-
-            <View style={styles.formRow}>
-              <View style={[styles.formGroup, { flex: 1 }]}>
-                <Text style={styles.formLabel}>Data Fim</Text>
-                <TextInput
-                  style={styles.input}
-                  placeholder="DD/MM/AAAA"
-                  value={dataFim}
-                  onChangeText={setDataFim}
-                />
-              </View>
-              <View style={[styles.formGroup, { flex: 1 }]}>
-                <Text style={styles.formLabel}>KM Fim</Text>
-                <TextInput
-                  style={styles.input}
-                  placeholder="0"
-                  keyboardType="numeric"
-                  value={kmFim}
-                  onChangeText={setKmFim}
-                />
-              </View>
-            </View>
-
-            {/* Faturamento por plataforma */}
+            {/* KM Inicial */}
             <View style={styles.formGroup}>
-              <Text style={styles.formLabel}>Faturamento por Plataforma *</Text>
-              {platforms.map((platform) => (
-                <View key={platform.id} style={styles.platformRevenueRow}>
-                  <Text style={styles.platformRevenueName}>{platform.nome}</Text>
-                  <TextInput
-                    style={styles.platformRevenueInput}
-                    placeholder="R$ 0,00"
-                    keyboardType="decimal-pad"
-                    value={platformRevenues[platform.id] || ''}
-                    onChangeText={(value) =>
-                      setPlatformRevenues({
-                        ...platformRevenues,
-                        [platform.id]: value,
-                      })
-                    }
-                  />
-                </View>
-              ))}
-              <Text style={styles.totalRevenue}>
-                Total: R${' '}
-                {Object.values(platformRevenues)
-                  .reduce((sum, value) => sum + (parseFloat(value) || 0), 0)
-                  .toFixed(2)}
-              </Text>
+              <Text style={styles.formLabel}>KM Inicial *</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="0"
+                keyboardType="numeric"
+                value={kmInicio}
+                onChangeText={setKmInicio}
+              />
             </View>
+
+
 
             {/* Observações */}
             <View style={styles.formGroup}>
@@ -461,7 +595,7 @@ const JornadasScreen: React.FC = () => {
               {isSubmitting ? (
                 <ActivityIndicator size="small" color="#fff" />
               ) : (
-                <Text style={styles.submitButtonText}>Salvar Jornada</Text>
+                <Text style={styles.submitButtonText}>Iniciar Jornada</Text>
               )}
             </TouchableOpacity>
           </ScrollView>
@@ -513,7 +647,7 @@ const JornadasScreen: React.FC = () => {
                 <View style={styles.formGroup}>
                   <Text style={styles.formLabel}>Faturamento por Plataforma *</Text>
                   {platforms.map((platform) => {
-                    const crossesCutoff = checksCutoffTime(selectedJourneyToFinish, platform.nome);
+                    const crossesCutoff = checksCutoffTime(selectedJourneyToFinish, platform.nome, new Date());
                     
                     return (
                       <View key={platform.id} style={styles.platformSection}>
@@ -596,7 +730,7 @@ const JornadasScreen: React.FC = () => {
                 {/* Botão finalizar */}
                 <TouchableOpacity
                   style={[styles.submitButton, isSubmitting && styles.submitButtonDisabled]}
-                  onPress={() => {/* TODO: Implementar handleFinishSubmit */}}
+                  onPress={handleFinishSubmit}
                   disabled={isSubmitting}
                 >
                   {isSubmitting ? (
@@ -886,6 +1020,14 @@ const styles = StyleSheet.create({
     backgroundColor: '#34C759',
   },
   finishButtonText: {
+    color: '#fff',
+    fontSize: 14,
+    fontWeight: '600',
+  },
+  editButton: {
+    backgroundColor: '#007AFF',
+  },
+  editButtonText: {
     color: '#fff',
     fontSize: 14,
     fontWeight: '600',

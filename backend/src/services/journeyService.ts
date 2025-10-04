@@ -6,7 +6,9 @@ import crypto from 'crypto';
 
 export interface PlatformEarning {
   platformId: string;
-  value: number; // Em centavos
+  value?: number; // Em centavos (valor total, opcional se for dividido)
+  valueBeforeCutoff?: number; // Em centavos
+  valueAfterCutoff?: number; // Em centavos
 }
 
 export interface UpdateJourneyRequestWithPlatforms extends UpdateJourneyRequest {
@@ -142,19 +144,27 @@ export class JourneyService {
       if (journeyData.faturamentoPorPlataforma && journeyData.faturamentoPorPlataforma.length > 0) {
         let totalGanhoBruto = 0;
         const faturamentoInserts = journeyData.faturamentoPorPlataforma.map(item => {
-          totalGanhoBruto += item.value;
+          const valorTotalPlataforma = (item.valueBeforeCutoff || 0) + (item.valueAfterCutoff || 0);
+          totalGanhoBruto += valorTotalPlataforma;
           return {
             id: crypto.randomUUID(),
             idJornada: id,
             idPlataforma: item.platformId,
-            valor: item.value,
+            valor: Math.round(valorTotalPlataforma),
+            valorAntesCorte: item.valueBeforeCutoff ? Math.round(item.valueBeforeCutoff) : null,
+            valorDepoisCorte: item.valueAfterCutoff ? Math.round(item.valueAfterCutoff) : null,
             createdAt: new Date(),
           };
         });
 
-        // Inserir os faturamentos por plataforma
-        await db.insert(jornadasFaturamentoPorPlataforma).values(faturamentoInserts);
-        dataToUpdate.ganhoBruto = totalGanhoBruto;
+        // Primeiro, deletar faturamentos existentes para esta jornada para evitar duplicatas
+        await db.delete(jornadasFaturamentoPorPlataforma).where(eq(jornadasFaturamentoPorPlataforma.idJornada, id));
+
+        // Inserir os novos faturamentos por plataforma
+        if (faturamentoInserts.length > 0) {
+          await db.insert(jornadasFaturamentoPorPlataforma).values(faturamentoInserts);
+        }
+        dataToUpdate.ganhoBruto = Math.round(totalGanhoBruto);
       } else if (journeyData.ganhoBruto !== undefined) {
         // Manter compatibilidade se faturamentoPorPlataforma não for fornecido
         dataToUpdate.ganhoBruto = journeyData.ganhoBruto;
