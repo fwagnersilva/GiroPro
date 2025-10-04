@@ -127,7 +127,7 @@
     "jest-environment-jsdom": "^29.7.0",
     "jest-expo": "~53.0.7",
     "jest-junit": "^16.0.0",
-    "lint-staged": "^15.2.9",
+    "lint-staged": "^16.2.3",
     "np": "^10.0.7",
     "prettier": "^3.3.3",
     "tailwindcss": "3.4.4",
