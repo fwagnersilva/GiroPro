@@ -57,7 +57,7 @@
     "expo-linking": "~7.1.5",
     "expo-localization": "~16.1.5",
     "expo-router": "~5.1.0",
-    "expo-splash-screen": "~0.30.9",
+    "expo-splash-screen": "~31.0.10",
     "expo-status-bar": "~2.2.3",
     "expo-system-ui": "~5.0.9",
     "i18next": "^23.14.0",
