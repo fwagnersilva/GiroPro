@@ -6,7 +6,7 @@ export const config = {
   
   // Configurações de banco de dados
   database: {
-    url: process.env.DATABASE_URL || 'giropro.db',
+    url: process.env.SQLITE_DB_PATH || process.env.DATABASE_URL || 'giropro.db',
     type: 'sqlite' as const,
   },
   

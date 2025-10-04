@@ -1,4 +1,87 @@
+# Dependências
 node_modules/
+.pnp
+.pnp.js
+
+# Build e distribuição
 build/
 dist/
+.expo/
+.expo-shared/
+
+# Arquivos de ambiente e configuração local
 .env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+backend/.env
+backend/.npmrc
+
+# Banco de dados local
+*.db
+*.db-shm
+*.db-wal
+*.sqlite
+*.sqlite3
+backend/*.db
+backend/*.db-shm
+backend/*.db-wal
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Cache e temporários
+.cache/
+*.tmp
+*.temp
+.DS_Store
+Thumbs.db
+
+# IDEs e editores
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.project
+.classpath
+.settings/
+*.sublime-project
+*.sublime-workspace
+
+# Testes
+coverage/
+.nyc_output/
+*.lcov
+
+# Sistema operacional
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Desktop.ini
+
+# React Native / Expo
+.expo/
+.expo-shared/
+web-build/
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+*.orig.*
+
+# Arquivos de configuração específicos do desenvolvedor
+config.local.js
+config.local.ts
+*.local.json

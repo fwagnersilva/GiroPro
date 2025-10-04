@@ -10,6 +10,7 @@ export async function initializeTables() {
         nome TEXT NOT NULL,
         email TEXT NOT NULL UNIQUE,
         senhaHash TEXT NOT NULL,
+        role TEXT DEFAULT 'user' NOT NULL,
         statusConta TEXT DEFAULT 'ativo' NOT NULL,
         dataCadastro INTEGER DEFAULT (unixepoch()) NOT NULL,
         pontosTotal INTEGER DEFAULT 0 NOT NULL,
@@ -98,6 +99,35 @@ export async function initializeTables() {
         deletedAt INTEGER,
         FOREIGN KEY (idUsuario) REFERENCES usuarios(id),
         FOREIGN KEY (idVeiculo) REFERENCES veiculos(id)
+      )
+    `);
+
+    // Criar tabela plataformas
+    await db.run(sql`
+      CREATE TABLE IF NOT EXISTS plataformas (
+        id TEXT PRIMARY KEY,
+        idUsuario TEXT NOT NULL,
+        nome TEXT NOT NULL,
+        isPadrao INTEGER DEFAULT 0 NOT NULL,
+        ativa INTEGER DEFAULT 1 NOT NULL,
+        createdAt INTEGER DEFAULT (unixepoch()) NOT NULL,
+        updatedAt INTEGER DEFAULT (unixepoch()) NOT NULL,
+        deletedAt INTEGER,
+        FOREIGN KEY (idUsuario) REFERENCES usuarios(id)
+      )
+    `);
+
+    // Criar tabela jornadasFaturamentoPorPlataforma
+    await db.run(sql`
+      CREATE TABLE IF NOT EXISTS jornadasFaturamentoPorPlataforma (
+        id TEXT PRIMARY KEY,
+        idJornada TEXT NOT NULL,
+        idPlataforma TEXT NOT NULL,
+        valor INTEGER NOT NULL,
+        createdAt INTEGER DEFAULT (unixepoch()) NOT NULL,
+        updatedAt INTEGER DEFAULT (unixepoch()) NOT NULL,
+        FOREIGN KEY (idJornada) REFERENCES jornadas(id),
+        FOREIGN KEY (idPlataforma) REFERENCES plataformas(id)
       )
     `);
 
