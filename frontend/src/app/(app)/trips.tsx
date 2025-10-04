@@ -12,7 +12,9 @@ interface Trip {
   endDate: string | null;
   startOdometer: number;
   endOdometer: number | null;
-  status: 'active' | 'completed';
+  status: 'active' | 'paused' | 'completed';
+  pausedOdometer: number | null; // Opcional: odômetro no momento da pausa
+  pauseTimestamps: { pause: string; resume: string | null }[]; // Opcional: registro de pausas e retornos
   earnings: {
     uber: number;
     app99: number;
@@ -96,6 +98,8 @@ export default function Trips() {
       startOdometer: 125,
       endOdometer: null,
       status: 'active',
+      pausedOdometer: null,
+      pauseTimestamps: [],
       earnings: null,
       totalKm: null,
       totalTime: null,
@@ -158,6 +162,8 @@ export default function Trips() {
       startOdometer: odometerNum,
       endOdometer: null,
       status: 'active',
+      pausedOdometer: null,
+      pauseTimestamps: [],
       earnings: null,
       totalKm: null,
       totalTime: null,
@@ -190,14 +196,24 @@ export default function Trips() {
     const uberEarnings = parseFloat(endFormData.uberEarnings.replace(',', '.')) || 0;
     const app99Earnings = parseFloat(endFormData.app99Earnings.replace(',', '.')) || 0;
     const totalEarnings = uberEarnings + app99Earnings;
-    const totalKm = endOdometerNum - startOdometerNum;
+    let totalKm = endOdometerNum - startOdometerNum;
 
-    // Calculate time difference
-    const startTime = new Date(selectedTrip.startDate);
+    // Calculate total paused time
+    let totalPausedTimeMs = 0;
+    tripToEnd.pauseTimestamps.forEach(pauseEntry => {
+      if (pauseEntry.pause && pauseEntry.resume) {
+        totalPausedTimeMs += new Date(pauseEntry.resume).getTime() - new Date(pauseEntry.pause).getTime();
+      }
+    });
+
+    // Calculate total active time
+    const startTime = new Date(tripToEnd.startDate);
     const endTime = new Date();
-    const timeDiffMs = endTime.getTime() - startTime.getTime();
-    const hours = Math.floor(timeDiffMs / (1000 * 60 * 60));
-    const minutes = Math.floor((timeDiffMs % (1000 * 60 * 60)) / (1000 * 60));
+    const totalTripTimeMs = endTime.getTime() - startTime.getTime();
+    const activeTimeMs = totalTripTimeMs - totalPausedTimeMs;
+
+    const hours = Math.floor(activeTimeMs / (1000 * 60 * 60));
+    const minutes = Math.floor((activeTimeMs % (1000 * 60 * 60)) / (1000 * 60));
     const totalTimeStr = `${hours}h ${minutes}min`;
 
     const ratePerHour = hours > 0 ? totalEarnings / (hours + minutes / 60) : 0;
@@ -341,43 +357,77 @@ export default function Trips() {
                       setSelectedTrip(activeTrip);
                       // A chamada a handleEndTrip() já é feita aqui, mas o estado `selectedTrip` pode não ter sido atualizado a tempo
                       // Para garantir que `selectedTrip` esteja disponível em `handleEndTrip`, podemos passar o `activeTrip` diretamente
-                      // ou garantir que o `setSelectedTrip` seja síncrono ou que `handleEndTrip` seja chamado após a atualização do estado.
-                      // Por simplicidade, vamos chamar handleEndTrip com o activeTrip diretamente.
-                      handleEndTrip(activeTrip);
-                    } else {
-                      Alert.alert("Erro", "Nenhuma jornada ativa para finalizar.");
-                    }
-                  }}
-                  className="flex-1 bg-green-600"
-                >
-                  <Text className="text-white font-medium">✓ Finalizar Jornada</Text>
-                </Button>
-                <Button
-                  onPress={() => {
-                    Alert.alert(
-                      'Cancelar Jornada',
-                      'Tem certeza que deseja cancelar esta jornada?',
-                      [
-                        { text: 'Não', style: 'cancel' },
-                        {
-                          text: 'Sim',
-                          style: 'destructive',
-                          onPress: () => {
-                            if (activeTrip) {
-                              setTrips(trips.filter(t => t.id !== activeTrip.id));
-                              setSelectedTrip(null);
-                              setShowEndForm(false);
-                              Alert.alert('Sucesso', 'Jornada cancelada com sucesso!');
+                      // ou garantir que              <View className="flex-row space-x-2">
+                {activeTrip?.status === 'active' && (
+                  <Button
+                    onPress={handlePauseTrip}
+                    className="flex-1 bg-yellow-600"
+                  >
+                    <Text className="text-white font-medium">⏸ Pausar Jornada</Text>
+                  </Button>
+                )}
+                {activeTrip?.status === 'paused' && (
+                  <Button
+                    onPress={() => {
+                      Alert.alert(
+                        'Retomar Jornada',
+                        'Informe a quilometragem atual para retomar a jornada:',
+                        [
+                          { text: 'Cancelar', style: 'cancel' },
+                          { text: 'Retomar', onPress: (value) => handleResumeTrip(value[0]) },
+                        ],
+                        'plain-text-input',
+                        { cancelable: false, defaultValue: activeTrip.pausedOdometer?.toString() }
+                      );
+                    }}
+                    className="flex-1 bg-blue-600"
+                  >
+                    <Text className="text-white font-medium">▶ Retomar Jornada</Text>
+                  </Button>
+                )}
+                {(activeTrip?.status === 'active' || activeTrip?.status === 'paused') && (
+                  <Button
+                    onPress={() => {
+                      if (activeTrip) {
+                        setSelectedTrip(activeTrip);
+                        handleEndTrip(activeTrip);
+                      } else {
+                        Alert.alert("Erro", "Nenhuma jornada ativa para finalizar.");
+                      }
+                    }}
+                    className="flex-1 bg-green-600"
+                  >
+                    <Text className="text-white font-medium">✓ Finalizar Jornada</Text>
+                  </Button>
+                )}
+                {(activeTrip?.status === 'active' || activeTrip?.status === 'paused') && (
+                  <Button
+                    onPress={() => {
+                      Alert.alert(
+                        'Cancelar Jornada',
+                        'Tem certeza que deseja cancelar esta jornada?',
+                        [
+                          { text: 'Não', style: 'cancel' },
+                          {
+                            text: 'Sim',
+                            style: 'destructive',
+                            onPress: () => {
+                              if (activeTrip) {
+                                setTrips(trips.filter(t => t.id !== activeTrip.id));
+                                setSelectedTrip(null);
+                                setShowEndForm(false);
+                                Alert.alert('Sucesso', 'Jornada cancelada com sucesso!');
+                              }
                             }
                           }
-                        }
-                      ]
-                    );
-                  }}
-                  className="bg-red-600 px-4"
-                >
-                  <Text className="text-white font-medium">✕ Cancelar</Text>
-                </Button>
+                        ]
+                      );
+                    }}
+                    className="bg-red-600 px-4"
+                  >
+                    <Text className="text-white font-medium">✕ Cancelar</Text>
+                  </Button>
+                )}
               </View>
             </View>
           </View>
@@ -570,3 +620,50 @@ export default function Trips() {
     </View>
   );
 }
+
+
+
+  const handlePauseTrip = () => {
+    if (!activeTrip) {
+      Alert.alert("Erro", "Nenhuma jornada ativa para pausar.");
+      return;
+    }
+
+    const updatedTrip: Trip = {
+      ...activeTrip,
+      status: 'paused',
+      pausedOdometer: activeTrip.endOdometer, // Salva o último odômetro registrado
+      pauseTimestamps: [...activeTrip.pauseTimestamps, { pause: new Date().toISOString(), resume: null }],
+    };
+
+    setTrips(trips.map((trip) => (trip.id === activeTrip.id ? updatedTrip : trip)));
+    Alert.alert("Sucesso", "Jornada pausada com sucesso!");
+  };
+
+  const handleResumeTrip = (resumeOdometer: string) => {
+    const pausedTrip = trips.find((trip) => trip.status === 'paused');
+    if (!pausedTrip) {
+      Alert.alert("Erro", "Nenhuma jornada pausada para retomar.");
+      return;
+    }
+
+    const resumeOdometerNum = parseInt(resumeOdometer);
+    if (isNaN(resumeOdometerNum) || resumeOdometerNum <= (pausedTrip.pausedOdometer || pausedTrip.startOdometer)) {
+      Alert.alert("Erro", "A quilometragem de retorno deve ser maior que a quilometragem da pausa.");
+      return;
+    }
+
+    const lastPause = pausedTrip.pauseTimestamps[pausedTrip.pauseTimestamps.length - 1];
+    const updatedPauseTimestamps = [...pausedTrip.pauseTimestamps];
+    updatedPauseTimestamps[updatedPauseTimestamps.length - 1] = { ...lastPause, resume: new Date().toISOString() };
+
+    const updatedTrip: Trip = {
+      ...pausedTrip,
+      status: 'active',
+      endOdometer: resumeOdometerNum, // Atualiza o odômetro com o valor de retorno
+      pauseTimestamps: updatedPauseTimestamps,
+    };
+
+    setTrips(trips.map((trip) => (trip.id === pausedTrip.id ? updatedTrip : trip)));
+    Alert.alert("Sucesso", "Jornada retomada com sucesso!");
+  };
