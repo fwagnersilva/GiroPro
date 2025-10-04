@@ -111,19 +111,18 @@ O servidor estará disponível em: `http://localhost:3000`
 
 ### 3. Configurar o Frontend
 
-#### 3.1. Instalar Dependências
+### 3.1. Instalar Dependências
 
 ```bash
-cd ..  # Voltar para a raiz do projeto
+cd ../frontend  # A partir da raiz do projeto
 pnpm install
 ```
-
 #### 3.2. Iniciar o Frontend
 
 Para desenvolvimento web:
 
 ```bash
-pnpm run web-vite
+pnpm run web
 ```
 
 Para desenvolvimento mobile (Expo):
