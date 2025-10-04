@@ -1,15 +1,28 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useAuth } from '../../src/contexts/AuthContext';
+import PeriodFilter, { PeriodType } from '../../src/components/PeriodFilter';
 
 const Dashboard = () => {
   const router = useRouter();
   const { logout, user } = useAuth();
+  const [selectedPeriod, setSelectedPeriod] = useState<PeriodType>('month');
 
   const handleLogout = async () => {
     await logout();
     router.replace('/login' as any);
+  };
+
+  const handlePeriodChange = (period: PeriodType) => {
+    setSelectedPeriod(period);
+    // Aqui você pode adicionar lógica para filtrar os dados com base no período selecionado
+    console.log('Período selecionado:', period);
+  };
+
+  const handleCustomDatePress = () => {
+    // Aqui você pode abrir um modal ou navegar para uma tela de seleção de datas personalizadas
+    console.log('Abrir seletor de datas personalizado');
   };
 
   return (
@@ -29,6 +42,13 @@ const Dashboard = () => {
 
       {/* Content */}
       <ScrollView style={styles.content}>
+        {/* Filtro de Período */}
+        <PeriodFilter
+          selectedPeriod={selectedPeriod}
+          onPeriodChange={handlePeriodChange}
+          onCustomDatePress={handleCustomDatePress}
+        />
+
         <View style={styles.welcomeCard}>
           <Text style={styles.welcomeTitle}>🎉 Login realizado com sucesso!</Text>
           <Text style={styles.welcomeText}>

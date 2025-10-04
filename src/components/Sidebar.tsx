@@ -86,55 +86,16 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen = true, onClose }) => {
           </Text>
         </TouchableOpacity>
 
-        {/* Configurações com Submenu */}
+        {/* Configurações */}
         <TouchableOpacity
-          style={styles.menuItem}
-          onPress={() => setSettingsExpanded(!settingsExpanded)}
+          style={[styles.menuItem, pathname.startsWith('/settings') && styles.menuItemActive]}
+          onPress={() => handleNavigation('/settings')}
         >
           <Text style={styles.menuIcon}>⚙️</Text>
-          <Text style={styles.menuText}>Configurações</Text>
-          <Text style={styles.expandIcon}>{settingsExpanded ? '▲' : '▼'}</Text>
+          <Text style={[styles.menuText, pathname.startsWith('/settings') && styles.menuTextActive]}>
+            Configurações
+          </Text>
         </TouchableOpacity>
-
-        {settingsExpanded && (
-          <View style={styles.submenuContainer}>
-            <TouchableOpacity
-              style={[styles.submenuItem, isActive('/settings/perfil') && styles.menuItemActive]}
-              onPress={() => handleNavigation('/settings/perfil')}
-            >
-              <Text style={[styles.submenuText, isActive('/settings/perfil') && styles.menuTextActive]}>
-                Perfil
-              </Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={[styles.submenuItem, isActive('/settings/style') && styles.menuItemActive]}
-              onPress={() => handleNavigation('/settings/style')}
-            >
-              <Text style={[styles.submenuText, isActive('/settings/style') && styles.menuTextActive]}>
-                Estilo
-              </Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={[styles.submenuItem, isActive('/vehicles') && styles.menuItemActive]}
-              onPress={() => handleNavigation('/vehicles')}
-            >
-              <Text style={[styles.submenuText, isActive('/vehicles') && styles.menuTextActive]}>
-                Veículos
-              </Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={[styles.submenuItem, isActive('/cadastro-plataformas') && styles.menuItemActive]}
-              onPress={() => handleNavigation('/cadastro-plataformas')}
-            >
-              <Text style={[styles.submenuText, isActive('/cadastro-plataformas') && styles.menuTextActive]}>
-                Plataformas
-              </Text>
-            </TouchableOpacity>
-          </View>
-        )}
       </View>
 
       {/* Logout Button */}
