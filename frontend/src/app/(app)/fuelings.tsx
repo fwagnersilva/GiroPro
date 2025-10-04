@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { ScrollView, Alert } from 'react-native';
+import { useRouter } from 'expo-router';
 
-import { FocusAwareStatusBar, Text, View, Button, Input } from '@/components/ui';
+import { FocusAwareStatusBar, Text, View, Button } from '@/components/ui';
 
 interface Fueling {
   id: string;
@@ -18,6 +19,7 @@ interface Fueling {
 }
 
 export default function Fuelings() {
+  const router = useRouter();
   // Mock userId - substituir pela autenticação real
   const userId = 'user-123';
 
@@ -58,53 +60,27 @@ export default function Fuelings() {
     },
   ]);
 
-  // Form state
-  const [showForm, setShowForm] = useState(false);
-  const [editingFueling, setEditingFueling] = useState<Fueling | null>(null);
-  const [formData, setFormData] = useState({
-    vehicleId: '',
-    date: new Date().toISOString().split('T')[0], // YYYY-MM-DD
-    tipoCombustivel: 'gasolina' as Fueling['tipoCombustivel'],
-    totalValue: '',
-    pricePerLiter: '',
-    odometer: '',
-    nomePosto: '',
-  });
-
-  const resetForm = () => {
-    setFormData({
-      vehicleId: '',
-      date: new Date().toISOString().split('T')[0],
-      tipoCombustivel: 'gasolina',
-      totalValue: '',
-      pricePerLiter: '',
-      odometer: '',
-      nomePosto: '',
-    });
-    setEditingFueling(null);
-    setShowForm(false);
-  };
-
   const handleAddFueling = () => {
-    setShowForm(true);
-    resetForm();
+    router.push('/edit-fueling');
   };
 
   const handleEditFueling = (fueling: Fueling) => {
-    setEditingFueling(fueling);
-    setFormData({
-      vehicleId: fueling.idVeiculo,
-      date: fueling.dataAbastecimento.toISOString().split('T')[0],
-      tipoCombustivel: fueling.tipoCombustivel,
-      totalValue: (fueling.valorTotal / 100).toFixed(2),
-      pricePerLiter: fueling.precoPorLitro.toFixed(2),
-      odometer: fueling.kmAtual?.toString() || '',
-      nomePosto: fueling.nomePosto || '',
-    });
-    setShowForm(true);
+    router.push(`/edit-fueling?id=${fueling.id}`);
   };
 
   const handleDeleteFueling = (fuelingId: string) => {
+    // TODO: Implementar verificação no backend para saber se há registros associados
+    // Por enquanto, vamos simular que não há registros associados para permitir a exclusão.
+    const hasAssociatedRecords = false; // Placeholder
+
+    if (hasAssociatedRecords) {
+      Alert.alert(
+        'Não é possível excluir',
+        'Este abastecimento possui registros associados (jornadas, despesas). Exclua-os primeiro.',
+      );
+      return;
+    }
+
     Alert.alert(
       'Confirmar Exclusão',
       'Tem certeza que deseja excluir este abastecimento?',
@@ -120,80 +96,6 @@ export default function Fuelings() {
         },
       ]
     );
-  };
-
-  const handleSaveFueling = () => {
-    // Validações
-    if (
-      !formData.vehicleId ||
-      !formData.date ||
-      !formData.totalValue ||
-      !formData.pricePerLiter
-    ) {
-      Alert.alert('Erro', 'Veículo, data, valor total e preço por litro são obrigatórios.');
-      return;
-    }
-
-    const totalValueNum = parseFloat(formData.totalValue);
-    const pricePerLiterNum = parseFloat(formData.pricePerLiter);
-    const odometerNum = formData.odometer ? parseInt(formData.odometer) : undefined;
-
-    if (isNaN(totalValueNum) || totalValueNum <= 0) {
-      Alert.alert('Erro', 'Valor total abastecido inválido.');
-      return;
-    }
-    if (isNaN(pricePerLiterNum) || pricePerLiterNum <= 0) {
-      Alert.alert('Erro', 'Valor do litro inválido.');
-      return;
-    }
-    if (odometerNum !== undefined && (isNaN(odometerNum) || odometerNum <= 0)) {
-      Alert.alert('Erro', 'Odômetro inválido.');
-      return;
-    }
-
-    const liters = totalValueNum / pricePerLiterNum;
-    const selectedVehicle = vehicles.find(v => v.id === formData.vehicleId);
-
-    if (!selectedVehicle) {
-      Alert.alert('Erro', 'Veículo selecionado inválido.');
-      return;
-    }
-
-    // Converter valores para o formato do schema
-    const fuelingData: Omit<Fueling, 'id'> = {
-      idUsuario: userId,
-      idVeiculo: formData.vehicleId,
-      dataAbastecimento: new Date(formData.date),
-      tipoCombustivel: formData.tipoCombustivel,
-      litros: parseFloat(liters.toFixed(2)),
-      valorLitro: Math.round(pricePerLiterNum * 100), // converter para centavos
-      precoPorLitro: pricePerLiterNum,
-      valorTotal: Math.round(totalValueNum * 100), // converter para centavos
-      kmAtual: odometerNum,
-      nomePosto: formData.nomePosto || undefined,
-    };
-
-    if (editingFueling) {
-      // Editar abastecimento existente
-      setFuelings(
-        fuelings.map((f) =>
-          f.id === editingFueling.id
-            ? { ...fuelingData, id: editingFueling.id }
-            : f
-        )
-      );
-      Alert.alert('Sucesso', 'Abastecimento atualizado com sucesso!');
-    } else {
-      // Adicionar novo abastecimento
-      const newFueling: Fueling = {
-        id: Date.now().toString(),
-        ...fuelingData,
-      };
-      setFuelings([...fuelings, newFueling]);
-      Alert.alert('Sucesso', 'Abastecimento adicionado com sucesso!');
-    }
-
-    resetForm();
   };
 
   const formatCurrency = (cents: number) => {
@@ -223,128 +125,6 @@ export default function Fuelings() {
           </Button>
         </View>
 
-        {/* Fueling Form */}
-        {showForm && (
-          <View className="mb-6 p-4 bg-gray-50 rounded-lg">
-            <Text className="text-lg font-semibold text-gray-900 mb-4">
-              {editingFueling ? 'Editar Abastecimento' : 'Novo Abastecimento'}
-            </Text>
-
-            <View className="mb-4">
-              <Text className="text-sm font-medium text-gray-700 mb-2">
-                Veículo
-              </Text>
-              {/* TODO: Replace with a proper Picker/Dropdown component */}
-              <Input
-                placeholder="Selecione o veículo (ID)"
-                value={formData.vehicleId}
-                onChangeText={(text) =>
-                  setFormData({ ...formData, vehicleId: text })
-                }
-                className="w-full"
-              />
-            </View>
-
-            <View className="mb-4">
-              <Text className="text-sm font-medium text-gray-700 mb-2">
-                Data
-              </Text>
-              <Input
-                placeholder="YYYY-MM-DD"
-                value={formData.date}
-                onChangeText={(text) => setFormData({ ...formData, date: text })}
-                className="w-full"
-              />
-            </View>
-
-            <View className="mb-4">
-              <Text className="text-sm font-medium text-gray-700 mb-2">
-                Tipo de Combustível
-              </Text>
-              <Input
-                placeholder="gasolina, etanol, diesel, gnv, flex"
-                value={formData.tipoCombustivel}
-                onChangeText={(text) => setFormData({ ...formData, tipoCombustivel: text as Fueling['tipoCombustivel'] })}
-                className="w-full"
-              />
-            </View>
-
-            <View className="mb-4">
-              <Text className="text-sm font-medium text-gray-700 mb-2">
-                Valor Total Abastecido (R$)
-              </Text>
-              <Input
-                placeholder="Ex: 150.00"
-                value={formData.totalValue}
-                onChangeText={(text) =>
-                  setFormData({ ...formData, totalValue: text })
-                }
-                keyboardType="numeric"
-                className="w-full"
-              />
-            </View>
-
-            <View className="mb-4">
-              <Text className="text-sm font-medium text-gray-700 mb-2">
-                Valor do Litro (R$)
-              </Text>
-              <Input
-                placeholder="Ex: 5.50"
-                value={formData.pricePerLiter}
-                onChangeText={(text) =>
-                  setFormData({ ...formData, pricePerLiter: text })
-                }
-                keyboardType="numeric"
-                className="w-full"
-              />
-            </View>
-
-            <View className="mb-4">
-              <Text className="text-sm font-medium text-gray-700 mb-2">
-                Odômetro (Km) - Opcional
-              </Text>
-              <Input
-                placeholder="Ex: 50000"
-                value={formData.odometer}
-                onChangeText={(text) =>
-                  setFormData({ ...formData, odometer: text })
-                }
-                keyboardType="numeric"
-                className="w-full"
-              />
-            </View>
-
-            <View className="mb-4">
-              <Text className="text-sm font-medium text-gray-700 mb-2">
-                Nome do Posto - Opcional
-              </Text>
-              <Input
-                placeholder="Ex: Posto Ipiranga"
-                value={formData.nomePosto}
-                onChangeText={(text) =>
-                  setFormData({ ...formData, nomePosto: text })
-                }
-                className="w-full"
-              />
-            </View>
-
-            <View className="flex-row space-x-2">
-              <Button onPress={handleSaveFueling} className="flex-1 mr-2">
-                <Text className="text-white font-medium">
-                  {editingFueling ? 'Atualizar' : 'Salvar'}
-                </Text>
-              </Button>
-              <Button
-                onPress={resetForm}
-                variant="outline"
-                className="flex-1 ml-2"
-              >
-                <Text className="text-gray-600 font-medium">Cancelar</Text>
-              </Button>
-            </View>
-          </View>
-        )}
-
         {/* Fuelings List */}
         <View>
           <Text className="text-lg font-semibold text-gray-900 mb-4">
@@ -354,7 +134,7 @@ export default function Fuelings() {
           {fuelings.length === 0 ? (
             <View className="p-8 items-center">
               <Text className="text-gray-500 text-center">
-                Nenhum abastecimento registrado.{'\n'}Adicione seu primeiro
+                Nenhum abastecimento registrado.\nAdicione seu primeiro
                 abastecimento para começar!
               </Text>
             </View>
@@ -411,3 +191,4 @@ export default function Fuelings() {
     </View>
   );
 }
+

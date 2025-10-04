@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { ScrollView, Alert } from 'react-native';
+import { useRouter } from 'expo-router';
 
-import { FocusAwareStatusBar, Text, View, Button, Input } from '@/components/ui';
+import { FocusAwareStatusBar, Text, View, Button } from '@/components/ui';
 
 interface Expense {
   id: string;
@@ -14,6 +15,7 @@ interface Expense {
 }
 
 export default function Expenses() {
+  const router = useRouter();
   // Mock data for vehicles
   const [vehicles] = useState([
     { id: '1', model: 'Honda Civic', placa: 'ABC-1234' },
@@ -52,58 +54,27 @@ export default function Expenses() {
     },
   ]);
 
-  // Form state
-  const [showForm, setShowForm] = useState(false);
-  const [editingExpense, setEditingExpense] = useState<Expense | null>(null);
-  const [formData, setFormData] = useState({
-    vehicleId: '',
-    date: new Date().toISOString().split('T')[0], // YYYY-MM-DD
-    description: '',
-    value: '',
-    category: 'Manutenção',
-  });
-
-  const categories = [
-    'Manutenção',
-    'Combustível',
-    'Seguro',
-    'IPVA',
-    'Multas',
-    'Limpeza',
-    'Peças',
-    'Outros',
-  ];
-
-  const resetForm = () => {
-    setFormData({
-      vehicleId: '',
-      date: new Date().toISOString().split('T')[0],
-      description: '',
-      value: '',
-      category: 'Manutenção',
-    });
-    setEditingExpense(null);
-    setShowForm(false);
-  };
-
   const handleAddExpense = () => {
-    setShowForm(true);
-    resetForm();
+    router.push('/edit-expense');
   };
 
   const handleEditExpense = (expense: Expense) => {
-    setEditingExpense(expense);
-    setFormData({
-      vehicleId: expense.vehicleId,
-      date: expense.date,
-      description: expense.description,
-      value: expense.value,
-      category: expense.category,
-    });
-    setShowForm(true);
+    router.push(`/edit-expense?id=${expense.id}`);
   };
 
   const handleDeleteExpense = (expenseId: string) => {
+    // TODO: Implementar verificação no backend para saber se há registros associados
+    // Por enquanto, vamos simular que não há registros associados para permitir a exclusão.
+    const hasAssociatedRecords = false; // Placeholder
+
+    if (hasAssociatedRecords) {
+      Alert.alert(
+        'Não é possível excluir',
+        'Esta despesa possui registros associados (jornadas, abastecimentos). Exclua-os primeiro.',
+      );
+      return;
+    }
+
     Alert.alert(
       'Confirmar Exclusão',
       'Tem certeza que deseja excluir esta despesa?',
@@ -112,81 +83,7 @@ export default function Expenses() {
         {
           text: 'Excluir',
           style: 'destructive',
-          onPress: () => {
-            setExpenses(expenses.filter((e) => e.id !== expenseId));
-            Alert.alert('Sucesso', 'Despesa excluída com sucesso!');
-          },
-        },
-      ]
-    );
-  };
-
-  const handleSaveExpense = () => {
-    // Validações
-    if (
-      !formData.vehicleId ||
-      !formData.date ||
-      !formData.description ||
-      !formData.value ||
-      !formData.category
-    ) {
-      Alert.alert('Erro', 'Todos os campos são obrigatórios.');
-      return;
-    }
-
-    const valueNum = parseFloat(formData.value);
-    if (isNaN(valueNum) || valueNum <= 0) {
-      Alert.alert('Erro', 'Valor da despesa inválido.');
-      return;
-    }
-
-    const selectedVehicle = vehicles.find((v) => v.id === formData.vehicleId);
-    if (!selectedVehicle) {
-      Alert.alert('Erro', 'Veículo selecionado inválido.');
-      return;
-    }
-
-    if (editingExpense) {
-      // Editar despesa existente
-      setExpenses(
-        expenses.map((e) =>
-          e.id === editingExpense.id
-            ? {
-                ...editingExpense,
-                ...formData,
-                vehicleModel: selectedVehicle.model,
-              }
-            : e
-        )
-      );
-      Alert.alert('Sucesso', 'Despesa atualizada com sucesso!');
-    } else {
-      // Adicionar nova despesa
-      const newExpense: Expense = {
-        id: Date.now().toString(),
-        ...formData,
-        vehicleModel: selectedVehicle.model,
-      };
-      setExpenses([...expenses, newExpense]);
-      Alert.alert('Sucesso', 'Despesa adicionada com sucesso!');
-    }
-
-    resetForm();
-  };
-
-  // Calculate total expenses
-  const totalExpenses = expenses.reduce(
-    (total, expense) => total + parseFloat(expense.value),
-    0
-  );
-
-  // Group expenses by category
-  const expensesByCategory = expenses.reduce((acc, expense) => {
-    if (!acc[expense.category]) {
-      acc[expense.category] = 0;
-    }
-    acc[expense.category] += parseFloat(expense.value);
-    return acc;
+           return acc;
   }, {} as Record<string, number>);
 
   return (
@@ -221,130 +118,7 @@ export default function Expenses() {
           </Text>
         </View>
 
-        {/* Expense Form */}
-        {showForm && (
-          <View className="mb-6 p-4 bg-gray-50 rounded-lg">
-            <Text className="text-lg font-semibold text-gray-900 mb-4">
-              {editingExpense ? 'Editar Despesa' : 'Nova Despesa'}
-            </Text>
 
-            <View className="mb-4">
-              <Text className="text-sm font-medium text-gray-700 mb-2">
-                Veículo
-              </Text>
-              <View className="flex-row flex-wrap">
-                {vehicles.map((vehicle) => (
-                  <Button
-                    key={vehicle.id}
-                    onPress={() =>
-                      setFormData({ ...formData, vehicleId: vehicle.id })
-                    }
-                    variant={
-                      formData.vehicleId === vehicle.id ? 'default' : 'outline'
-                    }
-                    className="mr-2 mb-2"
-                  >
-                    <Text
-                      className={
-                        formData.vehicleId === vehicle.id
-                          ? 'text-white text-sm'
-                          : 'text-gray-600 text-sm'
-                      }
-                    >
-                      {vehicle.model}
-                    </Text>
-                  </Button>
-                ))}
-              </View>
-            </View>
-
-            <View className="mb-4">
-              <Text className="text-sm font-medium text-gray-700 mb-2">
-                Data
-              </Text>
-              <Input
-                placeholder="YYYY-MM-DD"
-                value={formData.date}
-                onChangeText={(text) => setFormData({ ...formData, date: text })}
-                className="w-full"
-              />
-            </View>
-
-            <View className="mb-4">
-              <Text className="text-sm font-medium text-gray-700 mb-2">
-                Categoria
-              </Text>
-              <View className="flex-row flex-wrap">
-                {categories.map((category) => (
-                  <Button
-                    key={category}
-                    onPress={() =>
-                      setFormData({ ...formData, category: category })
-                    }
-                    variant={
-                      formData.category === category ? 'default' : 'outline'
-                    }
-                    className="mr-2 mb-2"
-                  >
-                    <Text
-                      className={
-                        formData.category === category
-                          ? 'text-white text-sm'
-                          : 'text-gray-600 text-sm'
-                      }
-                    >
-                      {category}
-                    </Text>
-                  </Button>
-                ))}
-              </View>
-            </View>
-
-            <View className="mb-4">
-              <Text className="text-sm font-medium text-gray-700 mb-2">
-                Descrição do Serviço/Gasto
-              </Text>
-              <Input
-                placeholder="Ex: Troca de óleo, Alinhamento, Multa"
-                value={formData.description}
-                onChangeText={(text) =>
-                  setFormData({ ...formData, description: text })
-                }
-                className="w-full"
-              />
-            </View>
-
-            <View className="mb-4">
-              <Text className="text-sm font-medium text-gray-700 mb-2">
-                Valor Gasto (R$)
-              </Text>
-              <Input
-                placeholder="Ex: 120.00"
-                value={formData.value}
-                onChangeText={(text) =>
-                  setFormData({ ...formData, value: text })
-                }
-                keyboardType="numeric"
-                className="w-full"
-              />
-            </View>
-
-            <View className="flex-row space-x-2">
-              <Button onPress={handleSaveExpense} className="flex-1 mr-2">
-                <Text className="text-white font-medium">
-                  {editingExpense ? 'Atualizar' : 'Salvar'}
-                </Text>
-              </Button>
-              <Button
-                onPress={resetForm}
-                variant="outline"
-                className="flex-1 ml-2"
-              >
-                <Text className="text-gray-600 font-medium">Cancelar</Text>
-              </Button>
-            </View>
-          </View>
-        )}
 
         {/* Expenses by Category */}
         {Object.keys(expensesByCategory).length > 0 && (

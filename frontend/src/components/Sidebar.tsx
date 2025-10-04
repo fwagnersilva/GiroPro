@@ -52,9 +52,14 @@ export const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
           </View>
 
           {/* Menu Items */}
-          <TouchableOpacity onPress={() => navigateTo('/dashboard')} style={styles.menuItem}>
+          <TouchableOpacity onPress={() => navigateTo("/dashboard")} style={styles.menuItem}>
             <Text style={styles.menuIcon}>📊</Text>
             <Text style={styles.menuItemText}>Dashboard</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity onPress={() => navigateTo("/activities")} style={styles.menuItem}>
+            <Text style={styles.menuIcon}>📄</Text>
+            <Text style={styles.menuItemText}>Atividades</Text>
           </TouchableOpacity>
 
           <TouchableOpacity onPress={() => navigateTo('/vehicles')} style={styles.menuItem}>
@@ -77,10 +82,7 @@ export const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
             <Text style={styles.menuItemText}>Abastecimentos</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity onPress={() => navigateTo('/dashboard')} style={styles.menuItem}>
-            <Text style={styles.menuIcon}>📈</Text>
-            <Text style={styles.menuItemText}>Relatórios</Text>
-          </TouchableOpacity>
+          
 
           {/* Configurações com submenu */}
           <View>
@@ -95,10 +97,7 @@ export const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
                 <TouchableOpacity onPress={() => navigateTo('/profile')} style={styles.submenuItem}>
                   <Text style={styles.submenuItemText}>👤 Perfil</Text>
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => navigateTo('/style')} style={styles.submenuItem}>
-                  <Text style={styles.submenuItemText}>🎨 Aparência</Text>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => navigateTo('/settings')} style={styles.submenuItem}>
+                               <TouchableOpacity onPress={() => navigateTo('/settings')} style={styles.submenuItem}>
                   <Text style={styles.submenuItemText}>⚙️ Geral</Text>
                 </TouchableOpacity>
               </View>

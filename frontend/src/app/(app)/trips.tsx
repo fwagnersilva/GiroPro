@@ -173,14 +173,14 @@ export default function Trips() {
     Alert.alert('Sucesso', 'Jornada iniciada com sucesso!');
   };
 
-  const handleEndTrip = () => {
-    if (!selectedTrip || !endFormData.endOdometer) {
+  const handleEndTrip = (tripToEnd: Trip) => {
+    if (!tripToEnd || !endFormData.endOdometer) {
       Alert.alert('Erro', 'Quilometragem final é obrigatória.');
       return;
     }
 
     const endOdometerNum = parseInt(endFormData.endOdometer);
-    const startOdometerNum = selectedTrip.startOdometer;
+    const startOdometerNum = tripToEnd.startOdometer;
 
     if (isNaN(endOdometerNum) || endOdometerNum <= startOdometerNum) {
       Alert.alert('Erro', 'Quilometragem final deve ser maior que a inicial.');
@@ -204,7 +204,7 @@ export default function Trips() {
     const ratePerKm = totalKm > 0 ? totalEarnings / totalKm : 0;
 
     const updatedTrip: Trip = {
-      ...selectedTrip,
+      ...tripToEnd,
       endDate: new Date().toISOString(),
       endOdometer: endOdometerNum,
       status: 'completed',
@@ -337,8 +337,16 @@ export default function Trips() {
               <View className="flex-row space-x-2">
                 <Button
                   onPress={() => {
-                    setSelectedTrip(activeTrip);
-                    handleEndTrip();
+                    if (activeTrip) {
+                      setSelectedTrip(activeTrip);
+                      // A chamada a handleEndTrip() já é feita aqui, mas o estado `selectedTrip` pode não ter sido atualizado a tempo
+                      // Para garantir que `selectedTrip` esteja disponível em `handleEndTrip`, podemos passar o `activeTrip` diretamente
+                      // ou garantir que o `setSelectedTrip` seja síncrono ou que `handleEndTrip` seja chamado após a atualização do estado.
+                      // Por simplicidade, vamos chamar handleEndTrip com o activeTrip diretamente.
+                      handleEndTrip(activeTrip);
+                    } else {
+                      Alert.alert("Erro", "Nenhuma jornada ativa para finalizar.");
+                    }
                   }}
                   className="flex-1 bg-green-600"
                 >
@@ -346,13 +354,25 @@ export default function Trips() {
                 </Button>
                 <Button
                   onPress={() => {
-                    // Cancel trip logic
-                    Alert.alert('Cancelar Jornada', 'Tem certeza que deseja cancelar esta jornada?', [
-                      { text: 'Não', style: 'cancel' },
-                      { text: 'Sim', style: 'destructive', onPress: () => {
-                        setTrips(trips.filter(t => t.id !== activeTrip.id));
-                      }}
-                    ]);
+                    Alert.alert(
+                      'Cancelar Jornada',
+                      'Tem certeza que deseja cancelar esta jornada?',
+                      [
+                        { text: 'Não', style: 'cancel' },
+                        {
+                          text: 'Sim',
+                          style: 'destructive',
+                          onPress: () => {
+                            if (activeTrip) {
+                              setTrips(trips.filter(t => t.id !== activeTrip.id));
+                              setSelectedTrip(null);
+                              setShowEndForm(false);
+                              Alert.alert('Sucesso', 'Jornada cancelada com sucesso!');
+                            }
+                          }
+                        }
+                      ]
+                    );
                   }}
                   className="bg-red-600 px-4"
                 >

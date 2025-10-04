@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { ScrollView, Alert } from 'react-native';
+import { useRouter } from 'expo-router';
 
-import { FocusAwareStatusBar, Text, View, Button, Input } from '@/components/ui';
+import { FocusAwareStatusBar, Text, View, Button } from '@/components/ui';
 
 interface Vehicle {
   id: string;
@@ -18,6 +19,7 @@ interface Vehicle {
 }
 
 export default function Vehicles() {
+  const router = useRouter();
   // Mock userId - substituir pela autenticação real
   const userId = 'user-123';
 
@@ -56,59 +58,24 @@ export default function Vehicles() {
     }
   ]);
 
-  // Form state
-  const [showForm, setShowForm] = useState(false);
-  const [editingVehicle, setEditingVehicle] = useState<Vehicle | null>(null);
-  const [formData, setFormData] = useState({
-    marca: '',
-    modelo: '',
-    ano: '',
-    placa: '',
-    tipoCombustivel: 'flex' as Vehicle['tipoCombustivel'],
-    tipoUso: 'proprio' as Vehicle['tipoUso'],
-    valorAluguel: '',
-    valorPrestacao: '',
-    mediaConsumo: ''
-  });
-
-  const resetForm = () => {
-    setFormData({
-      marca: '',
-      modelo: '',
-      ano: '',
-      placa: '',
-      tipoCombustivel: 'flex',
-      tipoUso: 'proprio',
-      valorAluguel: '',
-      valorPrestacao: '',
-      mediaConsumo: ''
-    });
-    setEditingVehicle(null);
-    setShowForm(false);
-  };
-
   const handleAddVehicle = () => {
-    setShowForm(true);
-    resetForm();
+    router.push('/edit-vehicle');
   };
 
   const handleEditVehicle = (vehicle: Vehicle) => {
-    setEditingVehicle(vehicle);
-    setFormData({
-      marca: vehicle.marca,
-      modelo: vehicle.modelo,
-      ano: vehicle.ano.toString(),
-      placa: vehicle.placa,
-      tipoCombustivel: vehicle.tipoCombustivel,
-      tipoUso: vehicle.tipoUso,
-      valorAluguel: vehicle.valorAluguel ? (vehicle.valorAluguel / 100).toFixed(2) : '',
-      valorPrestacao: vehicle.valorPrestacao ? (vehicle.valorPrestacao / 100).toFixed(2) : '',
-      mediaConsumo: vehicle.mediaConsumo?.toString() || ''
-    });
-    setShowForm(true);
+    router.push(`/edit-vehicle?id=${vehicle.id}`);
   };
 
   const handleDeleteVehicle = (vehicleId: string) => {
+    // Placeholder: Verificar se há registros associados (jornadas, abastecimentos, despesas)
+    // No momento, como o backend não está funcionando, faremos uma simulação.
+    const hasAssociatedRecords = Math.random() > 0.5; // Simula uma verificação
+
+    if (hasAssociatedRecords) {
+      Alert.alert("Não é possível excluir", "Não é possível excluir o veículo: existem registros associados (jornadas, abastecimentos ou despesas).");
+      return;
+    }
+
     Alert.alert(
       'Confirmar Exclusão',
       'Tem certeza que deseja excluir este veículo?',

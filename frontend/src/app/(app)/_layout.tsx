@@ -44,11 +44,12 @@ export default function TabLayout() {
       <Sidebar isOpen={isSidebarOpen} onClose={toggleSidebar} />
       <Tabs
         screenOptions={{
-          headerLeft: () => (
+          headerLeft: ({ canGoBack }) => (
             <Pressable onPress={toggleSidebar} style={{ marginLeft: 15 }}>
               <Text style={{ fontSize: 24 }}>☰</Text>
             </Pressable>
           ),
+          headerShown: true, // Ensure header is always shown for screens within these tabs
         }}
       >
         {/* Apenas 3 tabs principais no menu inferior */}
@@ -56,7 +57,7 @@ export default function TabLayout() {
           name="trips"
           options={{
             title: 'Jornadas',
-            headerShown: false,
+            headerShown: true,
             tabBarIcon: ({ color }) => <FeedIcon color={color} />,
             tabBarButtonTestID: 'trips-tab',
           }}
@@ -88,6 +89,12 @@ export default function TabLayout() {
           }}
         />
         <Tabs.Screen
+          name="activities"
+          options={{
+            href: null,
+          }}
+        />
+        <Tabs.Screen
           name="dashboard"
           options={{
             href: null,
@@ -113,6 +120,18 @@ export default function TabLayout() {
         />
         <Tabs.Screen
           name="settings"
+          options={{
+            href: null,
+          }}
+        />
+        <Tabs.Screen
+          name="edit-expense"
+          options={{
+            href: null,
+          }}
+        />
+        <Tabs.Screen
+          name="edit-fueling"
           options={{
             href: null,
           }}

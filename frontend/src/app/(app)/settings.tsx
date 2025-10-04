@@ -30,16 +30,16 @@ export default function Settings() {
           <Text className="text-xl font-bold">
             {translate('settings.title')}
           </Text>
-          <ItemsContainer title="settings.generale">
+          <ItemsContainer title="Geral">
             <LanguageItem />
-            <ThemeItem />
           </ItemsContainer>
 
-          <ItemsContainer title="settings.about">
+          <ItemsContainer title="Aplicativo">
             <Item text="settings.app_name" value={Env.NAME} />
             <Item text="settings.version" value={Env.VERSION} />
           </ItemsContainer>
 
+          {/*
           <ItemsContainer title="settings.support_us">
             <Item
               text="settings.share"
@@ -57,7 +57,9 @@ export default function Settings() {
               onPress={() => {}}
             />
           </ItemsContainer>
+          */}
 
+          {/*
           <ItemsContainer title="settings.links">
             <Item text="settings.privacy" onPress={() => {}} />
             <Item text="settings.terms" onPress={() => {}} />
@@ -72,6 +74,7 @@ export default function Settings() {
               onPress={() => {}}
             />
           </ItemsContainer>
+          */}
 
           <View className="my-8">
             <ItemsContainer>
