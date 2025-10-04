@@ -27,7 +27,9 @@ const JornadasScreen: React.FC = () => {
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
+  const [showFinishModal, setShowFinishModal] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [selectedJourneyToFinish, setSelectedJourneyToFinish] = useState<Journey | null>(null);
 
   // Form state
   const [selectedVehicle, setSelectedVehicle] = useState('');
@@ -37,6 +39,12 @@ const JornadasScreen: React.FC = () => {
   const [dataFim, setDataFim] = useState('');
   const [observacoes, setObservacoes] = useState('');
   const [platformRevenues, setPlatformRevenues] = useState<{ [key: string]: string }>({});
+
+  // Finish journey form state
+  const [finishKmFim, setFinishKmFim] = useState('');
+  const [finishPlatformRevenues, setFinishPlatformRevenues] = useState<{ [key: string]: string }>({});
+  const [finishPlatformRevenuesBeforeCutoff, setFinishPlatformRevenuesBeforeCutoff] = useState<{ [key: string]: string }>({});
+  const [finishPlatformRevenuesAfterCutoff, setFinishPlatformRevenuesAfterCutoff] = useState<{ [key: string]: string }>({});
 
   useEffect(() => {
     loadData();
@@ -137,6 +145,82 @@ const JornadasScreen: React.FC = () => {
     }
   };
 
+  const handleCancelJourney = async (journeyId: string) => {
+    Alert.alert(
+      'Cancelar Jornada',
+      'Tem certeza que deseja cancelar esta jornada? Esta ação não pode ser desfeita.',
+      [
+        { text: 'Não', style: 'cancel' },
+        {
+          text: 'Sim, Cancelar',
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              // Para cancelar, vamos deletar a jornada
+              const { deleteJourney } = await import('../../src/services/journeyService');
+              await deleteJourney(journeyId);
+              Alert.alert('Sucesso', 'Jornada cancelada com sucesso!');
+              await loadData();
+            } catch (error: any) {
+              Alert.alert('Erro', error.message || 'Erro ao cancelar jornada');
+            }
+          },
+        },
+      ]
+    );
+  };
+
+  // Função para verificar se a jornada atravessa o horário de corte de uma plataforma
+  const checksCutoffTime = (journey: Journey, platformName: string): boolean => {
+    const startDate = new Date(journey.dataInicio);
+    const currentDate = new Date();
+    
+    // Definir horários de corte por plataforma
+    const cutoffTimes: { [key: string]: number } = {
+      '99': 0,    // Meia-noite (00:00)
+      'Uber': 4,  // 04:00 da manhã
+    };
+    
+    const cutoffHour = cutoffTimes[platformName];
+    if (cutoffHour === undefined) return false;
+    
+    // Criar data do horário de corte no dia da jornada
+    const cutoffDate = new Date(startDate);
+    cutoffDate.setHours(cutoffHour, 0, 0, 0);
+    
+    // Se a jornada começou antes do horário de corte e está sendo finalizada depois
+    if (startDate < cutoffDate && currentDate > cutoffDate) {
+      return true;
+    }
+    
+    // Se a jornada começou em um dia e está sendo finalizada no dia seguinte
+    const startDay = startDate.getDate();
+    const currentDay = currentDate.getDate();
+    if (startDay !== currentDay) {
+      return true;
+    }
+    
+    return false;
+  };
+
+  const handleFinishJourney = (journey: Journey) => {
+    setSelectedJourneyToFinish(journey);
+    setFinishKmFim('');
+    setFinishPlatformRevenues({});
+    setFinishPlatformRevenuesBeforeCutoff({});
+    setFinishPlatformRevenuesAfterCutoff({});
+    setShowFinishModal(true);
+  };
+
+  const handleCloseFinishModal = () => {
+    setShowFinishModal(false);
+    setSelectedJourneyToFinish(null);
+    setFinishKmFim('');
+    setFinishPlatformRevenues({});
+    setFinishPlatformRevenuesBeforeCutoff({});
+    setFinishPlatformRevenuesAfterCutoff({});
+  };
+
   const formatCurrency = (value: number) => {
     return new Intl.NumberFormat('pt-BR', {
       style: 'currency',
@@ -184,29 +268,58 @@ const JornadasScreen: React.FC = () => {
             </Text>
           </View>
         ) : (
-          journeys.map((journey) => (
-            <View key={journey.id} style={styles.journeyCard}>
-              <View style={styles.journeyHeader}>
-                <Text style={styles.journeyDate}>{formatDate(journey.dataInicio)}</Text>
-                <Text style={styles.journeyRevenue}>
-                  {formatCurrency(journey.ganhoBruto || 0)}
-                </Text>
-              </View>
-              <View style={styles.journeyDetails}>
-                <Text style={styles.journeyDetailText}>
-                  KM: {journey.kmInicio} → {journey.kmFim || '---'}
-                </Text>
-                {journey.kmTotal && (
-                  <Text style={styles.journeyDetailText}>
-                    Total: {journey.kmTotal} km
+          journeys.map((journey) => {
+            const isActive = !journey.dataFim || !journey.kmFim;
+            
+            return (
+              <View key={journey.id} style={styles.journeyCard}>
+                <View style={styles.journeyHeader}>
+                  <View style={styles.journeyHeaderLeft}>
+                    <Text style={styles.journeyDate}>{formatDate(journey.dataInicio)}</Text>
+                    {isActive && (
+                      <View style={styles.activeIndicator}>
+                        <Text style={styles.activeIndicatorText}>ATIVA</Text>
+                      </View>
+                    )}
+                  </View>
+                  <Text style={styles.journeyRevenue}>
+                    {formatCurrency(journey.ganhoBruto || 0)}
                   </Text>
+                </View>
+                <View style={styles.journeyDetails}>
+                  <Text style={styles.journeyDetailText}>
+                    KM: {journey.kmInicio} → {journey.kmFim || '---'}
+                  </Text>
+                  {journey.kmTotal && (
+                    <Text style={styles.journeyDetailText}>
+                      Total: {journey.kmTotal} km
+                    </Text>
+                  )}
+                </View>
+                {journey.observacoes && (
+                  <Text style={styles.journeyObservation}>{journey.observacoes}</Text>
+                )}
+                
+                {/* Botões de ação para jornadas ativas */}
+                {isActive && (
+                  <View style={styles.journeyActions}>
+                    <TouchableOpacity
+                      style={[styles.actionButton, styles.cancelButton]}
+                      onPress={() => handleCancelJourney(journey.id)}
+                    >
+                      <Text style={styles.cancelButtonText}>Cancelar</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      style={[styles.actionButton, styles.finishButton]}
+                      onPress={() => handleFinishJourney(journey)}
+                    >
+                      <Text style={styles.finishButtonText}>Finalizar Jornada</Text>
+                    </TouchableOpacity>
+                  </View>
                 )}
               </View>
-              {journey.observacoes && (
-                <Text style={styles.journeyObservation}>{journey.observacoes}</Text>
-              )}
-            </View>
-          ))
+            );
+          })
         )}
       </ScrollView>
 
@@ -351,6 +464,149 @@ const JornadasScreen: React.FC = () => {
                 <Text style={styles.submitButtonText}>Salvar Jornada</Text>
               )}
             </TouchableOpacity>
+          </ScrollView>
+        </View>
+      </Modal>
+
+      {/* Modal de finalizar jornada */}
+      <Modal
+        visible={showFinishModal}
+        animationType="slide"
+        transparent={false}
+        onRequestClose={handleCloseFinishModal}
+      >
+        <View style={styles.modalContainer}>
+          <View style={styles.modalHeader}>
+            <TouchableOpacity onPress={handleCloseFinishModal}>
+              <Text style={styles.modalCloseButton}>✕ Fechar</Text>
+            </TouchableOpacity>
+            <Text style={styles.modalTitle}>Finalizar Jornada</Text>
+          </View>
+
+          <ScrollView style={styles.modalContent}>
+            {selectedJourneyToFinish && (
+              <>
+                {/* Informações da jornada */}
+                <View style={styles.journeyInfoSection}>
+                  <Text style={styles.sectionTitle}>Informações da Jornada</Text>
+                  <Text style={styles.journeyInfoText}>
+                    Iniciada em: {formatDate(selectedJourneyToFinish.dataInicio)}
+                  </Text>
+                  <Text style={styles.journeyInfoText}>
+                    KM Inicial: {selectedJourneyToFinish.kmInicio}
+                  </Text>
+                </View>
+
+                {/* KM Final */}
+                <View style={styles.formGroup}>
+                  <Text style={styles.formLabel}>KM Final *</Text>
+                  <TextInput
+                    style={styles.input}
+                    placeholder="Quilometragem final"
+                    keyboardType="numeric"
+                    value={finishKmFim}
+                    onChangeText={setFinishKmFim}
+                  />
+                </View>
+
+                {/* Faturamento por plataforma */}
+                <View style={styles.formGroup}>
+                  <Text style={styles.formLabel}>Faturamento por Plataforma *</Text>
+                  {platforms.map((platform) => {
+                    const crossesCutoff = checksCutoffTime(selectedJourneyToFinish, platform.nome);
+                    
+                    return (
+                      <View key={platform.id} style={styles.platformSection}>
+                        <Text style={styles.platformSectionTitle}>{platform.nome}</Text>
+                        
+                        {crossesCutoff ? (
+                          // Mostrar dois campos quando atravessa horário de corte
+                          <>
+                            <Text style={styles.cutoffWarning}>
+                              ⚠️ Esta jornada atravessou o horário de corte da {platform.nome}
+                            </Text>
+                            <View style={styles.cutoffRevenueRow}>
+                              <Text style={styles.cutoffRevenueLabel}>
+                                Antes do horário de corte:
+                              </Text>
+                              <TextInput
+                                style={styles.cutoffRevenueInput}
+                                placeholder="R$ 0,00"
+                                keyboardType="decimal-pad"
+                                value={finishPlatformRevenuesBeforeCutoff[platform.id] || ''}
+                                onChangeText={(value) =>
+                                  setFinishPlatformRevenuesBeforeCutoff({
+                                    ...finishPlatformRevenuesBeforeCutoff,
+                                    [platform.id]: value,
+                                  })
+                                }
+                              />
+                            </View>
+                            <View style={styles.cutoffRevenueRow}>
+                              <Text style={styles.cutoffRevenueLabel}>
+                                Depois do horário de corte:
+                              </Text>
+                              <TextInput
+                                style={styles.cutoffRevenueInput}
+                                placeholder="R$ 0,00"
+                                keyboardType="decimal-pad"
+                                value={finishPlatformRevenuesAfterCutoff[platform.id] || ''}
+                                onChangeText={(value) =>
+                                  setFinishPlatformRevenuesAfterCutoff({
+                                    ...finishPlatformRevenuesAfterCutoff,
+                                    [platform.id]: value,
+                                  })
+                                }
+                              />
+                            </View>
+                          </>
+                        ) : (
+                          // Mostrar um campo quando não atravessa horário de corte
+                          <View style={styles.platformRevenueRow}>
+                            <Text style={styles.platformRevenueName}>Faturamento Total:</Text>
+                            <TextInput
+                              style={styles.platformRevenueInput}
+                              placeholder="R$ 0,00"
+                              keyboardType="decimal-pad"
+                              value={finishPlatformRevenues[platform.id] || ''}
+                              onChangeText={(value) =>
+                                setFinishPlatformRevenues({
+                                  ...finishPlatformRevenues,
+                                  [platform.id]: value,
+                                })
+                              }
+                            />
+                          </View>
+                        )}
+                      </View>
+                    );
+                  })}
+                  
+                  {/* Total geral */}
+                  <Text style={styles.totalRevenue}>
+                    Total Geral: R${' '}
+                    {(
+                      Object.values(finishPlatformRevenues).reduce((sum, value) => sum + (parseFloat(value) || 0), 0) +
+                      Object.values(finishPlatformRevenuesBeforeCutoff).reduce((sum, value) => sum + (parseFloat(value) || 0), 0) +
+                      Object.values(finishPlatformRevenuesAfterCutoff).reduce((sum, value) => sum + (parseFloat(value) || 0), 0)
+                    ).toFixed(2)}
+                  </Text>
+                </View>
+
+                {/* Botão finalizar */}
+                <TouchableOpacity
+                  style={[styles.submitButton, isSubmitting && styles.submitButtonDisabled]}
+                  onPress={() => {/* TODO: Implementar handleFinishSubmit */}}
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting ? (
+                    <ActivityIndicator size="small" color="#fff" />
+                  ) : (
+                    <Text style={styles.submitButtonText}>Finalizar Jornada</Text>
+                  )}
+                </TouchableOpacity>
+              </>
+            )}
           </ScrollView>
         </View>
       </Modal>
@@ -586,6 +842,110 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 16,
     fontWeight: '600',
+  },
+  // Novos estilos para jornadas ativas
+  journeyHeaderLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flex: 1,
+  },
+  activeIndicator: {
+    backgroundColor: '#FF9500',
+    borderRadius: 4,
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    marginLeft: 8,
+  },
+  activeIndicatorText: {
+    color: '#fff',
+    fontSize: 10,
+    fontWeight: 'bold',
+  },
+  journeyActions: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 12,
+    gap: 8,
+  },
+  actionButton: {
+    flex: 1,
+    paddingVertical: 10,
+    paddingHorizontal: 16,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  cancelButton: {
+    backgroundColor: '#FF3B30',
+  },
+  cancelButtonText: {
+    color: '#fff',
+    fontSize: 14,
+    fontWeight: '600',
+  },
+  finishButton: {
+    backgroundColor: '#34C759',
+  },
+  finishButtonText: {
+    color: '#fff',
+    fontSize: 14,
+    fontWeight: '600',
+  },
+  // Estilos para o modal de finalização
+  journeyInfoSection: {
+    backgroundColor: '#f0f0f0',
+    borderRadius: 8,
+    padding: 16,
+    marginBottom: 20,
+  },
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#333',
+    marginBottom: 8,
+  },
+  journeyInfoText: {
+    fontSize: 14,
+    color: '#666',
+    marginBottom: 4,
+  },
+  platformSection: {
+    marginBottom: 20,
+    paddingBottom: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: '#eee',
+  },
+  platformSectionTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#333',
+    marginBottom: 8,
+  },
+  cutoffWarning: {
+    fontSize: 12,
+    color: '#FF9500',
+    backgroundColor: '#FFF3CD',
+    padding: 8,
+    borderRadius: 4,
+    marginBottom: 12,
+    textAlign: 'center',
+  },
+  cutoffRevenueRow: {
+    marginBottom: 12,
+  },
+  cutoffRevenueLabel: {
+    fontSize: 14,
+    color: '#333',
+    marginBottom: 4,
+  },
+  cutoffRevenueInput: {
+    borderWidth: 1,
+    borderColor: '#ddd',
+    borderRadius: 8,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    fontSize: 16,
+    backgroundColor: '#f9f9f9',
+    textAlign: 'right',
   },
 });
 
