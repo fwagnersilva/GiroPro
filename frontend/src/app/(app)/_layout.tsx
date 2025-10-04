@@ -1,20 +1,19 @@
 /* eslint-disable react/no-unstable-nested-components */
-import { Link, Redirect, SplashScreen, Tabs } from 'expo-router';
+import { Redirect, SplashScreen, Tabs } from 'expo-router';
 import React, { useCallback, useEffect, useState } from 'react';
 
 import { Pressable, Text, View } from '@/components/ui';
 import {
   Feed as FeedIcon,
   Settings as SettingsIcon,
-  Style as StyleIcon,
 } from '@/components/ui/icons';
 import { useAuth, useIsFirstTime } from '@/lib';
-import { Sidebar } from '@/components/Sidebar'; // Importar o componente Sidebar
+import { Sidebar } from '@/components/Sidebar';
 
 export default function TabLayout() {
   const status = useAuth.use.status();
   const [isFirstTime] = useIsFirstTime();
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false); // Estado para controlar a visibilidade do Sidebar
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const hideSplash = useCallback(async () => {
     await SplashScreen.hideAsync();
@@ -28,10 +27,11 @@ export default function TabLayout() {
     }
   }, [hideSplash, status]);
 
-  if (isFirstTime) {
-    return <Redirect href="/onboarding" />;
-  }
-  if (status === 'signOut') {
+  // if (isFirstTime) {
+  //   return <Redirect href="/onboarding" />;
+  // }
+
+  if (status === 'signOut' || status === 'idle') {
     return <Redirect href="/login" />;
   }
 
@@ -46,38 +46,19 @@ export default function TabLayout() {
         screenOptions={{
           headerLeft: () => (
             <Pressable onPress={toggleSidebar} style={{ marginLeft: 15 }}>
-              <Text>☰</Text> {/* Ícone de hambúrguer */}
+              <Text style={{ fontSize: 24 }}>☰</Text>
             </Pressable>
           ),
         }}
       >
+        {/* Apenas 3 tabs principais no menu inferior */}
         <Tabs.Screen
-          name="index"
+          name="trips"
           options={{
-            title: 'Dashboard',
-            tabBarIcon: ({ color }) => <FeedIcon color={color} />,
-            headerRight: () => <CreateNewPostLink />,
-            tabBarButtonTestID: 'dashboard-tab',
-          }}
-        />
-
-        <Tabs.Screen
-          name="dashboard"
-          options={{
-            title: 'Dashboard',
-            tabBarIcon: ({ color }) => <FeedIcon color={color} />,
-            headerShown: false,
-            tabBarButtonTestID: 'dashboard-tab-alt',
-          }}
-        />
-
-        <Tabs.Screen
-          name="vehicles"
-          options={{
-            title: 'Veículos',
+            title: 'Jornadas',
             headerShown: false,
             tabBarIcon: ({ color }) => <FeedIcon color={color} />,
-            tabBarButtonTestID: 'vehicles-tab',
+            tabBarButtonTestID: 'trips-tab',
           }}
         />
         <Tabs.Screen
@@ -94,57 +75,49 @@ export default function TabLayout() {
           options={{
             title: 'Despesas',
             headerShown: false,
-            tabBarIcon: ({ color }) => <FeedIcon color={color} />,
+            tabBarIcon: ({ color }) => <SettingsIcon color={color} />,
             tabBarButtonTestID: 'expenses-tab',
           }}
         />
+
+        {/* Ocultar outras telas da tab bar, mas manter acessíveis via navegação */}
         <Tabs.Screen
-          name="trips"
+          name="index"
           options={{
-            title: 'Jornadas',
-            headerShown: false,
-            tabBarIcon: ({ color }) => <FeedIcon color={color} />,
-            tabBarButtonTestID: 'trips-tab',
+            href: null, // Remove da tab bar
+          }}
+        />
+        <Tabs.Screen
+          name="dashboard"
+          options={{
+            href: null,
+          }}
+        />
+        <Tabs.Screen
+          name="vehicles"
+          options={{
+            href: null,
           }}
         />
         <Tabs.Screen
           name="style"
           options={{
-            title: 'Style',
-            headerShown: false,
-            tabBarIcon: ({ color }) => <StyleIcon color={color} />,
-            tabBarButtonTestID: 'style-tab',
+            href: null,
           }}
         />
         <Tabs.Screen
           name="profile"
           options={{
-            title: 'Perfil',
-            headerShown: false,
-            tabBarIcon: ({ color }) => <SettingsIcon color={color} />,
-            tabBarButtonTestID: 'profile-tab',
+            href: null,
           }}
         />
         <Tabs.Screen
           name="settings"
           options={{
-            title: 'Settings',
-            headerShown: false,
-            tabBarIcon: ({ color }) => <SettingsIcon color={color} />,
-            tabBarButtonTestID: 'settings-tab',
+            href: null,
           }}
         />
       </Tabs>
     </View>
   );
 }
-
-const CreateNewPostLink = () => {
-  return (
-    <Link href="/feed/add-post" asChild>
-      <Pressable>
-        <Text className="px-3 text-primary-300">Create</Text>
-      </Pressable>
-    </Link>
-  );
-};
