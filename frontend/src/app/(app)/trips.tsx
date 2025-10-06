@@ -33,7 +33,7 @@ interface Vehicle {
 }
 
 export default function Trips() {
-  const [vehicles, setVehicles] = useState<Vehicle[]>([
+  const [vehicles] = useState<Vehicle[]>([
     { id: '1', model: 'Renault Logan', plate: 'QXF5C67' },
     { id: '2', model: 'Toyota Corolla', plate: 'XYZ-5678' },
     { id: '3', model: 'Ford Ka', plate: 'DEF-9012' },
@@ -97,6 +97,8 @@ export default function Trips() {
       ratePerKm: 1.73,
     },
   ]);
+
+  const [showEndForm, setShowEndForm] = useState(false); // Novo estado para controlar a exibição do formulário de finalização
 
   const activeTrip = trips.find((trip) => trip.status === 'active' || trip.status === 'paused');
   
@@ -311,6 +313,7 @@ export default function Trips() {
     setEndOdometerInput('');
     setUberEarningsInput('0,00');
     setApp99EarningsInput('0,00');
+    setShowEndForm(false); // Esconde o formulário de finalização após finalizar
     Alert.alert('Sucesso', 'Jornada finalizada com sucesso!');
   };
 
@@ -332,6 +335,7 @@ export default function Trips() {
             setApp99EarningsInput('0,00');
             setPauseKmInput('');
             setResumeKmInput('');
+            setShowEndForm(false); // Esconde o formulário de finalização
             Alert.alert('Sucesso', 'Jornada cancelada com sucesso!');
           }
         }
@@ -456,109 +460,138 @@ export default function Trips() {
                 </View>
               </View>
 
-              {/* Pause/Resume KM Input and Buttons */}
-              {activeTrip.status === 'active' && (
-                <View className="mb-4">
-                  <Text className="text-slate-300 text-sm mb-2 font-medium">
-                    KM Atual (para pausar)
-                  </Text>
-                  <Input
-                    placeholder="Digite o KM atual"
-                    value={pauseKmInput}
-                    onChangeText={setPauseKmInput}
-                    keyboardType="numeric"
-                    className="w-full bg-slate-900 border-slate-600 text-white"
-                  />
+              {/* Botões de Ação e Campos Condicionais */}
+              {activeTrip.status === 'active' && !showEndForm && (
+                <View className="space-y-3">
+                  <View className="mb-4">
+                    <Text className="text-slate-300 text-sm mb-2 font-medium">
+                      KM Atual (para pausar)
+                    </Text>
+                    <Input
+                      placeholder="Digite o KM atual"
+                      value={pauseKmInput}
+                      onChangeText={setPauseKmInput}
+                      keyboardType="numeric"
+                      className="w-full bg-slate-900 border-slate-600 text-white"
+                    />
+                  </View>
                   <Button
                     onPress={handlePauseTrip}
-                    className="bg-yellow-600 mt-4"
+                    className="bg-yellow-600"
                   >
                     <Text className="text-white font-medium text-center">⏸ Pausar Jornada</Text>
                   </Button>
-                </View>
-              )}
-
-              {activeTrip.status === 'paused' && (
-                <View className="mb-4">
-                  <Text className="text-slate-300 text-sm mb-2 font-medium">
-                    KM Atual (para retomar)
-                  </Text>
-                  <Input
-                    placeholder="Digite o KM atual"
-                    value={resumeKmInput}
-                    onChangeText={setResumeKmInput}
-                    keyboardType="numeric"
-                    className="w-full bg-slate-900 border-slate-600 text-white"
-                  />
-                  <Text className="text-slate-400 text-xs mt-1">
-                    KM na pausa: {activeTrip.pausedOdometer}
-                  </Text>
                   <Button
-                    onPress={handleResumeTrip}
-                    className="bg-blue-600 mt-4"
+                    onPress={() => setShowEndForm(true)} // Mostra o formulário de finalização
+                    className="bg-red-600"
                   >
-                    <Text className="text-white font-medium text-center">▶ Retomar Jornada</Text>
+                    <Text className="text-white font-medium text-center">✅ Finalizar Jornada</Text>
+                  </Button>
+                  <Button
+                    onPress={handleCancelTrip}
+                    className="bg-slate-700"
+                  >
+                    <Text className="text-white font-medium text-center">❌ Cancelar Jornada</Text>
                   </Button>
                 </View>
               )}
 
-              {/* End Form Fields */}
-              <View className="mb-4 mt-6">
-                <Text className="text-slate-300 text-sm mb-2 font-medium">
-                  KM Final *
-                </Text>
-                <Input
-                  placeholder="Quilometragem final"
-                  value={endOdometerInput}
-                  onChangeText={setEndOdometerInput}
-                  keyboardType="numeric"
-                  className="w-full bg-slate-900 border-slate-600 text-white"
-                />
-              </View>
-
-              <View className="mb-6">
-                <Text className="text-slate-300 text-sm mb-2 font-medium">
-                  Faturamento por Plataforma (R$)
-                </Text>
-                <View className="flex-row space-x-4">
-                  <View className="flex-1">
-                    <Text className="text-slate-400 text-xs mb-1">UBER</Text>
+              {activeTrip.status === 'paused' && !showEndForm && (
+                <View className="space-y-3">
+                  <View className="mb-4">
+                    <Text className="text-slate-300 text-sm mb-2 font-medium">
+                      KM Atual (para retomar)
+                    </Text>
                     <Input
-                      placeholder="0,00"
-                      value={uberEarningsInput}
-                      onChangeText={setUberEarningsInput}
+                      placeholder="Digite o KM atual"
+                      value={resumeKmInput}
+                      onChangeText={setResumeKmInput}
                       keyboardType="numeric"
-                      className="bg-slate-900 border-slate-600 text-white text-center"
+                      className="w-full bg-slate-900 border-slate-600 text-white"
                     />
+                    <Text className="text-slate-400 text-xs mt-1">
+                      KM na pausa: {activeTrip.pausedOdometer}
+                    </Text>
                   </View>
-                  <View className="flex-1">
-                    <Text className="text-slate-400 text-xs mb-1">99</Text>
-                    <Input
-                      placeholder="0,00"
-                      value={app99EarningsInput}
-                      onChangeText={setApp99EarningsInput}
-                      keyboardType="numeric"
-                      className="bg-slate-900 border-slate-600 text-white text-center"
-                    />
-                  </View>
+                  <Button
+                    onPress={handleResumeTrip}
+                    className="bg-blue-600"
+                  >
+                    <Text className="text-white font-medium text-center">▶ Retomar Jornada</Text>
+                  </Button>
+                  <Button
+                    onPress={() => setShowEndForm(true)} // Mostra o formulário de finalização
+                    className="bg-red-600"
+                  >
+                    <Text className="text-white font-medium text-center">✅ Finalizar Jornada</Text>
+                  </Button>
+                  <Button
+                    onPress={handleCancelTrip}
+                    className="bg-slate-700"
+                  >
+                    <Text className="text-white font-medium text-center">❌ Cancelar Jornada</Text>
+                  </Button>
                 </View>
-              </View>
+              )}
 
-              {/* Action Buttons */}
-              <View className="space-y-3">
-                <Button
-                  onPress={handleEndTrip}
-                  className="bg-red-600"
-                >
-                  <Text className="text-white font-medium text-center">✅ Finalizar Jornada</Text>
-                </Button>
-                <Button
-                  onPress={handleCancelTrip}
-                  className="bg-slate-700"
-                >
-                  <Text className="text-white font-medium text-center">❌ Cancelar Jornada</Text>
-                </Button>
-              </View>
+              {/* End Form Fields - Visível apenas quando showEndForm é true */}
+              {showEndForm && (
+                <View className="space-y-3">
+                  <View className="mb-4 mt-6">
+                    <Text className="text-slate-300 text-sm mb-2 font-medium">
+                      KM Final *
+                    </Text>
+                    <Input
+                      placeholder="Quilometragem final"
+                      value={endOdometerInput}
+                      onChangeText={setEndOdometerInput}
+                      keyboardType="numeric"
+                      className="w-full bg-slate-900 border-slate-600 text-white"
+                    />
+                  </View>
+
+                  <View className="mb-6">
+                    <Text className="text-slate-300 text-sm mb-2 font-medium">
+                      Faturamento por Plataforma (R$)
+                    </Text>
+                    <View className="flex-row space-x-4">
+                      <View className="flex-1">
+                        <Text className="text-slate-400 text-xs mb-1">UBER</Text>
+                        <Input
+                          placeholder="0,00"
+                          value={uberEarningsInput}
+                          onChangeText={setUberEarningsInput}
+                          keyboardType="numeric"
+                          className="bg-slate-900 border-slate-600 text-white text-center"
+                        />
+                      </View>
+                      <View className="flex-1">
+                        <Text className="text-slate-400 text-xs mb-1">99</Text>
+                        <Input
+                          placeholder="0,00"
+                          value={app99EarningsInput}
+                          onChangeText={setApp99EarningsInput}
+                          keyboardType="numeric"
+                          className="bg-slate-900 border-slate-600 text-white text-center"
+                        />
+                      </View>
+                    </View>
+                  </View>
+
+                  <Button
+                    onPress={handleEndTrip}
+                    className="bg-red-600"
+                  >
+                    <Text className="text-white font-medium text-center">✅ Confirmar Finalização</Text>
+                  </Button>
+                  <Button
+                    onPress={() => setShowEndForm(false)} // Volta para os botões de pausa/retomada
+                    className="bg-slate-700"
+                  >
+                    <Text className="text-white font-medium text-center">Voltar</Text>
+                  </Button>
+                </View>
+              )}
             </View>
           </View>
         )}
