@@ -7,7 +7,8 @@ export const registerSchema = z.object({
   senha: z.string().min(8, 'Senha deve ter pelo menos 8 caracteres')
     .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/, 
            'Senha deve conter pelo menos: 1 letra minúscula, 1 maiúscula, 1 número e 1 caractere especial'),
-  telefone: z.string().min(10, 'Telefone deve ter pelo menos 10 dígitos').max(15).optional(),
+  dataNascimento: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Data de nascimento deve estar no formato YYYY-MM-DD'),
+  cidade: z.string().min(2, 'Cidade deve ter pelo menos 2 caracteres').max(100),
 });
 
 export const loginSchema = z.object({
@@ -81,4 +82,3 @@ export const expenseSchema = z.object({
 export const validateData = <T>(schema: z.ZodSchema<T>, data: unknown): T => {
   return schema.parse(data);
 };
-

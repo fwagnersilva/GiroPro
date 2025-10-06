@@ -2,16 +2,14 @@ import { Request, Response } from 'express';
 import { AuthService } from '../services/authService';
 import { loginSchema, registerSchema, requestPasswordResetSchema, resetPasswordSchema, changePasswordSchema } from '../utils/validation';
 import { UnauthorizedError, NotFoundError, ValidationError, ConflictError } from "../utils/customErrors";
-
-
 import { AuthenticatedRequest } from "../middleware/auth";
 import { z } from 'zod';
 
 export class AuthController {
   static async register(req: Request, res: Response) {
     try {
-      const { email, password, name, dateOfBirth, city } = registerSchema.parse(req.body);
-      const { token, user, refreshToken } = await AuthService.register({ email, password, name, dateOfBirth, city });
+      const { email, senha, nome, dataNascimento, cidade } = registerSchema.parse(req.body);
+      const { token, user, refreshToken } = await AuthService.register({ email, senha, nome, dataNascimento, cidade });
       res.status(201).send({ success: true, message: 'Usuário registrado com sucesso', accessToken: token, user: { ...user, role: 'user' }, refreshToken });
     } catch (error: any) {
       if (error instanceof ValidationError) {

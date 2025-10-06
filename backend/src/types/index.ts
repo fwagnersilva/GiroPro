@@ -10,17 +10,19 @@ export interface AuthenticatedRequest extends Request {
     role: string;
   };
 }
+
+// CORRIGIDO: Agora em português para bater com o schema de validação
 export interface RegisterRequest {
-  name: string;
+  nome: string;
   email: string;
-  password: string;
-  dateOfBirth: string;
-  city: string;
+  senha: string;
+  dataNascimento: string; // Formato: YYYY-MM-DD
+  cidade: string;
 }
 
 export interface LoginRequest {
-  email?: string;
-  senha?: string;
+  email: string;
+  senha: string;
 }
 
 export interface AuthResponse {
@@ -32,8 +34,6 @@ export interface AuthResponse {
     email: string;
     statusConta: string;
     role: string;
-    dateOfBirth?: number;
-    cidade?: string;
   };
 }
 
@@ -42,10 +42,10 @@ export interface User {
   id: string;
   nome: string;
   email: string;
-  dateOfBirth?: number; // timestamp
+  dataNascimento?: Date;
   cidade?: string;
-  createdAt: number; // timestamp
-  updatedAt: number; // timestamp
+  dataCadastro: Date;
+  ultimaAtividade: Date;
 }
 
 // Tipos para veículos
@@ -344,11 +344,6 @@ export interface QueryParams {
   [key: string]: any; // Para filtros adicionais
 }
 
-
-
-
-
-
 export interface FuelingFilters {
   vehicleId?: string;
   startDate?: string;
@@ -366,5 +361,3 @@ export interface ServiceResult<T> {
   data?: T;
   error?: string;
 }
-
-
