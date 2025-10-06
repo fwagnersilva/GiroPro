@@ -12,7 +12,7 @@
     "serve:web": "ls -la && npx serve web-build -s -n -p ${PORT:-8081}",
     "clean": "rimraf .expo android coverage ios",
     "lint": "eslint .",
-    "format": "eslint --fix . && prettier \'**/*.{json,yaml}\' --write --ignore-path .gitignore",
+    "format": "eslint --fix . && prettier \"**/*.{json,yaml}\" --write --ignore-path .gitignore",
     "check-types": "tsc --noEmit --pretty"
   },
   "dependencies": {
