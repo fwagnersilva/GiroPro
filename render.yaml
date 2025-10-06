@@ -3,6 +3,7 @@ services:
   - type: web
     name: giropro-frontend
     env: node
+    rootDir: frontend
     buildCommand: npm install && npm run build:web
     startCommand: npm run serve:web
     envVars:
@@ -12,14 +13,15 @@ services:
         value: 10000
       - key: EXPO_PUBLIC_API_URL
         value: https://giropro-backend.onrender.com
-    healthCheckPath: /
+    plan: free
 
   # Backend - Flask API
   - type: web
     name: giropro-backend
     env: python
+    rootDir: backend
     buildCommand: pip install -r requirements.txt
-    startCommand: gunicorn app:app
+    startCommand: gunicorn --bind 0.0.0.0:$PORT app:app
     envVars:
       - key: PYTHON_VERSION
         value: 3.11
@@ -34,6 +36,7 @@ services:
       - key: FLASK_ENV
         value: production
     healthCheckPath: /health
+    plan: free
 
 # Banco de dados PostgreSQL
 databases:
