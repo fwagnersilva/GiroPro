@@ -66,7 +66,7 @@ export default function TabLayout() {
           name="fuelings"
           options={{
             title: 'Abastecimentos',
-            headerShown: false,
+            headerShown: true,
             tabBarIcon: ({ color }) => <FeedIcon color={color} />,
             tabBarButtonTestID: 'fuelings-tab',
           }}
@@ -75,7 +75,7 @@ export default function TabLayout() {
           name="expenses"
           options={{
             title: 'Despesas',
-            headerShown: false,
+            headerShown: true,
             tabBarIcon: ({ color }) => <SettingsIcon color={color} />,
             tabBarButtonTestID: 'expenses-tab',
           }}
