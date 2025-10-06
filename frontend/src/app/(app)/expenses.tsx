@@ -54,6 +54,21 @@ export default function Expenses() {
     },
   ]);
 
+  // Calculate total expenses
+  const totalExpenses = expenses.reduce((acc, expense) => {
+    return acc + parseFloat(expense.value);
+  }, 0);
+
+  // Calculate expenses by category
+  const expensesByCategory = expenses.reduce((acc, expense) => {
+    const category = expense.category;
+    if (!acc[category]) {
+      acc[category] = 0;
+    }
+    acc[category] += parseFloat(expense.value);
+    return acc;
+  }, {} as Record<string, number>);
+
   const handleAddExpense = () => {
     router.push('/edit-expense');
   };
@@ -83,8 +98,14 @@ export default function Expenses() {
         {
           text: 'Excluir',
           style: 'destructive',
-           return acc;
-  }, {} as Record<string, number>);
+          onPress: () => {
+            setExpenses(expenses.filter((e) => e.id !== expenseId));
+            Alert.alert('Sucesso', 'Despesa excluída com sucesso!');
+          },
+        },
+      ]
+    );
+  };
 
   return (
     <View className="flex-1 bg-white">
@@ -117,8 +138,6 @@ export default function Expenses() {
             {expenses.length} despesa(s) registrada(s)
           </Text>
         </View>
-
-
 
         {/* Expenses by Category */}
         {Object.keys(expensesByCategory).length > 0 && (

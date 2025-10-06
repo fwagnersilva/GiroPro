@@ -5,7 +5,7 @@ import { FocusAwareStatusBar, Text, View } from '@/components/ui';
 import { useAuth } from '@/lib';
 
 export default function Dashboard() {
-  const user = useAuth.use.user();
+  const { user } = useAuth();
   const userName = user?.nome || 'Usuário';
 
   return (

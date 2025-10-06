@@ -13,20 +13,8 @@ interface Trip {
   startOdometer: number;
   endOdometer: number | null;
   status: 'active' | 'paused' | 'completed';
-  pausedOdometer: number | null; // Opcional: odômetro no momento da pausa
-  pauseTimestamps: { pause: string; resume: string | null }[]; // Opcional: registro de pausas e retornos
-  earnings: {
-    uber: number;
-    app99: number;
-    total: number;
-  } | null;
-  totalKm: number | null;
-  totalTime: string | null;
-  grossEarnings: number | null;
-  netEarnings: number | null;
-  ratePerHour: number | null;
-  ratePerKm: number | null;
-}
+  pausedOdometer: number | null;
+  pauseTimestamps: { pause: string; resume: string | null; pauseKm: number; resumeKm: number | null
 
 interface Vehicle {
   id: string;
@@ -35,25 +23,25 @@ interface Vehicle {
 }
 
 export default function Trips() {
-  // Mock data for vehicles
   const [vehicles] = useState<Vehicle[]>([
     { id: '1', model: 'Renault Logan', plate: 'QXF5C67' },
     { id: '2', model: 'Toyota Corolla', plate: 'XYZ-5678' },
     { id: '3', model: 'Ford Ka', plate: 'DEF-9012' },
   ]);
 
-  // Mock data for trips
   const [trips, setTrips] = useState<Trip[]>([
     {
       id: '1',
       vehicleId: '1',
       vehicleModel: 'Renault Logan',
       vehiclePlate: 'QXF5C67',
-      startDate: '2025-09-29T13:32:00',
-      endDate: '2025-09-29T00:28:00',
+      startDate: '2025-10-05T13:32:00',
+      endDate: '2025-10-05T18:28:00',
       startOdometer: 229128,
       endOdometer: 229206,
       status: 'completed',
+      pausedOdometer: null,
+      pauseTimestamps: [],
       earnings: {
         uber: 92.69,
         app99: 41.97,
@@ -71,11 +59,13 @@ export default function Trips() {
       vehicleId: '1',
       vehicleModel: 'Renault Logan',
       vehiclePlate: 'QXF5C67',
-      startDate: '2025-09-29T11:19:00',
-      endDate: '2025-09-29T17:37:00',
+      startDate: '2025-10-05T11:19:00',
+      endDate: '2025-10-05T17:37:00',
       startOdometer: 228995,
       endOdometer: 229117,
       status: 'completed',
+      pausedOdometer: null,
+      pauseTimestamps: [],
       earnings: {
         uber: 0,
         app99: 210.71,
@@ -88,32 +78,11 @@ export default function Trips() {
       ratePerHour: 33.45,
       ratePerKm: 1.73,
     },
-    {
-      id: '3',
-      vehicleId: '1',
-      vehicleModel: 'Renault Logan',
-      vehiclePlate: 'QXF5C67',
-      startDate: '2025-09-30T17:16:00',
-      endDate: null,
-      startOdometer: 125,
-      endOdometer: null,
-      status: 'active',
-      pausedOdometer: null,
-      pauseTimestamps: [],
-      earnings: null,
-      totalKm: null,
-      totalTime: null,
-      grossEarnings: null,
-      netEarnings: null,
-      ratePerHour: null,
-      ratePerKm: null,
-    },
   ]);
 
-  // Form states
   const [showStartForm, setShowStartForm] = useState(false);
-  const [showEndForm, setShowEndForm] = useState(false);
-  const [selectedTrip, setSelectedTrip] = useState<Trip | null>(null);
+  const [pauseKmInput, setPauseKmInput] = useState('');
+  const [resumeKmInput, setResumeKmInput] = useState('');
 
   const [startFormData, setStartFormData] = useState({
     vehicleId: '1',
@@ -126,8 +95,14 @@ export default function Trips() {
     app99Earnings: '0,00',
   });
 
-  const activeTrip = trips.find((trip) => trip.status === 'active');
-  const completedTrips = trips.filter((trip) => trip.status === 'completed');
+  const activeTrip = trips.find((trip) => trip.status === 'active' || trip.status === 'paused');
+  
+  // Filtrar apenas jornadas do dia atual
+  const today = new Date().toDateString();
+  const todayTrips = trips.filter((trip) => {
+    const tripDate = new Date(trip.startDate).toDateString();
+    return tripDate === today && trip.status === 'completed';
+  });
 
   const handleStartTrip = () => {
     if (!startFormData.vehicleId || !startFormData.startOdometer) {
@@ -179,14 +154,85 @@ export default function Trips() {
     Alert.alert('Sucesso', 'Jornada iniciada com sucesso!');
   };
 
-  const handleEndTrip = (tripToEnd: Trip) => {
-    if (!tripToEnd || !endFormData.endOdometer) {
+  const handlePauseTrip = () => {
+    if (!activeTrip || activeTrip.status !== 'active') {
+      Alert.alert("Erro", "Nenhuma jornada ativa para pausar.");
+      return;
+    }
+
+    if (!pauseKmInput) {
+      Alert.alert("Erro", "Informe a quilometragem atual para pausar.");
+      return;
+    }
+
+    const pauseKm = parseInt(pauseKmInput);
+    if (isNaN(pauseKm) || pauseKm < activeTrip.startOdometer) {
+      Alert.alert("Erro", "Quilometragem inválida.");
+      return;
+    }
+
+    const updatedTrip: Trip = {
+      ...activeTrip,
+      status: 'paused',
+      pausedOdometer: pauseKm,
+      pauseTimestamps: [...activeTrip.pauseTimestamps, { 
+        pause: new Date().toISOString(), 
+        resume: null,
+        pauseKm: pauseKm,
+        resumeKm: null
+      }],
+    };
+
+    setTrips(trips.map((trip) => (trip.id === activeTrip.id ? updatedTrip : trip)));
+    setPauseKmInput('');
+    Alert.alert("Sucesso", "Jornada pausada com sucesso!");
+  };
+
+  const handleResumeTrip = () => {
+    if (!activeTrip || activeTrip.status !== 'paused') {
+      Alert.alert("Erro", "Nenhuma jornada pausada para retomar.");
+      return;
+    }
+
+    if (!resumeKmInput) {
+      Alert.alert("Erro", "Informe a quilometragem atual para retomar.");
+      return;
+    }
+
+    const resumeKm = parseInt(resumeKmInput);
+    const lastPause = activeTrip.pauseTimestamps[activeTrip.pauseTimestamps.length - 1];
+    
+    if (isNaN(resumeKm) || resumeKm < lastPause.pauseKm) {
+      Alert.alert("Erro", "Quilometragem deve ser maior ou igual à quilometragem de pausa.");
+      return;
+    }
+
+    const updatedPauseTimestamps = [...activeTrip.pauseTimestamps];
+    updatedPauseTimestamps[updatedPauseTimestamps.length - 1] = { 
+      ...lastPause, 
+      resume: new Date().toISOString(),
+      resumeKm: resumeKm
+    };
+
+    const updatedTrip: Trip = {
+      ...activeTrip,
+      status: 'active',
+      pauseTimestamps: updatedPauseTimestamps,
+    };
+
+    setTrips(trips.map((trip) => (trip.id === activeTrip.id ? updatedTrip : trip)));
+    setResumeKmInput('');
+    Alert.alert("Sucesso", "Jornada retomada com sucesso!");
+  };
+
+  const handleEndTrip = () => {
+    if (!activeTrip || !endFormData.endOdometer) {
       Alert.alert('Erro', 'Quilometragem final é obrigatória.');
       return;
     }
 
     const endOdometerNum = parseInt(endFormData.endOdometer);
-    const startOdometerNum = tripToEnd.startOdometer;
+    const startOdometerNum = activeTrip.startOdometer;
 
     if (isNaN(endOdometerNum) || endOdometerNum <= startOdometerNum) {
       Alert.alert('Erro', 'Quilometragem final deve ser maior que a inicial.');
@@ -196,18 +242,29 @@ export default function Trips() {
     const uberEarnings = parseFloat(endFormData.uberEarnings.replace(',', '.')) || 0;
     const app99Earnings = parseFloat(endFormData.app99Earnings.replace(',', '.')) || 0;
     const totalEarnings = uberEarnings + app99Earnings;
+    
+    // Calcular KM real rodado (subtraindo os KMs pausados)
     let totalKm = endOdometerNum - startOdometerNum;
+    let pausedKm = 0;
+    
+    activeTrip.pauseTimestamps.forEach(pauseEntry => {
+      if (pauseEntry.pauseKm && pauseEntry.resumeKm) {
+        pausedKm += pauseEntry.resumeKm - pauseEntry.pauseKm;
+      }
+    });
+    
+    totalKm = totalKm - pausedKm;
 
-    // Calculate total paused time
+    // Calcular tempo total pausado
     let totalPausedTimeMs = 0;
-    tripToEnd.pauseTimestamps.forEach(pauseEntry => {
+    activeTrip.pauseTimestamps.forEach(pauseEntry => {
       if (pauseEntry.pause && pauseEntry.resume) {
         totalPausedTimeMs += new Date(pauseEntry.resume).getTime() - new Date(pauseEntry.pause).getTime();
       }
     });
 
-    // Calculate total active time
-    const startTime = new Date(tripToEnd.startDate);
+    // Calcular tempo ativo
+    const startTime = new Date(activeTrip.startDate);
     const endTime = new Date();
     const totalTripTimeMs = endTime.getTime() - startTime.getTime();
     const activeTimeMs = totalTripTimeMs - totalPausedTimeMs;
@@ -220,7 +277,7 @@ export default function Trips() {
     const ratePerKm = totalKm > 0 ? totalEarnings / totalKm : 0;
 
     const updatedTrip: Trip = {
-      ...tripToEnd,
+      ...activeTrip,
       endDate: new Date().toISOString(),
       endOdometer: endOdometerNum,
       status: 'completed',
@@ -232,16 +289,37 @@ export default function Trips() {
       totalKm,
       totalTime: totalTimeStr,
       grossEarnings: totalEarnings,
-      netEarnings: totalEarnings * 0.8, // Assuming 20% costs
+      netEarnings: totalEarnings * 0.8,
       ratePerHour,
       ratePerKm,
     };
 
-    setTrips(trips.map((trip) => (trip.id === selectedTrip.id ? updatedTrip : trip)));
+    setTrips(trips.map((trip) => (trip.id === activeTrip.id ? updatedTrip : trip)));
     setEndFormData({ endOdometer: '', uberEarnings: '0,00', app99Earnings: '0,00' });
-    setSelectedTrip(null);
-    setShowEndForm(false);
     Alert.alert('Sucesso', 'Jornada finalizada com sucesso!');
+  };
+
+  const handleCancelTrip = () => {
+    if (!activeTrip) return;
+    
+    Alert.alert(
+      'Cancelar Jornada',
+      'Tem certeza que deseja cancelar esta jornada?',
+      [
+        { text: 'Não', style: 'cancel' },
+        {
+          text: 'Sim',
+          style: 'destructive',
+          onPress: () => {
+            setTrips(trips.filter(t => t.id !== activeTrip.id));
+            setEndFormData({ endOdometer: '', uberEarnings: '0,00', app99Earnings: '0,00' });
+            setPauseKmInput('');
+            setResumeKmInput('');
+            Alert.alert('Sucesso', 'Jornada cancelada com sucesso!');
+          }
+        }
+      ]
+    );
   };
 
   const formatDateTime = (dateString: string) => {
@@ -266,213 +344,204 @@ export default function Trips() {
   };
 
   return (
-    <View className="flex-1 bg-gray-900">
+    <View className="flex-1 bg-slate-900">
       <FocusAwareStatusBar />
       <ScrollView className="flex-1 px-4 py-6">
         {/* Header */}
         <View className="mb-6">
-          <Text className="text-2xl font-bold text-white mb-2">
+          <Text className="text-3xl font-bold text-white mb-2">
             Jornadas
           </Text>
+          <Text className="text-slate-400">Gerencie suas corridas diárias</Text>
         </View>
 
         {/* Active Trip Section */}
         {activeTrip && (
           <View className="mb-6">
             <View className="flex-row items-center mb-4">
-              <View className="w-2 h-2 bg-red-500 rounded-full mr-2" />
-              <Text className="text-red-400 font-medium">Jornada em Andamento</Text>
-              <Text className="text-gray-400 ml-auto text-sm">
-                Início: {formatDateTime(activeTrip.startDate)} {formatTime(activeTrip.startDate)}
+              <View className={`w-3 h-3 rounded-full mr-2 ${activeTrip.status === 'paused' ? 'bg-yellow-400' : 'bg-green-400'}`} />
+              <Text className={`font-medium ${activeTrip.status === 'paused' ? 'text-yellow-400' : 'text-green-400'}`}>
+                {activeTrip.status === 'paused' ? 'Jornada Pausada' : 'Jornada em Andamento'}
+              </Text>
+            </View>
+            
+            <View className="mb-2">
+              <Text className="text-slate-400 text-sm">
+                Início: {formatDateTime(activeTrip.startDate)} às {formatTime(activeTrip.startDate)}
               </Text>
             </View>
 
-            <View className="bg-gray-800 rounded-lg p-4 mb-4">
-              <View className="flex-row items-center justify-between mb-3">
-                <View>
-                  <Text className="text-white font-medium">
-                    Veículo: {activeTrip.vehicleModel} ({activeTrip.vehiclePlate})
-                  </Text>
+            <View className="bg-slate-800 rounded-xl p-6 border border-slate-700">
+              <View className="mb-4">
+                <Text className="text-white font-semibold text-lg">
+                  🚗 {activeTrip.vehicleModel}
+                </Text>
+                <Text className="text-slate-400 text-sm">{activeTrip.vehiclePlate}</Text>
+              </View>
+
+              <View className="flex-row mb-6 p-4 bg-slate-900 rounded-lg">
+                <View className="flex-1">
+                  <Text className="text-slate-400 text-sm">KM Início</Text>
+                  <Text className="text-white font-bold text-xl">{activeTrip.startOdometer}</Text>
+                </View>
+                <View className="flex-1">
+                  <Text className="text-slate-400 text-sm">Horário Início</Text>
+                  <Text className="text-white font-bold text-xl">{formatTime(activeTrip.startDate)}</Text>
                 </View>
               </View>
 
-              <View className="flex-row items-center mb-4">
-                <View className="w-4 h-4 bg-gray-600 rounded-full mr-2" />
-                <Text className="text-gray-300 text-sm">
-                  KM Início: {activeTrip.startOdometer}
-                </Text>
-                <View className="w-4 h-4 bg-gray-600 rounded-full ml-auto mr-2" />
-                <Text className="text-gray-300 text-sm">
-                  Início: {formatTime(activeTrip.startDate)}
-                </Text>
-              </View>
+              {/* Pause/Resume KM Input */}
+              {activeTrip.status === 'active' && (
+                <View className="mb-4">
+                  <Text className="text-slate-300 text-sm mb-2 font-medium">
+                    KM Atual (para pausar)
+                  </Text>
+                  <Input
+                    placeholder="Digite o KM atual"
+                    value={pauseKmInput}
+                    onChangeText={setPauseKmInput}
+                    keyboardType="numeric"
+                    className="w-full bg-slate-900 border-slate-600 text-white"
+                  />
+                </View>
+              )}
 
+              {activeTrip.status === 'paused' && (
+                <View className="mb-4">
+                  <Text className="text-slate-300 text-sm mb-2 font-medium">
+                    KM Atual (para retomar)
+                  </Text>
+                  <Input
+                    placeholder="Digite o KM atual"
+                    value={resumeKmInput}
+                    onChangeText={setResumeKmInput}
+                    keyboardType="numeric"
+                    className="w-full bg-slate-900 border-slate-600 text-white"
+                  />
+                  <Text className="text-slate-400 text-xs mt-1">
+                    KM na pausa: {activeTrip.pausedOdometer}
+                  </Text>
+                </View>
+              )}
+
+              {/* End Form Fields */}
               <View className="mb-4">
-                <Text className="text-gray-400 text-sm mb-2">KM Final *</Text>
+                <Text className="text-slate-300 text-sm mb-2 font-medium">
+                  KM Final *
+                </Text>
                 <Input
-                  placeholder="Quilometragem no painel"
+                  placeholder="Quilometragem final"
                   value={endFormData.endOdometer}
-                  onChangeText={(text) =>
-                    setEndFormData({ ...endFormData, endOdometer: text })
-                  }
+                  onChangeText={(text) => setEndFormData({ ...endFormData, endOdometer: text })}
                   keyboardType="numeric"
-                  className="w-full bg-gray-700 border-gray-600 text-white"
+                  className="w-full bg-slate-900 border-slate-600 text-white"
                 />
               </View>
 
-              <View className="mb-4">
-                <Text className="text-gray-400 text-sm mb-2">Faturamento por Plataforma (R$)</Text>
+              <View className="mb-6">
+                <Text className="text-slate-300 text-sm mb-2 font-medium">
+                  Faturamento por Plataforma (R$)
+                </Text>
                 <View className="flex-row space-x-4">
                   <View className="flex-1">
-                    <Text className="text-gray-300 text-sm mb-1">UBER</Text>
+                    <Text className="text-slate-400 text-xs mb-1">UBER</Text>
                     <Input
                       placeholder="0,00"
                       value={endFormData.uberEarnings}
-                      onChangeText={(text) =>
-                        setEndFormData({ ...endFormData, uberEarnings: text })
-                      }
+                      onChangeText={(text) => setEndFormData({ ...endFormData, uberEarnings: text })}
                       keyboardType="numeric"
-                      className="bg-gray-700 border-gray-600 text-white text-center"
+                      className="bg-slate-900 border-slate-600 text-white text-center"
                     />
                   </View>
                   <View className="flex-1">
-                    <Text className="text-gray-300 text-sm mb-1">99</Text>
+                    <Text className="text-slate-400 text-xs mb-1">99</Text>
                     <Input
                       placeholder="0,00"
                       value={endFormData.app99Earnings}
-                      onChangeText={(text) =>
-                        setEndFormData({ ...endFormData, app99Earnings: text })
-                      }
+                      onChangeText={(text) => setEndFormData({ ...endFormData, app99Earnings: text })}
                       keyboardType="numeric"
-                      className="bg-gray-700 border-gray-600 text-white text-center"
+                      className="bg-slate-900 border-slate-600 text-white text-center"
                     />
                   </View>
                 </View>
               </View>
 
-              <View className="flex-row space-x-2">
-                <Button
-                  onPress={() => {
-                    if (activeTrip) {
-                      setSelectedTrip(activeTrip);
-                      // A chamada a handleEndTrip() já é feita aqui, mas o estado `selectedTrip` pode não ter sido atualizado a tempo
-                      // Para garantir que `selectedTrip` esteja disponível em `handleEndTrip`, podemos passar o `activeTrip` diretamente
-                      // ou garantir que              <View className="flex-row space-x-2">
-                {activeTrip?.status === 'active' && (
+              {/* Action Buttons */}
+              <View className="space-y-3">
+                {activeTrip.status === 'active' && (
                   <Button
                     onPress={handlePauseTrip}
-                    className="flex-1 bg-yellow-600"
+                    className="bg-yellow-600"
                   >
-                    <Text className="text-white font-medium">⏸ Pausar Jornada</Text>
+                    <Text className="text-white font-medium text-center">⏸ Pausar</Text>
                   </Button>
                 )}
-                {activeTrip?.status === 'paused' && (
+                
+                {activeTrip.status === 'paused' && (
                   <Button
-                    onPress={() => {
-                      Alert.alert(
-                        'Retomar Jornada',
-                        'Informe a quilometragem atual para retomar a jornada:',
-                        [
-                          { text: 'Cancelar', style: 'cancel' },
-                          { text: 'Retomar', onPress: (value) => handleResumeTrip(value[0]) },
-                        ],
-                        'plain-text-input',
-                        { cancelable: false, defaultValue: activeTrip.pausedOdometer?.toString() }
-                      );
-                    }}
-                    className="flex-1 bg-blue-600"
+                    onPress={handleResumeTrip}
+                    className="bg-blue-600"
                   >
-                    <Text className="text-white font-medium">▶ Retomar Jornada</Text>
+                    <Text className="text-white font-medium text-center">▶ Retomar</Text>
                   </Button>
                 )}
-                {(activeTrip?.status === 'active' || activeTrip?.status === 'paused') && (
-                  <Button
-                    onPress={() => {
-                      if (activeTrip) {
-                        setSelectedTrip(activeTrip);
-                        handleEndTrip(activeTrip);
-                      } else {
-                        Alert.alert("Erro", "Nenhuma jornada ativa para finalizar.");
-                      }
-                    }}
-                    className="flex-1 bg-green-600"
-                  >
-                    <Text className="text-white font-medium">✓ Finalizar Jornada</Text>
-                  </Button>
-                )}
-                {(activeTrip?.status === 'active' || activeTrip?.status === 'paused') && (
-                  <Button
-                    onPress={() => {
-                      Alert.alert(
-                        'Cancelar Jornada',
-                        'Tem certeza que deseja cancelar esta jornada?',
-                        [
-                          { text: 'Não', style: 'cancel' },
-                          {
-                            text: 'Sim',
-                            style: 'destructive',
-                            onPress: () => {
-                              if (activeTrip) {
-                                setTrips(trips.filter(t => t.id !== activeTrip.id));
-                                setSelectedTrip(null);
-                                setShowEndForm(false);
-                                Alert.alert('Sucesso', 'Jornada cancelada com sucesso!');
-                              }
-                            }
-                          }
-                        ]
-                      );
-                    }}
-                    className="bg-red-600 px-4"
-                  >
-                    <Text className="text-white font-medium">✕ Cancelar</Text>
-                  </Button>
-                )}
+
+                <Button
+                  onPress={handleEndTrip}
+                  className="bg-green-600"
+                >
+                  <Text className="text-white font-medium text-center">✓ Finalizar</Text>
+                </Button>
+
+                <Button
+                  onPress={handleCancelTrip}
+                  className="bg-red-600"
+                >
+                  <Text className="text-white font-medium text-center">✕ Cancelar Jornada</Text>
+                </Button>
               </View>
             </View>
           </View>
         )}
 
         {/* Start New Trip Button */}
-        {!activeTrip && (
+        {!activeTrip && !showStartForm && (
           <View className="mb-6">
             <Button
               onPress={() => setShowStartForm(true)}
-              className="bg-blue-600 p-4 rounded-lg"
+              className="bg-blue-600 p-4 rounded-xl"
             >
-              <View className="flex-row items-center justify-center">
-                <Text className="text-white font-medium mr-2">🚗 Iniciar Nova Jornada</Text>
-              </View>
+              <Text className="text-white font-medium text-center text-lg">
+                🚗 Iniciar Nova Jornada
+              </Text>
             </Button>
           </View>
         )}
 
         {/* Start Trip Form */}
-        {showStartForm && (
-          <View className="mb-6 bg-gray-800 rounded-lg p-4">
-            <Text className="text-white font-semibold text-lg mb-4">
+        {showStartForm && !activeTrip && (
+          <View className="mb-6 bg-slate-800 rounded-xl p-6 border border-slate-700">
+            <Text className="text-white font-semibold text-xl mb-4">
               🚗 Iniciar Nova Jornada
             </Text>
 
             <View className="mb-4">
-              <Text className="text-gray-400 text-sm mb-2">Veículo *</Text>
-              <View className="bg-gray-700 rounded-lg p-3">
+              <Text className="text-slate-300 text-sm mb-2 font-medium">Veículo *</Text>
+              <View className="bg-slate-900 rounded-lg p-3 border border-slate-600">
                 <Text className="text-white">
                   {vehicles.find(v => v.id === startFormData.vehicleId)?.model} ({vehicles.find(v => v.id === startFormData.vehicleId)?.plate})
                 </Text>
               </View>
             </View>
 
-            <View className="mb-4">
-              <Text className="text-gray-400 text-sm mb-2">KM Inicial *</Text>
+            <View className="mb-6">
+              <Text className="text-slate-300 text-sm mb-2 font-medium">KM Inicial *</Text>
               <Input
                 placeholder="Quilometragem no painel"
                 value={startFormData.startOdometer}
-                onChangeText={(text) =>
-                  setStartFormData({ ...startFormData, startOdometer: text })
-                }
+                onChangeText={(text) => setStartFormData({ ...startFormData, startOdometer: text })}
                 keyboardType="numeric"
-                className="w-full bg-gray-700 border-gray-600 text-white"
+                className="w-full bg-slate-900 border-slate-600 text-white"
               />
             </View>
 
@@ -480,114 +549,121 @@ export default function Trips() {
               onPress={handleStartTrip}
               className="w-full bg-blue-600 mb-2"
             >
-              <Text className="text-white font-medium">▶ Iniciar Jornada</Text>
+              <Text className="text-white font-medium text-center">▶ Iniciar</Text>
             </Button>
 
             <Button
               onPress={() => setShowStartForm(false)}
               variant="outline"
-              className="w-full border-gray-600"
+              className="w-full border-slate-600"
             >
-              <Text className="text-gray-400 font-medium">Cancelar</Text>
+              <Text className="text-slate-400 font-medium text-center">Cancelar</Text>
             </Button>
           </View>
         )}
 
         {/* History Section */}
         <View>
-          <Text className="text-white font-semibold text-lg mb-4">
-            Histórico
+          <Text className="text-white font-semibold text-xl mb-4">
+            Histórico de Hoje
           </Text>
 
-          {completedTrips.length === 0 ? (
-            <View className="bg-gray-800 rounded-lg p-6">
-              <Text className="text-gray-400 text-center">
-                Nenhuma jornada finalizada ainda.
+          {todayTrips.length === 0 ? (
+            <View className="bg-slate-800 rounded-xl p-8 border border-slate-700">
+              <Text className="text-slate-400 text-center">
+                Nenhuma jornada finalizada hoje.
               </Text>
             </View>
           ) : (
-            completedTrips
+            todayTrips
               .sort((a, b) => new Date(b.startDate).getTime() - new Date(a.startDate).getTime())
               .map((trip) => (
                 <View key={trip.id} className="mb-4">
                   <View className="flex-row items-center justify-between mb-2">
-                    <Text className="text-gray-400 text-sm">
+                    <Text className="text-slate-400 text-sm">
                       {formatDateTime(trip.startDate)}
                     </Text>
                     <Button
                       onPress={() => {
                         Alert.alert('Excluir Jornada', 'Tem certeza que deseja excluir esta jornada?', [
                           { text: 'Cancelar', style: 'cancel' },
-                          { text: 'Excluir', style: 'destructive', onPress: () => {
-                            setTrips(trips.filter(t => t.id !== trip.id));
-                          }}
+                          { 
+                            text: 'Excluir', 
+                            style: 'destructive', 
+                            onPress: () => {
+                              setTrips(trips.filter(t => t.id !== trip.id));
+                            }
+                          }
                         ]);
                       }}
                       variant="outline"
-                      className="border-gray-600 px-2 py-1"
+                      className="border-slate-600 px-2 py-1"
                     >
-                      <Text className="text-gray-400 text-xs">🗑</Text>
+                      <Text className="text-red-400 text-xs">🗑</Text>
                     </Button>
                   </View>
 
-                  <View className="bg-gray-800 rounded-lg p-4">
-                    <View className="flex-row items-center justify-between mb-3">
-                      <View>
-                        <Text className="text-white font-medium">
-                          Veículo: {trip.vehicleModel} ({trip.vehiclePlate})
-                        </Text>
-                      </View>
+                  <View className="bg-slate-800 rounded-xl p-6 border border-slate-700">
+                    <View className="mb-4">
+                      <Text className="text-white font-medium text-lg">
+                        🚗 {trip.vehicleModel}
+                      </Text>
+                      <Text className="text-slate-400 text-sm">{trip.vehiclePlate}</Text>
                     </View>
 
-                    <View className="flex-row items-center mb-4">
-                      <View className="w-4 h-4 bg-gray-600 rounded-full mr-2" />
-                      <Text className="text-gray-300 text-sm">
-                        {formatTime(trip.startDate)} - {trip.endDate ? formatTime(trip.endDate) : ''}
-                      </Text>
-                      <View className="w-4 h-4 bg-gray-600 rounded-full ml-auto mr-2" />
-                      <Text className="text-gray-300 text-sm">
-                        {trip.startOdometer} - {trip.endOdometer}
-                      </Text>
+                    <View className="flex-row justify-between mb-4 p-3 bg-slate-900 rounded-lg">
+                      <View>
+                        <Text className="text-slate-400 text-xs">Horário</Text>
+                        <Text className="text-white font-medium">
+                          {formatTime(trip.startDate)} - {trip.endDate ? formatTime(trip.endDate) : ''}
+                        </Text>
+                      </View>
+                      <View>
+                        <Text className="text-slate-400 text-xs">Odômetro</Text>
+                        <Text className="text-white font-medium">
+                          {trip.startOdometer} - {trip.endOdometer}
+                        </Text>
+                      </View>
                     </View>
 
                     {/* Earnings Summary */}
                     <View className="flex-row justify-between mb-4">
-                      <View className="flex-1 items-center">
-                        <Text className="text-gray-400 text-xs mb-1">💰 Bruto</Text>
+                      <View className="flex-1 items-center bg-slate-900 p-3 rounded-lg mr-2">
+                        <Text className="text-slate-400 text-xs mb-1">💰 Bruto</Text>
                         <Text className="text-white font-bold">
                           {formatCurrency(trip.earnings?.total || 0)}
                         </Text>
                       </View>
-                      <View className="flex-1 items-center">
-                        <Text className="text-gray-400 text-xs mb-1">💵 Líquido</Text>
+                      <View className="flex-1 items-center bg-slate-900 p-3 rounded-lg mr-2">
+                        <Text className="text-slate-400 text-xs mb-1">💵 Líquido</Text>
                         <Text className="text-green-400 font-bold">
                           {formatCurrency(trip.netEarnings || 0)}
                         </Text>
                       </View>
-                      <View className="flex-1 items-center">
-                        <Text className="text-gray-400 text-xs mb-1">📍 KM</Text>
+                      <View className="flex-1 items-center bg-slate-900 p-3 rounded-lg">
+                        <Text className="text-slate-400 text-xs mb-1">🏁 KM</Text>
                         <Text className="text-white font-bold">
-                          {trip.totalKm || 0} km
+                          {trip.totalKm || 0}
                         </Text>
                       </View>
                     </View>
 
                     <View className="flex-row justify-between mb-4">
-                      <View className="flex-1 items-center">
-                        <Text className="text-gray-400 text-xs mb-1">⏱ Tempo</Text>
-                        <Text className="text-white font-bold">
+                      <View className="flex-1 items-center bg-slate-900 p-3 rounded-lg mr-2">
+                        <Text className="text-slate-400 text-xs mb-1">⏱ Tempo</Text>
+                        <Text className="text-white font-bold text-sm">
                           {trip.totalTime || '0h 0min'}
                         </Text>
                       </View>
-                      <View className="flex-1 items-center">
-                        <Text className="text-gray-400 text-xs mb-1">📈 R$/Hora</Text>
-                        <Text className="text-white font-bold">
+                      <View className="flex-1 items-center bg-slate-900 p-3 rounded-lg mr-2">
+                        <Text className="text-slate-400 text-xs mb-1">📈 R$/Hora</Text>
+                        <Text className="text-white font-bold text-sm">
                           {formatCurrency(trip.ratePerHour || 0)}
                         </Text>
                       </View>
-                      <View className="flex-1 items-center">
-                        <Text className="text-gray-400 text-xs mb-1">🚗 R$/KM</Text>
-                        <Text className="text-white font-bold">
+                      <View className="flex-1 items-center bg-slate-900 p-3 rounded-lg">
+                        <Text className="text-slate-400 text-xs mb-1">🚗 R$/KM</Text>
+                        <Text className="text-white font-bold text-sm">
                           {formatCurrency(trip.ratePerKm || 0)}
                         </Text>
                       </View>
@@ -595,16 +671,16 @@ export default function Trips() {
 
                     {/* Platform Breakdown */}
                     <View>
-                      <Text className="text-gray-400 text-xs mb-2">Detalhado por Plataforma:</Text>
-                      <View className="flex-row space-x-2">
-                        <View className="flex-1 bg-gray-700 rounded p-2">
-                          <Text className="text-gray-300 text-xs text-center">99</Text>
+                      <Text className="text-slate-400 text-xs mb-2">Detalhado por Plataforma:</Text>
+                      <View className="flex-row space-x-3">
+                        <View className="flex-1 bg-slate-900 rounded-lg p-3">
+                          <Text className="text-slate-300 text-xs text-center mb-1">99</Text>
                           <Text className="text-white font-bold text-center">
                             {formatCurrency(trip.earnings?.app99 || 0)}
                           </Text>
                         </View>
-                        <View className="flex-1 bg-gray-700 rounded p-2">
-                          <Text className="text-gray-300 text-xs text-center">UBER</Text>
+                        <View className="flex-1 bg-slate-900 rounded-lg p-3">
+                          <Text className="text-slate-300 text-xs text-center mb-1">UBER</Text>
                           <Text className="text-white font-bold text-center">
                             {formatCurrency(trip.earnings?.uber || 0)}
                           </Text>
@@ -620,50 +696,3 @@ export default function Trips() {
     </View>
   );
 }
-
-
-
-  const handlePauseTrip = () => {
-    if (!activeTrip) {
-      Alert.alert("Erro", "Nenhuma jornada ativa para pausar.");
-      return;
-    }
-
-    const updatedTrip: Trip = {
-      ...activeTrip,
-      status: 'paused',
-      pausedOdometer: activeTrip.endOdometer, // Salva o último odômetro registrado
-      pauseTimestamps: [...activeTrip.pauseTimestamps, { pause: new Date().toISOString(), resume: null }],
-    };
-
-    setTrips(trips.map((trip) => (trip.id === activeTrip.id ? updatedTrip : trip)));
-    Alert.alert("Sucesso", "Jornada pausada com sucesso!");
-  };
-
-  const handleResumeTrip = (resumeOdometer: string) => {
-    const pausedTrip = trips.find((trip) => trip.status === 'paused');
-    if (!pausedTrip) {
-      Alert.alert("Erro", "Nenhuma jornada pausada para retomar.");
-      return;
-    }
-
-    const resumeOdometerNum = parseInt(resumeOdometer);
-    if (isNaN(resumeOdometerNum) || resumeOdometerNum <= (pausedTrip.pausedOdometer || pausedTrip.startOdometer)) {
-      Alert.alert("Erro", "A quilometragem de retorno deve ser maior que a quilometragem da pausa.");
-      return;
-    }
-
-    const lastPause = pausedTrip.pauseTimestamps[pausedTrip.pauseTimestamps.length - 1];
-    const updatedPauseTimestamps = [...pausedTrip.pauseTimestamps];
-    updatedPauseTimestamps[updatedPauseTimestamps.length - 1] = { ...lastPause, resume: new Date().toISOString() };
-
-    const updatedTrip: Trip = {
-      ...pausedTrip,
-      status: 'active',
-      endOdometer: resumeOdometerNum, // Atualiza o odômetro com o valor de retorno
-      pauseTimestamps: updatedPauseTimestamps,
-    };
-
-    setTrips(trips.map((trip) => (trip.id === pausedTrip.id ? updatedTrip : trip)));
-    Alert.alert("Sucesso", "Jornada retomada com sucesso!");
-  };
