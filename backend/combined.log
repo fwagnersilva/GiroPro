@@ -28,3 +28,6 @@
 {"level":"info","message":"🚀 Servidor GiroPro rodando na porta 3000","service":"user-service","timestamp":"2025-10-05 22:37:26"}
 {"level":"info","message":"📊 Health check: http://localhost:3000/health","service":"user-service","timestamp":"2025-10-05 22:37:26"}
 {"level":"info","message":"🌐 Acessível externamente em: http://0.0.0.0:3000","service":"user-service","timestamp":"2025-10-05 22:37:26"}
+{"level":"info","message":"🚀 Servidor GiroPro rodando na porta 3000","service":"user-service","timestamp":"2025-10-05 23:54:58"}
+{"level":"info","message":"📊 Health check: http://localhost:3000/health","service":"user-service","timestamp":"2025-10-05 23:54:58"}
+{"level":"info","message":"🌐 Acessível externamente em: http://0.0.0.0:3000","service":"user-service","timestamp":"2025-10-05 23:54:58"}
