@@ -108,7 +108,7 @@ export default function Fuelings() {
   };
 
   return (
-    <View className="flex-1 bg-slate-900">
+    <View className="flex-1 bg-slate-950">
       <FocusAwareStatusBar />
       <ScrollView className="flex-1 px-4 py-6">
         {/* Header */}
@@ -117,7 +117,7 @@ export default function Fuelings() {
             <Text className="text-3xl font-bold text-white mb-1">
               Meus Abastecimentos
             </Text>
-            <Text className="text-slate-400">
+            <Text className="text-slate-300">
               Registre e acompanhe seus abastecimentos
             </Text>
           </View>
@@ -133,8 +133,8 @@ export default function Fuelings() {
           </Text>
 
           {fuelings.length === 0 ? (
-            <View className="p-8 items-center">
-              <Text className="text-slate-400 text-center">
+            <View className="p-8 items-center bg-slate-800 rounded-xl border border-slate-700">
+              <Text className="text-slate-300 text-center">
                 Nenhum abastecimento registrado.\nAdicione seu primeiro
                 abastecimento para começar!
               </Text>

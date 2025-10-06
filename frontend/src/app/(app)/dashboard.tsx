@@ -9,7 +9,7 @@ export default function Dashboard() {
   const userName = user?.nome || 'Usuário';
 
   return (
-    <View className="flex-1 bg-slate-900">
+    <View className="flex-1 bg-slate-950">
       <FocusAwareStatusBar />
       <ScrollView className="flex-1 px-4 py-6">
         {/* Header */}
@@ -17,7 +17,7 @@ export default function Dashboard() {
           <Text className="text-3xl font-bold text-white mb-2">
             Olá, {userName}
           </Text>
-          <Text className="text-slate-400">Bem-vindo ao seu painel de controle</Text>
+          <Text className="text-slate-300">Bem-vindo ao seu painel de controle</Text>
         </View>
 
         {/* Resumo Financeiro */}

@@ -109,7 +109,7 @@ export default function Expenses() {
   };
 
   return (
-    <View className="flex-1 bg-slate-900">
+    <View className="flex-1 bg-slate-950">
       <FocusAwareStatusBar />
       <ScrollView className="flex-1 px-4 py-6">
         {/* Header */}
@@ -118,7 +118,7 @@ export default function Expenses() {
             <Text className="text-3xl font-bold text-white mb-1">
               Minhas Despesas
             </Text>
-            <Text className="text-slate-400">
+            <Text className="text-slate-300">
               Registre gastos dos seus veículos
             </Text>
           </View>
@@ -171,8 +171,8 @@ export default function Expenses() {
           </Text>
 
           {expenses.length === 0 ? (
-            <View className="p-8 items-center">
-              <Text className="text-slate-400 text-center">
+            <View className="p-8 items-center bg-slate-800 rounded-xl border border-slate-700">
+              <Text className="text-slate-300 text-center">
                 Nenhuma despesa registrada.\n
                 Adicione sua primeira despesa para começar!
               </Text>

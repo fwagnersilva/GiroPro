@@ -365,7 +365,7 @@ export default function Trips() {
   };
 
   return (
-    <View className="flex-1 bg-slate-900">
+    <View className="flex-1 bg-slate-950">
       <FocusAwareStatusBar />
       <ScrollView className="flex-1 px-4 py-6">
         {/* Header */}
@@ -373,7 +373,7 @@ export default function Trips() {
           <Text className="text-3xl font-bold text-white mb-2">
             Jornadas
           </Text>
-          <Text className="text-slate-400">Gerencie suas corridas diárias</Text>
+          <Text className="text-slate-300">Gerencie suas corridas diárias</Text>
         </View>
 
         {/* Se não houver jornada ativa, mostra o formulário para iniciar */}
@@ -436,7 +436,7 @@ export default function Trips() {
             </View>
             
             <View className="mb-2">
-              <Text className="text-slate-400 text-sm">
+              <Text className="text-slate-300 text-sm">
                 Início: {formatDateTime(activeTrip.startDate)} às {formatTime(activeTrip.startDate)}
               </Text>
             </View>
@@ -451,11 +451,11 @@ export default function Trips() {
 
               <View className="flex-row mb-6 p-4 bg-slate-900 rounded-lg">
                 <View className="flex-1">
-                  <Text className="text-slate-400 text-sm">KM Início</Text>
+                  <Text className="text-slate-300 text-sm">KM Início</Text>
                   <Text className="text-white font-bold text-xl">{activeTrip.startOdometer}</Text>
                 </View>
                 <View className="flex-1">
-                  <Text className="text-slate-400 text-sm">Horário Início</Text>
+                  <Text className="text-slate-300 text-sm">Horário Início</Text>
                   <Text className="text-white font-bold text-xl">{formatTime(activeTrip.startDate)}</Text>
                 </View>
               </View>
@@ -482,14 +482,14 @@ export default function Trips() {
                     <Text className="text-white font-medium text-center">⏸ Pausar Jornada</Text>
                   </Button>
                   <Button
-                    onPress={() => setShowEndForm(true)} // Mostra o formulário de finalização
-                    className="bg-red-600"
+                    onPress={() => setShowEndForm(true)}
+                    className="bg-blue-600"
                   >
                     <Text className="text-white font-medium text-center">✅ Finalizar Jornada</Text>
                   </Button>
                   <Button
                     onPress={handleCancelTrip}
-                    className="bg-slate-700"
+                    className="bg-red-600"
                   >
                     <Text className="text-white font-medium text-center">❌ Cancelar Jornada</Text>
                   </Button>
@@ -509,35 +509,31 @@ export default function Trips() {
                       keyboardType="numeric"
                       className="w-full bg-slate-900 border-slate-600 text-white"
                     />
-                    <Text className="text-slate-400 text-xs mt-1">
-                      KM na pausa: {activeTrip.pausedOdometer}
-                    </Text>
                   </View>
                   <Button
                     onPress={handleResumeTrip}
-                    className="bg-blue-600"
+                    className="bg-green-600"
                   >
                     <Text className="text-white font-medium text-center">▶ Retomar Jornada</Text>
                   </Button>
                   <Button
-                    onPress={() => setShowEndForm(true)} // Mostra o formulário de finalização
-                    className="bg-red-600"
+                    onPress={() => setShowEndForm(true)}
+                    className="bg-blue-600"
                   >
                     <Text className="text-white font-medium text-center">✅ Finalizar Jornada</Text>
                   </Button>
                   <Button
                     onPress={handleCancelTrip}
-                    className="bg-slate-700"
+                    className="bg-red-600"
                   >
                     <Text className="text-white font-medium text-center">❌ Cancelar Jornada</Text>
                   </Button>
                 </View>
               )}
 
-              {/* End Form Fields - Visível apenas quando showEndForm é true */}
               {showEndForm && (
                 <View className="space-y-3">
-                  <View className="mb-4 mt-6">
+                  <View className="mb-4">
                     <Text className="text-slate-300 text-sm mb-2 font-medium">
                       KM Final *
                     </Text>
@@ -549,44 +545,36 @@ export default function Trips() {
                       className="w-full bg-slate-900 border-slate-600 text-white"
                     />
                   </View>
-
-                  <View className="mb-6">
+                  <View className="mb-4">
                     <Text className="text-slate-300 text-sm mb-2 font-medium">
                       Faturamento por Plataforma (R$)
                     </Text>
-                    <View className="flex-row space-x-4">
-                      <View className="flex-1">
-                        <Text className="text-slate-400 text-xs mb-1">UBER</Text>
-                        <Input
-                          placeholder="0,00"
-                          value={uberEarningsInput}
-                          onChangeText={setUberEarningsInput}
-                          keyboardType="numeric"
-                          className="bg-slate-900 border-slate-600 text-white text-center"
-                        />
-                      </View>
-                      <View className="flex-1">
-                        <Text className="text-slate-400 text-xs mb-1">99</Text>
-                        <Input
-                          placeholder="0,00"
-                          value={app99EarningsInput}
-                          onChangeText={setApp99EarningsInput}
-                          keyboardType="numeric"
-                          className="bg-slate-900 border-slate-600 text-white text-center"
-                        />
-                      </View>
+                    <View className="flex-row space-x-2">
+                      <Input
+                        placeholder="UBER"
+                        value={uberEarningsInput}
+                        onChangeText={setUberEarningsInput}
+                        keyboardType="numeric"
+                        className="flex-1 bg-slate-900 border-slate-600 text-white"
+                      />
+                      <Input
+                        placeholder="99"
+                        value={app99EarningsInput}
+                        onChangeText={setApp99EarningsInput}
+                        keyboardType="numeric"
+                        className="flex-1 bg-slate-900 border-slate-600 text-white"
+                      />
                     </View>
                   </View>
-
                   <Button
                     onPress={handleEndTrip}
-                    className="bg-red-600"
+                    className="bg-green-600"
                   >
                     <Text className="text-white font-medium text-center">✅ Confirmar Finalização</Text>
                   </Button>
                   <Button
-                    onPress={() => setShowEndForm(false)} // Volta para os botões de pausa/retomada
-                    className="bg-slate-700"
+                    onPress={() => setShowEndForm(false)}
+                    className="bg-slate-600"
                   >
                     <Text className="text-white font-medium text-center">Voltar</Text>
                   </Button>
@@ -596,19 +584,47 @@ export default function Trips() {
           </View>
         )}
 
-        {/* Completed Trips Section */}
+        {/* Today's Trips Section */}
         <View>
-          <Text className="text-2xl font-bold text-white mb-4">Jornadas de Hoje</Text>
+          <Text className="text-2xl font-bold text-white mb-4">
+            Jornadas de Hoje
+          </Text>
+
           {todayTrips.length === 0 ? (
-            <Text className="text-slate-400">Nenhuma jornada finalizada hoje.</Text>
+            <View className="p-8 items-center bg-slate-800 rounded-xl border border-slate-700">
+              <Text className="text-slate-300 text-center">
+                Nenhuma jornada finalizada hoje.
+              </Text>
+            </View>
           ) : (
             todayTrips.map((trip) => (
-              <View key={trip.id} className="bg-slate-800 rounded-xl p-4 border border-slate-700 mb-3">
-                <Text className="text-white font-semibold text-lg">🚗 {trip.vehicleModel} ({trip.vehiclePlate})</Text>
-                <Text className="text-slate-300 text-sm">Início: {formatTime(trip.startDate)} - Fim: {formatTime(trip.endDate || '')}</Text>
-                <Text className="text-slate-300 text-sm">KM Rodados: {trip.totalKm}</Text>
-                <Text className="text-slate-300 text-sm">Tempo Ativo: {trip.totalTime}</Text>
-                <Text className="text-green-400 font-bold mt-2">Total Faturado: {formatCurrency(trip.earnings?.total || 0)}</Text>
+              <View key={trip.id} className="bg-slate-800 p-4 rounded-xl border border-slate-700 mb-3">
+                <Text className="font-semibold text-white text-lg mb-1">
+                  🚗 {trip.vehicleModel} ({trip.vehiclePlate})
+                </Text>
+                <Text className="text-slate-300 text-sm mb-1">
+                  Início: {formatDateTime(trip.startDate)} às {formatTime(trip.startDate)}
+                </Text>
+                {trip.endDate && (
+                  <Text className="text-slate-300 text-sm mb-1">
+                    Fim: {formatDateTime(trip.endDate)} às {formatTime(trip.endDate)}
+                  </Text>
+                )}
+                {trip.totalKm !== null && (
+                  <Text className="text-slate-300 text-sm mb-1">
+                    KM Rodados: {trip.totalKm}
+                  </Text>
+                )}
+                {trip.totalTime && (
+                  <Text className="text-slate-300 text-sm mb-1">
+                    Tempo Ativo: {trip.totalTime}
+                  </Text>
+                )}
+                {trip.earnings && (
+                  <Text className="text-green-400 font-bold text-sm">
+                    Faturamento: {formatCurrency(trip.earnings.total)}
+                  </Text>
+                )}
               </View>
             ))
           )}
