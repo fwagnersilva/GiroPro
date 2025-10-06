@@ -6,42 +6,57 @@ import { tv } from 'tailwind-variants';
 
 const button = tv({
   slots: {
-    container: 'my-2 flex flex-row items-center justify-center rounded-md px-4',
+    container: 'my-2 flex flex-row items-center justify-center rounded-md px-4 theme-transition',
     label: 'font-inter text-base font-semibold',
-    indicator: 'h-6 text-white',
+    indicator: 'h-6',
   },
 
   variants: {
     variant: {
       default: {
-        container: 'bg-black dark:bg-white',
+        container: 'bg-theme-primary',
+        label: 'text-theme-on-primary',
+        indicator: 'text-theme-on-primary',
+      },
+      secondary: {
+        container: 'bg-theme-secondary',
+        label: 'text-theme-on-secondary',
+        indicator: 'text-theme-on-secondary',
+      },
+      outline: {
+        container: 'border border-theme bg-theme-surface',
+        label: 'text-theme-primary',
+        indicator: 'text-theme-primary',
+      },
+      destructive: {
+        container: 'bg-error-500 dark:bg-error-dark-500',
         label: 'text-white dark:text-black',
         indicator: 'text-white dark:text-black',
       },
-      secondary: {
-        container: 'bg-primary-600',
-        label: 'text-secondary-600',
-        indicator: 'text-white',
+      success: {
+        container: 'bg-success-500 dark:bg-success-dark-500',
+        label: 'text-white dark:text-black',
+        indicator: 'text-white dark:text-black',
       },
-      outline: {
-        container: 'border border-neutral-400',
-        label: 'text-black dark:text-neutral-100',
-        indicator: 'text-black dark:text-neutral-100',
-      },
-      destructive: {
-        container: 'bg-red-600',
-        label: 'text-white',
-        indicator: 'text-white',
+      warning: {
+        container: 'bg-warning-500 dark:bg-warning-dark-500',
+        label: 'text-black dark:text-black',
+        indicator: 'text-black dark:text-black',
       },
       ghost: {
         container: 'bg-transparent',
-        label: 'text-black underline dark:text-white',
-        indicator: 'text-black dark:text-white',
+        label: 'text-theme-primary underline',
+        indicator: 'text-theme-primary',
       },
       link: {
         container: 'bg-transparent',
-        label: 'text-black',
-        indicator: 'text-black',
+        label: 'text-theme-primary',
+        indicator: 'text-theme-primary',
+      },
+      surface: {
+        container: 'bg-theme-surface border border-theme',
+        label: 'text-theme-primary',
+        indicator: 'text-theme-primary',
       },
     },
     size: {
@@ -58,13 +73,16 @@ const button = tv({
         label: 'text-sm',
         indicator: 'h-2',
       },
-      icon: { container: 'size-9' },
+      icon: { 
+        container: 'size-9',
+        label: 'text-sm',
+      },
     },
     disabled: {
       true: {
-        container: 'bg-neutral-300 dark:bg-neutral-300',
-        label: 'text-neutral-600 dark:text-neutral-600',
-        indicator: 'text-neutral-400 dark:text-neutral-400',
+        container: 'bg-neutral-300 dark:bg-neutral-700 opacity-50',
+        label: 'text-theme-disabled',
+        indicator: 'text-theme-disabled',
       },
     },
     fullWidth: {
@@ -75,12 +93,18 @@ const button = tv({
         container: 'self-center',
       },
     },
+    loading: {
+      true: {
+        container: 'opacity-70',
+      },
+    },
   },
   defaultVariants: {
     variant: 'default',
     disabled: false,
     fullWidth: true,
     size: 'default',
+    loading: false,
   },
 });
 
@@ -103,13 +127,14 @@ export const Button = React.forwardRef<View, Props>(
       className = '',
       testID,
       textClassName = '',
+      fullWidth = true,
       ...props
     },
     ref
   ) => {
     const styles = React.useMemo(
-      () => button({ variant, disabled, size }),
-      [variant, disabled, size]
+      () => button({ variant, disabled, size, fullWidth, loading }),
+      [variant, disabled, size, fullWidth, loading]
     );
 
     return (
@@ -119,6 +144,8 @@ export const Button = React.forwardRef<View, Props>(
         {...props}
         ref={ref}
         testID={testID}
+        accessibilityRole="button"
+        accessibilityState={{ disabled: disabled || loading }}
       >
         {props.children ? (
           props.children
@@ -144,3 +171,5 @@ export const Button = React.forwardRef<View, Props>(
     );
   }
 );
+
+Button.displayName = 'Button';
