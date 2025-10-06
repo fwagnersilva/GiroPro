@@ -39,6 +39,14 @@ export default function Trips() {
     { id: '3', model: 'Ford Ka', plate: 'DEF-9012' },
   ]);
 
+  const [startOdometerInput, setStartOdometerInput] = useState('');
+  const [pauseKmInput, setPauseKmInput] = useState('');
+  const [resumeKmInput, setResumeKmInput] = useState('');
+  const [endOdometerInput, setEndOdometerInput] = useState('');
+  const [uberEarningsInput, setUberEarningsInput] = useState('0,00');
+  const [app99EarningsInput, setApp99EarningsInput] = useState('0,00');
+  const [selectedVehicleId, setSelectedVehicleId] = useState(vehicles.length > 0 ? vehicles[0].id : '');
+
   const [trips, setTrips] = useState<Trip[]>([
     {
       id: '1',
@@ -89,14 +97,6 @@ export default function Trips() {
       ratePerKm: 1.73,
     },
   ]);
-
-  const [startOdometerInput, setStartOdometerInput] = useState('');
-  const [pauseKmInput, setPauseKmInput] = useState('');
-  const [resumeKmInput, setResumeKmInput] = useState('');
-  const [endOdometerInput, setEndOdometerInput] = useState('');
-  const [uberEarningsInput, setUberEarningsInput] = useState('0,00');
-  const [app99EarningsInput, setApp99EarningsInput] = useState('0,00');
-  const [selectedVehicleId, setSelectedVehicleId] = useState(vehicles.length > 0 ? vehicles[0].id : '');
 
   const activeTrip = trips.find((trip) => trip.status === 'active' || trip.status === 'paused');
   
@@ -572,9 +572,9 @@ export default function Trips() {
             todayTrips.map((trip) => (
               <View key={trip.id} className="bg-slate-800 rounded-xl p-4 border border-slate-700 mb-3">
                 <Text className="text-white font-semibold text-lg">🚗 {trip.vehicleModel} ({trip.vehiclePlate})</Text>
-                <Text className="text-slate-400 text-sm">Início: {formatTime(trip.startDate)} - Fim: {formatTime(trip.endDate || '')}</Text>
-                <Text className="text-slate-400 text-sm">KM Rodados: {trip.totalKm}</Text>
-                <Text className="text-slate-400 text-sm">Tempo Ativo: {trip.totalTime}</Text>
+                <Text className="text-slate-300 text-sm">Início: {formatTime(trip.startDate)} - Fim: {formatTime(trip.endDate || '')}</Text>
+                <Text className="text-slate-300 text-sm">KM Rodados: {trip.totalKm}</Text>
+                <Text className="text-slate-300 text-sm">Tempo Ativo: {trip.totalTime}</Text>
                 <Text className="text-green-400 font-bold mt-2">Total Faturado: {formatCurrency(trip.earnings?.total || 0)}</Text>
               </View>
             ))

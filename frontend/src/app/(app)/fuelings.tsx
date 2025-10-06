@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { ScrollView, Alert } from 'react-native';
 import { useRouter } from 'expo-router';
@@ -107,33 +108,33 @@ export default function Fuelings() {
   };
 
   return (
-    <View className="flex-1 bg-white">
+    <View className="flex-1 bg-slate-900">
       <FocusAwareStatusBar />
       <ScrollView className="flex-1 px-4 py-6">
         {/* Header */}
         <View className="flex-row justify-between items-center mb-6">
           <View>
-            <Text className="text-2xl font-bold text-gray-900 mb-1">
+            <Text className="text-3xl font-bold text-white mb-1">
               Meus Abastecimentos
             </Text>
-            <Text className="text-gray-600">
+            <Text className="text-slate-400">
               Registre e acompanhe seus abastecimentos
             </Text>
           </View>
-          <Button onPress={handleAddFueling} className="px-4 py-2">
+          <Button onPress={handleAddFueling} className="px-4 py-2 bg-blue-600">
             <Text className="text-white font-medium">+ Adicionar</Text>
           </Button>
         </View>
 
         {/* Fuelings List */}
         <View>
-          <Text className="text-lg font-semibold text-gray-900 mb-4">
+          <Text className="text-2xl font-bold text-white mb-4">
             Abastecimentos Registrados ({fuelings.length})
           </Text>
 
           {fuelings.length === 0 ? (
             <View className="p-8 items-center">
-              <Text className="text-gray-500 text-center">
+              <Text className="text-slate-400 text-center">
                 Nenhum abastecimento registrado.\nAdicione seu primeiro
                 abastecimento para começar!
               </Text>
@@ -142,25 +143,25 @@ export default function Fuelings() {
             fuelings.map((fueling) => {
               const vehicle = vehicles.find(v => v.id === fueling.idVeiculo);
               return (
-                <View key={fueling.id} className="bg-gray-50 p-4 rounded-lg mb-3">
+                <View key={fueling.id} className="bg-slate-800 p-4 rounded-xl border border-slate-700 mb-3">
                   <View className="flex-row justify-between items-start">
                     <View className="flex-1">
-                      <Text className="font-semibold text-gray-900 text-lg mb-1">
+                      <Text className="font-semibold text-white text-lg mb-1">
                         {vehicle?.model || 'Veículo'} ({formatDate(fueling.dataAbastecimento)})
                       </Text>
-                      <Text className="text-gray-600 mb-1">
+                      <Text className="text-slate-300 mb-1">
                         Valor: R$ {formatCurrency(fueling.valorTotal)} • Litros: {fueling.litros.toFixed(2)}
                       </Text>
-                      <Text className="text-gray-600 mb-1">
+                      <Text className="text-slate-300 mb-1">
                         Combustível: {fueling.tipoCombustivel} • R$/L: {fueling.precoPorLitro.toFixed(2)}
                       </Text>
                       {fueling.kmAtual && (
-                        <Text className="text-gray-600 mb-1">
+                        <Text className="text-slate-300 mb-1">
                           Odômetro: {fueling.kmAtual} Km
                         </Text>
                       )}
                       {fueling.nomePosto && (
-                        <Text className="text-gray-600">
+                        <Text className="text-slate-300">
                           Posto: {fueling.nomePosto}
                         </Text>
                       )}
@@ -168,17 +169,15 @@ export default function Fuelings() {
                     <View className="flex-row space-x-2">
                       <Button
                         onPress={() => handleEditFueling(fueling)}
-                        variant="outline"
-                        className="px-3 py-1"
+                        className="px-3 py-1 bg-blue-600"
                       >
-                        <Text className="text-blue-600 text-sm">Editar</Text>
+                        <Text className="text-white text-sm">Editar</Text>
                       </Button>
                       <Button
                         onPress={() => handleDeleteFueling(fueling.id)}
-                        variant="outline"
-                        className="px-3 py-1"
+                        className="px-3 py-1 bg-red-600"
                       >
-                        <Text className="text-red-600 text-sm">Excluir</Text>
+                        <Text className="text-white text-sm">Excluir</Text>
                       </Button>
                     </View>
                   </View>
