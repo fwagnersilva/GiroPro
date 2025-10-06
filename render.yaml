@@ -1,37 +1,41 @@
 services:
+  # Frontend - Expo Web Build
+  - type: web
+    name: giropro-frontend
+    env: node
+    buildCommand: npm install && npm run build:web
+    startCommand: npm run serve:web
+    envVars:
+      - key: NODE_VERSION
+        value: 18
+      - key: PORT
+        value: 10000
+      - key: EXPO_PUBLIC_API_URL
+        value: https://giropro-backend.onrender.com
+    healthCheckPath: /
+
+  # Backend - Flask API
   - type: web
     name: giropro-backend
-    env: node
-    buildCommand: npm install && npm run build
-    startCommand: npm run start
-    rootDir: backend
-    healthCheckPath: /health
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app:app
     envVars:
+      - key: PYTHON_VERSION
+        value: 3.11
       - key: DATABASE_URL
-        fromDatabase: 
+        fromDatabase:
           name: giropro-db
           property: connectionString
       - key: JWT_SECRET
         generateValue: true
       - key: JWT_EXPIRES_IN
         value: 7d
-      - key: PORT
-        value: 10000
-      - key: NODE_ENV
+      - key: FLASK_ENV
         value: production
-  - type: web
-    name: giropro-frontend
-    env: static
-    buildCommand: npm install && npm run build-vite
-    staticPublishPath: dist
-    rootDir: frontend
-    envVars:
-      - key: VITE_API_URL
-        fromService: 
-          name: giropro-backend
-          type: web
-          property: host
+    healthCheckPath: /health
 
+# Banco de dados PostgreSQL
 databases:
   - name: giropro-db
     databaseName: giropro_db
