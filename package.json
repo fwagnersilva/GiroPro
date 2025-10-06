@@ -8,6 +8,8 @@
     "web": "expo start --web",
     "android": "expo run:android",
     "ios": "expo run:ios",
+    "build:web": "expo export --platform web --output-dir dist",
+    "serve:web": "npx serve dist -s -n -p ${PORT:-8081}",
     "clean": "rimraf .expo android coverage ios",
     "lint": "eslint .",
     "format": "eslint --fix . && prettier '**/*.{json,yaml}' --write --ignore-path .gitignore",
