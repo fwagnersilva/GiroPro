@@ -24,7 +24,7 @@
     "e2e:android:build": "detox build --configuration android.release",
     "e2e:android:test": "detox test --configuration android.release",
     "e2e:android": "run-s e2e:android:*",
-    "prepare": "node -e \"try { require('husky').install() } catch (e) {}\""
+    "prepare": "husky install || true"
   },
   "dependencies": {
     "@expo/webpack-config": "^19.0.0",
@@ -32,6 +32,7 @@
     "@react-native-picker/picker": "2.4.10",
     "expo": "^49.0.23",
     "expo-constants": "~14.4.2",
+
     "expo-linking": "~5.0.2",
     "expo-router": "2.0.0",
     "expo-splash-screen": "~0.20.4",
