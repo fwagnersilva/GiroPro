@@ -1,14 +1,13 @@
 services:
-  # Frontend - Expo Web Build
   - type: web
     name: giropro-frontend
     env: node
     rootDir: frontend
     buildCommand: |
-        rm -rf node_modules package-lock.json .expo &&
-        npm cache clean --force &&
-        HUSKY=0 npm install --legacy-peer-deps &&
-        npm run build:web
+      rm -rf node_modules package-lock.json .expo &&
+      npm cache clean --force &&
+      HUSKY=0 npm install --force &&
+      npm run build:web
     startCommand: npx serve web-build -s -n -p ${PORT}
     envVars:
       - key: HUSKY
@@ -21,33 +20,4 @@ services:
         value: --openssl-legacy-provider
       - key: EXPO_PUBLIC_API_URL
         value: https://giropro-backend.onrender.com
-    plan: free
-
-  # Backend - Flask API
-  - type: web
-    name: giropro-backend
-    env: python
-    rootDir: backend
-    buildCommand: pip install -r requirements.txt
-    startCommand: gunicorn --bind 0.0.0.0:$PORT app:app
-    envVars:
-      - key: PYTHON_VERSION
-        value: 3.11
-      - key: DATABASE_URL
-        fromDatabase:
-          name: giropro-db
-          property: connectionString
-      - key: JWT_SECRET
-        generateValue: true
-      - key: JWT_EXPIRES_IN
-        value: 7d
-      - key: FLASK_ENV
-        value: production
-    healthCheckPath: /health
-    plan: free
-
-# Banco de dados PostgreSQL
-databases:
-  - name: giropro-db
-    databaseName: giropro_db
     plan: free
