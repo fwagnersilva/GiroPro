@@ -4,12 +4,7 @@ services:
     name: giropro-frontend
     env: node
     rootDir: src/frontend
-    buildCommand: |
-      rm -rf node_modules package-lock.json &&
-      npm cache clean --force &&
-      npm install --legacy-peer-deps &&
-      npm install expo-font@11.4.0 --legacy-peer-deps &&
-      npm run build:web
+    buildCommand: chmod +x build.sh && ./build.sh
     startCommand: npx serve web-build -s -n -p ${PORT}
     envVars:
       - key: NODE_VERSION
