@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { ScrollView, Alert } from 'react-native';
 import { useRouter } from 'expo-router';
@@ -108,33 +109,33 @@ export default function Expenses() {
   };
 
   return (
-    <View className="flex-1 bg-white">
+    <View className="flex-1 bg-slate-900">
       <FocusAwareStatusBar />
       <ScrollView className="flex-1 px-4 py-6">
         {/* Header */}
         <View className="flex-row justify-between items-center mb-6">
           <View>
-            <Text className="text-2xl font-bold text-gray-900 mb-1">
+            <Text className="text-3xl font-bold text-white mb-1">
               Minhas Despesas
             </Text>
-            <Text className="text-gray-600">
+            <Text className="text-slate-400">
               Registre gastos dos seus veículos
             </Text>
           </View>
-          <Button onPress={handleAddExpense} className="px-4 py-2">
+          <Button onPress={handleAddExpense} className="px-4 py-2 bg-blue-600">
             <Text className="text-white font-medium">+ Adicionar</Text>
           </Button>
         </View>
 
         {/* Summary */}
-        <View className="mb-6 p-4 bg-red-50 rounded-lg">
-          <Text className="text-red-800 font-semibold text-lg mb-2">
+        <View className="mb-6 p-4 bg-red-900 rounded-xl border border-red-700">
+          <Text className="text-red-300 font-semibold text-lg mb-2">
             Total de Despesas
           </Text>
-          <Text className="text-red-900 text-2xl font-bold">
+          <Text className="text-white text-2xl font-bold">
             R$ {totalExpenses.toFixed(2)}
           </Text>
-          <Text className="text-red-600 text-sm mt-1">
+          <Text className="text-red-400 text-sm mt-1">
             {expenses.length} despesa(s) registrada(s)
           </Text>
         </View>
@@ -142,19 +143,19 @@ export default function Expenses() {
         {/* Expenses by Category */}
         {Object.keys(expensesByCategory).length > 0 && (
           <View className="mb-6">
-            <Text className="text-lg font-semibold text-gray-900 mb-4">
+            <Text className="text-2xl font-bold text-white mb-4">
               Despesas por Categoria
             </Text>
             <View className="flex-row flex-wrap">
               {Object.entries(expensesByCategory).map(([category, total]) => (
                 <View
                   key={category}
-                  className="bg-blue-50 p-3 rounded-lg mr-2 mb-2"
+                  className="bg-blue-900 p-3 rounded-lg mr-2 mb-2 border border-blue-700"
                 >
-                  <Text className="text-blue-600 text-sm font-medium">
+                  <Text className="text-blue-300 text-sm font-medium">
                     {category}
                   </Text>
-                  <Text className="text-blue-900 font-bold">
+                  <Text className="text-white font-bold">
                     R$ {total.toFixed(2)}
                   </Text>
                 </View>
@@ -165,14 +166,14 @@ export default function Expenses() {
 
         {/* Expenses List */}
         <View>
-          <Text className="text-lg font-semibold text-gray-900 mb-4">
+          <Text className="text-2xl font-bold text-white mb-4">
             Despesas Registradas ({expenses.length})
           </Text>
 
           {expenses.length === 0 ? (
             <View className="p-8 items-center">
-              <Text className="text-gray-500 text-center">
-                Nenhuma despesa registrada.{'\n'}
+              <Text className="text-slate-400 text-center">
+                Nenhuma despesa registrada.\n
                 Adicione sua primeira despesa para começar!
               </Text>
             </View>
@@ -182,23 +183,23 @@ export default function Expenses() {
               .map((expense) => (
                 <View
                   key={expense.id}
-                  className="bg-gray-50 p-4 rounded-lg mb-3"
+                  className="bg-slate-800 p-4 rounded-xl border border-slate-700 mb-3"
                 >
                   <View className="flex-row justify-between items-start">
                     <View className="flex-1">
-                      <Text className="font-semibold text-gray-900 text-lg mb-1">
+                      <Text className="font-semibold text-white text-lg mb-1">
                         {expense.description}
                       </Text>
-                      <Text className="text-gray-600 mb-1">
+                      <Text className="text-slate-300 mb-1">
                         {expense.vehicleModel} • {expense.date}
                       </Text>
                       <View className="flex-row items-center">
-                        <View className="bg-blue-100 px-2 py-1 rounded mr-2">
-                          <Text className="text-blue-800 text-xs font-medium">
+                        <View className="bg-blue-800 px-2 py-1 rounded mr-2 border border-blue-600">
+                          <Text className="text-blue-200 text-xs font-medium">
                             {expense.category}
                           </Text>
                         </View>
-                        <Text className="text-red-600 font-bold">
+                        <Text className="text-red-400 font-bold">
                           R$ {expense.value}
                         </Text>
                       </View>
@@ -206,17 +207,15 @@ export default function Expenses() {
                     <View className="flex-row space-x-2">
                       <Button
                         onPress={() => handleEditExpense(expense)}
-                        variant="outline"
-                        className="px-3 py-1"
+                        className="px-3 py-1 bg-blue-600"
                       >
-                        <Text className="text-blue-600 text-sm">Editar</Text>
+                        <Text className="text-white text-sm">Editar</Text>
                       </Button>
                       <Button
                         onPress={() => handleDeleteExpense(expense.id)}
-                        variant="outline"
-                        className="px-3 py-1"
+                        className="px-3 py-1 bg-red-600"
                       >
-                        <Text className="text-red-600 text-sm">Excluir</Text>
+                        <Text className="text-white text-sm">Excluir</Text>
                       </Button>
                     </View>
                   </View>
@@ -228,3 +227,4 @@ export default function Expenses() {
     </View>
   );
 }
+
