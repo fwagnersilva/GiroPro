@@ -4,7 +4,7 @@ services:
     name: giropro-frontend
     env: node
     rootDir: frontend
-    buildCommand: rm -rf node_modules package-lock.json && npm install --legacy-peer-deps && npm run build:web
+    buildCommand: rm -rf node_modules package-lock.json && HUSKY=0 npm install --legacy-peer-deps && npm run build:web
     startCommand: npx serve web-build -s -n -p ${PORT}
     envVars:
       - key: NODE_VERSION
