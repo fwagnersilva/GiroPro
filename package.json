@@ -3,6 +3,8 @@
   "version": "1.0.0",
   "scripts": {
     "start": "expo start --dev-client",
+    "postinstall": "node scripts/postinstall.js",
+    "build:web": "expo export --platform web"
     "dev:android": "expo start --android",
     "dev:ios": "expo start --ios",
     "web": "expo start --web",
