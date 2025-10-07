@@ -4,7 +4,8 @@
   "scripts": {
     "start": "expo start --dev-client",
     "postinstall": "node scripts/postinstall.js",
-    "build:web": "expo export --platform web"
+    "build:web": "expo export --platform web",
+    "postinstall": "node scripts/postinstall.js",
     "dev:android": "expo start --android",
     "dev:ios": "expo start --ios",
     "web": "expo start --web",
