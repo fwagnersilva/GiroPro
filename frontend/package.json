@@ -5,7 +5,7 @@
   "scripts": {
     "start": "expo start --dev-client",
     "badge:remove": "node scripts/add-icon-badge.js remove",
-    "postinstall": "node scripts/postinstall.js",
+    "postinstall": "node scripts/postinstall.mjs",
     "build:web": "expo export --platform web",
     "dev:android": "expo start --android",
     "dev:ios": "expo start --ios",
