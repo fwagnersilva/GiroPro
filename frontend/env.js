@@ -21,6 +21,7 @@ const APP_ENV = process.env.APP_ENV ?? 'development';
 // eslint-disable-next-line no-undef
 const envPath = path.resolve(__dirname, `.env.${APP_ENV}`);
 
+console.log('Loading .env from:', envPath);
 require('dotenv').config({
   path: envPath,
 });
