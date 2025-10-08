@@ -1,4 +1,4 @@
-import { db } from './connection.sqlite';
+import { db } from './index';
 import { sql } from 'drizzle-orm';
 
 export async function initializeTables() {
