@@ -5,10 +5,9 @@ services:
     env: node
     rootDir: frontend
     buildCommand: |
-      rm -rf node_modules package-lock.json .expo &&
+      rm -rf node_modules package-lock.json .expo node_modules/.cache &&
       npm cache clean --force &&
       HUSKY=0 npm install --legacy-peer-deps &&
-      node scripts/postinstall.js &&
       npm run build:web
     startCommand: npx serve web-build -s -n -p ${PORT}
     envVars:
@@ -27,7 +26,7 @@ services:
     name: giropro-backend
     env: node
     rootDir: backend
-    buildCommand: npm install && npm run build
+    buildCommand: NODE_ENV=development npm install && npm run build
     startCommand: npm start
     envVars:
       - key: NODE_VERSION
