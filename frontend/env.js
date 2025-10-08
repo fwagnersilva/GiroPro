@@ -96,6 +96,7 @@ const buildTime = z.object({
 /**
  * @type {Record<keyof z.infer<typeof client> , unknown>}
  */
+console.log("process.env.API_URL after dotenv:", process.env.API_URL);
 const _clientEnv = {
   APP_ENV,
   NAME: NAME,
