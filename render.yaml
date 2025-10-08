@@ -8,7 +8,7 @@ services:
       rm -rf node_modules package-lock.json .expo node_modules/.cache &&
       npm cache clean --force &&
       HUSKY=0 npm install --legacy-peer-deps &&
-      npm install tailwindcss &&
+
       npm run build:web
     startCommand: npx serve dist -s -n -p ${PORT}
     envVars:
@@ -18,8 +18,18 @@ services:
         value: 20.x.x
       - key: NODE_ENV
         value: production
+      - key: APP_ENV
+        value: production
       - key: EXPO_PUBLIC_API_URL
         value: https://giropro-backend.onrender.com
+      - key: API_URL
+        value: https://giropro-backend.onrender.com
+      - key: SECRET_KEY
+        generateValue: true
+      - key: VAR_NUMBER
+        value: 123
+      - key: VAR_BOOL
+        value: true
     plan: free
 
   # Backend - Node.js/TypeScript API
@@ -33,6 +43,8 @@ services:
       - key: NODE_VERSION
         value: 20.x.x
       - key: NODE_ENV
+        value: production
+      - key: APP_ENV
         value: production
       - key: DATABASE_URL
         fromDatabase:
