@@ -5,20 +5,20 @@ services:
     env: node
     rootDir: frontend
     buildCommand: |
-      rm -rf node_modules pnpm-lock.yaml .expo node_modules/.cache &&
-      pnpm cache clean --force &&
-      HUSKY=0 pnpm install --legacy-peer-deps &&
-      pnpm run build:web
+      rm -rf node_modules package-lock.json .expo node_modules/.cache dist &&
+      npm cache clean --force &&
+      NODE_ENV=development HUSKY=0 npm install --legacy-peer-deps &&
+      npm run build:web
     startCommand: npx serve dist -s -n -p ${PORT}
     envVars:
       - key: HUSKY
         value: 0
       - key: NODE_VERSION
-        value: 18.20.4
+        value: 20.18.0
       - key: NODE_ENV
         value: production
       - key: EXPO_PUBLIC_API_URL
-        value: https://giropro-backend.onrender.com
+        value: https://giropro-backend-bn14.onrender.com
     plan: free
 
   # Backend - Node.js/TypeScript API
@@ -26,11 +26,11 @@ services:
     name: giropro-backend
     env: node
     rootDir: backend
-    buildCommand: NODE_ENV=development pnpm install && pnpm run build
-    startCommand: pnpm start
+    buildCommand: NODE_ENV=development npm install && npm run build
+    startCommand: npm start
     envVars:
       - key: NODE_VERSION
-        value: 18.20.4
+        value: 20.18.0
       - key: NODE_ENV
         value: production
       - key: DATABASE_URL
@@ -39,8 +39,14 @@ services:
           property: connectionString
       - key: JWT_SECRET
         generateValue: true
+      - key: JWT_REFRESH_SECRET
+        generateValue: true
       - key: JWT_EXPIRES_IN
         value: 7d
+      - key: CORS_ORIGIN
+        value: https://giropro-frontend.onrender.com
+      - key: ALLOWED_ORIGINS
+        value: https://giropro-frontend.onrender.com,http://localhost:3000
     healthCheckPath: /health
     plan: free
 
@@ -49,56 +55,3 @@ databases:
   - name: giropro-db
     databaseName: giropro_db
     plan: free
-
-      - key: API_VERSION
-        value: v1
-      - key: API_PREFIX
-        value: /api
-      - key: PORT
-        value: 3000
-      - key: HOST
-        value: 0.0.0.0
-      - key: MAX_PAYLOAD_SIZE
-        value: 10mb
-      - key: KEEP_ALIVE_TIMEOUT
-        value: 65000
-      - key: HEADERS_TIMEOUT
-        value: 66000
-      - key: ALLOWED_ORIGINS
-        value: https://giropro-frontend.onrender.com
-      - key: RATE_LIMIT_WINDOW
-        value: 900000
-      - key: RATE_LIMIT_MAX
-        value: 100
-      - key: AUTH_RATE_LIMIT_MAX
-        value: 5
-      - key: JWT_REFRESH_SECRET
-        generateValue: true
-      - key: SMTP_HOST
-        value: smtp.gmail.com
-      - key: SMTP_PORT
-        value: 587
-      - key: SMTP_SECURE
-        value: false
-      - key: SMTP_USER
-        value: your-email@gmail.com # Substitua pelo seu email
-      - key: SMTP_PASS
-        value: your-app-password # Substitua pela sua senha de app
-      - key: SMTP_FROM
-        value: noreply@giropro.com
-      - key: FRONTEND_URL
-        value: https://giropro-frontend.onrender.com
-      - key: LOG_LEVEL
-        value: info
-      - key: LOG_FORMAT
-        value: combined
-      - key: CACHE_TTL
-        value: 3600
-      - key: CACHE_MAX_SIZE
-        value: 100
-      - key: COMPRESSION_ENABLED
-        value: true
-      - key: COMPRESSION_LEVEL
-        value: 6
-      - key: COMPRESSION_THRESHOLD
-        value: 1024

@@ -1,37 +1,14 @@
-/* eslint-disable max-lines-per-function */
 import type { ConfigContext, ExpoConfig } from '@expo/config';
-
-import { ClientEnv, Env } from './env';
-
-// Função para escolher ícones com badge baseado no ambiente
-const getIcon = () => {
-  return Env.APP_ENV !== 'production' 
-    ? './assets/icon-badged.png' 
-    : './assets/icon.png';
-};
-
-const getAdaptiveIcon = () => {
-  return Env.APP_ENV !== 'production' 
-    ? './assets/adaptive-icon-badged.png' 
-    : './assets/adaptive-icon.png';
-};
-
-const getFavicon = () => {
-  return Env.APP_ENV !== 'production' 
-    ? './assets/favicon-badged.png' 
-    : './assets/favicon.png';
-};
 
 export default ({ config }: ConfigContext): ExpoConfig => ({
   ...config,
-  name: Env.NAME,
-  description: `${Env.NAME} Mobile App`,
-  owner: Env.EXPO_ACCOUNT_OWNER,
-  scheme: Env.SCHEME,
-  slug: 'obytesapp',
-  version: Env.VERSION.toString(),
+  name: 'GiroPro',
+  description: 'GiroPro - Gestão Financeira para Motoristas',
+  scheme: 'giropro',
+  slug: 'giropro',
+  version: '1.0.0',
   orientation: 'portrait',
-  icon: getIcon(),
+  icon: './assets/icon.png',
   userInterfaceStyle: 'automatic',
   newArchEnabled: true,
   updates: {
@@ -40,31 +17,29 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   assetBundlePatterns: ['**/*'],
   ios: {
     supportsTablet: true,
-    bundleIdentifier: Env.BUNDLE_ID,
-    infoPlist: {
-      ITSAppUsesNonExemptEncryption: false,
-    },
+    bundleIdentifier: 'com.giropro.app',
   },
   experiments: {
     typedRoutes: true,
   },
   android: {
     adaptiveIcon: {
-      foregroundImage: getAdaptiveIcon(),
-      backgroundColor: '#2E3C4B',
+      foregroundImage: './assets/adaptive-icon.png',
+      backgroundColor: '#ffffff',
     },
-    package: Env.PACKAGE,
+    package: 'com.giropro.app',
   },
   web: {
-    favicon: getFavicon(),
+    favicon: './assets/favicon.png',
     bundler: 'metro',
+    output: 'static',
   },
   plugins: [
     'expo-font',
     [
       'expo-splash-screen',
       {
-        backgroundColor: '#2E3C4B',
+        backgroundColor: '#ffffff',
         image: './assets/splash-icon.png',
         imageWidth: 150,
       },
@@ -73,9 +48,6 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     'expo-router',
   ],
   extra: {
-    ...ClientEnv,
-    eas: {
-      projectId: Env.EAS_PROJECT_ID,
-    },
+    API_URL: process.env.EXPO_PUBLIC_API_URL || 'https://giropro-backend-bn14.onrender.com',
   },
 });
