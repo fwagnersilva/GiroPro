@@ -11,13 +11,13 @@ export interface AuthenticatedRequest extends Request {
   };
 }
 
-// CORRIGIDO: Agora em português para bater com o schema de validação
+// CORRIGIDO: Campos dataNascimento e cidade agora são OPCIONAIS
 export interface RegisterRequest {
   nome: string;
   email: string;
   senha: string;
-  dataNascimento: string; // Formato: YYYY-MM-DD
-  cidade: string;
+  dataNascimento?: string; // OPCIONAL - Formato: YYYY-MM-DD
+  cidade?: string; // OPCIONAL
 }
 
 export interface LoginRequest {
