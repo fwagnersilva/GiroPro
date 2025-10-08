@@ -9,6 +9,7 @@ services:
       npm cache clean --force &&
       HUSKY=0 npm install --legacy-peer-deps &&
 
+      npm install tailwindcss &&
       npm run build:web
     startCommand: npx serve dist -s -n -p ${PORT}
     envVars:
