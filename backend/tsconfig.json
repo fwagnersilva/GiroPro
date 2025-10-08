@@ -32,7 +32,6 @@
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "skipDefaultLibCheck": true,
-    "suppressImplicitAnyIndexErrors": true
   },
   "include": [
     "src/**/*.ts",
