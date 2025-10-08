@@ -11,9 +11,13 @@ export async function initializeTables() {
     console.log(`🔄 Inicializando tabelas (${usePostgres ? 'PostgreSQL' : 'SQLite'})...`);
 
     if (usePostgres) {
-      // === PostgreSQL ===
+      // === POSTGRESQL ===
+      console.log('📊 Criando tabelas PostgreSQL...');
+      
+      // Extensão para UUID
       await db.execute(sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`);
       
+      // Tabela usuarios
       await db.execute(sql`
         CREATE TABLE IF NOT EXISTS usuarios (
           id TEXT PRIMARY KEY DEFAULT gen_random_uuid()::text,
@@ -36,6 +40,7 @@ export async function initializeTables() {
         )
       `);
 
+      // Tabela veiculos
       await db.execute(sql`
         CREATE TABLE IF NOT EXISTS veiculos (
           id TEXT PRIMARY KEY DEFAULT gen_random_uuid()::text,
@@ -55,6 +60,7 @@ export async function initializeTables() {
         )
       `);
 
+      // Tabela jornadas
       await db.execute(sql`
         CREATE TABLE IF NOT EXISTS jornadas (
           id TEXT PRIMARY KEY DEFAULT gen_random_uuid()::text,
@@ -79,6 +85,7 @@ export async function initializeTables() {
         )
       `);
 
+      // Tabela abastecimentos
       await db.execute(sql`
         CREATE TABLE IF NOT EXISTS abastecimentos (
           id TEXT PRIMARY KEY DEFAULT gen_random_uuid()::text,
@@ -98,6 +105,7 @@ export async function initializeTables() {
         )
       `);
 
+      // Tabela despesas
       await db.execute(sql`
         CREATE TABLE IF NOT EXISTS despesas (
           id TEXT PRIMARY KEY DEFAULT gen_random_uuid()::text,
@@ -113,6 +121,7 @@ export async function initializeTables() {
         )
       `);
 
+      // Tabela plataformas
       await db.execute(sql`
         CREATE TABLE IF NOT EXISTS plataformas (
           id TEXT PRIMARY KEY DEFAULT gen_random_uuid()::text,
@@ -127,6 +136,7 @@ export async function initializeTables() {
         )
       `);
 
+      // Tabela jornadasFaturamentoPorPlataforma
       await db.execute(sql`
         CREATE TABLE IF NOT EXISTS "jornadasFaturamentoPorPlataforma" (
           id TEXT PRIMARY KEY DEFAULT gen_random_uuid()::text,
@@ -140,14 +150,18 @@ export async function initializeTables() {
         )
       `);
 
-      // Criar índices
+      // Criar índices importantes
       await db.execute(sql`CREATE INDEX IF NOT EXISTS usuarios_email_idx ON usuarios(email)`);
       await db.execute(sql`CREATE INDEX IF NOT EXISTS veiculos_usuario_idx ON veiculos("idUsuario")`);
       await db.execute(sql`CREATE INDEX IF NOT EXISTS jornadas_usuario_idx ON jornadas("idUsuario")`);
       await db.execute(sql`CREATE INDEX IF NOT EXISTS jornadas_data_idx ON jornadas("dataInicio")`);
 
+      console.log('✅ Tabelas PostgreSQL criadas com sucesso!');
+
     } else {
-      // === SQLite (código original) ===
+      // === SQLITE (código original) ===
+      console.log('📊 Criando tabelas SQLite...');
+      
       await db.run(sql`
         CREATE TABLE IF NOT EXISTS usuarios (
           id TEXT PRIMARY KEY,
@@ -268,9 +282,10 @@ export async function initializeTables() {
           FOREIGN KEY (idPlataforma) REFERENCES plataformas(id)
         )
       `);
+
+      console.log('✅ Tabelas SQLite criadas com sucesso!');
     }
 
-    console.log(`✅ Tabelas inicializadas com sucesso (${usePostgres ? 'PostgreSQL' : 'SQLite'})`);
     return true;
   } catch (error) {
     console.error('❌ Erro ao inicializar tabelas:', error);
