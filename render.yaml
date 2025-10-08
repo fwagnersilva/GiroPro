@@ -8,6 +8,7 @@ services:
       rm -rf node_modules package-lock.json .expo &&
       npm cache clean --force &&
       HUSKY=0 npm install --legacy-peer-deps &&
+      node scripts/postinstall.js &&
       npm run build:web
     startCommand: npx serve web-build -s -n -p ${PORT}
     envVars:
@@ -21,16 +22,18 @@ services:
         value: https://giropro-backend.onrender.com
     plan: free
 
-  # Backend - Flask API
+  # Backend - Node.js/TypeScript API
   - type: web
     name: giropro-backend
-    env: python
+    env: node
     rootDir: backend
-    buildCommand: pip install -r requirements.txt
-    startCommand: gunicorn --bind 0.0.0.0:$PORT app:app
+    buildCommand: npm install && npm run build
+    startCommand: npm start
     envVars:
-      - key: PYTHON_VERSION
-        value: 3.11.9
+      - key: NODE_VERSION
+        value: 18.20.4
+      - key: NODE_ENV
+        value: production
       - key: DATABASE_URL
         fromDatabase:
           name: giropro-db
@@ -39,8 +42,6 @@ services:
         generateValue: true
       - key: JWT_EXPIRES_IN
         value: 7d
-      - key: FLASK_ENV
-        value: production
     healthCheckPath: /health
     plan: free
 
