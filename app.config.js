@@ -1,10 +1,36 @@
+// Detectar ambiente
+const isDev = process.env.APP_ENV !== 'production';
+const isStaging = process.env.APP_ENV === 'staging';
+
+// Escolher ícones baseado no ambiente
+const getIcon = () => {
+  if (isDev || isStaging) {
+    return './assets/icon-badged.png';
+  }
+  return './assets/icon.png';
+};
+
+const getAdaptiveIcon = () => {
+  if (isDev || isStaging) {
+    return './assets/adaptive-icon-badged.png';
+  }
+  return './assets/adaptive-icon.png';
+};
+
+const getFavicon = () => {
+  if (isDev || isStaging) {
+    return './assets/favicon-badged.png';
+  }
+  return './assets/favicon.png';
+};
+
 export default {
   expo: {
     name: "GiroPro",
     slug: "giropro",
     version: "1.0.0",
     orientation: "portrait",
-    icon: "./assets/icon.png",
+    icon: getIcon(),
     userInterfaceStyle: "light",
     splash: {
       image: "./assets/splash.png",
@@ -19,12 +45,12 @@ export default {
     },
     android: {
       adaptiveIcon: {
-        foregroundImage: "./assets/adaptive-icon.png",
+        foregroundImage: getAdaptiveIcon(),
         backgroundColor: "#ffffff"
       }
     },
     web: {
-      favicon: "./assets/favicon.png",
+      favicon: getFavicon(),
       bundler: "metro"
     },
     plugins: [

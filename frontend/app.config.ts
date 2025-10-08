@@ -1,23 +1,25 @@
 /* eslint-disable max-lines-per-function */
 import type { ConfigContext, ExpoConfig } from '@expo/config';
-import type { AppIconBadgeConfig } from 'app-icon-badge/types';
 
 import { ClientEnv, Env } from './env';
 
-const appIconBadgeConfig: AppIconBadgeConfig = {
-  enabled: Env.APP_ENV !== 'production',
-  badges: [
-    {
-      text: Env.APP_ENV,
-      type: 'banner',
-      color: 'white',
-    },
-    {
-      text: Env.VERSION.toString(),
-      type: 'ribbon',
-      color: 'white',
-    },
-  ],
+// Função para escolher ícones com badge baseado no ambiente
+const getIcon = () => {
+  return Env.APP_ENV !== 'production' 
+    ? './assets/icon-badged.png' 
+    : './assets/icon.png';
+};
+
+const getAdaptiveIcon = () => {
+  return Env.APP_ENV !== 'production' 
+    ? './assets/adaptive-icon-badged.png' 
+    : './assets/adaptive-icon.png';
+};
+
+const getFavicon = () => {
+  return Env.APP_ENV !== 'production' 
+    ? './assets/favicon-badged.png' 
+    : './assets/favicon.png';
 };
 
 export default ({ config }: ConfigContext): ExpoConfig => ({
@@ -29,7 +31,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   slug: 'obytesapp',
   version: Env.VERSION.toString(),
   orientation: 'portrait',
-  icon: './assets/icon.png',
+  icon: getIcon(),
   userInterfaceStyle: 'automatic',
   newArchEnabled: true,
   updates: {
@@ -48,16 +50,17 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   },
   android: {
     adaptiveIcon: {
-      foregroundImage: './assets/adaptive-icon.png',
+      foregroundImage: getAdaptiveIcon(),
       backgroundColor: '#2E3C4B',
     },
     package: Env.PACKAGE,
   },
   web: {
-    favicon: './assets/favicon.png',
+    favicon: getFavicon(),
     bundler: 'metro',
   },
   plugins: [
+    'expo-font',
     [
       'expo-splash-screen',
       {
@@ -66,15 +69,8 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
         imageWidth: 150,
       },
     ],
-    [
-      'expo-font',
-      {
-        fonts: ['./assets/fonts/Inter.ttf'],
-      },
-    ],
     'expo-localization',
     'expo-router',
-    ['app-icon-badge', appIconBadgeConfig],
     ['react-native-edge-to-edge'],
   ],
   extra: {
