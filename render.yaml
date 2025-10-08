@@ -7,8 +7,8 @@ services:
     buildCommand: |
       rm -rf node_modules package-lock.json .expo node_modules/.cache &&
       npm cache clean --force &&
-
       HUSKY=0 npm install --legacy-peer-deps &&
+      npx tailwindcss init &&
       npm run build:web
     startCommand: npx serve dist -s -n -p ${PORT}
     envVars:
