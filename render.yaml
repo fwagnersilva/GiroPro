@@ -9,12 +9,12 @@ services:
       npm cache clean --force &&
       HUSKY=0 npm install --legacy-peer-deps &&
       npm run build:web
-    startCommand: npx serve web-build -s -n -p ${PORT}
+    startCommand: npx serve dist -s -n -p ${PORT}
     envVars:
       - key: HUSKY
         value: 0
       - key: NODE_VERSION
-        value: 18.20.4
+        value: 20.x.x
       - key: NODE_ENV
         value: production
       - key: EXPO_PUBLIC_API_URL
@@ -30,7 +30,7 @@ services:
     startCommand: npm start
     envVars:
       - key: NODE_VERSION
-        value: 18.20.4
+        value: 20.x.x
       - key: NODE_ENV
         value: production
       - key: DATABASE_URL
