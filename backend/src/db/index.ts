@@ -1,8 +1,8 @@
-// Usar o factory pattern para conexão dinâmica
+// Exportar o factory e schema
 export { createDatabaseConnection, checkDatabaseConnection } from './connection.factory';
 export * from './schema';
 
-// Criar e exportar a conexão do banco
+// Criar instância do banco de forma lazy
 import { createDatabaseConnection } from './connection.factory';
 
 let dbInstance: any = null;
@@ -14,5 +14,15 @@ export const getDb = async () => {
   return dbInstance;
 };
 
-// Para compatibilidade com código existente que importa { db }
-export const db = await createDatabaseConnection();
+// Inicializar o banco imediatamente (mas sem await no top-level)
+let dbPromise: Promise<any> | null = null;
+
+const initDb = () => {
+  if (!dbPromise) {
+    dbPromise = createDatabaseConnection();
+  }
+  return dbPromise;
+};
+
+// Exportar uma promise que resolve para o db
+export const db = initDb();
