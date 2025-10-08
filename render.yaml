@@ -7,28 +7,18 @@ services:
     buildCommand: |
       rm -rf node_modules package-lock.json .expo node_modules/.cache &&
       npm cache clean --force &&
-      HUSKY=0 npm install --legacy-peer-deps &&
+      NODE_ENV=development HUSKY=0 npm install --legacy-peer-deps &&
       npm run build:web
-    startCommand: npx serve dist -s -n -p ${PORT}
+    startCommand: npx serve web-build -s -n -p ${PORT}
     envVars:
       - key: HUSKY
         value: 0
       - key: NODE_VERSION
-        value: 20.x.x
+        value: 18.20.4
       - key: NODE_ENV
-        value: production
-      - key: APP_ENV
         value: production
       - key: EXPO_PUBLIC_API_URL
         value: https://giropro-backend.onrender.com
-      - key: API_URL
-        value: https://giropro-backend.onrender.com
-      - key: SECRET_KEY
-        generateValue: true
-      - key: VAR_NUMBER
-        value: 123
-      - key: VAR_BOOL
-        value: true
     plan: free
 
   # Backend - Node.js/TypeScript API
@@ -40,10 +30,8 @@ services:
     startCommand: npm start
     envVars:
       - key: NODE_VERSION
-        value: 20.x.x
+        value: 18.20.4
       - key: NODE_ENV
-        value: production
-      - key: APP_ENV
         value: production
       - key: DATABASE_URL
         fromDatabase:
