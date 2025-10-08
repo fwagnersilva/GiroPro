@@ -9,7 +9,7 @@ services:
       npm cache clean --force &&
       NODE_ENV=development HUSKY=0 npm install --legacy-peer-deps &&
       npm run build:web
-    startCommand: npx serve web-build -s -n -p ${PORT}
+    startCommand: npx serve dist -s -n -p ${PORT}
     envVars:
       - key: HUSKY
         value: 0
