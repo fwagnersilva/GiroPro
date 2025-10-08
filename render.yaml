@@ -26,8 +26,8 @@ services:
     name: giropro-backend
     env: node
     rootDir: backend
-    buildCommand: NODE_ENV=development npm install && npm run build
-    startCommand: npm start
+    buildCommand: NODE_ENV=development pnpm install && pnpm run build
+    startCommand: pnpm start
     envVars:
       - key: NODE_VERSION
         value: 18.20.4
@@ -49,3 +49,56 @@ databases:
   - name: giropro-db
     databaseName: giropro_db
     plan: free
+
+      - key: API_VERSION
+        value: v1
+      - key: API_PREFIX
+        value: /api
+      - key: PORT
+        value: 3000
+      - key: HOST
+        value: 0.0.0.0
+      - key: MAX_PAYLOAD_SIZE
+        value: 10mb
+      - key: KEEP_ALIVE_TIMEOUT
+        value: 65000
+      - key: HEADERS_TIMEOUT
+        value: 66000
+      - key: ALLOWED_ORIGINS
+        value: https://giropro-frontend.onrender.com
+      - key: RATE_LIMIT_WINDOW
+        value: 900000
+      - key: RATE_LIMIT_MAX
+        value: 100
+      - key: AUTH_RATE_LIMIT_MAX
+        value: 5
+      - key: JWT_REFRESH_SECRET
+        generateValue: true
+      - key: SMTP_HOST
+        value: smtp.gmail.com
+      - key: SMTP_PORT
+        value: 587
+      - key: SMTP_SECURE
+        value: false
+      - key: SMTP_USER
+        value: your-email@gmail.com # Substitua pelo seu email
+      - key: SMTP_PASS
+        value: your-app-password # Substitua pela sua senha de app
+      - key: SMTP_FROM
+        value: noreply@giropro.com
+      - key: FRONTEND_URL
+        value: https://giropro-frontend.onrender.com
+      - key: LOG_LEVEL
+        value: info
+      - key: LOG_FORMAT
+        value: combined
+      - key: CACHE_TTL
+        value: 3600
+      - key: CACHE_MAX_SIZE
+        value: 100
+      - key: COMPRESSION_ENABLED
+        value: true
+      - key: COMPRESSION_LEVEL
+        value: 6
+      - key: COMPRESSION_THRESHOLD
+        value: 1024
