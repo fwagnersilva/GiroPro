@@ -1,28 +1,24 @@
-// Exportar o factory e schema
-export { createDatabaseConnection, checkDatabaseConnection } from './connection.factory';
+// Exportar a conexão correta baseada no ambiente
+import dotenv from 'dotenv';
+dotenv.config();
+
+const isProduction = process.env.NODE_ENV === 'production';
+const dbType = process.env.DB_TYPE || 'sqlite_memory';
+const hasPostgresUrl = !!process.env.DATABASE_URL;
+
+// Determinar qual banco usar
+const usePostgres = isProduction || dbType === 'postgres' || dbType === 'postgresql' || hasPostgresUrl;
+
+if (usePostgres) {
+  console.log('🐘 Usando PostgreSQL');
+  // Exportar tudo do PostgreSQL
+  export * from './connection.postgres';
+} else {
+  console.log('📦 Usando SQLite');
+  // Exportar tudo do SQLite
+  export * from './connection.sqlite';
+}
+
+// Re-exportar o schema
 export * from './schema';
-
-// Criar instância do banco de forma lazy
-import { createDatabaseConnection } from './connection.factory';
-
-let dbInstance: any = null;
-
-export const getDb = async () => {
-  if (!dbInstance) {
-    dbInstance = await createDatabaseConnection();
-  }
-  return dbInstance;
-};
-
-// Inicializar o banco imediatamente (mas sem await no top-level)
-let dbPromise: Promise<any> | null = null;
-
-const initDb = () => {
-  if (!dbPromise) {
-    dbPromise = createDatabaseConnection();
-  }
-  return dbPromise;
-};
-
-// Exportar uma promise que resolve para o db
-export const db = initDb();
+export { createDatabaseConnection, checkDatabaseConnection } from './connection.factory';
