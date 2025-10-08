@@ -6,7 +6,7 @@
     "start": "expo start --dev-client",
     "badge:remove": "node scripts/add-icon-badge.js remove",
     "postinstall": "node scripts/postinstall.mjs",
-    "build:web": "expo export --platform web",
+    "build:web": "expo export --platform web --config app.config.web.ts",
     "dev:android": "expo start --android",
     "dev:ios": "expo start --ios",
     "web": "expo start --web",
@@ -30,6 +30,7 @@
   },
   "dependencies": {
     "@dev-plugins/react-query": "^0.3.1",
+    "@expo/config-plugins": "^54.0.2",
     "@gorhom/bottom-sheet": "^4.6.4",
     "@hookform/resolvers": "^5.2.2",
     "@react-native-async-storage/async-storage": "2.2.0",
