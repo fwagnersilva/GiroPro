@@ -1,4 +1,3 @@
-// Polyfill para expo-system-ui no web
 if (typeof window !== 'undefined') {
   if (!window.expo) {
     window.expo = {};
@@ -10,6 +9,8 @@ if (typeof window !== 'undefined') {
     window.expo.modules.ExpoSystemUI = {
       getEnforcing: () => false,
       setEnforcing: () => {},
+      setBackgroundColorAsync: async () => {},
+      getBackgroundColorAsync: async () => '#FFFFFF',
     };
   }
 }

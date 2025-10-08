@@ -28,14 +28,7 @@ export class AuthService {
     // Hash da senha
     const senhaHash = await bcrypt.hash(data.senha, this.SALT_ROUNDS);
 
-    // Converter data de nascimento - FIX para PostgreSQL
-    let dataNascimento: Date | null = null;
-    if (data.dataNascimento) {
-      // Forçar timezone UTC para evitar problemas de conversão
-      dataNascimento = new Date(data.dataNascimento + 'T00:00:00.000Z');
-    }
-
-    // Criar usuário
+    // Criar usuário - SEM dataNascimento e cidade temporariamente
     const [newUser] = await db
       .insert(usuarios)
       .values({
@@ -43,8 +36,6 @@ export class AuthService {
         nome: data.nome,
         email: data.email.toLowerCase(),
         senhaHash: senhaHash,
-        dataNascimento: dataNascimento,
-        cidade: data.cidade || null,
         statusConta: "ativo",
         dataCadastro: new Date(),
         ultimaAtividade: new Date(),

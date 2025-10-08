@@ -2,6 +2,9 @@
 const isDev = process.env.APP_ENV !== 'production';
 const isStaging = process.env.APP_ENV === 'staging';
 
+// Importar ClientEnv do arquivo de ambiente do frontend
+const { ClientEnv } = require('./frontend/env.js');
+
 // Escolher ícones baseado no ambiente
 const getIcon = () => {
   if (isDev || isStaging) {
@@ -62,6 +65,8 @@ export default {
         }
       ]
     ],
-    scheme: "giropro"
+    scheme: "giropro",
+    extra: ClientEnv, // Adicionar ClientEnv ao campo extra
   }
 }
+
