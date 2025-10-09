@@ -163,24 +163,6 @@ export const despesas = sqliteTable("despesas", {
 // TABELAS DE REFERÊNCIA E HISTÓRICO
 // ===============================
 
-export const historicoPrecoCombustivel = sqliteTable("historicoPrecoCombustivel", {
-  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
-  cidade: text("cidade", { length: 100 }).notNull(),
-  estado: text("estado", { length: 2 }).notNull(), // Sigla do estado
-  tipoCombustivel: fuelType.notNull(),
-  precoMedio: integer("precoMedio").notNull(), // Em centavos
-  dataRegistro: integer("dataRegistro", { mode: "timestamp" }).default(sql`(unixepoch())`).notNull(),
-  fonte: text("fonte", { length: 100 }), // Fonte dos dados
-  
-  createdAt: integer("createdAt", { mode: "timestamp" }).default(sql`(unixepoch())`).notNull(),
-  deletedAt: integer("deletedAt", { mode: "timestamp" }),
-}, (table) => ({
-  historicoLocalIdx: index("historicoLocalIdx").on(table.cidade, table.estado),
-  historicoCombustivelIdx: index("historicoCombustivelIdx").on(table.tipoCombustivel),
-  historicoDataIdx: index("historicoDataIdx").on(table.dataRegistro),
-  historicoLocalDataIdx: index("historicoLocalDataIdx").on(table.cidade, table.estado, table.dataRegistro),
-}));
-
 export const logsAtividades = sqliteTable("logsAtividades", {
   id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
   idUsuario: text("idUsuario").references(() => usuarios.id, { onDelete: "set null" }),
