@@ -85,17 +85,6 @@ app.use('*', (req, res) => {
   res.status(404).json({ error: 'Endpoint não encontrado' });
 });
 
-// Configurar para escutar em todas as interfaces
-app.listen(PORT, '0.0.0.0', async () => {
-  logger.info(`🚀 Servidor GiroPro rodando na porta ${PORT}`);
-  logger.info(`📊 Health check: http://localhost:${PORT}/health`);
-//  logger.info(`🔧 Test endpoint: http://localhost:${PORT}/api/test`);
-  logger.info(`🌐 Acessível externamente em: http://0.0.0.0:${PORT}`);
-  
-  // Inicializar tabelas no banco em memória
-  await initializeTables();
-});
-
 export default app;
 
 

@@ -1,10 +1,19 @@
-import { db } from './index';
+// Importar conexão específica baseada no ambiente
+let db: any;
+if (process.env.NODE_ENV === 'test') {
+  const sqlite = require('./connection.sqlite');
+  db = sqlite.db;
+} else {
+  const dbIndex = require('./index');
+  db = dbIndex.db;
+}
 import { sql } from 'drizzle-orm';
 import dotenv from 'dotenv';
 
 dotenv.config();
 
-const usePostgres = process.env.NODE_ENV === 'production' || !!process.env.DATABASE_URL;
+// Durante testes, sempre usar SQLite
+const usePostgres = process.env.NODE_ENV === 'test' ? false : (process.env.NODE_ENV === 'production' || !!process.env.DATABASE_URL);
 
 export async function initializeTables() {
   try {

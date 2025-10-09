@@ -2,10 +2,10 @@
   "name": "giropro-backend",
   "version": "1.0.0",
   "description": "Backend da aplicação GiroPro para gestão financeira de motoristas de aplicativo.",
-  "main": "dist/app.js",
+  "main": "dist/server.js",
   "scripts": {
-    "start": "node dist/app.js",
-    "dev": "nodemon src/app.ts",
+    "start": "node dist/server.js",
+    "dev": "nodemon src/server.ts",
     "build": "tsc",
     "db:generate": "tsx node_modules/drizzle-kit/bin.cjs generate",
     "db:migrate": "tsx node_modules/drizzle-kit/bin.cjs push",

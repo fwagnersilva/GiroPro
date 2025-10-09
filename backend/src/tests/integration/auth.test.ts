@@ -1,6 +1,6 @@
 import request from 'supertest';
 import app from '../../app';
-import { db } from '../../db/connection';
+import { db } from '../../db/connection.sqlite';
 import { usuarios } from '../../db/schema';
 import { eq } from 'drizzle-orm';
 
@@ -26,9 +26,14 @@ describe('Authentication Integration Tests', () => {
     it('deve registrar um novo usuário com sucesso', async () => {
       const response = await request(app)
         .post('/api/v1/auth/register')
-        .send(testUser)
-        .expect(201);
+        .send(testUser);
 
+      // Debug: mostrar resposta se não for 201
+      if (response.status !== 201) {
+        console.log('❌ Erro no registro:', response.status, response.body);
+      }
+
+      expect(response.status).toBe(201);
       expect(response.body).toHaveProperty('token');
       expect(response.body).toHaveProperty('user');
       expect(response.body.user.email).toBe(testUser.email);
