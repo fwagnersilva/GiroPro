@@ -1,7 +1,7 @@
 import request from 'supertest';
 import app from '../../app';
-import { db } from '../../db/connection';
-import { usuarios, veiculos, jornadas, abastecimentos, despesas } from '../../db/schema';
+import { db } from '../../db';
+import { usuarios, veiculos, jornadas, abastecimentos, despesas } from '../../db';
 import { eq } from 'drizzle-orm';
 
 describe('User Journey E2E Tests', () => {

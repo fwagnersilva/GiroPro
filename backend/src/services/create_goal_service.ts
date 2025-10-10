@@ -1,4 +1,4 @@
-import { db } from "../db/connection";
+import { db } from '../db';
 import { metas } from '../db/schema.postgres';
 import { CreateGoalRequest } from "../controllers/goalsController";
 
@@ -19,7 +19,7 @@ export async function createGoal({
       titulo: titulo,
       valorObjetivo: desiredWeeklyFrequency, // Usando desiredWeeklyFrequency como valorObjetivo inicial
       tipoMeta: "quilometragem", // Exemplo: definir um tipo de meta padrão
-      period: "semanal", // Exemplo: definir um período padrão
+      periodoMeta: "semanal", // Exemplo: definir um período padrão
       dataInicio: new Date(),
       dataFim: new Date(Date.now() + (7 * 24 * 60 * 60 * 1000)), // Uma semana a partir de agora
       idUsuario: "some-user-id", // TODO: Substituir por ID de usuário real

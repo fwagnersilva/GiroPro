@@ -1,7 +1,7 @@
 import { veiculos } from '../db/schema.postgres';
 import { CreateVehicleRequest, UpdateVehicleRequest, Vehicle } from '../types';
 import { eq, and, isNull } from 'drizzle-orm';
-import { db } from '../db/connection';
+import { db } from '../db';
 
 export class VehicleService {
   /**

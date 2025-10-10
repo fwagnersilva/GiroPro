@@ -1,7 +1,6 @@
 import request from 'supertest';
 import app from '../../app';
-import { db } from '../../db/connection.sqlite';
-import { usuarios } from '../../db/schema';
+import { db, usuarios } from '../../db';
 import { eq } from 'drizzle-orm';
 
 describe('Authentication Integration Tests', () => {

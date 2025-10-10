@@ -1,142 +1,176 @@
 {
-  "version": "6",
-  "dialect": "sqlite",
-  "id": "b511b569-c83d-426e-9aba-1357f1c048e7",
+  "id": "c87e894a-5399-414f-8398-39eadc8dd8c6",
   "prevId": "00000000-0000-0000-0000-000000000000",
+  "version": "7",
+  "dialect": "postgresql",
   "tables": {
-    "abastecimentos": {
+    "public.abastecimentos": {
       "name": "abastecimentos",
+      "schema": "",
       "columns": {
         "id": {
           "name": "id",
-          "type": "text",
+          "type": "uuid",
           "primaryKey": true,
           "notNull": true,
-          "autoincrement": false
+          "default": "gen_random_uuid()"
         },
         "idUsuario": {
           "name": "idUsuario",
-          "type": "text",
+          "type": "uuid",
           "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
+          "notNull": true
         },
         "idVeiculo": {
           "name": "idVeiculo",
-          "type": "text",
+          "type": "uuid",
           "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
+          "notNull": true
         },
         "dataAbastecimento": {
           "name": "dataAbastecimento",
-          "type": "integer",
+          "type": "timestamp with time zone",
           "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
+          "notNull": true
         },
         "tipoCombustivel": {
           "name": "tipoCombustivel",
           "type": "text",
           "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
+          "notNull": true
         },
-        "quantidadeLitros": {
-          "name": "quantidadeLitros",
+        "litros": {
+          "name": "litros",
           "type": "real",
           "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
+          "notNull": true
         },
         "valorLitro": {
           "name": "valorLitro",
           "type": "integer",
           "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
+          "notNull": true
         },
         "valorTotal": {
           "name": "valorTotal",
           "type": "integer",
           "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
+          "notNull": true
         },
         "kmAtual": {
           "name": "kmAtual",
           "type": "integer",
           "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
+          "notNull": false
         },
         "nomePosto": {
           "name": "nomePosto",
-          "type": "text(100)",
+          "type": "text",
           "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
+          "notNull": false
         },
         "createdAt": {
           "name": "createdAt",
-          "type": "integer",
+          "type": "timestamp with time zone",
           "primaryKey": false,
           "notNull": true,
-          "autoincrement": false,
-          "default": "(unixepoch())"
+          "default": "now()"
         },
         "updatedAt": {
           "name": "updatedAt",
-          "type": "integer",
+          "type": "timestamp with time zone",
           "primaryKey": false,
           "notNull": true,
-          "autoincrement": false,
-          "default": "(unixepoch())"
+          "default": "now()"
         },
         "deletedAt": {
           "name": "deletedAt",
-          "type": "integer",
+          "type": "timestamp with time zone",
           "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
+          "notNull": false
         }
       },
       "indexes": {
         "abastecimentos_usuario_idx": {
           "name": "abastecimentos_usuario_idx",
           "columns": [
-            "idUsuario"
+            {
+              "expression": "idUsuario",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
           ],
-          "isUnique": false
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
         },
         "abastecimentos_veiculo_idx": {
           "name": "abastecimentos_veiculo_idx",
           "columns": [
-            "idVeiculo"
+            {
+              "expression": "idVeiculo",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
           ],
-          "isUnique": false
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
         },
         "abastecimentos_data_idx": {
           "name": "abastecimentos_data_idx",
           "columns": [
-            "dataAbastecimento"
+            {
+              "expression": "dataAbastecimento",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
           ],
-          "isUnique": false
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
         },
         "abastecimentos_veiculo_data_idx": {
           "name": "abastecimentos_veiculo_data_idx",
           "columns": [
-            "idVeiculo",
-            "dataAbastecimento"
+            {
+              "expression": "idVeiculo",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "dataAbastecimento",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
           ],
-          "isUnique": false
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
         },
         "abastecimentos_combustivel_idx": {
           "name": "abastecimentos_combustivel_idx",
           "columns": [
-            "tipoCombustivel"
+            {
+              "expression": "tipoCombustivel",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
           ],
-          "isUnique": false
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
         }
       },
       "foreignKeys": {
@@ -169,120 +203,159 @@
       },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
-      "checkConstraints": {}
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
     },
-    "despesas": {
+    "public.despesas": {
       "name": "despesas",
+      "schema": "",
       "columns": {
         "id": {
           "name": "id",
-          "type": "text",
+          "type": "uuid",
           "primaryKey": true,
           "notNull": true,
-          "autoincrement": false
+          "default": "gen_random_uuid()"
         },
         "idUsuario": {
           "name": "idUsuario",
-          "type": "text",
+          "type": "uuid",
           "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
+          "notNull": true
         },
         "idVeiculo": {
           "name": "idVeiculo",
-          "type": "text",
+          "type": "uuid",
           "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
+          "notNull": false
         },
         "dataDespesa": {
           "name": "dataDespesa",
-          "type": "integer",
+          "type": "timestamp with time zone",
           "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
+          "notNull": true
         },
         "tipoDespesa": {
           "name": "tipoDespesa",
           "type": "text",
           "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
+          "notNull": true
         },
         "valorDespesa": {
           "name": "valorDespesa",
           "type": "integer",
           "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
+          "notNull": true
         },
         "descricao": {
           "name": "descricao",
-          "type": "text(300)",
+          "type": "text",
           "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
+          "notNull": false
         },
         "createdAt": {
           "name": "createdAt",
-          "type": "integer",
+          "type": "timestamp with time zone",
           "primaryKey": false,
           "notNull": true,
-          "autoincrement": false,
-          "default": "(unixepoch())"
+          "default": "now()"
         },
         "updatedAt": {
           "name": "updatedAt",
-          "type": "integer",
+          "type": "timestamp with time zone",
           "primaryKey": false,
           "notNull": true,
-          "autoincrement": false,
-          "default": "(unixepoch())"
+          "default": "now()"
         },
         "deletedAt": {
           "name": "deletedAt",
-          "type": "integer",
+          "type": "timestamp with time zone",
           "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
+          "notNull": false
         }
       },
       "indexes": {
         "despesas_usuario_idx": {
           "name": "despesas_usuario_idx",
           "columns": [
-            "idUsuario"
+            {
+              "expression": "idUsuario",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
           ],
-          "isUnique": false
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
         },
         "despesas_veiculo_idx": {
           "name": "despesas_veiculo_idx",
           "columns": [
-            "idVeiculo"
+            {
+              "expression": "idVeiculo",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
           ],
-          "isUnique": false
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
         },
         "despesas_data_idx": {
           "name": "despesas_data_idx",
           "columns": [
-            "dataDespesa"
+            {
+              "expression": "dataDespesa",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
           ],
-          "isUnique": false
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
         },
         "despesas_tipo_idx": {
           "name": "despesas_tipo_idx",
           "columns": [
-            "tipoDespesa"
+            {
+              "expression": "tipoDespesa",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
           ],
-          "isUnique": false
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
         },
         "despesas_usuario_data_idx": {
           "name": "despesas_usuario_data_idx",
           "columns": [
-            "idUsuario",
-            "dataDespesa"
+            {
+              "expression": "idUsuario",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "dataDespesa",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
           ],
-          "isUnique": false
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
         }
       },
       "foreignKeys": {
@@ -315,263 +388,232 @@
       },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
-      "checkConstraints": {}
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
     },
-    "historico_preco_combustivel": {
-      "name": "historico_preco_combustivel",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "text",
-          "primaryKey": true,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "cidade": {
-          "name": "cidade",
-          "type": "text(100)",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "estado": {
-          "name": "estado",
-          "type": "text(2)",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "tipoCombustivel": {
-          "name": "tipoCombustivel",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "precoMedio": {
-          "name": "precoMedio",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "dataRegistro": {
-          "name": "dataRegistro",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false,
-          "default": "(unixepoch())"
-        },
-        "fonte": {
-          "name": "fonte",
-          "type": "text(100)",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "createdAt": {
-          "name": "createdAt",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false,
-          "default": "(unixepoch())"
-        },
-        "deletedAt": {
-          "name": "deletedAt",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        }
-      },
-      "indexes": {
-        "historico_local_idx": {
-          "name": "historico_local_idx",
-          "columns": [
-            "cidade",
-            "estado"
-          ],
-          "isUnique": false
-        },
-        "historico_combustivel_idx": {
-          "name": "historico_combustivel_idx",
-          "columns": [
-            "tipoCombustivel"
-          ],
-          "isUnique": false
-        },
-        "historico_data_idx": {
-          "name": "historico_data_idx",
-          "columns": [
-            "dataRegistro"
-          ],
-          "isUnique": false
-        },
-        "historico_local_data_idx": {
-          "name": "historico_local_data_idx",
-          "columns": [
-            "cidade",
-            "estado",
-            "dataRegistro"
-          ],
-          "isUnique": false
-        }
-      },
-      "foreignKeys": {},
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "checkConstraints": {}
-    },
-    "jornadas": {
+    "public.jornadas": {
       "name": "jornadas",
+      "schema": "",
       "columns": {
         "id": {
           "name": "id",
-          "type": "text",
+          "type": "uuid",
           "primaryKey": true,
           "notNull": true,
-          "autoincrement": false
+          "default": "gen_random_uuid()"
         },
         "idUsuario": {
           "name": "idUsuario",
-          "type": "text",
+          "type": "uuid",
           "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
+          "notNull": true
         },
         "idVeiculo": {
           "name": "idVeiculo",
-          "type": "text",
+          "type": "uuid",
           "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
+          "notNull": true
         },
         "dataInicio": {
           "name": "dataInicio",
-          "type": "integer",
+          "type": "timestamp with time zone",
           "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
+          "notNull": true
         },
         "kmInicio": {
           "name": "kmInicio",
           "type": "integer",
           "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
+          "notNull": true
         },
         "dataFim": {
           "name": "dataFim",
-          "type": "integer",
+          "type": "timestamp with time zone",
           "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
+          "notNull": false
         },
         "kmFim": {
           "name": "kmFim",
           "type": "integer",
           "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
+          "notNull": false
         },
         "ganhoBruto": {
           "name": "ganhoBruto",
           "type": "integer",
           "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
+          "notNull": false
+        },
+        "lucroLiquidoEstimado": {
+          "name": "lucroLiquidoEstimado",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "margemLucro": {
+          "name": "margemLucro",
+          "type": "real",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
         },
         "kmTotal": {
           "name": "kmTotal",
           "type": "integer",
           "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
+          "notNull": false
         },
-        "tempoTotal": {
-          "name": "tempoTotal",
+        "duracaoMinutos": {
+          "name": "duracaoMinutos",
           "type": "integer",
           "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
+          "notNull": false
+        },
+        "custoCombustivelEstimado": {
+          "name": "custoCombustivelEstimado",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "outrasDespesas": {
+          "name": "outrasDespesas",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
         },
         "observacoes": {
           "name": "observacoes",
-          "type": "text(500)",
+          "type": "text",
           "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
+          "notNull": false
         },
         "createdAt": {
           "name": "createdAt",
-          "type": "integer",
+          "type": "timestamp with time zone",
           "primaryKey": false,
           "notNull": true,
-          "autoincrement": false,
-          "default": "(unixepoch())"
+          "default": "now()"
         },
         "updatedAt": {
           "name": "updatedAt",
-          "type": "integer",
+          "type": "timestamp with time zone",
           "primaryKey": false,
           "notNull": true,
-          "autoincrement": false,
-          "default": "(unixepoch())"
+          "default": "now()"
         },
         "deletedAt": {
           "name": "deletedAt",
-          "type": "integer",
+          "type": "timestamp with time zone",
           "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
+          "notNull": false
         }
       },
       "indexes": {
         "jornadas_usuario_idx": {
           "name": "jornadas_usuario_idx",
           "columns": [
-            "idUsuario"
+            {
+              "expression": "idUsuario",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
           ],
-          "isUnique": false
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
         },
         "jornadas_veiculo_idx": {
           "name": "jornadas_veiculo_idx",
           "columns": [
-            "idVeiculo"
+            {
+              "expression": "idVeiculo",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
           ],
-          "isUnique": false
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
         },
         "jornadas_dataInicio_idx": {
           "name": "jornadas_dataInicio_idx",
           "columns": [
-            "dataInicio"
+            {
+              "expression": "dataInicio",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
           ],
-          "isUnique": false
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
         },
         "jornadas_periodo_idx": {
           "name": "jornadas_periodo_idx",
           "columns": [
-            "dataInicio",
-            "dataFim"
+            {
+              "expression": "dataInicio",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "dataFim",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
           ],
-          "isUnique": false
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
         },
         "jornadas_usuario_data_idx": {
           "name": "jornadas_usuario_data_idx",
           "columns": [
-            "idUsuario",
-            "dataInicio"
+            {
+              "expression": "idUsuario",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "dataInicio",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
           ],
-          "isUnique": false
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
         },
         "jornadas_status_idx": {
           "name": "jornadas_status_idx",
           "columns": [
-            "dataFim"
+            {
+              "expression": "dataFim",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
           ],
-          "isUnique": false
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
         }
       },
       "foreignKeys": {
@@ -604,97 +646,267 @@
       },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
-      "checkConstraints": {}
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
     },
-    "logs_atividades": {
-      "name": "logs_atividades",
+    "public.jornadasFaturamentoPorPlataforma": {
+      "name": "jornadasFaturamentoPorPlataforma",
+      "schema": "",
       "columns": {
         "id": {
           "name": "id",
-          "type": "text",
+          "type": "uuid",
           "primaryKey": true,
           "notNull": true,
-          "autoincrement": false
+          "default": "gen_random_uuid()"
+        },
+        "idJornada": {
+          "name": "idJornada",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "idPlataforma": {
+          "name": "idPlataforma",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "valor": {
+          "name": "valor",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "valorAntesCorte": {
+          "name": "valorAntesCorte",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "valorDepoisCorte": {
+          "name": "valorDepoisCorte",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "createdAt": {
+          "name": "createdAt",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "jornadasFaturamento_jornada_plataforma_idx": {
+          "name": "jornadasFaturamento_jornada_plataforma_idx",
+          "columns": [
+            {
+              "expression": "idJornada",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "idPlataforma",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "jornadasFaturamento_jornada_idx": {
+          "name": "jornadasFaturamento_jornada_idx",
+          "columns": [
+            {
+              "expression": "idJornada",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "jornadasFaturamento_plataforma_idx": {
+          "name": "jornadasFaturamento_plataforma_idx",
+          "columns": [
+            {
+              "expression": "idPlataforma",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "jornadasFaturamentoPorPlataforma_idJornada_jornadas_id_fk": {
+          "name": "jornadasFaturamentoPorPlataforma_idJornada_jornadas_id_fk",
+          "tableFrom": "jornadasFaturamentoPorPlataforma",
+          "tableTo": "jornadas",
+          "columnsFrom": [
+            "idJornada"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "jornadasFaturamentoPorPlataforma_idPlataforma_plataformas_id_fk": {
+          "name": "jornadasFaturamentoPorPlataforma_idPlataforma_plataformas_id_fk",
+          "tableFrom": "jornadasFaturamentoPorPlataforma",
+          "tableTo": "plataformas",
+          "columnsFrom": [
+            "idPlataforma"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.logsAtividades": {
+      "name": "logsAtividades",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
         },
         "idUsuario": {
           "name": "idUsuario",
-          "type": "text",
+          "type": "uuid",
           "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
+          "notNull": false
         },
         "tipoAcao": {
           "name": "tipoAcao",
-          "type": "text(50)",
+          "type": "text",
           "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
+          "notNull": true
         },
         "descricao": {
           "name": "descricao",
-          "type": "text(500)",
+          "type": "text",
           "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
+          "notNull": false
         },
         "metadados": {
           "name": "metadados",
           "type": "text",
           "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
+          "notNull": false
         },
         "dataAcao": {
           "name": "dataAcao",
-          "type": "integer",
+          "type": "timestamp with time zone",
           "primaryKey": false,
           "notNull": true,
-          "autoincrement": false,
-          "default": "(unixepoch())"
+          "default": "now()"
         },
         "deletedAt": {
           "name": "deletedAt",
-          "type": "integer",
+          "type": "timestamp with time zone",
           "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
+          "notNull": false
         }
       },
       "indexes": {
-        "logs_usuario_idx": {
-          "name": "logs_usuario_idx",
+        "logsAtividades_usuario_idx": {
+          "name": "logsAtividades_usuario_idx",
           "columns": [
-            "idUsuario"
+            {
+              "expression": "idUsuario",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
           ],
-          "isUnique": false
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
         },
-        "logs_tipo_idx": {
-          "name": "logs_tipo_idx",
+        "logsAtividades_tipo_idx": {
+          "name": "logsAtividades_tipo_idx",
           "columns": [
-            "tipoAcao"
+            {
+              "expression": "tipoAcao",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
           ],
-          "isUnique": false
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
         },
-        "logs_data_idx": {
-          "name": "logs_data_idx",
+        "logsAtividades_data_idx": {
+          "name": "logsAtividades_data_idx",
           "columns": [
-            "dataAcao"
+            {
+              "expression": "dataAcao",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
           ],
-          "isUnique": false
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
         },
-        "logs_usuario_data_idx": {
-          "name": "logs_usuario_data_idx",
+        "logsAtividades_usuario_data_idx": {
+          "name": "logsAtividades_usuario_data_idx",
           "columns": [
-            "idUsuario",
-            "dataAcao"
+            {
+              "expression": "idUsuario",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "dataAcao",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
           ],
-          "isUnique": false
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
         }
       },
       "foreignKeys": {
-        "logs_atividades_idUsuario_usuarios_id_fk": {
-          "name": "logs_atividades_idUsuario_usuarios_id_fk",
-          "tableFrom": "logs_atividades",
+        "logsAtividades_idUsuario_usuarios_id_fk": {
+          "name": "logsAtividades_idUsuario_usuarios_id_fk",
+          "tableFrom": "logsAtividades",
           "tableTo": "usuarios",
           "columnsFrom": [
             "idUsuario"
@@ -708,87 +920,80 @@
       },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
-      "checkConstraints": {}
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
     },
-    "metas": {
+    "public.metas": {
       "name": "metas",
+      "schema": "",
       "columns": {
         "id": {
           "name": "id",
-          "type": "text",
+          "type": "uuid",
           "primaryKey": true,
           "notNull": true,
-          "autoincrement": false
+          "default": "gen_random_uuid()"
         },
         "idUsuario": {
           "name": "idUsuario",
-          "type": "text",
+          "type": "uuid",
           "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
+          "notNull": true
         },
         "idVeiculo": {
           "name": "idVeiculo",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "titulo": {
+          "name": "titulo",
           "type": "text",
           "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "title": {
-          "name": "title",
-          "type": "text(100)",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
+          "notNull": true
         },
         "descricao": {
           "name": "descricao",
-          "type": "text(500)",
+          "type": "text",
           "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
+          "notNull": false
         },
         "tipoMeta": {
           "name": "tipoMeta",
           "type": "text",
           "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
+          "notNull": true
         },
         "periodoMeta": {
           "name": "periodoMeta",
           "type": "text",
           "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
+          "notNull": true
         },
         "valorObjetivo": {
           "name": "valorObjetivo",
           "type": "integer",
           "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
+          "notNull": true
         },
         "dataInicio": {
           "name": "dataInicio",
-          "type": "integer",
+          "type": "timestamp with time zone",
           "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
+          "notNull": true
         },
         "dataFim": {
           "name": "dataFim",
-          "type": "integer",
+          "type": "timestamp with time zone",
           "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
+          "notNull": true
         },
         "statusMeta": {
           "name": "statusMeta",
           "type": "text",
           "primaryKey": false,
           "notNull": true,
-          "autoincrement": false,
           "default": "'ativa'"
         },
         "valorAtual": {
@@ -796,7 +1001,6 @@
           "type": "integer",
           "primaryKey": false,
           "notNull": true,
-          "autoincrement": false,
           "default": 0
         },
         "percentualConcluido": {
@@ -804,100 +1008,165 @@
           "type": "integer",
           "primaryKey": false,
           "notNull": true,
-          "autoincrement": false,
           "default": 0
         },
         "dataConclusao": {
           "name": "dataConclusao",
-          "type": "integer",
+          "type": "timestamp with time zone",
           "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
+          "notNull": false
         },
         "notificacaoEnviada": {
           "name": "notificacaoEnviada",
-          "type": "integer",
+          "type": "boolean",
           "primaryKey": false,
           "notNull": true,
-          "autoincrement": false,
           "default": false
         },
         "createdAt": {
           "name": "createdAt",
-          "type": "integer",
+          "type": "timestamp with time zone",
           "primaryKey": false,
           "notNull": true,
-          "autoincrement": false,
-          "default": "(unixepoch())"
+          "default": "now()"
         },
         "updatedAt": {
           "name": "updatedAt",
-          "type": "integer",
+          "type": "timestamp with time zone",
           "primaryKey": false,
           "notNull": true,
-          "autoincrement": false,
-          "default": "(unixepoch())"
+          "default": "now()"
         },
         "deletedAt": {
           "name": "deletedAt",
-          "type": "integer",
+          "type": "timestamp with time zone",
           "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
+          "notNull": false
         }
       },
       "indexes": {
         "metas_usuario_idx": {
           "name": "metas_usuario_idx",
           "columns": [
-            "idUsuario"
+            {
+              "expression": "idUsuario",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
           ],
-          "isUnique": false
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
         },
         "metas_veiculo_idx": {
           "name": "metas_veiculo_idx",
           "columns": [
-            "idVeiculo"
+            {
+              "expression": "idVeiculo",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
           ],
-          "isUnique": false
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
         },
         "metas_status_idx": {
           "name": "metas_status_idx",
           "columns": [
-            "statusMeta"
+            {
+              "expression": "statusMeta",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
           ],
-          "isUnique": false
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
         },
         "metas_tipo_idx": {
           "name": "metas_tipo_idx",
           "columns": [
-            "tipoMeta"
+            {
+              "expression": "tipoMeta",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
           ],
-          "isUnique": false
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
         },
         "metas_periodo_idx": {
           "name": "metas_periodo_idx",
           "columns": [
-            "dataInicio",
-            "dataFim"
+            {
+              "expression": "dataInicio",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "dataFim",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
           ],
-          "isUnique": false
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
         },
         "metas_usuario_status_idx": {
           "name": "metas_usuario_status_idx",
           "columns": [
-            "idUsuario",
-            "statusMeta"
+            {
+              "expression": "idUsuario",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "statusMeta",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
           ],
-          "isUnique": false
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
         },
         "metas_ativas_idx": {
           "name": "metas_ativas_idx",
           "columns": [
-            "statusMeta",
-            "dataFim"
+            {
+              "expression": "statusMeta",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "dataFim",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
           ],
-          "isUnique": false
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
         }
       },
       "foreignKeys": {
@@ -930,119 +1199,267 @@
       },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
-      "checkConstraints": {}
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
     },
-    "notificacoes": {
+    "public.notificacoes": {
       "name": "notificacoes",
+      "schema": "",
       "columns": {
         "id": {
           "name": "id",
-          "type": "text",
+          "type": "uuid",
           "primaryKey": true,
           "notNull": true,
-          "autoincrement": false
+          "default": "gen_random_uuid()"
         },
-        "idUsuario": {
-          "name": "idUsuario",
-          "type": "text",
+        "userId": {
+          "name": "userId",
+          "type": "uuid",
           "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
+          "notNull": true
         },
         "tipoNotificacao": {
           "name": "tipoNotificacao",
           "type": "text",
           "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
+          "notNull": true
         },
         "titulo": {
           "name": "titulo",
-          "type": "text(200)",
+          "type": "text",
           "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
+          "notNull": true
         },
         "mensagem": {
           "name": "mensagem",
-          "type": "text(1000)",
+          "type": "text",
           "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
+          "notNull": true
         },
         "dadosExtras": {
           "name": "dadosExtras",
           "type": "text",
           "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
+          "notNull": false
         },
         "lida": {
           "name": "lida",
-          "type": "integer",
+          "type": "boolean",
           "primaryKey": false,
           "notNull": true,
-          "autoincrement": false,
           "default": false
         },
         "dataEnvio": {
           "name": "dataEnvio",
-          "type": "integer",
+          "type": "timestamp with time zone",
           "primaryKey": false,
           "notNull": true,
-          "autoincrement": false,
-          "default": "(unixepoch())"
+          "default": "now()"
         },
         "dataLeitura": {
           "name": "dataLeitura",
-          "type": "integer",
+          "type": "timestamp with time zone",
           "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
+          "notNull": false
         },
         "deletedAt": {
           "name": "deletedAt",
-          "type": "integer",
+          "type": "timestamp with time zone",
           "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
+          "notNull": false
         }
       },
       "indexes": {
         "notificacoes_usuario_idx": {
           "name": "notificacoes_usuario_idx",
           "columns": [
-            "idUsuario"
+            {
+              "expression": "userId",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
           ],
-          "isUnique": false
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
         },
         "notificacoes_tipo_idx": {
           "name": "notificacoes_tipo_idx",
           "columns": [
-            "tipoNotificacao"
+            {
+              "expression": "tipoNotificacao",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
           ],
-          "isUnique": false
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
         },
         "notificacoes_dataEnvio_idx": {
           "name": "notificacoes_dataEnvio_idx",
           "columns": [
-            "dataEnvio"
+            {
+              "expression": "dataEnvio",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
           ],
-          "isUnique": false
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
         },
         "notificacoes_usuario_lida_idx": {
           "name": "notificacoes_usuario_lida_idx",
           "columns": [
-            "idUsuario",
-            "lida"
+            {
+              "expression": "userId",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "lida",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
           ],
-          "isUnique": false
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
         }
       },
       "foreignKeys": {
-        "notificacoes_idUsuario_usuarios_id_fk": {
-          "name": "notificacoes_idUsuario_usuarios_id_fk",
+        "notificacoes_userId_usuarios_id_fk": {
+          "name": "notificacoes_userId_usuarios_id_fk",
           "tableFrom": "notificacoes",
+          "tableTo": "usuarios",
+          "columnsFrom": [
+            "userId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.plataformas": {
+      "name": "plataformas",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "idUsuario": {
+          "name": "idUsuario",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "nome": {
+          "name": "nome",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "isPadrao": {
+          "name": "isPadrao",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "ativa": {
+          "name": "ativa",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": true
+        },
+        "createdAt": {
+          "name": "createdAt",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updatedAt": {
+          "name": "updatedAt",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "deletedAt": {
+          "name": "deletedAt",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {
+        "plataformas_usuario_idx": {
+          "name": "plataformas_usuario_idx",
+          "columns": [
+            {
+              "expression": "idUsuario",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "plataformas_nome_unico_idx": {
+          "name": "plataformas_nome_unico_idx",
+          "columns": [
+            {
+              "expression": "idUsuario",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "nome",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "plataformas_idUsuario_usuarios_id_fk": {
+          "name": "plataformas_idUsuario_usuarios_id_fk",
+          "tableFrom": "plataformas",
           "tableTo": "usuarios",
           "columnsFrom": [
             "idUsuario"
@@ -1056,112 +1473,135 @@
       },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
-      "checkConstraints": {}
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
     },
-    "progresso_metas": {
-      "name": "progresso_metas",
+    "public.progressoMetas": {
+      "name": "progressoMetas",
+      "schema": "",
       "columns": {
         "id": {
           "name": "id",
-          "type": "text",
+          "type": "uuid",
           "primaryKey": true,
           "notNull": true,
-          "autoincrement": false
+          "default": "gen_random_uuid()"
         },
         "idMeta": {
           "name": "idMeta",
-          "type": "text",
+          "type": "uuid",
           "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
+          "notNull": true
         },
         "dataRegistro": {
           "name": "dataRegistro",
-          "type": "integer",
+          "type": "timestamp with time zone",
           "primaryKey": false,
           "notNull": true,
-          "autoincrement": false,
-          "default": "(unixepoch())"
+          "default": "now()"
         },
         "valorAnterior": {
           "name": "valorAnterior",
           "type": "integer",
           "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
+          "notNull": true
         },
         "valorAtual": {
           "name": "valorAtual",
           "type": "integer",
           "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
+          "notNull": true
         },
         "incremento": {
           "name": "incremento",
           "type": "integer",
           "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
+          "notNull": true
         },
         "percentualAnterior": {
           "name": "percentualAnterior",
           "type": "integer",
           "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
+          "notNull": true
         },
         "percentualAtual": {
           "name": "percentualAtual",
           "type": "integer",
           "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
+          "notNull": true
         },
         "observacoes": {
           "name": "observacoes",
-          "type": "text(300)",
+          "type": "text",
           "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
+          "notNull": false
         },
         "createdAt": {
           "name": "createdAt",
-          "type": "integer",
+          "type": "timestamp with time zone",
           "primaryKey": false,
           "notNull": true,
-          "autoincrement": false,
-          "default": "(unixepoch())"
+          "default": "now()"
         }
       },
       "indexes": {
-        "progresso_meta_idx": {
-          "name": "progresso_meta_idx",
+        "progressoMetas_meta_idx": {
+          "name": "progressoMetas_meta_idx",
           "columns": [
-            "idMeta"
+            {
+              "expression": "idMeta",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
           ],
-          "isUnique": false
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
         },
-        "progresso_data_idx": {
-          "name": "progresso_data_idx",
+        "progressoMetas_data_idx": {
+          "name": "progressoMetas_data_idx",
           "columns": [
-            "dataRegistro"
+            {
+              "expression": "dataRegistro",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
           ],
-          "isUnique": false
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
         },
-        "progresso_meta_data_idx": {
-          "name": "progresso_meta_data_idx",
+        "progressoMetas_meta_data_idx": {
+          "name": "progressoMetas_meta_data_idx",
           "columns": [
-            "idMeta",
-            "dataRegistro"
+            {
+              "expression": "idMeta",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "dataRegistro",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
           ],
-          "isUnique": false
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
         }
       },
       "foreignKeys": {
-        "progresso_metas_idMeta_metas_id_fk": {
-          "name": "progresso_metas_idMeta_metas_id_fk",
-          "tableFrom": "progresso_metas",
+        "progressoMetas_idMeta_metas_id_fk": {
+          "name": "progressoMetas_idMeta_metas_id_fk",
+          "tableFrom": "progressoMetas",
           "tableTo": "metas",
           "columnsFrom": [
             "idMeta"
@@ -1175,61 +1615,77 @@
       },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
-      "checkConstraints": {}
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
     },
-    "usuarios": {
+    "public.usuarios": {
       "name": "usuarios",
+      "schema": "",
       "columns": {
         "id": {
           "name": "id",
-          "type": "text",
+          "type": "uuid",
           "primaryKey": true,
           "notNull": true,
-          "autoincrement": false
+          "default": "gen_random_uuid()"
         },
         "nome": {
           "name": "nome",
-          "type": "text(100)",
+          "type": "text",
           "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
+          "notNull": true
         },
         "email": {
           "name": "email",
-          "type": "text(255)",
+          "type": "text",
           "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
+          "notNull": true
         },
         "senhaHash": {
           "name": "senhaHash",
-          "type": "text(255)",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "role": {
+          "name": "role",
+          "type": "text",
           "primaryKey": false,
           "notNull": true,
-          "autoincrement": false
+          "default": "'user'"
         },
         "statusConta": {
           "name": "statusConta",
           "type": "text",
           "primaryKey": false,
           "notNull": true,
-          "autoincrement": false,
           "default": "'ativo'"
+        },
+        "dataNascimento": {
+          "name": "dataNascimento",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "cidade": {
+          "name": "cidade",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
         },
         "dataCadastro": {
           "name": "dataCadastro",
-          "type": "integer",
+          "type": "timestamp with time zone",
           "primaryKey": false,
           "notNull": true,
-          "autoincrement": false,
-          "default": "(unixepoch())"
+          "default": "now()"
         },
         "pontosTotal": {
           "name": "pontosTotal",
           "type": "integer",
           "primaryKey": false,
           "notNull": true,
-          "autoincrement": false,
           "default": 0
         },
         "nivelUsuario": {
@@ -1237,7 +1693,6 @@
           "type": "text",
           "primaryKey": false,
           "notNull": true,
-          "autoincrement": false,
           "default": "'iniciante'"
         },
         "conquistasDesbloqueadas": {
@@ -1245,223 +1700,284 @@
           "type": "integer",
           "primaryKey": false,
           "notNull": true,
-          "autoincrement": false,
           "default": 0
         },
         "updatedAt": {
           "name": "updatedAt",
-          "type": "integer",
+          "type": "timestamp with time zone",
           "primaryKey": false,
           "notNull": true,
-          "autoincrement": false,
-          "default": "(unixepoch())"
+          "default": "now()"
         },
         "deletedAt": {
           "name": "deletedAt",
-          "type": "integer",
+          "type": "timestamp with time zone",
           "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
+          "notNull": false
         },
         "tentativasLogin": {
           "name": "tentativasLogin",
           "type": "integer",
           "primaryKey": false,
           "notNull": true,
-          "autoincrement": false,
           "default": 0
         },
         "ultimoLoginFalhado": {
           "name": "ultimoLoginFalhado",
-          "type": "integer",
+          "type": "timestamp with time zone",
           "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
+          "notNull": false
         },
         "ultimaAtividade": {
           "name": "ultimaAtividade",
-          "type": "integer",
+          "type": "timestamp with time zone",
           "primaryKey": false,
           "notNull": true,
-          "autoincrement": false,
-          "default": "(unixepoch())"
+          "default": "now()"
         }
       },
       "indexes": {
         "usuarios_email_idx": {
           "name": "usuarios_email_idx",
           "columns": [
-            "email"
+            {
+              "expression": "email",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
           ],
-          "isUnique": true
+          "isUnique": true,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
         },
         "usuarios_status_idx": {
           "name": "usuarios_status_idx",
           "columns": [
-            "statusConta"
+            {
+              "expression": "statusConta",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
           ],
-          "isUnique": false
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
         },
         "usuarios_pontos_idx": {
           "name": "usuarios_pontos_idx",
           "columns": [
-            "pontosTotal"
+            {
+              "expression": "pontosTotal",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
           ],
-          "isUnique": false
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
         },
         "usuarios_nivel_idx": {
           "name": "usuarios_nivel_idx",
           "columns": [
-            "nivelUsuario"
+            {
+              "expression": "nivelUsuario",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
           ],
-          "isUnique": false
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
         }
       },
       "foreignKeys": {},
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
-      "checkConstraints": {}
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
     },
-    "veiculos": {
+    "public.veiculos": {
       "name": "veiculos",
+      "schema": "",
       "columns": {
         "id": {
           "name": "id",
-          "type": "text",
+          "type": "uuid",
           "primaryKey": true,
           "notNull": true,
-          "autoincrement": false
+          "default": "gen_random_uuid()"
         },
         "idUsuario": {
           "name": "idUsuario",
-          "type": "text",
+          "type": "uuid",
           "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
+          "notNull": true
         },
         "marca": {
           "name": "marca",
-          "type": "text(50)",
+          "type": "text",
           "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
+          "notNull": true
         },
         "modelo": {
           "name": "modelo",
-          "type": "text(100)",
+          "type": "text",
           "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
+          "notNull": true
         },
         "ano": {
           "name": "ano",
           "type": "integer",
           "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
+          "notNull": true
         },
         "placa": {
           "name": "placa",
-          "type": "text(8)",
+          "type": "text",
           "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
+          "notNull": true
         },
         "tipoCombustivel": {
           "name": "tipoCombustivel",
           "type": "text",
           "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
+          "notNull": true
         },
         "tipoUso": {
           "name": "tipoUso",
           "type": "text",
           "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
+          "notNull": true
         },
         "valorAluguel": {
           "name": "valorAluguel",
           "type": "integer",
           "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
+          "notNull": false
         },
         "valorPrestacao": {
           "name": "valorPrestacao",
           "type": "integer",
           "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
+          "notNull": false
         },
         "mediaConsumo": {
           "name": "mediaConsumo",
           "type": "real",
           "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
+          "notNull": false
         },
         "dataCadastro": {
           "name": "dataCadastro",
-          "type": "integer",
+          "type": "timestamp with time zone",
           "primaryKey": false,
           "notNull": true,
-          "autoincrement": false,
-          "default": "(unixepoch())"
+          "default": "now()"
         },
         "updatedAt": {
           "name": "updatedAt",
-          "type": "integer",
+          "type": "timestamp with time zone",
           "primaryKey": false,
           "notNull": true,
-          "autoincrement": false,
-          "default": "(unixepoch())"
+          "default": "now()"
         },
         "deletedAt": {
           "name": "deletedAt",
-          "type": "integer",
+          "type": "timestamp with time zone",
           "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
+          "notNull": false
         }
       },
       "indexes": {
         "veiculos_usuario_idx": {
           "name": "veiculos_usuario_idx",
           "columns": [
-            "idUsuario"
+            {
+              "expression": "idUsuario",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
           ],
-          "isUnique": false
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
         },
         "veiculos_placa_idx": {
           "name": "veiculos_placa_idx",
           "columns": [
-            "placa"
+            {
+              "expression": "placa",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
           ],
-          "isUnique": true
+          "isUnique": true,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
         },
         "veiculos_ano_idx": {
           "name": "veiculos_ano_idx",
           "columns": [
-            "ano"
+            {
+              "expression": "ano",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
           ],
-          "isUnique": false
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
         },
         "veiculos_combustivel_idx": {
           "name": "veiculos_combustivel_idx",
           "columns": [
-            "tipoCombustivel"
+            {
+              "expression": "tipoCombustivel",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
           ],
-          "isUnique": false
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
         },
         "veiculos_usuario_ativo_idx": {
           "name": "veiculos_usuario_ativo_idx",
           "columns": [
-            "idUsuario",
-            "deletedAt"
+            {
+              "expression": "idUsuario",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "deletedAt",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
           ],
-          "isUnique": false
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
         }
       },
       "foreignKeys": {
@@ -1481,17 +1997,20 @@
       },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
-      "checkConstraints": {}
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
     }
   },
-  "views": {},
   "enums": {},
+  "schemas": {},
+  "sequences": {},
+  "roles": {},
+  "policies": {},
+  "views": {},
   "_meta": {
+    "columns": {},
     "schemas": {},
-    "tables": {},
-    "columns": {}
-  },
-  "internal": {
-    "indexes": {}
+    "tables": {}
   }
 }

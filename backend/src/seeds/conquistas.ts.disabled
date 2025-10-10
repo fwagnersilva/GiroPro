@@ -1,5 +1,4 @@
-import { db } from '../db/connection';
-import { conquistas, nivelUsuario } from '../db/schema_original';
+import { db } from '../db';
 
 export async function seedConquistas() {
   console.log('🎮 Inserindo conquistas iniciais...');

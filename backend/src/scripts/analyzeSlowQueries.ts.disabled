@@ -1,4 +1,4 @@
-import { dbConfig } from '../config/database';
+import { db } from '../db';
 import logger from '../utils/logger';
 
 
@@ -20,7 +20,7 @@ interface SlowQueryReport {
 }
 
 class SlowQueryAnalyzer {
-  private db = dbConfig.getDatabase();
+  private db = db;
   private slowQueryThreshold = 100; // ms
   private queryLog: QueryAnalysis[] = [];
 
@@ -289,7 +289,7 @@ class SlowQueryAnalyzer {
     
     const queryAnalysis = await this.analyzeCommonQueries();
     const indexAnalysis = await this.analyzeIndexUsage();
-    const databaseStats = dbConfig.getStats();
+    const databaseStats = db.getStats();
 
     // Salvar relatório
     const report = {

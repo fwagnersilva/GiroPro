@@ -1,11 +1,11 @@
-import { Router, Request, Response, NextFunction } from 'express';
+import { Router, Request, Response } from 'express';
 import { authenticateToken, authorizeRoles } from '../middlewares/authMiddleware';
 import logger from "../utils/logger";
 
 const router = Router();
 
 // Interface para Request autenticado
-interface AuthRequest extends Request {
+interface AuthRequest extends Omit<Request, 'user'> {
   user?: {
     id: string;
     email: string;

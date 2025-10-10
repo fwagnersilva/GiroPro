@@ -17,8 +17,7 @@ process.env.RATE_LIMIT_WINDOW_MS = '1000';
 process.env.RATE_LIMIT_MAX_REQUESTS = '1000';
 
 // AGORA importar as dependências do banco
-import { migrate } from "drizzle-orm/better-sqlite3/migrator";
-import { db, closeConnection } from "../db/connection.sqlite";
+import { db, closeConnection } from "../db";
 
 // Configurar timeout global para testes
 jest.setTimeout(30000);
@@ -35,9 +34,9 @@ beforeAll(async () => {
     console.log("NODE_ENV:", process.env.NODE_ENV);
     console.log("SQLITE_DB_PATH:", process.env.SQLITE_DB_PATH);
     
-    // Usar apenas initializeTables que já tem CREATE TABLE IF NOT EXISTS
-    const { initializeTables } = await import("../db/initTables");
-    await initializeTables();
+    // Usar initTables do PostgreSQL
+    const { initTables } = await import("../db");
+    await initTables();
     console.log("Tables initialized successfully.");
     
     // Manter logs visíveis para debug

@@ -1,4 +1,4 @@
-import { db } from '../db/connection';
+import { db } from '../db';
 import { veiculos, jornadas, abastecimentos, despesas } from '../db/schema.postgres';
 import { eq, and, sql, desc, asc, isNull, gte, lte, sum, avg, count } from 'drizzle-orm';
 
@@ -46,10 +46,10 @@ export class AdvancedAnalyticsService {
           totalJornadas: count(jornadas.id),
           totalFaturamento: sum(jornadas.ganhoBruto),
           totalKm: sum(jornadas.kmTotal),
-          totalTempo: sum(jornadas.tempoTotal),
+          totalTempo: sum(jornadas.duracaoMinutos),
           mediaGanho: avg(jornadas.ganhoBruto),
           mediaKm: avg(jornadas.kmTotal),
-          mediaTempo: avg(jornadas.tempoTotal),
+          mediaTempo: avg(jornadas.duracaoMinutos),
         })
         .from(jornadas)
         .where(
@@ -201,7 +201,7 @@ export class AdvancedAnalyticsService {
         totalFaturamento: sum(jornadas.ganhoBruto),
         totalKm: sum(jornadas.kmTotal),
         numeroJornadas: count(jornadas.id),
-        tempoTotal: sum(jornadas.tempoTotal),
+        tempoTotal: sum(jornadas.duracaoMinutos),
       })
       .from(jornadas)
       .innerJoin(veiculos, eq(jornadas.idVeiculo, veiculos.id))
@@ -223,7 +223,7 @@ export class AdvancedAnalyticsService {
         totalFaturamento: sum(jornadas.ganhoBruto),
         totalKm: sum(jornadas.kmTotal),
         numeroJornadas: count(jornadas.id),
-        tempoTotal: sum(jornadas.tempoTotal),
+        tempoTotal: sum(jornadas.duracaoMinutos),
       })
       .from(jornadas)
       .innerJoin(veiculos, eq(jornadas.idVeiculo, veiculos.id))
@@ -314,7 +314,7 @@ export class AdvancedAnalyticsService {
         totalFaturamento: sum(jornadas.ganhoBruto),
         totalKm: sum(jornadas.kmTotal),
         numeroJornadas: count(jornadas.id),
-        tempoTotal: sum(jornadas.tempoTotal),
+        tempoTotal: sum(jornadas.duracaoMinutos),
       })
       .from(jornadas)
       .innerJoin(veiculos, eq(jornadas.idVeiculo, veiculos.id))
@@ -334,7 +334,7 @@ export class AdvancedAnalyticsService {
         totalFaturamento: sum(jornadas.ganhoBruto),
         totalKm: sum(jornadas.kmTotal),
         numeroJornadas: count(jornadas.id),
-        tempoTotal: sum(jornadas.tempoTotal),
+        tempoTotal: sum(jornadas.duracaoMinutos),
       })
       .from(jornadas)
       .innerJoin(veiculos, eq(jornadas.idVeiculo, veiculos.id))
@@ -354,7 +354,7 @@ export class AdvancedAnalyticsService {
         totalFaturamento: sum(jornadas.ganhoBruto),
         totalKm: sum(jornadas.kmTotal),
         numeroJornadas: count(jornadas.id),
-        tempoTotal: sum(jornadas.tempoTotal),
+        tempoTotal: sum(jornadas.duracaoMinutos),
       })
       .from(jornadas)
       .innerJoin(veiculos, eq(jornadas.idVeiculo, veiculos.id))

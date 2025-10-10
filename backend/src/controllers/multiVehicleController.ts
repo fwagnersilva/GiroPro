@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import logger from '../utils/logger';
 
-interface AuthRequest extends Request {
+interface AuthRequest extends Omit<Request, 'user'> {
   user?: {
     id: string;
     email: string;

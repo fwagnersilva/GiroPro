@@ -1,5 +1,5 @@
 import { eq, gte, lte, and, sql } from "drizzle-orm";
-import { db } from "../db/connection";
+import { db } from '../db';
 import { metas, progressoMetas } from '../db/schema.postgres';
 import { WeekDateQuery } from "../controllers/goalsController";
 
@@ -30,7 +30,7 @@ export async function getWeekPendingGoals({
     .from(metas)
     .where(
       and(
-        eq(metas.period, "semanal"), // Filtrar por metas semanais
+        eq(metas.periodoMeta, "semanal"), // Filtrar por metas semanais
         lte(metas.dataInicio, endOfWeek),
         gte(metas.dataFim, startOfWeek),
         eq(metas.status, "ativa"), // Apenas metas ativas

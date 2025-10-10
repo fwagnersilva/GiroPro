@@ -1,44 +1,32 @@
-import { db } from '../db/connection.sqlite';
+import { db } from '../db';
 import { sql } from 'drizzle-orm';
 
 describe('Database Setup Diagnostic', () => {
   it('deve verificar se as tabelas foram criadas', async () => {
-    console.log('🔍 Verificando tabelas no banco...');
+    console.log('🔍 Verificando tabelas no banco PostgreSQL...');
     
     try {
-      // Verificar se a tabela usuarios existe
-      const result = await db.all(sql`
-        SELECT name FROM sqlite_master 
-        WHERE type='table' AND name='usuarios'
+      // Verificar se a tabela usuarios existe no PostgreSQL
+      const result = await db.execute(sql`
+        SELECT table_name 
+        FROM information_schema.tables 
+        WHERE table_schema = 'public' AND table_name = 'usuarios'
       `);
       
       console.log('📋 Resultado da consulta de tabelas:', result);
       
-      if (result.length === 0) {
+      if (result.rows && result.rows.length === 0) {
         console.log('❌ Tabela usuarios não encontrada');
         
         // Listar todas as tabelas
-        const allTables = await db.all(sql`
-          SELECT name FROM sqlite_master WHERE type='table'
+        const allTables = await db.execute(sql`
+          SELECT table_name 
+          FROM information_schema.tables 
+          WHERE table_schema = 'public'
         `);
-        console.log('📊 Todas as tabelas no banco:', allTables);
+        console.log('📊 Todas as tabelas no banco:', allTables.rows);
         
-        // Tentar criar a tabela manualmente
-        console.log('🔧 Tentando criar tabela usuarios...');
-        await db.run(sql`
-          CREATE TABLE IF NOT EXISTS usuarios (
-            id TEXT PRIMARY KEY,
-            nome TEXT NOT NULL,
-            email TEXT NOT NULL UNIQUE,
-            senhaHash TEXT NOT NULL,
-            role TEXT DEFAULT 'user' NOT NULL,
-            statusConta TEXT DEFAULT 'ativo' NOT NULL,
-            dataCadastro INTEGER DEFAULT (unixepoch()) NOT NULL,
-            updatedAt INTEGER DEFAULT (unixepoch()) NOT NULL,
-            deletedAt INTEGER
-          )
-        `);
-        console.log('✅ Tabela usuarios criada manualmente');
+        console.log('⚠️ Execute "npm run db:push" para criar as tabelas');
       } else {
         console.log('✅ Tabela usuarios encontrada');
       }
@@ -50,3 +38,4 @@ describe('Database Setup Diagnostic', () => {
     }
   });
 });
+

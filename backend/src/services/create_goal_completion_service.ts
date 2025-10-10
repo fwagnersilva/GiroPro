@@ -1,5 +1,5 @@
 import { eq, sql } from "drizzle-orm";
-import { db } from "../db/connection";
+import { db } from '../db';
 import { metas, progressoMetas } from '../db/schema.postgres';
 import { CompleteGoalRequest } from "../controllers/goalsController";
 
