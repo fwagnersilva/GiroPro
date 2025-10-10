@@ -1,5 +1,5 @@
 import { db } from "../db";
-import { jornadas, jornadasFaturamentoPorPlataforma, plataformas } from "../db/schema";
+import { jornadas, jornadasFaturamentoPorPlataforma, plataformas } from '../db/schema.postgres';
 import { eq, and, gte, lte, or, ne, sql, isNull } from "drizzle-orm";
 import { CreateJourneyRequest, UpdateJourneyRequest, JourneyFilters } from "../types";
 import crypto from 'crypto';

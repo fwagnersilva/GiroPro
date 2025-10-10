@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { z } from "zod";
 import { db } from "../db";
-import { veiculos } from "../db/schema";
+import { veiculos } from '../db/schema.postgres';
 import { eq, and, isNull, sql } from "drizzle-orm";
 import { AuthenticatedRequest } from "../middlewares/authMiddleware";
 

@@ -1,68 +1,34 @@
-import dotenv from 'dotenv';
+import { drizzle } from 'drizzle-orm/postgres-js';
+import postgres from 'postgres';
+import * as schema from './schema.postgres';
 
-dotenv.config();
-
-// Factory para criar conexões de banco de dados baseado na configuração
-export const createDatabaseConnection = async () => {
-  const dbType = process.env.DB_TYPE || 'sqlite_memory';
+export async function createDatabaseConnection() {
+  const connectionString = process.env.DATABASE_URL;
   
-  console.log(`🔧 Tipo de banco configurado: ${dbType}`);
-  
-  switch (dbType.toLowerCase()) {
-    case 'sqlite':
-    case 'sqlite_file':
-      console.log('📁 Usando SQLite com arquivo');
-      const { db: sqliteDb } = await import('./connection.sqlite');
-      return sqliteDb;
-    
-    case 'sqlite_memory':
-    case 'memory':
-      console.log('⚡ Usando SQLite em memória');
-      const { db: memoryDb } = await import('./connection.sqlite');
-      return memoryDb;
-    
-    case 'postgresql':
-    case 'postgres':
-      console.log('🐘 Usando PostgreSQL');
-      const { db: postgresDb } = await import('./connection.postgres');
-      return postgresDb;
-    
-    default:
-      console.log('⚡ Fallback para SQLite em memória');
-      const { db: defaultDb } = await import('./connection.sqlite');
-      return defaultDb;
+  if (!connectionString) {
+    throw new Error('❌ DATABASE_URL não configurada');
   }
-};
 
-// Função para obter a configuração do Drizzle baseada no tipo de banco
-export const getDrizzleConfig = () => {
-  const dbType = process.env.DB_TYPE || 'sqlite_memory';
+  const client = postgres(connectionString, {
+    max: 10,
+    idle_timeout: 20,
+    connect_timeout: 10,
+  });
+
+  const db = drizzle(client, { schema });
   
-  switch (dbType.toLowerCase()) {
-    case 'sqlite':
-    case 'sqlite_file':
-    case 'sqlite_memory':
-    case 'memory':
-      return './drizzle.config.sqlite.ts';
-    
-    case 'postgresql':
-    case 'postgres':
-      return './drizzle.config.ts';
-    
-    default:
-      return './drizzle.config.sqlite.ts';
-  }
-};
+  return { db, client };
+}
 
-// Função para verificar se o banco está configurado corretamente
-export const checkDatabaseConnection = async () => {
+export async function checkDatabaseConnection() {
   try {
-    const db = await createDatabaseConnection();
-    console.log('✅ Conexão com banco de dados estabelecida com sucesso');
+    const { client } = await createDatabaseConnection();
+    await client`SELECT 1`;
+    await client.end();
+    console.log('✅ Conexão PostgreSQL verificada com sucesso');
     return true;
   } catch (error) {
-    console.error('❌ Erro ao conectar com banco de dados:', error);
+    console.error('❌ Erro ao conectar ao PostgreSQL:', error);
     return false;
   }
-};
-
+}

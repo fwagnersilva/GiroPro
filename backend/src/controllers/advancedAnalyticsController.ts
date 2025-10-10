@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { db } from '../db';
-import { veiculos, jornadas, abastecimentos, despesas } from '../db/schema';
+import { veiculos, jornadas, abastecimentos, despesas } from '../db/schema.postgres';
 import { eq, and, sql, desc, asc, isNull, gte, lte, sum, avg, count, ne } from 'drizzle-orm';
 import { z } from 'zod';
 import { ValidationError, NotFoundError, UnauthorizedError } from '../utils/customErrors';

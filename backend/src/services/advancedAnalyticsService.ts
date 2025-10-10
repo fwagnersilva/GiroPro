@@ -1,5 +1,5 @@
 import { db } from '../db/connection';
-import { veiculos, jornadas, abastecimentos, despesas } from '../db/schema';
+import { veiculos, jornadas, abastecimentos, despesas } from '../db/schema.postgres';
 import { eq, and, sql, desc, asc, isNull, gte, lte, sum, avg, count } from 'drizzle-orm';
 
 // Preços médios de combustível (em centavos)

@@ -20,7 +20,6 @@ import { platformRoutes } from './routes/platforms';
 import asyncHandler from '../../src/middlewares/asyncHandler';
 import { errorHandler } from './middlewares/errorHandler';
 import { requestLogger } from './middlewares/requestLogger';
-import { initializeTables } from './db/initTables';
 import logger from './utils/logger';
 import { authRateLimit, generalRateLimit } from './middlewares/rateLimiter';
 

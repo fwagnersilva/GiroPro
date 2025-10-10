@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { db } from '../db';
-import { usuarios, veiculos, jornadas, abastecimentos, despesas } from '../db/schema';
+import { usuarios, veiculos, jornadas, abastecimentos, despesas } from '../db/schema.postgres';
 import { eq, gt, and, isNull } from 'drizzle-orm';
 import logger from '../utils/logger';
 import { AuthenticatedRequest } from '../middlewares/authMiddleware';

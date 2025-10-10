@@ -1,5 +1,5 @@
 import { db } from "../db/connection";
-import { metas } from "../db/schema";
+import { metas } from '../db/schema.postgres';
 import { CreateGoalRequest } from "../controllers/goalsController";
 
 interface CreateGoalResponse {

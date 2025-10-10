@@ -1,7 +1,7 @@
 import { config } from './config';
 import app from './app';
 import logger from './utils/logger';
-import { initializeTables } from './db/initTables';
+import { initTables } from './db/initTables';
 
 const PORT = Number(config.port);
 
@@ -11,6 +11,6 @@ app.listen(PORT, '0.0.0.0', async () => {
   logger.info(`📊 Health check: http://localhost:${PORT}/health`);
   logger.info(`🌐 Acessível externamente em: http://0.0.0.0:${PORT}`);
   
-  // Inicializar tabelas no banco em memória
-  await initializeTables();
+  // Inicializar tabelas PostgreSQL
+  await initTables();
 });
