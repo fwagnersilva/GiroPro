@@ -1,16 +1,5 @@
-import * as express from 'express';
+import { Router as ExpressRouter } from 'express';
 
-declare global {
-  namespace Express {
-    interface Request {
-      user?: {
-        id: string;
-        email: string;
-        nome: string;
-        role: string;
-      };
-    }
-  }
+declare module 'express' {
+  export interface Router extends ExpressRouter {}
 }
-
-
