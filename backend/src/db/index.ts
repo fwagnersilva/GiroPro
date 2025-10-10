@@ -1,31 +1,11 @@
-// Importar e re-exportar a conexão correta baseada no ambiente
 import dotenv from 'dotenv';
 dotenv.config();
 
-const isProduction = process.env.NODE_ENV === 'production';
-const dbType = process.env.DB_TYPE || 'sqlite_memory';
-const hasPostgresUrl = !!process.env.DATABASE_URL;
+// Usar sempre PostgreSQL
+const postgres = require('./connection.postgres');
 
-// Determinar qual banco usar
-const usePostgres = isProduction || dbType === 'postgres' || dbType === 'postgresql' || hasPostgresUrl;
+export const db = postgres.db;
+export const closeConnection = postgres.closeConnection;
 
-console.log(`🔧 Ambiente: ${process.env.NODE_ENV || 'development'}`);
-console.log(`🔧 DB_TYPE: ${dbType}`);
-console.log(`🔧 Usando: ${usePostgres ? 'PostgreSQL' : 'SQLite'}`);
-
-// Importar e exportar a conexão apropriada
-let db: any;
-let closeConnection: any;
-
-if (usePostgres) {
-  const postgres = require('./connection.postgres');
-  db = postgres.db;
-  closeConnection = postgres.closeConnection;
-} else {
-  const sqlite = require('./connection.sqlite');
-  db = sqlite.db;
-}
-
-export { db, closeConnection };
-export * from './schema';
-export { createDatabaseConnection, checkDatabaseConnection } from './connection.factory';
+// Exportar schema PostgreSQL
+export * from './schema.postgres';

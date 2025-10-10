@@ -34,3 +34,9 @@
 {"level":"info","message":"🚀 Servidor GiroPro rodando na porta 3000","service":"user-service","timestamp":"2025-10-07 17:15:40"}
 {"level":"info","message":"📊 Health check: http://localhost:3000/health","service":"user-service","timestamp":"2025-10-07 17:15:40"}
 {"level":"info","message":"🌐 Acessível externamente em: http://0.0.0.0:3000","service":"user-service","timestamp":"2025-10-07 17:15:40"}
+{"level":"info","message":"🚀 Servidor GiroPro rodando na porta 3000","service":"user-service","timestamp":"2025-10-09 22:25:18"}
+{"level":"info","message":"📊 Health check: http://localhost:3000/health","service":"user-service","timestamp":"2025-10-09 22:25:18"}
+{"level":"info","message":"🌐 Acessível externamente em: http://0.0.0.0:3000","service":"user-service","timestamp":"2025-10-09 22:25:18"}
+{"level":"info","message":"🚀 Servidor GiroPro rodando na porta 3000","service":"user-service","timestamp":"2025-10-09 22:30:14"}
+{"level":"info","message":"📊 Health check: http://localhost:3000/health","service":"user-service","timestamp":"2025-10-09 22:30:14"}
+{"level":"info","message":"🌐 Acessível externamente em: http://0.0.0.0:3000","service":"user-service","timestamp":"2025-10-09 22:30:14"}

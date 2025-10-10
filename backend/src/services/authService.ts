@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken';
 import crypto from 'crypto';
 import { eq, sql } from 'drizzle-orm';
 import { db } from '../db';
-import { usuarios } from '../db/schema';
+import { usuarios } from '../db/schema.postgres';
 import { LoginRequest, RegisterRequest, AuthResponse } from '../types';
 
 export class AuthService {
@@ -14,7 +14,7 @@ export class AuthService {
   private static readonly LOCKOUT_TIME = 15; // minutos
 
   static async register(data: RegisterRequest): Promise<AuthResponse> {
-    // Verificar se o email j· existe
+    // Verificar se o email j√° existe
     const existingUser = await db
       .select({ id: usuarios.id })
       .from(usuarios)
@@ -22,17 +22,16 @@ export class AuthService {
       .limit(1);
 
     if (existingUser.length > 0) {
-      throw new Error("Email j· est· em uso");
+      throw new Error("Email j√° est√° em uso");
     }
 
     // Hash da senha
     const senhaHash = await bcrypt.hash(data.senha, this.SALT_ROUNDS);
 
-    // Criar usu·rio - SEM dataNascimento e cidade temporariamente
+    // Criar usu√°rio
     const [newUser] = await db
       .insert(usuarios)
       .values({
-        id: crypto.randomUUID(),
         nome: data.nome,
         email: data.email.toLowerCase(),
         senhaHash: senhaHash,
@@ -52,22 +51,20 @@ export class AuthService {
     const token = this.generateToken(newUser.id, newUser.email, newUser.nome, newUser.role);
     const refreshToken = this.generateRefreshToken(newUser.id);
 
-    // Inicializar plataformas padr„o (Uber e 99)
+    // Inicializar plataformas padr√£o (Uber e 99)
     try {
       const { PlatformService } = await import('./platformService');
       await PlatformService.initializeDefaultPlatforms(newUser.id);
     } catch (error) {
-      console.error('Erro ao inicializar plataformas padr„o:', error);
-      // N„o falhar o registro por causa das plataformas
+      console.error('Erro ao inicializar plataformas padr√£o:', error);
     }
 
-    // Enviar email de boas-vindas (n„o bloquear o registro se falhar)
+    // Enviar email de boas-vindas
     try {
       const { EmailService } = await import('./emailService');
       await EmailService.sendWelcomeEmail(newUser.email, newUser.nome);
     } catch (error) {
       console.error('Erro ao enviar email de boas-vindas:', error);
-      // N„o falhar o registro por causa do email
     }
 
     return {
@@ -84,7 +81,7 @@ export class AuthService {
   }
 
   static async login(data: LoginRequest): Promise<AuthResponse> {
-    // Buscar usu·rio por email
+    // Buscar usu√°rio por email
     const [user] = await db
       .select({
         id: usuarios.id,
@@ -102,15 +99,15 @@ export class AuthService {
       .limit(1);
 
     if (!user) {
-      throw new Error("Credenciais inv·lidas");
+      throw new Error("Credenciais inv√°lidas");
     }
 
-    // Verificar se a conta est· bloqueada
+    // Verificar se a conta est√° bloqueada
     if (await this.isAccountLocked(user)) {
       throw new Error("Conta temporariamente bloqueada devido a muitas tentativas de login. Tente novamente em 15 minutos.");
     }
 
-    // Verificar se a conta est· ativa
+    // Verificar se a conta est√° ativa
     if (user.statusConta !== "ativo") {
       throw new Error("Conta inativa ou suspensa");
     }
@@ -119,15 +116,14 @@ export class AuthService {
     const senhaValida = await bcrypt.compare(data.senha, user.senhaHash);
     
     if (!senhaValida) {
-      // Incrementar tentativas de login
       await this.incrementLoginAttempts(user.id);
-      throw new Error("Credenciais inv·lidas");
+      throw new Error("Credenciais inv√°lidas");
     }
 
-    // Reset das tentativas de login em caso de sucesso
+    // Reset das tentativas de login
     await this.resetLoginAttempts(user.id);
 
-    // Atualizar ˙ltima atividade
+    // Atualizar √∫ltima atividade
     await this.updateLastActivity(user.id);
 
     // Gerar tokens
@@ -150,13 +146,11 @@ export class AuthService {
   static async refreshToken(refreshToken: string): Promise<{ token: string; refreshToken: string }> {
     const decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET!) as any;
     
-    // Verificar se o usu·rio ainda existe e est· ativo
     const user = await this.getUserById(decoded.userId);
     if (user.statusConta !== 'ativo') {
-      throw new Error('Usu·rio inativo');
+      throw new Error('Usu√°rio inativo');
     }
 
-    // Gerar novos tokens
     const newToken = this.generateToken(user.id, user.email, user.nome, user.role);
     const newRefreshToken = this.generateRefreshToken(user.id);
 
@@ -184,14 +178,13 @@ export class AuthService {
       .limit(1);
 
     if (!user) {
-      throw new Error("Usu·rio n„o encontrado");
+      throw new Error("Usu√°rio n√£o encontrado");
     }
 
     return user;
   }
 
   static async changePassword(userId: string, currentPassword: string, newPassword: string): Promise<void> {
-    // Buscar usu·rio
     const [user] = await db
       .select({ senhaHash: usuarios.senhaHash })
       .from(usuarios)
@@ -199,22 +192,18 @@ export class AuthService {
       .limit(1);
 
     if (!user) {
-      throw new Error("Usu·rio n„o encontrado");
+      throw new Error("Usu√°rio n√£o encontrado");
     }
 
-    // Verificar senha atual
     const senhaValida = await bcrypt.compare(currentPassword, user.senhaHash);
     if (!senhaValida) {
-      throw new Error("Senha atual inv·lida");
+      throw new Error("Senha atual inv√°lida");
     }
 
-    // Validar nova senha
     this.validatePassword(newPassword);
 
-    // Hash da nova senha
     const novaSenhaHash = await bcrypt.hash(newPassword, this.SALT_ROUNDS);
 
-    // Atualizar senha
     await db
       .update(usuarios)
       .set({ 
@@ -238,14 +227,11 @@ export class AuthService {
     const [user] = await db.select().from(usuarios).where(eq(usuarios.email, email)).limit(1);
 
     if (!user) {
-      // N„o informar se o email n„o existe por seguranÁa
       return;
     }
 
-    // Gerar token de redefiniÁ„o de senha (JWT com expiraÁ„o curta)
     const resetToken = jwt.sign({ userId: user.id }, process.env.JWT_SECRET!, { expiresIn: '1h' });
 
-    // Enviar email com o link de redefiniÁ„o de senha
     const { EmailService } = await import('./emailService');
     await EmailService.sendPasswordResetEmail(email, resetToken, user.nome);
   }
@@ -254,13 +240,10 @@ export class AuthService {
     const decoded = jwt.verify(token, process.env.JWT_SECRET!) as { userId: string };
     const userId = decoded.userId;
 
-    // Validar nova senha
     this.validatePassword(newPassword);
 
-    // Hash da nova senha
     const novaSenhaHash = await bcrypt.hash(newPassword, this.SALT_ROUNDS);
 
-    // Atualizar senha
     await db
       .update(usuarios)
       .set({
@@ -272,7 +255,7 @@ export class AuthService {
 
   private static generateToken(userId: string, email: string, nome: string, role: string): string {
     if (!process.env.JWT_SECRET) {
-      throw new Error('JWT_SECRET n„o configurado');
+      throw new Error('JWT_SECRET n√£o configurado');
     }
     
     return jwt.sign(
@@ -291,7 +274,7 @@ export class AuthService {
 
   private static generateRefreshToken(userId: string): string {
     if (!process.env.JWT_REFRESH_SECRET) {
-      throw new Error('JWT_REFRESH_SECRET n„o configurado');
+      throw new Error('JWT_REFRESH_SECRET n√£o configurado');
     }
     
     return jwt.sign(
@@ -307,21 +290,24 @@ export class AuthService {
 
   static verifyToken(token: string): { userId: string; email: string; nome: string; role: string } {
     if (!process.env.JWT_SECRET) {
-      throw new Error("JWT_SECRET n„o configurado");
+      throw new Error("JWT_SECRET n√£o configurado");
     }
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET) as any;
     
     if (decoded.type !== "access") {
-      throw new Error("Tipo de token inv·lido");
+      throw new Error("Tipo de token inv√°lido");
     }
 
     return { userId: decoded.userId, email: decoded.email, nome: decoded.nome, role: decoded.role };
   }
 
-  // MÈtodos auxiliares privados
   private static async isAccountLocked(user: any): Promise<boolean> {
     if (user.tentativasLogin < this.MAX_LOGIN_ATTEMPTS) {
+      return false;
+    }
+
+    if (!user.ultimoLoginFalhado) {
       return false;
     }
 
@@ -358,34 +344,18 @@ export class AuthService {
       .where(eq(usuarios.id, userId));
   }
 
-  private static validateEmail(email: string): void {
-    const emailRegex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
-    if (!email || !emailRegex.test(email)) {
-      throw new Error('Email inv·lido');
-    }
-  }
-
   private static validatePassword(password: string): void {
     if (!password || password.length < 8) {
       throw new Error('Senha deve ter pelo menos 8 caracteres');
     }
     if (!/(?=.*[a-z])/.test(password)) {
-      throw new Error('Senha deve conter pelo menos uma letra min˙scula');
+      throw new Error('Senha deve conter pelo menos uma letra min√∫scula');
     }
     if (!/(?=.*[A-Z])/.test(password)) {
-      throw new Error('Senha deve conter pelo menos uma letra mai˙scula');
+      throw new Error('Senha deve conter pelo menos uma letra mai√∫scula');
     }
     if (!/(?=.*\d)/.test(password)) {
-      throw new Error('Senha deve conter pelo menos um n˙mero');
-    }
-  }
-
-  private static validateName(name: string): void {
-    if (!name || name.trim().length < 2) {
-      throw new Error('Nome deve ter pelo menos 2 caracteres');
-    }
-    if (name.trim().length > 100) {
-      throw new Error('Nome deve ter no m·ximo 100 caracteres');
+      throw new Error('Senha deve conter pelo menos um n√∫mero');
     }
   }
 }

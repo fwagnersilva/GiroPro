@@ -1,12 +1,11 @@
 import { Router } from 'express';
-import { downloadInitialData, downloadIncrementalData } from '../controllers/syncDownloadController';
-import { authMiddleware } from '../middlewares/auth';
+import { SyncDownloadController } from '../controllers/syncDownloadController';
+import { authMiddleware } from '../middleware/auth';
 
 const router = Router();
 
-router.get("/download/initial", authMiddleware, downloadInitialData);
-router.get("/download/incremental", authMiddleware, downloadIncrementalData);
+// Rotas protegidas que requerem autenticação
+router.get('/download/all', authMiddleware, SyncDownloadController.downloadAll);
+router.get('/download/since', authMiddleware, SyncDownloadController.downloadSince);
 
-export default router;
-
-
+export { router as syncDownloadRoutes };
