@@ -27,7 +27,7 @@ export class JourneyService {
       kmFim: null,
       ganhoBruto: null,
       kmTotal: null,
-      tempoTotal: null,
+      duracaoMinutos: null, // ✅ Corrigido: era tempoTotal
       observacoes: journeyData.observacoes || null,
     };
     
@@ -174,14 +174,12 @@ export class JourneyService {
         dataToUpdate.observacoes = journeyData.observacoes;
       }
 
-      // Calcular tempo total se a jornada estiver sendo finalizada
+      // ✅ CORRIGIDO: Calcular duração em minutos se a jornada estiver sendo finalizada
       if (dataToUpdate.dataFim && existingJourney.dataInicio) {
         const inicio = new Date(existingJourney.dataInicio);
         const fim = new Date(dataToUpdate.dataFim);
         const diffMs = fim.getTime() - inicio.getTime();
-        const hours = Math.floor(diffMs / (1000 * 60 * 60));
-        const minutes = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
-        dataToUpdate.tempoTotal = Math.floor(diffMs / (1000 * 60));
+        dataToUpdate.duracaoMinutos = Math.floor(diffMs / (1000 * 60)); // Duração em minutos
       }
 
       const [updatedJourney] = await db.update(jornadas)
@@ -272,4 +270,3 @@ export class JourneyService {
     }
   }
 }
-

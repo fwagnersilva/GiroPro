@@ -9,9 +9,9 @@ export const userRole = text("role").$type<"admin" | "user" | "guest">().notNull
 export const accountStatus = text("statusConta").$type<"ativo" | "inativo" | "suspenso">().notNull();
 export const fuelType = text("tipoCombustivel").$type<"gasolina" | "etanol" | "diesel" | "gnv" | "flex">().notNull();
 export const usageType = text("tipoUso").$type<"proprio" | "alugado" | "financiado">().notNull();
-export const expenseType = text("expenseType").$type<"manutencao" | "pneus" | "seguro" | "outros">().notNull();
-export const goalType = text("goalType").$type<"faturamento" | "quilometragem" | "jornadas" | "economia" | "lucro">().notNull();
-export const goalPeriod = text("goalPeriod").$type<"semanal" | "mensal" | "trimestral" | "anual">().notNull();
+export const expenseType = text("tipoDespesa").$type<"manutencao" | "pneus" | "seguro" | "outros">().notNull();
+export const goalType = text("tipoMeta").$type<"faturamento" | "quilometragem" | "jornadas" | "economia" | "lucro">().notNull();
+export const goalPeriod = text("periodoMeta").$type<"semanal" | "mensal" | "trimestral" | "anual">().notNull();
 export const statusMeta = text("statusMeta").$type<"ativa" | "pausada" | "concluida" | "expirada">().notNull();
 export const tipoConquista = text("tipoConquista").$type<"faturamento" | "quilometragem" | "jornadas" | "eficiencia" | "consistencia" | "metas" | "especial">().notNull();
 export const raridade = text("raridade").$type<"comum" | "raro" | "epico" | "lendario">().notNull();
@@ -30,7 +30,7 @@ export const usuarios = pgTable("usuarios", {
   role: userRole.default("user"),
   statusConta: accountStatus.default("ativo"),
   
-  // CAMPOS OPCIONAIS - CORRIGIDO
+  // Campos opcionais
   dataNascimento: timestamp("dataNascimento", { withTimezone: true }),
   cidade: text("cidade"),
   
@@ -73,7 +73,7 @@ export const veiculos = pgTable("veiculos", {
   // Valores em centavos
   valorAluguel: integer("valorAluguel"),
   valorPrestacao: integer("valorPrestacao"),
-  mediaConsumo: real("mediaConsumo"),
+  mediaConsumo: real("mediaConsumo"), // km/l
   
   dataCadastro: timestamp("dataCadastro", { withTimezone: true }).defaultNow().notNull(),
   updatedAt: timestamp("updatedAt", { withTimezone: true }).defaultNow().notNull(),
@@ -100,12 +100,11 @@ export const jornadas = pgTable("jornadas", {
   dataFim: timestamp("dataFim", { withTimezone: true }),
   kmFim: integer("kmFim"),
   
-  ganhoBruto: integer("ganhoBruto"),
+  ganhoBruto: integer("ganhoBruto"), // Em centavos
   lucroLiquidoEstimado: integer("lucroLiquidoEstimado").default(0).notNull(),
   margemLucro: real("margemLucro").default(0).notNull(),
-  kmTotal: integer("kmTotal"),
-  tempoTotal: integer("tempoTotal"),
-  duracaoMinutos: integer("duracaoMinutos"),
+  kmTotal: integer("kmTotal"), // Calculado: kmFim - kmInicio
+  duracaoMinutos: integer("duracaoMinutos"), // Duração em minutos
   custoCombustivelEstimado: integer("custoCombustivelEstimado").default(0).notNull(),
   outrasDespesas: integer("outrasDespesas").default(0).notNull(),
   
@@ -135,9 +134,8 @@ export const abastecimentos = pgTable("abastecimentos", {
   dataAbastecimento: timestamp("dataAbastecimento", { withTimezone: true }).notNull(),
   tipoCombustivel: fuelType.notNull(),
   litros: real("litros").notNull(),
-  valorLitro: integer("valorLitro").notNull(),
-  precoPorLitro: real("precoPorLitro").notNull(),
-  valorTotal: integer("valorTotal").notNull(),
+  valorLitro: integer("valorLitro").notNull(), // Preço por litro em centavos
+  valorTotal: integer("valorTotal").notNull(), // Em centavos
   kmAtual: integer("kmAtual"),
   nomePosto: text("nomePosto"),
   
@@ -163,7 +161,7 @@ export const despesas = pgTable("despesas", {
   
   dataDespesa: timestamp("dataDespesa", { withTimezone: true }).notNull(),
   tipoDespesa: expenseType.notNull(),
-  valorDespesa: integer("valorDespesa").notNull(),
+  valorDespesa: integer("valorDespesa").notNull(), // Em centavos
   descricao: text("descricao"),
   
   createdAt: timestamp("createdAt", { withTimezone: true }).defaultNow().notNull(),
@@ -186,14 +184,14 @@ export const logsAtividades = pgTable("logsAtividades", {
   idUsuario: uuid("idUsuario").references(() => usuarios.id, { onDelete: "set null" }),
   tipoAcao: text("tipoAcao").notNull(),
   descricao: text("descricao"),
-  metadados: text("metadados"),
+  metadados: text("metadados"), // JSON stringify
   dataAcao: timestamp("dataAcao", { withTimezone: true }).defaultNow().notNull(),
   deletedAt: timestamp("deletedAt", { withTimezone: true }),
 }, (table) => ({
-  logsUsuarioIdx: index("logsUsuarioIdx").on(table.idUsuario),
-  logsTipoIdx: index("logsTipoIdx").on(table.tipoAcao),
-  logsDataIdx: index("logsDataIdx").on(table.dataAcao),
-  logsUsuarioDataIdx: index("logsUsuarioDataIdx").on(table.idUsuario, table.dataAcao),
+  logsUsuarioIdx: index("logsAtividades_usuario_idx").on(table.idUsuario),
+  logsTipoIdx: index("logsAtividades_tipo_idx").on(table.tipoAcao),
+  logsDataIdx: index("logsAtividades_data_idx").on(table.dataAcao),
+  logsUsuarioDataIdx: index("logsAtividades_usuario_data_idx").on(table.idUsuario, table.dataAcao),
 }));
 
 // ===============================
@@ -208,15 +206,15 @@ export const metas = pgTable("metas", {
   titulo: text("titulo").notNull(),
   descricao: text("descricao"),
   tipoMeta: goalType.notNull(),
-  period: goalPeriod.notNull(),
+  periodoMeta: goalPeriod.notNull(),
   
-  valorObjetivo: integer("valorObjetivo").notNull(),
+  valorObjetivo: integer("valorObjetivo").notNull(), // Valor alvo em centavos ou unidades
   dataInicio: timestamp("dataInicio", { withTimezone: true }).notNull(),
   dataFim: timestamp("dataFim", { withTimezone: true }).notNull(),
   status: statusMeta.default("ativa"),
   
   valorAtual: integer("valorAtual").default(0).notNull(),
-  percentualConcluido: integer("percentualConcluido").default(0).notNull(),
+  percentualConcluido: integer("percentualConcluido").default(0).notNull(), // 0-100
   dataConclusao: timestamp("dataConclusao", { withTimezone: true }),
   notificacaoEnviada: boolean("notificacaoEnviada").default(false).notNull(),
   
@@ -233,7 +231,7 @@ export const metas = pgTable("metas", {
   ativasIdx: index("metas_ativas_idx").on(table.status, table.dataFim),
 }));
 
-export const progressoMetas = pgTable("progresso_metas", {
+export const progressoMetas = pgTable("progressoMetas", {
   id: uuid("id").primaryKey().defaultRandom(),
   idMeta: uuid("idMeta").notNull().references(() => metas.id, { onDelete: "cascade" }),
   
@@ -247,9 +245,9 @@ export const progressoMetas = pgTable("progresso_metas", {
   
   createdAt: timestamp("createdAt", { withTimezone: true }).defaultNow().notNull(),
 }, (table) => ({
-  metaIdx: index("progresso_meta_idx").on(table.idMeta),
-  dataIdx: index("progresso_data_idx").on(table.dataRegistro),
-  metaDataIdx: index("progresso_meta_data_idx").on(table.idMeta, table.dataRegistro),
+  metaIdx: index("progressoMetas_meta_idx").on(table.idMeta),
+  dataIdx: index("progressoMetas_data_idx").on(table.dataRegistro),
+  metaDataIdx: index("progressoMetas_meta_data_idx").on(table.idMeta, table.dataRegistro),
 }));
 
 // ===============================
@@ -262,7 +260,7 @@ export const notificacoes = pgTable("notificacoes", {
   tipo: tipoNotificacao.notNull(),
   titulo: text("titulo").notNull(),
   mensagem: text("mensagem").notNull(),
-  dadosExtras: text("dadosExtras"),
+  dadosExtras: text("dadosExtras"), // JSON stringify
   lida: boolean("lida").default(false).notNull(),
   dataEnvio: timestamp("dataEnvio", { withTimezone: true }).defaultNow().notNull(),
   dataLeitura: timestamp("dataLeitura", { withTimezone: true }),
@@ -296,14 +294,14 @@ export const jornadasFaturamentoPorPlataforma = pgTable("jornadasFaturamentoPorP
   id: uuid("id").primaryKey().defaultRandom(),
   idJornada: uuid("idJornada").notNull().references(() => jornadas.id, { onDelete: "cascade" }),
   idPlataforma: uuid("idPlataforma").notNull().references(() => plataformas.id, { onDelete: "cascade" }),
-  valor: integer("valor").notNull(),
+  valor: integer("valor").notNull(), // Em centavos
   valorAntesCorte: integer("valorAntesCorte"),
   valorDepoisCorte: integer("valorDepoisCorte"),
   createdAt: timestamp("createdAt", { withTimezone: true }).defaultNow().notNull(),
 }, (table) => ({
-  jornadaPlataformaIdx: uniqueIndex("jornadasFaturamentoPorPlataforma_jornada_plataforma_idx").on(table.idJornada, table.idPlataforma),
-  jornadaIdx: index("jornadasFaturamentoPorPlataforma_jornada_idx").on(table.idJornada),
-  plataformaIdx: index("jornadasFaturamentoPorPlataforma_plataforma_idx").on(table.idPlataforma),
+  jornadaPlataformaIdx: uniqueIndex("jornadasFaturamento_jornada_plataforma_idx").on(table.idJornada, table.idPlataforma),
+  jornadaIdx: index("jornadasFaturamento_jornada_idx").on(table.idJornada),
+  plataformaIdx: index("jornadasFaturamento_plataforma_idx").on(table.idPlataforma),
 }));
 
 // ===============================

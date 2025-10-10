@@ -478,7 +478,7 @@ export class ReportsController {
           dataAbastecimento: abastecimentos.dataAbastecimento,
           litros: abastecimentos.litros,
           valorTotal: abastecimentos.valorTotal,
-          precoPorLitro: abastecimentos.precoPorLitro,
+          // precoPorLitro: abastecimentos.precoPorLitro, // Campo não encontrado na tabela
           kmAtual: abastecimentos.kmAtual,
           veiculo: {
             marca: veiculos.marca,

@@ -29,10 +29,19 @@ pool.on('error', (err) => {
   console.error('❌ Erro inesperado no cliente PostgreSQL:', err);
 });
 
-// Testar conexão inicial (opcional - comentado para evitar race condition)
-// O teste de conexão será feito em initTables.ts
-const maskedUrl = process.env.DATABASE_URL?.replace(/\/\/.*:.*@/, '//***:***@');
-console.log(`🔗 Pool PostgreSQL configurado: ${maskedUrl}`);
+// Testar conexão inicial
+(async () => {
+  try {
+    const client = await pool.connect();
+    const result = await client.query('SELECT current_database() as database');
+    const maskedUrl = process.env.DATABASE_URL?.replace(/\/\/.*:.*@/, '//***:***@');
+    console.log(`✅ Conectado ao PostgreSQL: ${maskedUrl}`);
+    console.log(`📊 Database: ${result.rows[0].database}`);
+    client.release();
+  } catch (err) {
+    console.error('❌ Erro ao testar conexão PostgreSQL:', err);
+  }
+})();
 
 // Função para fechar conexão
 async function closeConnection() {

@@ -10,28 +10,27 @@ interface FuelingData {
   id: string;
   idUsuario: string;
   idVeiculo: string;
-  dataAbastecimento: Date; // Date object
-  kmAtual: number;
+  dataAbastecimento: Date;
+  kmAtual: number | null;
   litros: number;
   valorTotal: number; // Em centavos
   valorLitro: number; // Em centavos
-  precoPorLitro: number; // Em centavos
   nomePosto: string | null;
   tipoCombustivel: "gasolina" | "etanol" | "diesel" | "gnv" | "flex";
-  createdAt: Date; // Date object
-  updatedAt: Date; // Date object
+  createdAt: Date;
+  updatedAt: Date;
+  deletedAt: Date | null;
 }
 
 interface CreateFuelingData {
   id: string;
   idUsuario: string;
   idVeiculo: string;
-  dataAbastecimento: Date; // Date object
+  dataAbastecimento: Date;
   kmAtual: number;
   litros: number;
   valorTotal: number; // Em centavos
   valorLitro: number; // Em centavos
-  precoPorLitro: number; // Em centavos
   nomePosto: string | null;
   tipoCombustivel: "gasolina" | "etanol" | "diesel" | "gnv" | "flex";
 }
@@ -102,12 +101,11 @@ class FuelingUtils {
       id: crypto.randomUUID(),
       idUsuario: userId,
       idVeiculo: data.vehicleId,
-      dataAbastecimento: new Date(data.data), // Convert Date to timestamp
+      dataAbastecimento: new Date(data.data),
       kmAtual: data.quilometragem,
       litros: data.litros,
       valorTotal: this.priceToCents(data.litros * data.precoPorLitro),
       valorLitro: this.priceToCents(data.precoPorLitro),
-      precoPorLitro: this.priceToCents(data.precoPorLitro),
       nomePosto: data.posto?.trim() || null,
       tipoCombustivel: this.validateFuelType(data.tipoCombustivel),
     };
@@ -159,7 +157,7 @@ export class FuelingService {
 
       return {
         success: true,
-        data: newFueling
+        data: newFueling as FuelingData
       };
 
     } catch (error) {
@@ -172,7 +170,7 @@ export class FuelingService {
   }
 
   /**
-   * 🔍 Obter abastecimentos por usuário com paginação e filtros
+   * 📋 Obter abastecimentos por usuário com paginação e filtros
    */
   static async getFuelingsByUserId(
     userId: string,
@@ -226,7 +224,7 @@ export class FuelingService {
           orderedQuery = query.orderBy(desc(abastecimentos.kmAtual));
           break;
         default:
-          orderedQuery = query; // Default case to assign query to orderedQuery
+          orderedQuery = query;
           break;
       }
 
@@ -246,7 +244,7 @@ export class FuelingService {
         total = countResult.count;
       }
 
-      const result = { fuelings, total, hasMore };
+      const result = { fuelings: fuelings as FuelingData[], total, hasMore };
 
       return {
         success: true,
@@ -281,7 +279,7 @@ export class FuelingService {
 
       return {
         success: true,
-        data: fueling || null
+        data: fueling ? (fueling as FuelingData) : null
       };
 
     } catch (error) {
@@ -351,7 +349,7 @@ export class FuelingService {
           break;
         case 'all':
         default:
-          startDate = new Date(0); // Desde o início dos tempos
+          startDate = new Date(0);
           break;
       }
 
@@ -490,7 +488,7 @@ export class FuelingService {
 
       return {
         success: true,
-        data: updatedFueling || null
+        data: updatedFueling ? (updatedFueling as FuelingData) : null
       };
 
     } catch (error) {
@@ -501,7 +499,4 @@ export class FuelingService {
       };
     }
   }
-
-
 }
-

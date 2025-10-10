@@ -3,20 +3,22 @@ export const config = {
   port: process.env.PORT || 3000,
   host: process.env.HOST || '0.0.0.0',
   environment: process.env.NODE_ENV || 'development',
-  
-  // Configurações de banco de dados
+
+  // Configurações de banco de dados - AGORA POSTGRESQL
   database: {
-    url: process.env.SQLITE_DB_PATH || process.env.DATABASE_URL || 'giropro.db',
-    type: 'sqlite' as const,
+    url: process.env.DATABASE_URL || 'postgresql://giropro:giropro123@localhost:5432/giropro_dev',
+    type: process.env.DB_TYPE || 'postgres',
   },
-  
+
   // Configurações de autenticação
   auth: {
     jwtSecret: process.env.JWT_SECRET || 'supersecretjwtkey',
+    jwtRefreshSecret: process.env.JWT_REFRESH_SECRET || 'supersecretrefreshkey',
     jwtExpiresIn: process.env.JWT_EXPIRES_IN || '24h',
+    jwtRefreshExpiresIn: process.env.JWT_REFRESH_EXPIRES_IN || '7d',
     bcryptRounds: parseInt(process.env.BCRYPT_ROUNDS || '12'),
   },
-  
+
   // Configurações de rate limiting
   rateLimit: {
     general: {
@@ -32,49 +34,40 @@ export const config = {
       maxRequests: 60,
     },
   },
-  
+
   // Configurações de CORS
   cors: {
     origin: process.env.CORS_ORIGIN || '*',
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
   },
-  
-  // Configurações específicas do SQLite para otimização
-  sqlite: {
-    // Configurações de performance
-    pragmas: {
-      journal_mode: 'WAL',        // Write-Ahead Logging para melhor concorrência
-      synchronous: 'NORMAL',      // Balanceamento entre performance e segurança
-      cache_size: 2000,           // Cache de 2MB (2000 páginas de 1KB)
-      temp_store: 'MEMORY',       // Armazenar tabelas temporárias em memória
-      mmap_size: 268435456,       // Memory-mapped I/O de 256MB
-      optimize: true,             // Otimização automática
-      foreign_keys: 'ON',         // Habilitar foreign keys
-      busy_timeout: 30000,        // Timeout de 30 segundos para operações bloqueadas
-    },
-    
-    // Configurações de conexão
-    connection: {
-      readonly: false,
-      fileMustExist: false,
-      timeout: 5000,
-      verbose: process.env.NODE_ENV === 'development' ? console.log : null,
-    }
-  },
-  
+
   // Configurações de logging
   logging: {
     level: process.env.LOG_LEVEL || 'info',
     format: process.env.LOG_FORMAT || 'combined',
   },
-  
+
   // Configurações de segurança
   security: {
     helmet: {
       contentSecurityPolicy: process.env.NODE_ENV === 'production',
       crossOriginEmbedderPolicy: false,
     },
+  },
+
+  // Configurações de email
+  email: {
+    host: process.env.EMAIL_HOST || 'smtp.gmail.com',
+    port: parseInt(process.env.EMAIL_PORT || '587'),
+    user: process.env.EMAIL_USER || '',
+    password: process.env.EMAIL_PASSWORD || '',
+    from: process.env.EMAIL_FROM || 'noreply@giropro.com',
+  },
+
+  // URLs
+  urls: {
+    frontend: process.env.FRONTEND_URL || 'http://localhost:5173',
   },
 };
 
@@ -92,3 +85,10 @@ if (isProduction && config.cors.origin === '*') {
   console.warn('⚠️  AVISO: CORS configurado para aceitar qualquer origem em produção. Configure CORS_ORIGIN!');
 }
 
+if (!config.database.url) {
+  throw new Error('❌ DATABASE_URL não está configurada no .env');
+}
+
+if (config.database.type !== 'postgres') {
+  console.warn('⚠️  AVISO: Esperando PostgreSQL, mas DB_TYPE está configurado como:', config.database.type);
+}

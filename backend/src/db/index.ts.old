@@ -10,8 +10,5 @@ export { db, closeConnection, pool };
 // Exportar schema PostgreSQL
 export * from './schema.postgres';
 
-// Exportar funções de inicialização
-export { initTables } from './initTables';
-
 // Exportar funções de conexão
 export { createDatabaseConnection, checkDatabaseConnection } from './connection.factory';
