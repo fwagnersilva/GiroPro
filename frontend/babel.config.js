@@ -2,8 +2,7 @@ module.exports = function (api) {
   api.cache(true);
   return {
     presets: [
-      ['babel-preset-expo', { jsxImportSource: 'nativewind' }],
-      'nativewind/babel',
+      ["babel-preset-expo", { jsxImportSource: "nativewind" }]
     ],
     plugins: [
       [
@@ -26,9 +25,8 @@ module.exports = function (api) {
             '.json',
           ],
         },
-      ],
-      // 'react-native-reanimated/plugin', // Comentado para desativar temporariamente
-    ],
+      ]
+    ]
   };
 };
 
