@@ -60,8 +60,7 @@ export const {
   jornadas,
   abastecimentos,
   despesas,
-  plataformas,
-  metasFinanceiras
+  plataformas
 } = schema;
 
 // Exportar funções de inicialização
