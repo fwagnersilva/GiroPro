@@ -5,7 +5,7 @@ config({ path: '.env.test' });
 // Configurar variáveis de ambiente para testes ANTES de qualquer importação de DB
 process.env.NODE_ENV = 'test';
 process.env.JWT_SECRET = 'test-jwt-secret-key-for-testing-only';
-process.env.SQLITE_DB_PATH = ':memory:';
+
 process.env.REDIS_URL = process.env.TEST_REDIS_URL || 'redis://localhost:6379/1';
 
 // Desabilitar cache e backup durante testes
