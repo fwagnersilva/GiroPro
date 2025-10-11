@@ -7,6 +7,9 @@ export type TokenType = {
   refresh: string;
 };
 
-export const getToken = () => getItem<TokenType>(TOKEN);
+export const getToken = () => {
+  if (typeof window === 'undefined') return null;
+  return getItem<TokenType>(TOKEN);
+};
 export const removeToken = () => removeItem(TOKEN);
 export const setToken = (value: TokenType) => setItem<TokenType>(TOKEN, value);

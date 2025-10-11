@@ -1,47 +1,39 @@
-import { db, pool } from './index';
+import { getDb, getClient } from './index';
 import { sql } from 'drizzle-orm';
 
 export async function initTables() {
   console.log('🔄 Inicializando tabelas (PostgreSQL)...');
   
   try {
-    // Verificar se db está definido
+    const db = getDb();
+    const client = getClient();
+
     if (!db) {
       throw new Error('❌ Database instance (db) não está definido');
     }
 
-    // Verificar se pool está definido
-    if (!pool) {
-      throw new Error('❌ Pool não está definido');
+    if (!client) {
+      throw new Error('❌ Client não está definido');
     }
 
-    // Testar conexão com o pool diretamente
-    const client = await pool.connect();
-    await client.query('SELECT 1 as test');
-    client.release();
-    console.log('✅ Conexão PostgreSQL ativa (pool)');
+    if (client.connect) {
+      const poolClient = await client.connect();
+      await poolClient.query('SELECT 1 as test');
+      poolClient.release();
+      console.log('✅ Conexão PostgreSQL ativa (pool)');
+    }
 
-    // Testar com drizzle
     const result = await db.execute(sql`SELECT current_database() as db_name`);
     console.log('✅ Conexão PostgreSQL ativa (drizzle)');
     
-    // Criar extensão UUID se não existir
     await db.execute(sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`);
     console.log('✅ Extensão uuid-ossp verificada');
     
-    // As tabelas serão criadas via migrations do Drizzle
-    console.log('📊 Use "npm run db:migrate" para criar/atualizar tabelas');
+    console.log('📊 Use "pnpm run db:push" para criar/atualizar tabelas');
     
     return true;
   } catch (error) {
     console.error('❌ Erro ao inicializar PostgreSQL:', error);
-    
-    // Debug adicional
-    console.error('Debug info:');
-    console.error('- db está definido?', !!db);
-    console.error('- pool está definido?', !!pool);
-    console.error('- DATABASE_URL está definida?', !!process.env.DATABASE_URL);
-    
     throw error;
   }
 }

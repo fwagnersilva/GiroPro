@@ -4,9 +4,10 @@
   "description": "Backend da aplicação GiroPro para gestão financeira de motoristas de aplicativo.",
   "main": "dist/server.js",
   "scripts": {
-    "start": "node dist/server.js",
-    "dev": "nodemon src/server.ts",
+    "dev": "NODE_ENV=development nodemon src/server.ts",
+    "dev:pg": "NODE_ENV=production nodemon src/server.ts",
     "build": "tsc",
+    "start": "node dist/server.js",
     "db:generate": "drizzle-kit generate",
     "db:push": "drizzle-kit push",
     "db:migrate": "drizzle-kit push",

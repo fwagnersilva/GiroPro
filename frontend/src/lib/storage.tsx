@@ -3,14 +3,17 @@ import { MMKV } from 'react-native-mmkv';
 export const storage = new MMKV();
 
 export function getItem<T>(key: string): T | null {
+  if (typeof window === 'undefined') return null;
   const value = storage.getString(key);
   return value ? JSON.parse(value) || null : null;
 }
 
 export async function setItem<T>(key: string, value: T) {
+  if (typeof window === 'undefined') return;
   storage.set(key, JSON.stringify(value));
 }
 
 export async function removeItem(key: string) {
+  if (typeof window === 'undefined') return;
   storage.delete(key);
 }
