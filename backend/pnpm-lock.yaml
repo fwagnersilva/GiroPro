@@ -163,7 +163,7 @@ importers:
         specifier: ^2.0.0
         version: 2.0.0(@types/node@20.19.19)(typescript@5.9.3)
       tsx:
-        specifier: ^4.20.5
+        specifier: ^4.20.6
         version: 4.20.6
       typescript:
         specifier: ^5.9.2
@@ -1278,6 +1278,9 @@ packages:
   '@types/node@20.19.19':
     resolution: {integrity: sha512-pb1Uqj5WJP7wrcbLU7Ru4QtA0+3kAXrkutGiD26wUKzSMgNNaPARTUDQmElUXp64kh3cWdou3Q0C7qwwxqSFmg==}
 
+  '@types/node@20.19.21':
+    resolution: {integrity: sha512-CsGG2P3I5y48RPMfprQGfy4JPRZ6csfC3ltBZSRItG3ngggmNY/qs2uZKp4p9VbrpqNNSMzUZNFZKzgOGnd/VA==}
+
   '@types/nodemailer@7.0.2':
     resolution: {integrity: sha512-Zo6uOA9157WRgBk/ZhMpTQ/iCWLMk7OIs/Q9jvHarMvrzUUP/MDdPHL2U1zpf57HrrWGv4nYQn5uIxna0xY3xw==}
 
@@ -2277,8 +2280,8 @@ packages:
     resolution: {integrity: sha512-ts6Wi+2j3jQjqi70w5AlN8DFnkSwC+MqmxEzdEALB2qXZYV3X/b1CTfgPLGJNMeAWxdPfU8FO1ms3NUfaHCPYg==}
     engines: {node: '>=10'}
 
-  get-tsconfig@4.10.1:
-    resolution: {integrity: sha512-auHyJ4AgMz7vgS8Hp3N6HXSmlMdUyhSUrfBF16w153rxtLIEOE+HGqaBppczZvnHLqQJfiHotCYpNhl0lUROFQ==}
+  get-tsconfig@4.12.0:
+    resolution: {integrity: sha512-LScr2aNr2FbjAjZh2C6X6BxRx1/x+aTDExct/xyq2XKbYOiG5c0aK7pMsSuyc0brz3ibr/lbQiHD9jzt4lccJw==}
 
   github-from-package@0.0.0:
     resolution: {integrity: sha512-SyHy3T1v2NUXn29OsWdxmK6RwHD+vkj3v8en8AOBZ1wBQ/hCAQ5bAQTD02kW4W9tUp/3Qh6J8r9EvntiyCmOOw==}
@@ -4335,7 +4338,7 @@ snapshots:
   '@esbuild-kit/esm-loader@2.6.5':
     dependencies:
       '@esbuild-kit/core-utils': 3.3.2
-      get-tsconfig: 4.10.1
+      get-tsconfig: 4.12.0
 
   '@esbuild/aix-ppc64@0.25.10':
     optional: true
@@ -5191,7 +5194,7 @@ snapshots:
 
   '@types/better-sqlite3@7.6.13':
     dependencies:
-      '@types/node': 20.19.19
+      '@types/node': 20.19.21
     optional: true
 
   '@types/body-parser@1.19.6':
@@ -5269,6 +5272,11 @@ snapshots:
   '@types/node@20.19.19':
     dependencies:
       undici-types: 6.21.0
+
+  '@types/node@20.19.21':
+    dependencies:
+      undici-types: 6.21.0
+    optional: true
 
   '@types/nodemailer@7.0.2':
     dependencies:
@@ -6368,7 +6376,7 @@ snapshots:
 
   get-stream@6.0.1: {}
 
-  get-tsconfig@4.10.1:
+  get-tsconfig@4.12.0:
     dependencies:
       resolve-pkg-maps: 1.0.0
 
@@ -7858,7 +7866,7 @@ snapshots:
   tsx@4.20.6:
     dependencies:
       esbuild: 0.25.10
-      get-tsconfig: 4.10.1
+      get-tsconfig: 4.12.0
     optionalDependencies:
       fsevents: 2.3.3
 
