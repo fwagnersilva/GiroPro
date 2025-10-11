@@ -25,6 +25,12 @@ export function getClient() {
   return clientInstance;
 }
 
+export async function closeConnection() {
+  if (clientInstance) {
+    await clientInstance.end();
+  }
+}
+
 // Proxy para acessar db de forma lazy
 export const db = new Proxy({} as any, {
   get(target, prop) {
@@ -46,6 +52,17 @@ export const pool = new Proxy({} as any, {
 });
 
 export { checkDatabaseConnection, schema };
+
+// Exportar tabelas do schema
+export const {
+  usuarios,
+  veiculos,
+  jornadas,
+  abastecimentos,
+  despesas,
+  plataformas,
+  metasFinanceiras
+} = schema;
 
 // Exportar funções de inicialização
 export { initTables } from './initTables';
