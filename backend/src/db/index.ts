@@ -1,17 +1,31 @@
 import dotenv from 'dotenv';
 dotenv.config();
 
-// Importar conexão PostgreSQL usando ES6 import
-import { db, closeConnection, pool } from './connection.postgres';
+import { createDatabaseConnection, checkDatabaseConnection } from './connection.factory';
+import * as schema from './schema.postgres';
 
-// Exportar db e funções
-export { db, closeConnection, pool };
+let dbInstance: any;
+let clientInstance: any;
 
-// Exportar schema PostgreSQL
-export * from './schema.postgres';
+export async function initializeDatabase() {
+  const { db, client } = await createDatabaseConnection();
+  dbInstance = db;
+  clientInstance = client;
+}
+
+export function getDb() {
+  if (!dbInstance) {
+    throw new Error('Database not initialized. Call initializeDatabase() first.');
+  }
+  return dbInstance;
+}
+
+export function getClient() {
+  return clientInstance;
+}
+
+export { checkDatabaseConnection, schema };
 
 // Exportar funções de inicialização
 export { initTables } from './initTables';
 
-// Exportar funções de conexão
-export { createDatabaseConnection, checkDatabaseConnection } from './connection.factory';

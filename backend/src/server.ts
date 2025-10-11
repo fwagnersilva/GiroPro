@@ -1,15 +1,19 @@
 import { config } from './config';
 import app from './app';
 import logger from './utils/logger';
-import { initTables, closeConnection } from './db';
+import { initTables, initializeDatabase, getClient } from './db';
 
 const PORT = Number(config.port);
 
 // Função assíncrona para inicializar servidor
 async function startServer() {
   try {
-    // Primeiro inicializa as tabelas
-    console.log('🔄 Inicializando banco de dados...');
+    // Primeiro inicializa o banco de dados
+    console.log('🔄 Inicializando conexão com o banco de dados...');
+    await initializeDatabase();
+
+    // Em seguida, inicializa as tabelas
+    console.log('🔄 Inicializando tabelas do banco de dados...');
     await initTables();
     
     // Depois inicia o servidor
@@ -27,8 +31,13 @@ async function startServer() {
         logger.info('✅ Servidor HTTP encerrado');
         
         try {
-          await closeConnection();
-          logger.info('✅ Conexão com banco encerrada');
+          const client = getClient();
+          if (client && typeof client.end === 'function') {
+            await client.end();
+            logger.info('✅ Conexão com banco encerrada');
+          } else {
+            logger.info('✅ Nenhuma conexão de banco de dados para encerrar (SQLite ou cliente não disponível).');
+          }
           process.exit(0);
         } catch (error) {
           logger.error('❌ Erro ao encerrar conexão:', error);
@@ -54,3 +63,4 @@ async function startServer() {
 
 // Iniciar servidor
 startServer();
+
