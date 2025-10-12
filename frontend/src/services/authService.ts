@@ -1,0 +1,112 @@
+import { LoginCredentials, AuthResponse, RegisterCredentials, AuthTokens } from "../types/auth";
+
+const API_URL = process.env.EXPO_PUBLIC_API_URL || 'https://giropro-backend-bn14.onrender.com';
+
+export const loginApi = async (credentials: LoginCredentials): Promise<AuthResponse> => {
+  try {
+    const response = await fetch(`${API_URL}/api/v1/auth/login`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        email: credentials.email,
+        senha: credentials.password,
+      }),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || 'Erro ao fazer login');
+    }
+
+    return {
+      user: {
+        id: data.user.id,
+        email: data.user.email,
+        name: data.user.nome,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      },
+      tokens: {
+        accessToken: data.token,
+        refreshToken: data.refreshToken,
+        expiresAt: Date.now() + 7 * 24 * 60 * 60 * 1000,
+      },
+    };
+  } catch (error: any) {
+    throw new Error(error.message || 'Erro ao conectar com o servidor');
+  }
+};
+
+export const registerApi = async (credentials: RegisterCredentials): Promise<AuthResponse> => {
+  try {
+    const response = await fetch(`${API_URL}/api/v1/auth/register`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        nome: credentials.name,
+        email: credentials.email,
+        senha: credentials.password,
+        dataNascimento: credentials.dateOfBirth,
+        cidade: credentials.city,
+      }),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || 'Erro ao criar conta');
+    }
+
+    return {
+      user: {
+        id: data.user.id,
+        email: data.user.email,
+        name: data.user.nome,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      },
+      tokens: {
+        accessToken: data.token,
+        refreshToken: data.refreshToken,
+        expiresAt: Date.now() + 7 * 24 * 60 * 60 * 1000,
+      },
+    };
+  } catch (error: any) {
+    throw new Error(error.message || 'Erro ao conectar com o servidor');
+  }
+};
+
+export const refreshTokenApi = async (refreshToken: string): Promise<AuthTokens> => {
+  try {
+    const response = await fetch(`${API_URL}/api/v1/auth/refresh`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ refreshToken }),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || 'Erro ao renovar token');
+    }
+
+    return {
+      accessToken: data.token,
+      refreshToken: data.refreshToken,
+      expiresAt: Date.now() + 7 * 24 * 60 * 60 * 1000,
+    };
+  } catch (error: any) {
+    throw new Error(error.message || 'Erro ao renovar token');
+  }
+};
+
+export const logoutApi = async (): Promise<void> => {
+  return Promise.resolve();
+};
