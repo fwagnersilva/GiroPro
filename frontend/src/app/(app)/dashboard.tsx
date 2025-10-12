@@ -1,14 +1,28 @@
 import React, { useState } from 'react';
 import { ScrollView, Pressable } from 'react-native';
 import { FocusAwareStatusBar, Text, View } from '@/components/ui';
+<<<<<<< HEAD
 import { useAuth } from '@/lib';
+=======
+>>>>>>> b929df65fb738a91ac9dd02ae198b0b42f48cb4e
 
 type PeriodFilter = 'hoje' | 'ontem' | 'semana' | 'mes';
 
 export default function Dashboard() {
+<<<<<<< HEAD
   const { user } = useAuth();
   const userName = user?.nome || 'Usuário';
   const [selectedPeriod, setSelectedPeriod] = useState<PeriodFilter>('mes');
+=======
+return (
+<View className={`flex-1 bg-gray-900`}>
+<FocusAwareStatusBar />
+<ScrollView className="flex-1 px-6 py-8">
+<View className="mb-6">
+<Text className="text-3xl font-extrabold text-white mb-1">Olá, motorista</Text>
+<Text className="text-slate-300">Painel com métricas rápidas e ações</Text>
+</View>
+>>>>>>> b929df65fb738a91ac9dd02ae198b0b42f48cb4e
 
   // Mock data - substituir por dados reais da API
   const dashboardData = {
@@ -43,12 +57,21 @@ export default function Dashboard() {
     ]
   };
 
+<<<<<<< HEAD
   const formatCurrency = (value: number) => {
     return new Intl.NumberFormat('pt-BR', {
       style: 'currency',
       currency: 'BRL'
     }).format(value);
   };
+=======
+<View className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+<View className={`bg-gray-800 rounded-lg p-5 border border-slate-700 shadow-sm`}>
+<Text className="text-green-400 font-semibold text-sm">Lucro Líquido</Text>
+<Text className="text-3xl font-bold text-white mt-2">R$ 2.450</Text>
+<Text className="text-green-300 text-xs mt-1">+15% este mês</Text>
+</View>
+>>>>>>> b929df65fb738a91ac9dd02ae198b0b42f48cb4e
 
   const getPeriodLabel = (period: PeriodFilter) => {
     const labels = {
@@ -60,12 +83,21 @@ export default function Dashboard() {
     return labels[period];
   };
 
+<<<<<<< HEAD
   const periods: { key: PeriodFilter; label: string }[] = [
     { key: 'hoje', label: 'Hoje' },
     { key: 'ontem', label: 'Ontem' },
     { key: 'semana', label: 'Esta Semana' },
     { key: 'mes', label: 'Este Mês' }
   ];
+=======
+<View className={`bg-gray-800 rounded-lg p-5 border border-slate-700 shadow-sm`}>
+<Text className="text-red-400 font-semibold text-sm">Despesas Totais</Text>
+<Text className="text-3xl font-bold text-white mt-2">R$ 1.890</Text>
+<Text className="text-red-300 text-xs mt-1">+8% este mês</Text>
+</View>
+</View>
+>>>>>>> b929df65fb738a91ac9dd02ae198b0b42f48cb4e
 
   const MetricCard = ({ 
     label, 
@@ -90,6 +122,7 @@ export default function Dashboard() {
       cyan: 'text-cyan-400'
     };
 
+<<<<<<< HEAD
     const subtextColorClasses = {
       blue: 'text-blue-500',
       green: 'text-green-500',
@@ -357,3 +390,23 @@ export default function Dashboard() {
     </View>
   );
 }
+=======
+<View className="grid grid-cols-1 md:grid-cols-4 gap-4">
+{[
+{ label: 'Total de Viagens', value: '47', tone: 'text-blue-300' },
+{ label: 'Distância', value: '3.240 km', tone: 'text-orange-300' },
+{ label: 'Consumo Médio', value: '11.8 km/l', tone: 'text-purple-300' },
+{ label: 'Abastecimentos', value: '23', tone: 'text-indigo-300' },
+].map((m) => (
+<View key={m.label} className={`bg-gray-800 rounded-lg p-4 border border-slate-700`}>
+<Text className={`text-sm font-medium ${m.tone}`}>{m.label}</Text>
+<Text className="text-2xl font-bold text-white mt-2">{m.value}</Text>
+</View>
+))}
+</View>
+</ScrollView>
+</View>
+);
+}
+
+>>>>>>> b929df65fb738a91ac9dd02ae198b0b42f48cb4e

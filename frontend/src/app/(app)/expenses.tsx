@@ -1,7 +1,11 @@
 import React, { useState } from 'react';
 import { ScrollView, Alert, Dimensions, RefreshControl } from 'react-native';
 import { useRouter } from 'expo-router';
+<<<<<<< HEAD
 import { Ionicons } from '@expo/vector-icons';
+=======
+import { FocusAwareStatusBar, Text, View, Button } from '@/components/ui';
+>>>>>>> b929df65fb738a91ac9dd02ae198b0b42f48cb4e
 
 import { FocusAwareStatusBar, Text, View, Button } from '@/components/ui';
 
@@ -54,6 +58,7 @@ export default function Expenses() {
     { id: '3', model: 'Ford Ka', placa: 'DEF-9012' },
   ]);
 
+<<<<<<< HEAD
   const [expenses, setExpenses] = useState<Expense[]>([
     {
       id: '1',
@@ -92,6 +97,19 @@ export default function Expenses() {
       category: 'Seguro',
     },
   ]);
+=======
+return (
+<View className={`flex-1 bg-gray-900`}>
+<FocusAwareStatusBar />
+<ScrollView className="flex-1 px-6 py-8">
+<View className="flex-row justify-between items-center mb-6">
+<View>
+<Text className="text-3xl font-bold text-white">Despesas</Text>
+<Text className="text-slate-300">Registre gastos de forma organizada</Text>
+</View>
+<Button onPress={() => router.push('/edit-expense')} label="+ Adicionar" className="bg-blue-600" />
+</View>
+>>>>>>> b929df65fb738a91ac9dd02ae198b0b42f48cb4e
 
   const handleRefresh = async () => {
     setRefreshing(true);
@@ -99,9 +117,17 @@ export default function Expenses() {
     setRefreshing(false);
   };
 
+<<<<<<< HEAD
   const totalExpenses = expenses.reduce((acc, expense) => {
     return acc + parseFloat(expense.value);
   }, 0);
+=======
+<View className={`bg-gray-800 rounded-lg p-4 mb-6 border border-slate-700`}>
+<Text className="text-red-300 font-semibold">Total de Despesas</Text>
+<Text className="text-2xl font-bold text-white mt-2">R$ 0,00</Text>
+<Text className="text-red-400 text-sm mt-1">0 despesa(s)</Text>
+</View>
+>>>>>>> b929df65fb738a91ac9dd02ae198b0b42f48cb4e
 
   const expensesByCategory = expenses.reduce((acc, expense) => {
     const category = expense.category;
@@ -112,6 +138,7 @@ export default function Expenses() {
     return acc;
   }, {} as Record<string, number>);
 
+<<<<<<< HEAD
   const handleAddExpense = () => {
     router.push('/edit-expense');
   };
@@ -340,3 +367,18 @@ export default function Expenses() {
     </View>
   );
 }
+=======
+<View>
+<Text className="text-2xl font-bold text-white mb-4">Despesas Registradas</Text>
+{expenses.length === 0 ? (
+<View className={`bg-gray-800 rounded-lg p-8 items-center border border-slate-700`}>
+<Text className="text-slate-300 text-center">Nenhuma despesa registrada.</Text>
+</View>
+) : null}
+</View>
+</ScrollView>
+</View>
+);
+}
+
+>>>>>>> b929df65fb738a91ac9dd02ae198b0b42f48cb4e

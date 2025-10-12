@@ -1,7 +1,11 @@
 import React, { useState } from 'react';
 import { ScrollView, Alert, Dimensions, RefreshControl } from 'react-native';
 import { useRouter } from 'expo-router';
+<<<<<<< HEAD
 import { Ionicons } from '@expo/vector-icons';
+=======
+import { FocusAwareStatusBar, Text, View, Button } from '@/components/ui';
+>>>>>>> b929df65fb738a91ac9dd02ae198b0b42f48cb4e
 
 import { FocusAwareStatusBar, Text, View, Button } from '@/components/ui';
 
@@ -109,14 +113,29 @@ export default function Fuelings() {
     setRefreshing(false);
   };
 
+<<<<<<< HEAD
   const handleAddFueling = () => {
     router.push('/edit-fueling');
   };
+=======
+return (
+<View className={`flex-1 bg-gray-900`}>
+<FocusAwareStatusBar />
+<ScrollView className="flex-1 px-6 py-8">
+<View className="flex-row justify-between items-center mb-6">
+<View>
+<Text className="text-3xl font-bold text-white">Abastecimentos</Text>
+<Text className="text-slate-300">Registre e acompanhe</Text>
+</View>
+<Button onPress={handleAdd} label="+ Adicionar" className="bg-blue-600" />
+</View>
+>>>>>>> b929df65fb738a91ac9dd02ae198b0b42f48cb4e
 
   const handleEditFueling = (fueling: Fueling) => {
     router.push(`/edit-fueling?id=${fueling.id}`);
   };
 
+<<<<<<< HEAD
   const handleDeleteFueling = (fueling: Fueling) => {
     Alert.alert(
       'Excluir Abastecimento',
@@ -332,3 +351,30 @@ export default function Fuelings() {
     </View>
   );
 }
+=======
+<View className="space-y-3">
+{fuelings.length === 0 ? (
+<View className={`bg-gray-800 rounded-lg p-8 border border-slate-700 items-center`}>
+<Text className="text-slate-300 text-center">Nenhum abastecimento registrado. Adicione o primeiro!</Text>
+</View>
+) : (
+fuelings.map((f) => (
+<View key={f.id} className={`bg-gray-800 rounded-lg p-4 border border-slate-700 flex-row justify-between`}>
+<View className="flex-1 mr-3">
+<Text className="text-white font-semibold">{f.nomePosto || 'Posto'}</Text>
+<Text className="text-slate-300 text-sm">{f.litros} L · R$ {f.precoPorLitro.toFixed(2)}</Text>
+</View>
+<View className="flex-row space-x-2">
+<Button onPress={() => {}} label="Editar" className="bg-blue-600 px-3 py-2" />
+<Button onPress={() => {}} label="Excluir" className="bg-red-600 px-3 py-2" />
+</View>
+</View>
+))
+)}
+</View>
+</ScrollView>
+</View>
+);
+}
+
+>>>>>>> b929df65fb738a91ac9dd02ae198b0b42f48cb4e
