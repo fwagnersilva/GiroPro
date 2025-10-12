@@ -1,12 +1,11 @@
 import React from 'react';
 import { ScrollView } from 'react-native';
 import { FocusAwareStatusBar, Text, View } from '@/components/ui';
-import { palette, rounded } from '@/theme';
 
 
 export default function Dashboard() {
 return (
-<View className={`flex-1 ${palette.bg}`}>
+<View className={`flex-1 bg-gray-900`}>
 <FocusAwareStatusBar />
 <ScrollView className="flex-1 px-6 py-8">
 <View className="mb-6">
@@ -16,14 +15,14 @@ return (
 
 
 <View className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-<View className={`${palette.surface} ${rounded} p-5 border border-slate-700 shadow-sm`}>
+<View className={`bg-gray-800 rounded-lg p-5 border border-slate-700 shadow-sm`}>
 <Text className="text-green-400 font-semibold text-sm">Lucro Líquido</Text>
 <Text className="text-3xl font-bold text-white mt-2">R$ 2.450</Text>
 <Text className="text-green-300 text-xs mt-1">+15% este mês</Text>
 </View>
 
 
-<View className={`${palette.surface} ${rounded} p-5 border border-slate-700 shadow-sm`}>
+<View className={`bg-gray-800 rounded-lg p-5 border border-slate-700 shadow-sm`}>
 <Text className="text-red-400 font-semibold text-sm">Despesas Totais</Text>
 <Text className="text-3xl font-bold text-white mt-2">R$ 1.890</Text>
 <Text className="text-red-300 text-xs mt-1">+8% este mês</Text>
@@ -38,7 +37,7 @@ return (
 { label: 'Consumo Médio', value: '11.8 km/l', tone: 'text-purple-300' },
 { label: 'Abastecimentos', value: '23', tone: 'text-indigo-300' },
 ].map((m) => (
-<View key={m.label} className={`${palette.surface} ${rounded} p-4 border border-slate-700`}>
+<View key={m.label} className={`bg-gray-800 rounded-lg p-4 border border-slate-700`}>
 <Text className={`text-sm font-medium ${m.tone}`}>{m.label}</Text>
 <Text className="text-2xl font-bold text-white mt-2">{m.value}</Text>
 </View>
@@ -48,3 +47,4 @@ return (
 </View>
 );
 }
+
