@@ -48,6 +48,6 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     'expo-router',
   ],
   extra: {
-    API_URL: process.env.EXPO_PUBLIC_API_URL || 'https://giropro-backend-bn14.onrender.com',
+    API_URL: process.env.EXPO_PUBLIC_API_URL || 'https://giropro-backend.onrender.com/api/v1',
   },
 });
