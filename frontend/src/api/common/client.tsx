@@ -1,9 +1,13 @@
-import { Env } from '@env';
 import axios from 'axios';
 import { getItem } from '@/lib/storage';
 
+// Forçar localhost em desenvolvimento
+const API_URL = process.env.EXPO_PUBLIC_API_URL || 'http://localhost:3000/api/v1';
+
+console.log('🔗 API URL configurada:', API_URL);
+
 export const client = axios.create({
-  baseURL: Env.API_URL,
+  baseURL: API_URL,
 });
 
 // Interceptor para adicionar token automaticamente
@@ -13,6 +17,7 @@ client.interceptors.request.use(
     if (token?.access) {
       config.headers.Authorization = `Bearer ${token.access}`;
     }
+    console.log('📡 Request:', config.method?.toUpperCase(), config.baseURL + config.url);
     return config;
   },
   (error) => {
@@ -22,10 +27,14 @@ client.interceptors.request.use(
 
 // Interceptor para tratar erros de autenticação
 client.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    console.log('✅ Response:', response.status, response.config.url);
+    return response;
+  },
   async (error) => {
+    console.error('❌ Error:', error.message, error.config?.url);
     if (error.response?.status === 401) {
-      console.log('Token expirado, faça login novamente');
+      console.log('🔐 Token expirado, faça login novamente');
     }
     return Promise.reject(error);
   }
