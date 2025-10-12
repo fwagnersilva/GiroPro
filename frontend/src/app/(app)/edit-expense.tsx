@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ScrollView, Alert } from 'react-native';
+import { ScrollView, Alert, TouchableOpacity, Pressable } from 'react-native';
 import { Stack, useRouter, useLocalSearchParams } from 'expo-router';
 
 import { FocusAwareStatusBar, Text, View, Button, Input } from '@/components/ui';
@@ -78,6 +78,7 @@ export default function EditExpenseScreen() {
   ]);
 
   const [editingExpense, setEditingExpense] = useState<Expense | null>(null);
+  const [showVehicleSelect, setShowVehicleSelect] = useState(false);
   const [formData, setFormData] = useState({
     vehicleId: vehicles[0]?.id || '',
     date: new Date().toISOString().split('T')[0],
@@ -160,104 +161,173 @@ export default function EditExpenseScreen() {
     router.back();
   };
 
+  const selectedVehicle = vehicles.find(v => v.id === formData.vehicleId);
+
   return (
-    <View className="flex-1 bg-white">
+    <View className="flex-1 bg-gray-50">
       <FocusAwareStatusBar />
-      <Stack.Screen options={{ title: editingExpense ? 'Editar Despesa' : 'Nova Despesa' }} />
-      <ScrollView className="flex-1 px-4 py-6">
-        <Text className="text-2xl font-bold text-gray-900 mb-6">
-          {editingExpense ? 'Editar Despesa' : 'Nova Despesa'}
-        </Text>
-
-        <View className="mb-4">
-          <Text className="text-sm font-medium text-gray-700 mb-2">
-            Veículo *
+      <Stack.Screen 
+        options={{ 
+          title: editingExpense ? 'Editar Despesa' : 'Nova Despesa',
+          headerStyle: { backgroundColor: '#3b82f6' },
+          headerTintColor: '#fff',
+        }} 
+      />
+      
+      <ScrollView 
+        className="flex-1"
+        contentContainerStyle={{ paddingBottom: 24 }}
+      >
+        {/* Header Card */}
+        <View className="bg-gradient-to-br from-blue-500 to-blue-600 px-4 pt-6 pb-8 mb-4">
+          <Text className="text-2xl font-bold text-white mb-1">
+            {editingExpense ? 'Editar Despesa' : 'Nova Despesa'}
           </Text>
-          <View className="border border-gray-300 rounded-lg p-3">
-            <Text className="text-gray-800">
-              {vehicles.find(v => v.id === formData.vehicleId)?.model} ({vehicles.find(v => v.id === formData.vehicleId)?.plate})
+          <Text className="text-blue-100 text-sm">
+            Preencha os campos abaixo com as informações da despesa
+          </Text>
+        </View>
+
+        <View className="px-4 space-y-4">
+          {/* Veículo */}
+          <View className="bg-white rounded-xl p-4 shadow-sm">
+            <Text className="text-sm font-semibold text-gray-700 mb-3">
+              Veículo *
             </Text>
+            <Pressable
+              onPress={() => setShowVehicleSelect(!showVehicleSelect)}
+              className="border border-gray-200 rounded-lg p-3 bg-gray-50"
+            >
+              <View className="flex-row items-center justify-between">
+                <View className="flex-1">
+                  <Text className="text-gray-900 font-medium">
+                    {selectedVehicle?.model}
+                  </Text>
+                  <Text className="text-gray-500 text-xs mt-1">
+                    {selectedVehicle?.plate}
+                  </Text>
+                </View>
+                <Text className="text-gray-400">▼</Text>
+              </View>
+            </Pressable>
+            
+            {showVehicleSelect && (
+              <View className="mt-2 border border-gray-200 rounded-lg overflow-hidden">
+                {vehicles.map((vehicle) => (
+                  <Pressable
+                    key={vehicle.id}
+                    onPress={() => {
+                      setFormData({ ...formData, vehicleId: vehicle.id });
+                      setShowVehicleSelect(false);
+                    }}
+                    className={`p-3 border-b border-gray-100 ${
+                      formData.vehicleId === vehicle.id ? 'bg-blue-50' : 'bg-white'
+                    }`}
+                  >
+                    <Text className={`font-medium ${
+                      formData.vehicleId === vehicle.id ? 'text-blue-600' : 'text-gray-900'
+                    }`}>
+                      {vehicle.model}
+                    </Text>
+                    <Text className="text-gray-500 text-xs mt-1">
+                      {vehicle.plate}
+                    </Text>
+                  </Pressable>
+                ))}
+              </View>
+            )}
           </View>
-        </View>
 
-        <View className="mb-4">
-          <Text className="text-sm font-medium text-gray-700 mb-2">
-            Data *
-          </Text>
-          <Input
-            placeholder="AAAA-MM-DD"
-            value={formData.date}
-            onChangeText={(text) => setFormData({ ...formData, date: text })}
-            className="w-full"
-          />
-        </View>
-
-        <View className="mb-4">
-          <Text className="text-sm font-medium text-gray-700 mb-2">
-            Categoria *
-          </Text>
-          <View className="flex-row flex-wrap">
-            {(['Manutenção', 'Combustível', 'Limpeza', 'Outros'] as const).map((cat) => (
-              <Button
-                key={cat}
-                onPress={() => setFormData({ ...formData, category: cat })}
-                variant={formData.category === cat ? 'default' : 'outline'}
-                className="mr-2 mb-2 px-3 py-2"
-              >
-                <Text className={formData.category === cat ? 'text-white text-xs' : 'text-gray-600 text-xs'}>
-                  {cat}
-                </Text>
-              </Button>
-            ))}
+          {/* Data */}
+          <View className="bg-white rounded-xl p-4 shadow-sm">
+            <Text className="text-sm font-semibold text-gray-700 mb-3">
+              Data *
+            </Text>
+            <Input
+              placeholder="AAAA-MM-DD"
+              value={formData.date}
+              onChangeText={(text) => setFormData({ ...formData, date: text })}
+              className="border-gray-200 bg-gray-50 rounded-lg"
+            />
           </View>
-        </View>
 
-        <View className="mb-4">
-          <Text className="text-sm font-medium text-gray-700 mb-2">
-            Descrição do Serviço/Gasto *
-          </Text>
-          <Input
-            placeholder="Ex: Troca de óleo, Alinhamento, Multa"
-            value={formData.description}
-            onChangeText={(text) => setFormData({ ...formData, description: text })}
-            className="w-full"
-          />
-        </View>
-
-        <View className="mb-4">
-          <Text className="text-sm font-medium text-gray-700 mb-2">
-            Valor Gasto (R$) *
-          </Text>
-          <Input
-            placeholder="Ex: 120.00"
-            value={formData.value}
-            onChangeText={(text) => setFormData({ ...formData, value: text })}
-            keyboardType="numeric"
-            className="w-full"
-          />
-        </View>
-
-        <View className="flex-row space-x-2">
-          <Button
-            onPress={handleSaveExpense}
-            className="flex-1 mr-2"
-          >
-            <Text className="text-white font-medium">
-              {editingExpense ? 'Atualizar' : 'Salvar'}
+          {/* Categoria */}
+          <View className="bg-white rounded-xl p-4 shadow-sm">
+            <Text className="text-sm font-semibold text-gray-700 mb-3">
+              Categoria *
             </Text>
-          </Button>
-          <Button
-            onPress={() => router.back()}
-            variant="outline"
-            className="flex-1 ml-2"
-          >
-            <Text className="text-gray-600 font-medium">
-              Cancelar
+            <View className="flex-row flex-wrap gap-2">
+              {(['Manutenção', 'Combustível', 'Limpeza', 'Outros'] as const).map((cat) => (
+                <Pressable
+                  key={cat}
+                  onPress={() => setFormData({ ...formData, category: cat })}
+                  className={`px-4 py-2.5 rounded-full ${
+                    formData.category === cat
+                      ? 'bg-blue-500'
+                      : 'bg-gray-100 border border-gray-200'
+                  }`}
+                >
+                  <Text className={`text-sm font-medium ${
+                    formData.category === cat ? 'text-white' : 'text-gray-700'
+                  }`}>
+                    {cat}
+                  </Text>
+                </Pressable>
+              ))}
+            </View>
+          </View>
+
+          {/* Descrição */}
+          <View className="bg-white rounded-xl p-4 shadow-sm">
+            <Text className="text-sm font-semibold text-gray-700 mb-3">
+              Descrição do Serviço/Gasto *
             </Text>
-          </Button>
+            <Input
+              placeholder="Ex: Troca de óleo, Alinhamento, Multa"
+              value={formData.description}
+              onChangeText={(text) => setFormData({ ...formData, description: text })}
+              className="border-gray-200 bg-gray-50 rounded-lg"
+              multiline
+              numberOfLines={3}
+            />
+          </View>
+
+          {/* Valor */}
+          <View className="bg-white rounded-xl p-4 shadow-sm">
+            <Text className="text-sm font-semibold text-gray-700 mb-3">
+              Valor Gasto (R$) *
+            </Text>
+            <Input
+              placeholder="Ex: 120.00"
+              value={formData.value}
+              onChangeText={(text) => setFormData({ ...formData, value: text })}
+              keyboardType="numeric"
+              className="border-gray-200 bg-gray-50 rounded-lg"
+            />
+          </View>
+
+          {/* Botões de Ação */}
+          <View className="flex-row gap-3 mt-6">
+            <Pressable
+              onPress={handleSaveExpense}
+              className="flex-1 bg-blue-500 rounded-xl py-4 shadow-md active:bg-blue-600"
+            >
+              <Text className="text-white font-semibold text-center text-base">
+                {editingExpense ? 'Atualizar' : 'Salvar'}
+              </Text>
+            </Pressable>
+            
+            <Pressable
+              onPress={() => router.back()}
+              className="flex-1 bg-white border-2 border-gray-200 rounded-xl py-4 active:bg-gray-50"
+            >
+              <Text className="text-gray-700 font-semibold text-center text-base">
+                Cancelar
+              </Text>
+            </Pressable>
+          </View>
         </View>
       </ScrollView>
     </View>
   );
 }
-

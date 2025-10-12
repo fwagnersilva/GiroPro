@@ -85,3 +85,4 @@ web-build/
 config.local.js
 config.local.ts
 *.local.json
+*:Zone.Identifier
