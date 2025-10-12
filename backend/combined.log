@@ -94,3 +94,9 @@
 {"level":"info","message":"📊 Health check: http://localhost:3000/health","service":"user-service","timestamp":"2025-10-11 13:02:53"}
 {"level":"info","message":"🌐 Acessível externamente em: http://0.0.0.0:3000","service":"user-service","timestamp":"2025-10-11 13:02:53"}
 {"level":"info","message":"🛑 SIGINT recebido, encerrando servidor...","service":"user-service","timestamp":"2025-10-11 13:22:17"}
+{"level":"info","message":"🚀 Servidor GiroPro rodando na porta 3000","service":"user-service","timestamp":"2025-10-12 03:41:31"}
+{"level":"info","message":"📊 Health check: http://localhost:3000/health","service":"user-service","timestamp":"2025-10-12 03:41:31"}
+{"level":"info","message":"🌐 Acessível externamente em: http://0.0.0.0:3000","service":"user-service","timestamp":"2025-10-12 03:41:31"}
+{"error":"jwt malformed","level":"warn","message":"Token inválido ou expirado","service":"user-service","timestamp":"2025-10-12 03:59:49","token":"eyJhbGciOi..."}
+{"error":"invalid signature","level":"warn","message":"Token inválido ou expirado","service":"user-service","timestamp":"2025-10-12 04:01:47","token":"eyJhbGciOi..."}
+{"error":"invalid signature","level":"warn","message":"Token inválido ou expirado","service":"user-service","timestamp":"2025-10-12 04:01:56","token":"eyJhbGciOi..."}
