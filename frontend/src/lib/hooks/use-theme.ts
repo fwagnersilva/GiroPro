@@ -16,9 +16,10 @@ const THEME_STORAGE_KEY = 'app-theme';
 export const useTheme = () => {
   // Estado do tema atual
   const [theme, setTheme] = useState<Theme>(() => {
-    // Recupera o tema salvo ou usa 'system' como padrão
+    // Recupera o tema salvo ou usa 'light' como padrão FORÇADO
     const savedTheme = storage.getString(THEME_STORAGE_KEY) as Theme;
-    return savedTheme || 'system';
+    // FORÇANDO TEMA CLARO PARA RESOLVER PROBLEMA DE LEGIBILIDADE
+    return savedTheme || 'light'; 
   });
 
   // Estado do tema efetivo (resolvido)
@@ -26,14 +27,7 @@ export const useTheme = () => {
 
   // Função para detectar preferência do sistema
   const getSystemTheme = (): 'light' | 'dark' => {
-    if (Platform.OS === 'web') {
-      // Para web, usa matchMedia
-      if (typeof window !== 'undefined' && window.matchMedia) {
-        return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-      }
-    }
-    // Para React Native, sempre retorna light por padrão
-    // Em uma implementação completa, você poderia usar uma biblioteca como react-native-appearance
+    // Retorna 'light' por padrão para evitar o tema escuro automático
     return 'light';
   };
 
@@ -53,7 +47,8 @@ export const useTheme = () => {
   // Função para resolver o tema efetivo
   const resolveEffectiveTheme = (currentTheme: Theme): 'light' | 'dark' => {
     if (currentTheme === 'system') {
-      return getSystemTheme();
+      // Usar 'light' em vez de getSystemTheme() para forçar o tema claro
+      return 'light';
     }
     return currentTheme;
   };
@@ -72,9 +67,7 @@ export const useTheme = () => {
       
       const handleSystemThemeChange = () => {
         if (theme === 'system') {
-          const newEffectiveTheme = getSystemTheme();
-          setEffectiveTheme(newEffectiveTheme);
-          applyThemeToDOM(newEffectiveTheme);
+          // Não faz nada, pois o tema 'system' foi forçado para 'light'
         }
       };
 

@@ -100,3 +100,12 @@
 {"error":"jwt malformed","level":"warn","message":"Token inválido ou expirado","service":"user-service","timestamp":"2025-10-12 03:59:49","token":"eyJhbGciOi..."}
 {"error":"invalid signature","level":"warn","message":"Token inválido ou expirado","service":"user-service","timestamp":"2025-10-12 04:01:47","token":"eyJhbGciOi..."}
 {"error":"invalid signature","level":"warn","message":"Token inválido ou expirado","service":"user-service","timestamp":"2025-10-12 04:01:56","token":"eyJhbGciOi..."}
+{"level":"info","message":"🚀 Servidor GiroPro rodando na porta 3000","service":"user-service","timestamp":"2025-10-12 03:28:44"}
+{"level":"info","message":"📊 Health check: http://localhost:3000/health","service":"user-service","timestamp":"2025-10-12 03:28:44"}
+{"level":"info","message":"🌐 Acessível externamente em: http://0.0.0.0:3000","service":"user-service","timestamp":"2025-10-12 03:28:44"}
+{"level":"warn","message":"Endpoint não encontrado: HEAD /","service":"user-service","timestamp":"2025-10-12 03:50:41"}
+{"level":"warn","message":"Endpoint não encontrado: GET /","service":"user-service","timestamp":"2025-10-12 03:50:41"}
+{"level":"warn","message":"Endpoint não encontrado: GET /","service":"user-service","timestamp":"2025-10-12 03:50:41"}
+{"level":"warn","message":"Endpoint não encontrado: GET /","service":"user-service","timestamp":"2025-10-12 03:50:56"}
+{"level":"warn","message":"Endpoint não encontrado: GET /favicon.ico","service":"user-service","timestamp":"2025-10-12 03:50:56"}
+{"level":"warn","message":"Endpoint não encontrado: GET /","service":"user-service","timestamp":"2025-10-12 03:51:10"}

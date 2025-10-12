@@ -48,11 +48,11 @@ export const registerApi = async (credentials: RegisterCredentials): Promise<Aut
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        nome: credentials.name,
+        nome: credentials.nome,
         email: credentials.email,
-        senha: credentials.password,
-        dataNascimento: credentials.dateOfBirth,
-        cidade: credentials.city,
+        senha: credentials.senha,
+        dataNascimento: credentials.dataNascimento,
+        cidade: credentials.cidade,
       }),
     });
 

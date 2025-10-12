@@ -13,8 +13,8 @@ async function startServer() {
     await initializeDatabase();
 
     // Em seguida, inicializa as tabelas
-    console.log('🔄 Inicializando tabelas do banco de dados...');
-    await initTables();
+    // console.log('🔄 Inicializando tabelas do banco de dados...');
+    // await initTables();
     
     // Depois inicia o servidor
     const server = app.listen(PORT, '0.0.0.0', () => {
