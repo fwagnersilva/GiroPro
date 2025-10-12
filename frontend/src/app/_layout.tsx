@@ -12,7 +12,8 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { KeyboardProvider } from 'react-native-keyboard-controller';
 
 import { APIProvider } from '@/api';
-import { hydrateAuth, loadSelectedTheme } from '@/lib';
+import { hydrateAuth } from '@/lib';
+import { loadSelectedTheme } from '@/lib/hooks/use-selected-theme';
 import { useThemeConfig } from '@/lib/use-theme-config';
 import { ThemeProvider } from '@/lib/providers/theme-provider';
 

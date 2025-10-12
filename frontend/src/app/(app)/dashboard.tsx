@@ -1,77 +1,25 @@
 import React, { useState } from 'react';
-import { ScrollView, Pressable } from 'react-native';
+import { ScrollView, Pressable, ActivityIndicator } from 'react-native';
 import { FocusAwareStatusBar, Text, View } from '@/components/ui';
-<<<<<<< HEAD
 import { useAuth } from '@/lib';
-=======
->>>>>>> b929df65fb738a91ac9dd02ae198b0b42f48cb4e
+import { useDashboard } from '@/lib/hooks/useDashboard';
 
 type PeriodFilter = 'hoje' | 'ontem' | 'semana' | 'mes';
 
 export default function Dashboard() {
-<<<<<<< HEAD
   const { user } = useAuth();
   const userName = user?.nome || 'Usuário';
   const [selectedPeriod, setSelectedPeriod] = useState<PeriodFilter>('mes');
-=======
-return (
-<View className={`flex-1 bg-gray-900`}>
-<FocusAwareStatusBar />
-<ScrollView className="flex-1 px-6 py-8">
-<View className="mb-6">
-<Text className="text-3xl font-extrabold text-white mb-1">Olá, motorista</Text>
-<Text className="text-slate-300">Painel com métricas rápidas e ações</Text>
-</View>
->>>>>>> b929df65fb738a91ac9dd02ae198b0b42f48cb4e
 
-  // Mock data - substituir por dados reais da API
-  const dashboardData = {
-    financeiro: {
-      faturamentoTotal: 4340.00,
-      despesasTotais: 1890.00,
-      lucroLiquido: 2450.00,
-      variacao: {
-        faturamento: 22,
-        despesas: 8,
-        lucro: 15
-      }
-    },
-    operacional: {
-      totalJornadas: 18,
-      diasTrabalhados: 22,
-      horasTrabalhadas: 176,
-      mediaHorasDia: 8.0,
-      distanciaTotal: 3240
-    },
-    estrategico: {
-      valorPorKm: 1.34,
-      consumoMedio: 11.8,
-      custoPorKm: 0.58,
-      ticketMedio: 24.11,
-      abastecimentos: 23
-    },
-    melhoresDias: [
-      { dia: 'Sexta-feira', valor: 312.50, jornadas: 2 },
-      { dia: 'Sábado', valor: 287.80, jornadas: 2 },
-      { dia: 'Quinta-feira', valor: 265.30, jornadas: 1 }
-    ]
-  };
+  // Buscar dados reais do dashboard
+  const { data: dashboardData, isLoading, isError, error } = useDashboard({ periodo: selectedPeriod });
 
-<<<<<<< HEAD
   const formatCurrency = (value: number) => {
     return new Intl.NumberFormat('pt-BR', {
       style: 'currency',
       currency: 'BRL'
-    }).format(value);
+    }).format(value / 100);
   };
-=======
-<View className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-<View className={`bg-gray-800 rounded-lg p-5 border border-slate-700 shadow-sm`}>
-<Text className="text-green-400 font-semibold text-sm">Lucro Líquido</Text>
-<Text className="text-3xl font-bold text-white mt-2">R$ 2.450</Text>
-<Text className="text-green-300 text-xs mt-1">+15% este mês</Text>
-</View>
->>>>>>> b929df65fb738a91ac9dd02ae198b0b42f48cb4e
 
   const getPeriodLabel = (period: PeriodFilter) => {
     const labels = {
@@ -83,21 +31,12 @@ return (
     return labels[period];
   };
 
-<<<<<<< HEAD
   const periods: { key: PeriodFilter; label: string }[] = [
     { key: 'hoje', label: 'Hoje' },
     { key: 'ontem', label: 'Ontem' },
     { key: 'semana', label: 'Esta Semana' },
     { key: 'mes', label: 'Este Mês' }
   ];
-=======
-<View className={`bg-gray-800 rounded-lg p-5 border border-slate-700 shadow-sm`}>
-<Text className="text-red-400 font-semibold text-sm">Despesas Totais</Text>
-<Text className="text-3xl font-bold text-white mt-2">R$ 1.890</Text>
-<Text className="text-red-300 text-xs mt-1">+8% este mês</Text>
-</View>
-</View>
->>>>>>> b929df65fb738a91ac9dd02ae198b0b42f48cb4e
 
   const MetricCard = ({ 
     label, 
@@ -122,7 +61,6 @@ return (
       cyan: 'text-cyan-400'
     };
 
-<<<<<<< HEAD
     const subtextColorClasses = {
       blue: 'text-blue-500',
       green: 'text-green-500',
@@ -149,6 +87,45 @@ return (
       </View>
     );
   };
+
+  // Loading state
+  if (isLoading) {
+    return (
+      <View className="flex-1 bg-slate-950 items-center justify-center">
+        <FocusAwareStatusBar />
+        <ActivityIndicator size="large" color="#3b82f6" />
+        <Text className="text-white mt-4">Carregando dashboard...</Text>
+      </View>
+    );
+  }
+
+  // Error state
+  if (isError) {
+    return (
+      <View className="flex-1 bg-slate-950 items-center justify-center px-4">
+        <FocusAwareStatusBar />
+        <Text className="text-6xl mb-4">⚠️</Text>
+        <Text className="text-white text-xl font-bold mb-2">Erro ao carregar dados</Text>
+        <Text className="text-slate-400 text-center">
+          {error instanceof Error ? error.message : 'Tente novamente mais tarde'}
+        </Text>
+      </View>
+    );
+  }
+
+  // No data state
+  if (!dashboardData) {
+    return (
+      <View className="flex-1 bg-slate-950 items-center justify-center px-4">
+        <FocusAwareStatusBar />
+        <Text className="text-6xl mb-4">📊</Text>
+        <Text className="text-white text-xl font-bold mb-2">Nenhum dado disponível</Text>
+        <Text className="text-slate-400 text-center">
+          Comece registrando suas jornadas e despesas
+        </Text>
+      </View>
+    );
+  }
 
   return (
     <View className="flex-1 bg-slate-950">
@@ -199,9 +176,6 @@ return (
               <Text className="text-xl font-bold text-white">
                 💰 Resumo Financeiro
               </Text>
-              <Pressable className="bg-slate-800 px-3 py-1.5 rounded-lg">
-                <Text className="text-slate-300 text-xs">Ver detalhes</Text>
-              </Pressable>
             </View>
             
             <View className="space-y-3">
@@ -290,13 +264,13 @@ return (
               <View className="flex-row gap-3">
                 <MetricCard
                   label="Valor por KM"
-                  value={formatCurrency(dashboardData.estrategico.valorPorKm)}
+                  value={formatCurrency(dashboardData.estrategico.valorPorKm * 100)}
                   subtext="receita/km"
                   color="green"
                 />
                 <MetricCard
                   label="Custo por KM"
-                  value={formatCurrency(dashboardData.estrategico.custoPorKm)}
+                  value={formatCurrency(dashboardData.estrategico.custoPorKm * 100)}
                   subtext="despesa/km"
                   color="red"
                 />
@@ -311,7 +285,7 @@ return (
                 />
                 <MetricCard
                   label="Ticket Médio"
-                  value={formatCurrency(dashboardData.estrategico.ticketMedio)}
+                  value={formatCurrency(dashboardData.estrategico.ticketMedio * 100)}
                   subtext="por corrida"
                   color="purple"
                 />
@@ -329,84 +303,45 @@ return (
           </View>
 
           {/* Top 3 Melhores Dias */}
-          <View>
-            <Text className="text-xl font-bold text-white mb-4">
-              🏆 Top 3 Melhores Dias
-            </Text>
-            
-            <View className="space-y-3">
-              {dashboardData.melhoresDias.map((dia, index) => (
-                <View 
-                  key={index}
-                  className="bg-slate-800 border border-slate-700 rounded-xl p-4 flex-row items-center"
-                >
-                  <View className="w-10 h-10 rounded-full bg-gradient-to-br from-yellow-400 to-yellow-600 items-center justify-center mr-4">
-                    <Text className="text-slate-900 font-bold text-lg">
-                      {index + 1}
-                    </Text>
-                  </View>
-                  
-                  <View className="flex-1">
-                    <Text className="text-white font-semibold text-base">
-                      {dia.dia}
-                    </Text>
-                    <Text className="text-slate-400 text-xs mt-0.5">
-                      {dia.jornadas} {dia.jornadas === 1 ? 'jornada' : 'jornadas'}
-                    </Text>
-                  </View>
-                  
-                  <View className="items-end">
-                    <Text className="text-green-400 font-bold text-xl">
-                      {formatCurrency(dia.valor)}
-                    </Text>
-                  </View>
-                </View>
-              ))}
-            </View>
-          </View>
-
-          {/* Ações Rápidas */}
-          <View>
-            <Text className="text-xl font-bold text-white mb-4">
-              ⚡ Ações Rápidas
-            </Text>
-            
-            <View className="flex-row gap-3">
-              <Pressable className="flex-1 bg-blue-600 rounded-xl p-4 active:bg-blue-700">
-                <Text className="text-white font-semibold text-center">
-                  Nova Jornada
-                </Text>
-              </Pressable>
+          {dashboardData.melhoresDias && dashboardData.melhoresDias.length > 0 && (
+            <View>
+              <Text className="text-xl font-bold text-white mb-4">
+                🏆 Top 3 Melhores Dias
+              </Text>
               
-              <Pressable className="flex-1 bg-slate-800 border border-slate-700 rounded-xl p-4 active:bg-slate-700">
-                <Text className="text-white font-semibold text-center">
-                  Nova Despesa
-                </Text>
-              </Pressable>
+              <View className="space-y-3">
+                {dashboardData.melhoresDias.map((dia, index) => (
+                  <View 
+                    key={index}
+                    className="bg-slate-800 border border-slate-700 rounded-xl p-4 flex-row items-center"
+                  >
+                    <View className="w-10 h-10 rounded-full bg-gradient-to-br from-yellow-400 to-yellow-600 items-center justify-center mr-4">
+                      <Text className="text-slate-900 font-bold text-lg">
+                        {index + 1}
+                      </Text>
+                    </View>
+                    
+                    <View className="flex-1">
+                      <Text className="text-white font-semibold text-base">
+                        {dia.dia}
+                      </Text>
+                      <Text className="text-slate-400 text-xs mt-0.5">
+                        {dia.jornadas} {dia.jornadas === 1 ? 'jornada' : 'jornadas'}
+                      </Text>
+                    </View>
+                    
+                    <View className="items-end">
+                      <Text className="text-green-400 font-bold text-xl">
+                        {formatCurrency(dia.valor * 100)}
+                      </Text>
+                    </View>
+                  </View>
+                ))}
+              </View>
             </View>
-          </View>
+          )}
         </View>
       </ScrollView>
     </View>
   );
 }
-=======
-<View className="grid grid-cols-1 md:grid-cols-4 gap-4">
-{[
-{ label: 'Total de Viagens', value: '47', tone: 'text-blue-300' },
-{ label: 'Distância', value: '3.240 km', tone: 'text-orange-300' },
-{ label: 'Consumo Médio', value: '11.8 km/l', tone: 'text-purple-300' },
-{ label: 'Abastecimentos', value: '23', tone: 'text-indigo-300' },
-].map((m) => (
-<View key={m.label} className={`bg-gray-800 rounded-lg p-4 border border-slate-700`}>
-<Text className={`text-sm font-medium ${m.tone}`}>{m.label}</Text>
-<Text className="text-2xl font-bold text-white mt-2">{m.value}</Text>
-</View>
-))}
-</View>
-</ScrollView>
-</View>
-);
-}
-
->>>>>>> b929df65fb738a91ac9dd02ae198b0b42f48cb4e

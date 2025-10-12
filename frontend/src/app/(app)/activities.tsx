@@ -1,13 +1,16 @@
 import React, { useState } from 'react';
-import { ScrollView, Pressable } from 'react-native';
+import { ScrollView, Pressable, ActivityIndicator, RefreshControl } from 'react-native';
 import { FocusAwareStatusBar, Text, View } from '@/components/ui';
+import { useJourneys } from '@/lib/hooks/useJourneys';
+import { useExpenses } from '@/lib/hooks/useExpenses';
+import { useFuelings } from '@/lib/hooks/useFuelings';
 
 type PeriodFilter = 'hoje' | 'ontem' | 'semana' | 'mes';
-type ActivityType = 'jornada' | 'despesa' | 'abastecimento' | 'manutencao';
+type ActivityType = 'jornada' | 'despesa' | 'abastecimento' | 'todas';
 
 interface Activity {
   id: string;
-  type: ActivityType;
+  type: Exclude<ActivityType, 'todas'>;
   title: string;
   description: string;
   value?: number;
@@ -19,73 +22,15 @@ interface Activity {
 
 export default function Activities() {
   const [selectedPeriod, setSelectedPeriod] = useState<PeriodFilter>('semana');
-  const [selectedType, setSelectedType] = useState<ActivityType | 'todas'>('todas');
+  const [selectedType, setSelectedType] = useState<ActivityType>('todas');
+  const [refreshing, setRefreshing] = useState(false);
 
-  // Mock data - substituir por dados reais da API
-  const activities: Activity[] = [
-    {
-      id: '1',
-      type: 'jornada',
-      title: 'Jornada Finalizada',
-      description: '8.5 horas trabalhadas • 142 km rodados',
-      value: 287.50,
-      date: '2025-10-12',
-      time: '18:30',
-      vehicleModel: 'Renault Logan'
-    },
-    {
-      id: '2',
-      type: 'abastecimento',
-      title: 'Abastecimento',
-      description: '42 litros • Posto Shell',
-      value: 231.00,
-      date: '2025-10-12',
-      time: '14:20',
-      vehicleModel: 'Renault Logan'
-    },
-    {
-      id: '3',
-      type: 'despesa',
-      title: 'Despesa Registrada',
-      description: 'Lavagem completa',
-      value: 50.00,
-      date: '2025-10-11',
-      time: '16:45',
-      vehicleModel: 'Renault Logan',
-      category: 'Limpeza'
-    },
-    {
-      id: '4',
-      type: 'jornada',
-      title: 'Jornada Finalizada',
-      description: '6.0 horas trabalhadas • 98 km rodados',
-      value: 198.30,
-      date: '2025-10-11',
-      time: '13:15',
-      vehicleModel: 'Renault Logan'
-    },
-    {
-      id: '5',
-      type: 'manutencao',
-      title: 'Manutenção Realizada',
-      description: 'Troca de óleo e filtros',
-      value: 280.00,
-      date: '2025-10-10',
-      time: '10:30',
-      vehicleModel: 'Renault Logan',
-      category: 'Manutenção'
-    },
-    {
-      id: '6',
-      type: 'jornada',
-      title: 'Jornada Finalizada',
-      description: '9.0 horas trabalhadas • 156 km rodados',
-      value: 312.50,
-      date: '2025-10-09',
-      time: '19:00',
-      vehicleModel: 'Renault Logan'
-    }
-  ];
+  // Buscar dados reais
+  const { data: journeys, isLoading: loadingJourneys, refetch: refetchJourneys } = useJourneys({ periodo: selectedPeriod });
+  const { data: expenses, isLoading: loadingExpenses, refetch: refetchExpenses } = useExpenses({ periodo: selectedPeriod });
+  const { data: fuelings, isLoading: loadingFuelings, refetch: refetchFuelings } = useFuelings({ periodo: selectedPeriod });
+
+  const isLoading = loadingJourneys || loadingExpenses || loadingFuelings;
 
   const periods: { key: PeriodFilter; label: string }[] = [
     { key: 'hoje', label: 'Hoje' },
@@ -94,23 +39,22 @@ export default function Activities() {
     { key: 'mes', label: 'Este Mês' }
   ];
 
-  const activityTypes: { key: ActivityType | 'todas'; label: string; icon: string }[] = [
+  const activityTypes: { key: ActivityType; label: string; icon: string }[] = [
     { key: 'todas', label: 'Todas', icon: '📋' },
     { key: 'jornada', label: 'Jornadas', icon: '🚗' },
     { key: 'despesa', label: 'Despesas', icon: '💸' },
-    { key: 'abastecimento', label: 'Abastecimento', icon: '⛽' },
-    { key: 'manutencao', label: 'Manutenção', icon: '🔧' }
+    { key: 'abastecimento', label: 'Abastecimento', icon: '⛽' }
   ];
 
   const formatCurrency = (value: number) => {
     return new Intl.NumberFormat('pt-BR', {
       style: 'currency',
       currency: 'BRL'
-    }).format(value);
+    }).format(value / 100);
   };
 
   const formatDate = (dateStr: string) => {
-    const date = new Date(dateStr + 'T00:00:00');
+    const date = new Date(dateStr);
     const today = new Date();
     const yesterday = new Date(today);
     yesterday.setDate(yesterday.getDate() - 1);
@@ -124,43 +68,107 @@ export default function Activities() {
     }
   };
 
-  const getActivityIcon = (type: ActivityType) => {
+  const formatTime = (dateStr: string) => {
+    const date = new Date(dateStr);
+    return date.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+  };
+
+  const getActivityIcon = (type: Exclude<ActivityType, 'todas'>) => {
     const icons = {
       jornada: '🚗',
       despesa: '💸',
-      abastecimento: '⛽',
-      manutencao: '🔧'
+      abastecimento: '⛽'
     };
     return icons[type];
   };
 
-  const getActivityColor = (type: ActivityType) => {
+  const getActivityColor = (type: Exclude<ActivityType, 'todas'>) => {
     const colors = {
       jornada: 'bg-green-100 border-green-300',
       despesa: 'bg-red-100 border-red-300',
-      abastecimento: 'bg-blue-100 border-blue-300',
-      manutencao: 'bg-orange-100 border-orange-300'
+      abastecimento: 'bg-blue-100 border-blue-300'
     };
     return colors[type];
   };
 
-  const getActivityValueColor = (type: ActivityType) => {
+  const getActivityValueColor = (type: Exclude<ActivityType, 'todas'>) => {
     const colors = {
       jornada: 'text-green-600',
       despesa: 'text-red-600',
-      abastecimento: 'text-blue-600',
-      manutencao: 'text-orange-600'
+      abastecimento: 'text-blue-600'
     };
     return colors[type];
   };
 
-  const filteredActivities = activities.filter(activity => {
-    if (selectedType !== 'todas' && activity.type !== selectedType) {
-      return false;
-    }
-    // Aqui você implementaria a lógica real de filtro por período
-    return true;
-  });
+  // Converter dados da API em atividades
+  const activities: Activity[] = [];
+
+  // Adicionar jornadas
+  if (journeys) {
+    journeys.forEach(journey => {
+      activities.push({
+        id: journey.id,
+        type: 'jornada',
+        title: 'Jornada Finalizada',
+        description: `${journey.duracaoHoras || 0} horas trabalhadas • ${journey.distanciaTotal || 0} km rodados`,
+        value: journey.valorTotal,
+        date: journey.dataFim || journey.dataInicio,
+        time: formatTime(journey.dataFim || journey.dataInicio),
+        vehicleModel: journey.vehicleModel
+      });
+    });
+  }
+
+  // Adicionar despesas
+  if (expenses) {
+    expenses.forEach(expense => {
+      activities.push({
+        id: expense.id,
+        type: 'despesa',
+        title: 'Despesa Registrada',
+        description: expense.description,
+        value: expense.value,
+        date: expense.date,
+        time: formatTime(expense.createdAt || expense.date),
+        vehicleModel: expense.vehicleModel,
+        category: expense.category
+      });
+    });
+  }
+
+  // Adicionar abastecimentos
+  if (fuelings) {
+    fuelings.forEach(fueling => {
+      activities.push({
+        id: fueling.id,
+        type: 'abastecimento',
+        title: 'Abastecimento',
+        description: `${fueling.liters} litros • ${fueling.posto || 'Posto não informado'}`,
+        value: fueling.totalValue,
+        date: fueling.date,
+        time: formatTime(fueling.createdAt || fueling.date),
+        vehicleModel: fueling.vehicleModel
+      });
+    });
+  }
+
+  // Ordenar por data (mais recentes primeiro)
+  activities.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+
+  // Filtrar por tipo
+  const filteredActivities = selectedType === 'todas' 
+    ? activities 
+    : activities.filter(activity => activity.type === selectedType);
+
+  const onRefresh = async () => {
+    setRefreshing(true);
+    await Promise.all([
+      refetchJourneys(),
+      refetchExpenses(),
+      refetchFuelings()
+    ]);
+    setRefreshing(false);
+  };
 
   return (
     <View className="flex-1 bg-gray-50">
@@ -169,6 +177,9 @@ export default function Activities() {
       <ScrollView 
         className="flex-1"
         contentContainerStyle={{ paddingBottom: 24 }}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
       >
         {/* Header */}
         <View className="bg-gradient-to-br from-blue-500 to-blue-600 px-4 pt-8 pb-6 mb-4">
@@ -252,7 +263,12 @@ export default function Activities() {
               {filteredActivities.length} {filteredActivities.length === 1 ? 'atividade' : 'atividades'}
             </Text>
             
-            {filteredActivities.length > 0 ? (
+            {isLoading ? (
+              <View className="items-center py-12">
+                <ActivityIndicator size="large" color="#3b82f6" />
+                <Text className="text-gray-500 mt-4">Carregando atividades...</Text>
+              </View>
+            ) : filteredActivities.length > 0 ? (
               <View className="space-y-3">
                 {filteredActivities.map((activity) => (
                   <Pressable
