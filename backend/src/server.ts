@@ -2,11 +2,8 @@ import { config } from './config';
 import app from './app';
 import logger from './utils/logger';
 import { initTables, initializeDatabase, getClient } from './db';
-import { corsConfig } from './middlewares/cors';
 
 const PORT = Number(config.port);
-
-app.use(corsConfig);
 
 // Função assíncrona para inicializar servidor
 async function startServer() {

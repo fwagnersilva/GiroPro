@@ -4,9 +4,9 @@ dotenv.config();
 import express, { Request, Response, NextFunction } from 'express';
 import compression from 'compression';
 import helmet from 'helmet';
-import cors from 'cors';
 
 import { config } from './config';
+import { corsConfig } from './middlewares/cors';
 
 // ===== IMPORTAÇÕES DE ROTAS =====
 import { authRoutes } from './routes/auth';
@@ -34,8 +34,6 @@ import { requestLogger } from './middlewares/requestLogger';
 import logger from './utils/logger';
 import { authRateLimit, generalRateLimit } from './middlewares/rateLimiter';
 
-// Removido: asyncHandler não é usado neste arquivo
-
 const app = express();
 
 const PORT = Number(config.port);
@@ -43,7 +41,7 @@ const PORT = Number(config.port);
 // ===== MIDDLEWARES GLOBAIS =====
 app.use(helmet(config.security.helmet));
 app.disable('x-powered-by');
-app.use(cors(config.cors));
+app.use(corsConfig);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(requestLogger);
