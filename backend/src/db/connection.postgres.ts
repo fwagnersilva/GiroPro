@@ -9,12 +9,13 @@ if (!process.env.DATABASE_URL) {
 
 console.log('🔌 Configurando conexão PostgreSQL...');
 
-// Criar pool de conexão
+// Criar pool de conexão com SSL
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
   max: 20,
   idleTimeoutMillis: 30000,
   connectionTimeoutMillis: 2000,
+  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
 });
 
 // Criar instância do drizzle
@@ -29,8 +30,6 @@ pool.on('error', (err) => {
   console.error('❌ Erro inesperado no cliente PostgreSQL:', err);
 });
 
-// Testar conexão inicial (opcional - comentado para evitar race condition)
-// O teste de conexão será feito em initTables.ts
 const maskedUrl = process.env.DATABASE_URL?.replace(/\/\/.*:.*@/, '//***:***@');
 console.log(`🔗 Pool PostgreSQL configurado: ${maskedUrl}`);
 
@@ -45,12 +44,12 @@ async function closeConnection() {
   }
 }
 
-// Exportar usando CommonJS para compatibilidade com require()
+// Exportar usando CommonJS
 module.exports = {
   db,
   pool,
   closeConnection
 };
 
-// Também exportar para ES6
+// Exportar para ES6
 export { db, pool, closeConnection };
