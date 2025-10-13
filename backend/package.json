@@ -57,7 +57,7 @@
   },
   "devDependencies": {
     "@jest/globals": "^30.2.0",
-    "@playwright/test": "^1.54.1",
+    "@playwright/test": "^1.56.0",
     "@types/bcrypt": "^5.0.0",
     "@types/compression": "^1.7.5",
     "@types/cors": "^2.8.19",
