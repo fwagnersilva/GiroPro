@@ -14,4 +14,12 @@ declare global {
   }
 }
 
-export {};
+export interface AuthenticatedRequest extends Request {
+  user?: {
+    id: string;
+    email: string;
+    nome: string;
+    role: string;
+  };
+  userId?: string;
+}
