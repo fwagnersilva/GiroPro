@@ -28,7 +28,7 @@
       "@/*": ["src/*"]
     },
     "typeRoots": ["./node_modules/@types"],
-    "types": ["node", "express"],
+    "types": ["node"],
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "skipDefaultLibCheck": true
