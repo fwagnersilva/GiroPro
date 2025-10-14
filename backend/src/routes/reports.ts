@@ -2,7 +2,7 @@ import { Router } from "express";
 import { authMiddleware } from "../middlewares/auth";
 import { ReportsController } from "../controllers/reportsController";
 import { WeeklyMonthlyReportsController } from "../controllers/weeklyMonthlyReportsController";
-import { AuthenticatedRequest } from "../types/auth";
+import { AuthenticatedRequest } from '../types';
 
 const router = Router();
 

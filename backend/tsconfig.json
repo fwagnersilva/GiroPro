@@ -14,8 +14,9 @@
     "declaration": true,
     "sourceMap": true,
     "removeComments": true,
-    "downlevelIteration": true
+    "downlevelIteration": true,
+    "allowJs": true
   },
   "include": ["src/**/*.ts"],
-  "exclude": ["node_modules", "src/__tests__", "src/tests", "dist"]
+  "exclude": ["node_modules", "src/__tests__", "src/tests", "dist", "src/**/*.d.ts"]
 }

@@ -3,7 +3,7 @@ import { z } from 'zod';
 import { db } from '../db';
 import { jornadas, abastecimentos, despesas, veiculos } from '../db/schema.postgres';
 import { eq, and, isNull, isNotNull, sql, gte, lte, sum, count, avg, desc, ne } from 'drizzle-orm';
-import { AuthenticatedRequest } from '../types/auth';
+import { AuthenticatedRequest } from '../types';
 import { generateJourneysCsv } from '../utils/csv_utils';
 import { generateExpensesPdf } from "../utils/pdf_utils";
 

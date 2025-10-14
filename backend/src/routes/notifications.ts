@@ -1,7 +1,7 @@
 import { Router, Request, Response, NextFunction } from 'express';
 import { NotificationsController } from '../controllers/notificationsController';
 import { authMiddleware } from '../middlewares/auth';
-import { AuthenticatedRequest } from '../types/auth';
+import { AuthenticatedRequest } from '../types';
 
 const router = Router();
 

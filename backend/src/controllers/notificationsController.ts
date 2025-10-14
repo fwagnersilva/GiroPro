@@ -1,7 +1,7 @@
 import { Response } from 'express';
 import { NotificationService, NotificationData } from '../services/notificationService';
 import { z } from 'zod';
-import { AuthenticatedRequest } from '../types/auth';
+import { AuthenticatedRequest } from '../types';
 
 // Interfaces
 

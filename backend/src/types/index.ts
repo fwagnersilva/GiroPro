@@ -361,3 +361,16 @@ export interface ServiceResult<T> {
   data?: T;
   error?: string;
 }
+
+export interface CacheConfig {
+  ttl: number; // Time to live in milliseconds
+  revalidate?: boolean; // Whether to revalidate cache in background
+}
+
+export interface ServiceResult<T> {
+  success: boolean;
+  message?: string;
+  data?: T;
+  error?: string;
+  details?: any;
+}

@@ -20,7 +20,7 @@ interface JWTPayload {
  * Verifica se o token fornecido no header Authorization é válido
  * e adiciona os dados do usuário ao objeto request
  */
-import { AuthenticatedRequest } from "../types/auth";
+import { AuthenticatedRequest } from '../types';
 
 const authMiddleware = (
   req: AuthenticatedRequest, 

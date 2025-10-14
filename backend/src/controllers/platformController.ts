@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { PlatformService } from '../services/platformService';
-import { AuthenticatedRequest } from '../types/auth';
+import { AuthenticatedRequest } from '../types';
 import { z } from 'zod';
 
 // Schemas de validação para plataformas
