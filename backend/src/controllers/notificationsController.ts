@@ -1,7 +1,6 @@
 import { Response } from 'express';
 import { NotificationService, NotificationData } from '../services/notificationService';
 import { z } from 'zod';
-import { AuthenticatedRequest } from '../types';
 
 // Interfaces
 
@@ -43,8 +42,8 @@ export class NotificationsController {
   /**
    * Valida se o usuário está autenticado
    */
-  private static validateAuth(req: AuthenticatedRequest): string | null {
-    return req.user?.id || null;
+  private static validateAuth(req: Request): string | null {
+    return (req as any).user?.id || null;
   }
 
   /**
@@ -72,7 +71,7 @@ export class NotificationsController {
   /**
    * Criar uma nova notificação
    */
-  static async createNotification(req: AuthenticatedRequest, res: Response): Promise<Response> {
+  static async createNotification(req: Request, res: Response): Promise<Response> {
     try {
       const userId = NotificationsController.validateAuth(req);
       if (!userId) {
@@ -115,7 +114,7 @@ export class NotificationsController {
   /**
    * Buscar notificações do usuário
    */
-  static async getNotifications(req: AuthenticatedRequest, res: Response): Promise<Response> {
+  static async getNotifications(req: Request, res: Response): Promise<Response> {
     try {
       const userId = NotificationsController.validateAuth(req);
       if (!userId) {
@@ -168,7 +167,7 @@ export class NotificationsController {
   /**
    * Marcar notificação como lida
    */
-  static async markAsRead(req: AuthenticatedRequest, res: Response): Promise<Response> {
+  static async markAsRead(req: Request, res: Response): Promise<Response> {
     try {
       const userId = NotificationsController.validateAuth(req);
       if (!userId) {
@@ -200,7 +199,7 @@ export class NotificationsController {
   /**
    * Marcar todas as notificações como lidas
    */
-  static async markAllAsRead(req: AuthenticatedRequest, res: Response): Promise<Response> {
+  static async markAllAsRead(req: Request, res: Response): Promise<Response> {
     try {
       const userId = NotificationsController.validateAuth(req);
       if (!userId) {
@@ -224,7 +223,7 @@ export class NotificationsController {
   /**
    * Obter contagem de notificações não lidas
    */
-  static async getUnreadCount(req: AuthenticatedRequest, res: Response): Promise<Response> {
+  static async getUnreadCount(req: Request, res: Response): Promise<Response> {
     try {
       const userId = NotificationsController.validateAuth(req);
       if (!userId) {
@@ -247,7 +246,7 @@ export class NotificationsController {
   /**
    * Deletar notificação
    */
-  static async deleteNotification(req: AuthenticatedRequest, res: Response): Promise<Response> {
+  static async deleteNotification(req: Request, res: Response): Promise<Response> {
     try {
       const userId = NotificationsController.validateAuth(req);
       if (!userId) {
@@ -279,7 +278,7 @@ export class NotificationsController {
   /**
    * Processar notificações automáticas
    */
-  static async processAutomaticNotifications(req: AuthenticatedRequest, res: Response): Promise<Response> {
+  static async processAutomaticNotifications(req: Request, res: Response): Promise<Response> {
     try {
       const userId = NotificationsController.validateAuth(req);
       if (!userId) {
@@ -303,7 +302,7 @@ export class NotificationsController {
   /**
    * Gerar notificação de teste
    */
-  static async generateTestNotification(req: AuthenticatedRequest, res: Response): Promise<Response> {
+  static async generateTestNotification(req: Request, res: Response): Promise<Response> {
     try {
       const userId = NotificationsController.validateAuth(req);
       if (!userId) {

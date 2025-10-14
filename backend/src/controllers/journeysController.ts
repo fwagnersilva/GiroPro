@@ -36,7 +36,6 @@ interface PaginationMeta {
   hasPrev: boolean;
 }
 
-import { AuthenticatedRequest } from "../middlewares/authMiddleware";
 
 // ===============================
 // SCHEMAS DE VALIDAÇÃO
@@ -87,8 +86,8 @@ const cache = new Cache({
 // HELPER FUNCTIONS
 // ===============================
 
-const extractUserId = (req: AuthenticatedRequest): string | null => {
-  return req.user?.id || null;
+const extractUserId = (req: Request): string | null => {
+  return (req as any).user?.id || null;
 };
 
 const generateCacheKey = (userId: string, operation: string, params?: Record<string, any>): string => {
@@ -142,7 +141,7 @@ const logPerformance = (operation: string, queryTime: number, cacheHit: boolean 
 // CONTROLLER FUNCTIONS OTIMIZADAS
 // ===============================
 
-export const createJourney = async (req: AuthenticatedRequest, res: Response) => {
+export const createJourney = async (req: Request, res: Response) => {
   const startTime = performance.now();
   
   try {
@@ -210,7 +209,7 @@ export const createJourney = async (req: AuthenticatedRequest, res: Response) =>
   }
 };
 
-export const getJourneys = async (req: AuthenticatedRequest, res: Response) => {
+export const getJourneys = async (req: Request, res: Response) => {
   const startTime = performance.now();
   
   try {
@@ -301,7 +300,7 @@ export const getJourneys = async (req: AuthenticatedRequest, res: Response) => {
   }
 };
 
-export const getJourneyById = async (req: AuthenticatedRequest, res: Response) => {
+export const getJourneyById = async (req: Request, res: Response) => {
   const startTime = performance.now();
   
   try {
@@ -377,7 +376,7 @@ export const getJourneyById = async (req: AuthenticatedRequest, res: Response) =
   }
 };
 
-export const updateJourney = async (req: AuthenticatedRequest, res: Response) => {
+export const updateJourney = async (req: Request, res: Response) => {
   const startTime = performance.now();
   
   try {
@@ -461,7 +460,7 @@ export const updateJourney = async (req: AuthenticatedRequest, res: Response) =>
   }
 };
 
-export const deleteJourney = async (req: AuthenticatedRequest, res: Response) => {
+export const deleteJourney = async (req: Request, res: Response) => {
   const startTime = performance.now();
   
   try {
@@ -532,7 +531,7 @@ export const deleteJourney = async (req: AuthenticatedRequest, res: Response) =>
 // ENDPOINTS ADICIONAIS OTIMIZADOS
 // ===============================
 
-export const getJourneyStats = async (req: AuthenticatedRequest, res: Response) => {
+export const getJourneyStats = async (req: Request, res: Response) => {
   const startTime = performance.now();
   
   try {

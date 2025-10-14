@@ -1,7 +1,6 @@
 import { Router } from 'express';
 import { AuthController } from '../controllers/authController';
 import { authMiddleware, roleMiddleware } from '../middleware/auth';
-import { AuthenticatedRequest } from '../types';
 
 import { validate } from '../middlewares/validateRequest';
 import { 

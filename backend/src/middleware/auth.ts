@@ -17,7 +17,7 @@ export const authMiddleware = (req: AuthenticatedRequest, res: Response, next: N
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as any;
-    req.user = decoded;
+    (req as any).user = decoded;
     return next();
   } catch (err) {
     return res.status(401).json({ message: 'Token is not valid' });
@@ -26,7 +26,7 @@ export const authMiddleware = (req: AuthenticatedRequest, res: Response, next: N
 
 export const roleMiddleware = (roles: string[]) => {
   return (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
-    if (!req.user || !roles.includes(req.user.role)) {
+    if (!(req as any).user || !roles.includes((req as any).user.role)) {
       return res.status(403).json({ message: 'Forbidden' });
     }
     return next();

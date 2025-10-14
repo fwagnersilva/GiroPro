@@ -13,7 +13,7 @@ interface AuthRequest extends Omit<Request, 'user'> {
 export class InsightsController {
   static async generateInsights(req: AuthRequest, res: Response): Promise<void> {
     try {
-      const userId = req.user?.id || req.userId;
+      const userId = (req as any).user?.id || (req as any).userId;
       if (!userId) {
         res.status(401).json({ error: 'Não autenticado' });
         return;
@@ -37,7 +37,7 @@ export class InsightsController {
 
   static async getInsightsSummary(req: AuthRequest, res: Response): Promise<void> {
     try {
-      const userId = req.user?.id || req.userId;
+      const userId = (req as any).user?.id || (req as any).userId;
       if (!userId) {
         res.status(401).json({ error: 'Não autenticado' });
         return;
@@ -55,7 +55,7 @@ export class InsightsController {
 
   static async getEfficiencyMetrics(req: AuthRequest, res: Response): Promise<void> {
     try {
-      const userId = req.user?.id || req.userId;
+      const userId = (req as any).user?.id || (req as any).userId;
       if (!userId) {
         res.status(401).json({ error: 'Não autenticado' });
         return;
@@ -73,7 +73,7 @@ export class InsightsController {
 
   static async getTrends(req: AuthRequest, res: Response): Promise<void> {
     try {
-      const userId = req.user?.id || req.userId;
+      const userId = (req as any).user?.id || (req as any).userId;
       if (!userId) {
         res.status(401).json({ error: 'Não autenticado' });
         return;
@@ -91,7 +91,7 @@ export class InsightsController {
 
   static async getSeasonality(req: AuthRequest, res: Response): Promise<void> {
     try {
-      const userId = req.user?.id || req.userId;
+      const userId = (req as any).user?.id || (req as any).userId;
       if (!userId) {
         res.status(401).json({ error: 'Não autenticado' });
         return;
@@ -109,7 +109,7 @@ export class InsightsController {
 
   static async getCostAnalysis(req: AuthRequest, res: Response): Promise<void> {
     try {
-      const userId = req.user?.id || req.userId;
+      const userId = (req as any).user?.id || (req as any).userId;
       if (!userId) {
         res.status(401).json({ error: 'Não autenticado' });
         return;

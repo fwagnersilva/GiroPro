@@ -1,7 +1,6 @@
 import { Router, Request, Response, NextFunction } from 'express';
 import { NotificationsController } from '../controllers/notificationsController';
 import { authMiddleware } from '../middlewares/auth';
-import { AuthenticatedRequest } from '../types';
 
 const router = Router();
 
@@ -11,7 +10,7 @@ router.use(authMiddleware);
 // Wrapper functions para converter métodos estáticos para RequestHandler
 const createNotificationWrapper = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    await NotificationsController.createNotification(req as AuthenticatedRequest, res);
+    await NotificationsController.createNotification(req as any, res);
   } catch (error) {
     next(error);
   }
@@ -19,7 +18,7 @@ const createNotificationWrapper = async (req: Request, res: Response, next: Next
 
 const getNotificationsWrapper = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    await NotificationsController.getNotifications(req as AuthenticatedRequest, res);
+    await NotificationsController.getNotifications(req as any, res);
   } catch (error) {
     next(error);
   }
@@ -27,7 +26,7 @@ const getNotificationsWrapper = async (req: Request, res: Response, next: NextFu
 
 const markAsReadWrapper = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    await NotificationsController.markAsRead(req as AuthenticatedRequest, res);
+    await NotificationsController.markAsRead(req as any, res);
   } catch (error) {
     next(error);
   }
@@ -35,7 +34,7 @@ const markAsReadWrapper = async (req: Request, res: Response, next: NextFunction
 
 const markAllAsReadWrapper = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    await NotificationsController.markAllAsRead(req as AuthenticatedRequest, res);
+    await NotificationsController.markAllAsRead(req as any, res);
   } catch (error) {
     next(error);
   }
@@ -43,7 +42,7 @@ const markAllAsReadWrapper = async (req: Request, res: Response, next: NextFunct
 
 const deleteNotificationWrapper = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    await NotificationsController.deleteNotification(req as AuthenticatedRequest, res);
+    await NotificationsController.deleteNotification(req as any, res);
   } catch (error) {
     next(error);
   }
@@ -51,7 +50,7 @@ const deleteNotificationWrapper = async (req: Request, res: Response, next: Next
 
 const getUnreadCountWrapper = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    await NotificationsController.getUnreadCount(req as AuthenticatedRequest, res);
+    await NotificationsController.getUnreadCount(req as any, res);
   } catch (error) {
     next(error);
   }
@@ -59,7 +58,7 @@ const getUnreadCountWrapper = async (req: Request, res: Response, next: NextFunc
 
 const generateInsightNotificationWrapper = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    await NotificationsController.generateTestNotification(req as AuthenticatedRequest, res);
+    await NotificationsController.generateTestNotification(req as any, res);
   } catch (error) {
     next(error);
   }
@@ -67,7 +66,7 @@ const generateInsightNotificationWrapper = async (req: Request, res: Response, n
 
 const generateTestNotificationWrapper = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    await NotificationsController.generateTestNotification(req as AuthenticatedRequest, res);
+    await NotificationsController.generateTestNotification(req as any, res);
   } catch (error) {
     next(error);
   }
@@ -75,7 +74,7 @@ const generateTestNotificationWrapper = async (req: Request, res: Response, next
 
 const processAutomaticNotificationsWrapper = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    await NotificationsController.processAutomaticNotifications(req as AuthenticatedRequest, res);
+    await NotificationsController.processAutomaticNotifications(req as any, res);
   } catch (error) {
     next(error);
   }

@@ -4,7 +4,6 @@ import { db } from '../db';
 import { jornadas, abastecimentos, despesas, veiculos } from '../db/schema.postgres';
 import { eq, and, isNull, isNotNull, sql, gte, lte, sum, count, inArray } from 'drizzle-orm';
 import type { ServiceResult, CacheConfig } from '../types';
-import { AuthenticatedRequest } from '../types';
 
 // Classes de erro
 class UnauthorizedError extends Error {

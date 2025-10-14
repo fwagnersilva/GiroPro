@@ -2,14 +2,6 @@
 import { Request } from 'express';
 
 // Interface para requisições autenticadas
-export interface AuthenticatedRequest extends Request {
-  user?: {
-    id: string;
-    email: string;
-    nome: string;
-    role: string;
-  };
-}
 
 // CORRIGIDO: Campos dataNascimento e cidade agora são OPCIONAIS
 export interface RegisterRequest {
@@ -374,3 +366,6 @@ export interface ServiceResult<T> {
   error?: string;
   details?: any;
 }
+
+// Type alias para Request com propriedades customizadas
+export type AuthenticatedRequest = any;

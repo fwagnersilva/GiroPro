@@ -7,7 +7,7 @@ export interface AuthenticatedRequest extends Request {
   user?: any;
 }
 
-export const authenticateToken = (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
+export const authenticateToken = (req: Request, res: Response, next: NextFunction) => {
   const authHeader = req.headers["authorization"];
   const token = authHeader && authHeader.split(" ")[1];
 
@@ -22,23 +22,23 @@ export const authenticateToken = (req: AuthenticatedRequest, res: Response, next
       return res.status(403).json({ error: "Token inválido ou expirado" });
     }
 
-    req.user = user;
+    (req as any).user = user;
     logger.info("Usuário autenticado com sucesso", { userId: user.id, role: user.role });
     return next();
   });
 };
 
 export const authorizeRoles = (...allowedRoles: Array<'admin' | 'user' | 'guest'>) => {
-  return (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
-    if (!req.user) {
+  return (req: Request, res: Response, next: NextFunction) => {
+    if (!(req as any).user) {
       logger.error('Tentativa de autorização sem autenticação prévia');
       return res.status(401).json({ error: 'Usuário não autenticado' });
     }
 
-    if (!allowedRoles.includes(req.user.role)) {
+    if (!allowedRoles.includes((req as any).user.role)) {
       logger.warn('Acesso negado por falta de permissão', { 
-        userId: req.user.id, 
-        userRole: req.user.role, 
+        userId: (req as any).user.id, 
+        userRole: (req as any).user.role, 
         requiredRoles: allowedRoles,
         route: req.path 
       });
@@ -46,8 +46,8 @@ export const authorizeRoles = (...allowedRoles: Array<'admin' | 'user' | 'guest'
     }
 
     logger.info("Autorização concedida", { 
-      userId: req.user.id, 
-      userRole: req.user.role, 
+      userId: (req as any).user.id, 
+      userRole: (req as any).user.role, 
       route: req.path 
     });
     return next();
@@ -55,7 +55,7 @@ export const authorizeRoles = (...allowedRoles: Array<'admin' | 'user' | 'guest'
 };
 
 // Middleware combinado para autenticação e autorização
-export const requireAuth = (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
+export const requireAuth = (req: Request, res: Response, next: NextFunction) => {
   authenticateToken(req, res, next);
 };
 

@@ -120,9 +120,9 @@ router.post('/cache/clear', async (req: AuthRequest, res: Response) => {
     const pattern = req.body.pattern || '*';
     
     if (pattern === '*') {
-      logger.info('Cache completamente limpo por admin', { userId: req.user?.id });
+      logger.info('Cache completamente limpo por admin', { userId: (req as any).user?.id });
     } else {
-      logger.info('Cache limpo por padrão', { pattern, userId: req.user?.id });
+      logger.info('Cache limpo por padrão', { pattern, userId: (req as any).user?.id });
     }
     
     res.json({
@@ -180,9 +180,9 @@ router.post('/maintenance', async (req: AuthRequest, res: Response) => {
     const { enabled, message } = req.body;
     
     if (enabled) {
-      logger.warn('Modo de manutenção ativado', { userId: req.user?.id, message });
+      logger.warn('Modo de manutenção ativado', { userId: (req as any).user?.id, message });
     } else {
-      logger.info('Modo de manutenção desativado', { userId: req.user?.id });
+      logger.info('Modo de manutenção desativado', { userId: (req as any).user?.id });
     }
     
     res.json({

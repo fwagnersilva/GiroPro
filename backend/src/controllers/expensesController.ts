@@ -1,5 +1,5 @@
 import { Response, Request, NextFunction } from 'express';
-import { AuthenticatedRequest, CreateExpenseRequest, UpdateExpenseRequest } from '../types/index';
+import { CreateExpenseRequest, UpdateExpenseRequest } from '../types';
 import { ExpenseService } from '../services/expenseService';
 import { z } from 'zod';
 
@@ -22,7 +22,7 @@ const idParamSchema = z.object({
 
 // Middleware para extrair e validar userId
 const extractUserId = (req: Request): string => {
-  const userId = (req as AuthenticatedRequest).user?.id;
+  const userId = (req as any).user?.id;
   
   if (!userId) {
     throw new Error('UNAUTHORIZED');

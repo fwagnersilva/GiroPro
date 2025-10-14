@@ -13,7 +13,7 @@ interface AuthRequest extends Omit<Request, 'user'> {
 export class MultiVehicleController {
   static async getVehiclesWithStats(req: AuthRequest, res: Response): Promise<void> {
     try {
-      const userId = req.user?.id || req.userId;
+      const userId = (req as any).user?.id || (req as any).userId;
       if (!userId) {
         res.status(401).json({ error: 'Não autenticado' });
         return;
@@ -32,7 +32,7 @@ export class MultiVehicleController {
 
   static async setActiveVehicle(req: AuthRequest, res: Response): Promise<void> {
     try {
-      const userId = req.user?.id || req.userId;
+      const userId = (req as any).user?.id || (req as any).userId;
       if (!userId) {
         res.status(401).json({ error: 'Não autenticado' });
         return;
@@ -57,7 +57,7 @@ export class MultiVehicleController {
 
   static async getQuickSummary(req: AuthRequest, res: Response): Promise<void> {
     try {
-      const userId = req.user?.id || req.userId;
+      const userId = (req as any).user?.id || (req as any).userId;
       if (!userId) {
         res.status(401).json({ error: 'Não autenticado' });
         return;
@@ -81,7 +81,7 @@ export class MultiVehicleController {
 
   static async getVehicleUsageHistory(req: AuthRequest, res: Response): Promise<void> {
     try {
-      const userId = req.user?.id || req.userId;
+      const userId = (req as any).user?.id || (req as any).userId;
       if (!userId) {
         res.status(401).json({ error: 'Não autenticado' });
         return;

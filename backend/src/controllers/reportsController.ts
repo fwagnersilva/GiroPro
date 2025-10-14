@@ -3,7 +3,6 @@ import { z } from 'zod';
 import { db } from '../db';
 import { jornadas, abastecimentos, despesas, veiculos } from '../db/schema.postgres';
 import { eq, and, isNull, isNotNull, sql, gte, lte, sum, count, avg, desc, ne } from 'drizzle-orm';
-import { AuthenticatedRequest } from '../types';
 import { generateJourneysCsv } from '../utils/csv_utils';
 import { generateExpensesPdf } from "../utils/pdf_utils";
 
@@ -171,8 +170,8 @@ export class ReportsController {
   /**
    * Valida autenticação do usuário
    */
-  private static validateAuth(req: AuthenticatedRequest): string | null {
-    return req.user?.id || null;
+  private static validateAuth(req: Request): string | null {
+    return (req as any).user?.id || null;
   }
 
   /**
@@ -202,7 +201,7 @@ export class ReportsController {
   /**
    * Valida parâmetros de consulta comuns
    */
-  public static validateQueryParams(req: AuthenticatedRequest) {
+  public static validateQueryParams(req: Request) {
     const userId = this.validateAuth(req);
     if (!userId) {
       return {
@@ -230,7 +229,7 @@ export class ReportsController {
   /**
    * Exportar relatório de jornadas em CSV
    */
-  static async getJourneysCsvReport(req: AuthenticatedRequest, res: Response): Promise<Response> {
+  static async getJourneysCsvReport(req: Request, res: Response): Promise<Response> {
     try {
       const validation = ReportsController.validateQueryParams(req);
       if (validation.error) {
@@ -290,7 +289,7 @@ export class ReportsController {
   /**
    * Exportar relatório de despesas em PDF
    */
-  static async getExpensesPdfReport(req: AuthenticatedRequest, res: Response): Promise<Response> {
+  static async getExpensesPdfReport(req: Request, res: Response): Promise<Response> {
     try {
       const validation = ReportsController.validateQueryParams(req);
       if (validation.error) {
@@ -342,9 +341,9 @@ export class ReportsController {
 
   // ====================== MÉTODOS FALTANTES ======================
 
-  static async getJourneyEarningsReport(req: AuthenticatedRequest, res: Response): Promise<Response> {
+  static async getJourneyEarningsReport(req: Request, res: Response): Promise<Response> {
     try {
-      const userId = req.user?.id;
+      const userId = (req as any).user?.id;
       if (!userId) {
         return ReportsController.errorResponse(res, 401, "Usuário não autenticado");
       }
@@ -400,9 +399,9 @@ export class ReportsController {
     }
   }
 
-  static async getExpenseAnalysisReport(req: AuthenticatedRequest, res: Response): Promise<Response> {
+  static async getExpenseAnalysisReport(req: Request, res: Response): Promise<Response> {
     try {
-      const userId = req.user?.id;
+      const userId = (req as any).user?.id;
       if (!userId) {
         return ReportsController.errorResponse(res, 401, "Usuário não autenticado");
       }
@@ -450,9 +449,9 @@ export class ReportsController {
     }
   }
 
-  static async getFuelConsumptionReport(req: AuthenticatedRequest, res: Response): Promise<Response> {
+  static async getFuelConsumptionReport(req: Request, res: Response): Promise<Response> {
     try {
-      const userId = req.user?.id;
+      const userId = (req as any).user?.id;
       if (!userId) {
         return ReportsController.errorResponse(res, 401, "Usuário não autenticado");
       }

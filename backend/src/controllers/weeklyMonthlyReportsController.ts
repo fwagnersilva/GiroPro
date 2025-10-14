@@ -1,6 +1,5 @@
 import { Response } from 'express';
 import { z } from 'zod';
-import { AuthenticatedRequest } from '../types';
 import logger from '../utils/logger';
 import { cacheService } from '../utils/cache';
 import { AppError } from '../utils/customErrors';
@@ -40,7 +39,7 @@ export class WeeklyMonthlyReportsController {
   /**
    * Relatório Semanal com cache e otimizações
    */
-  static getWeeklyReport = asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
+  static getWeeklyReport = asyncHandler(async (req: Request, res: Response) => {
     const userId = WeeklyMonthlyReportsController.extractUserId(req);
     const params = WeeklyMonthlyReportsController.validateQuery(req.query, weeklyReportSchema);
     
@@ -87,7 +86,7 @@ export class WeeklyMonthlyReportsController {
   /**
    * Relatório Mensal com cache e otimizações
    */
-  static getMonthlyReport = asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
+  static getMonthlyReport = asyncHandler(async (req: Request, res: Response) => {
     const userId = WeeklyMonthlyReportsController.extractUserId(req);
     const params = WeeklyMonthlyReportsController.validateQuery(req.query, monthlyReportSchema);
     
@@ -130,7 +129,7 @@ export class WeeklyMonthlyReportsController {
   /**
    * Comparativo Semanal com análise avançada
    */
-  static getWeeklyComparison = asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
+  static getWeeklyComparison = asyncHandler(async (req: Request, res: Response) => {
     const userId = WeeklyMonthlyReportsController.extractUserId(req);
     const params = WeeklyMonthlyReportsController.validateQuery(req.query, comparisonSchema);
     
@@ -170,7 +169,7 @@ export class WeeklyMonthlyReportsController {
   /**
    * Comparativo Mensal com análise avançada
    */
-  static getMonthlyComparison = asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
+  static getMonthlyComparison = asyncHandler(async (req: Request, res: Response) => {
     const userId = WeeklyMonthlyReportsController.extractUserId(req);
     const params = WeeklyMonthlyReportsController.validateQuery(req.query, comparisonSchema);
     
@@ -212,7 +211,7 @@ export class WeeklyMonthlyReportsController {
   /**
    * Dashboard consolidado com KPIs e alertas
    */
-  static getDashboard = asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
+  static getDashboard = asyncHandler(async (req: Request, res: Response) => {
     const userId = WeeklyMonthlyReportsController.extractUserId(req);
     const params = WeeklyMonthlyReportsController.validateQuery(req.query, z.object({
       idVeiculo: z.string().uuid().optional(),
@@ -265,7 +264,7 @@ export class WeeklyMonthlyReportsController {
   /**
    * Análise de performance e eficiência
    */
-  static getPerformanceAnalysis = asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
+  static getPerformanceAnalysis = asyncHandler(async (req: Request, res: Response) => {
     const userId = WeeklyMonthlyReportsController.extractUserId(req);
     const params = WeeklyMonthlyReportsController.validateQuery(req.query, z.object({
       idVeiculo: z.string().uuid().optional(),
@@ -296,7 +295,7 @@ export class WeeklyMonthlyReportsController {
   /**
    * Exportação em lote otimizada
    */
-  static exportBatchReports = asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
+  static exportBatchReports = asyncHandler(async (req: Request, res: Response) => {
     const userId = WeeklyMonthlyReportsController.extractUserId(req);
     const params = WeeklyMonthlyReportsController.validateQuery(req.body, z.object({
       tipos_relatorio: z.array(z.enum(['semanal', 'mensal', 'comparativo_semanal', 'comparativo_mensal', 'dashboard'])).min(1),
@@ -334,7 +333,7 @@ export class WeeklyMonthlyReportsController {
   /**
    * Verificar status de exportação em lote
    */
-  static getBatchExportStatus = asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
+  static getBatchExportStatus = asyncHandler(async (req: Request, res: Response) => {
     const userId = WeeklyMonthlyReportsController.extractUserId(req);
     const { jobId } = req.params;
 
@@ -374,7 +373,7 @@ export class WeeklyMonthlyReportsController {
   /**
    * Limpar cache de relatórios
    */
-  static clearReportsCache = asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
+  static clearReportsCache = asyncHandler(async (req: Request, res: Response) => {
     const userId = WeeklyMonthlyReportsController.extractUserId(req);
     
     // Apenas admins ou o próprio usuário podem limpar cache
@@ -403,11 +402,11 @@ export class WeeklyMonthlyReportsController {
   });
 
   // Métodos auxiliares privados
-  private static extractUserId(req: AuthenticatedRequest): string {
-    if (!req.user?.id) {
+  private static extractUserId(req: Request): string {
+    if (!(req as any).user?.id) {
       throw new AppError('Usuário não autenticado', 401);
     }
-    return req.user.id;
+    return (req as any).user.id;
   }
 
   private static validateQuery<T extends z.ZodType>(query: any, schema: T): z.infer<T> {

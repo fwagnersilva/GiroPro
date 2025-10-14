@@ -3,7 +3,6 @@ import { db } from '../db';
 import { usuarios, veiculos, jornadas, abastecimentos, despesas } from '../db/schema.postgres';
 import { eq, gt, and, isNull } from 'drizzle-orm';
 import logger from '../utils/logger';
-import { AuthenticatedRequest } from '../middlewares/authMiddleware';
 
 interface OfflineDataBatch {
   jornadas?: any[];
@@ -20,9 +19,9 @@ interface SyncMetadata {
 }
 
 // Upload de dados coletados offline
-export const uploadOfflineData = async (req: AuthenticatedRequest, res: Response) => {
+export const uploadOfflineData = async (req: Request, res: Response) => {
   try {
-    const userId = req.user?.id;
+    const userId = (req as any).user?.id;
     if (!userId) {
       return res.status(401).json({ error: 'Usuário não autenticado' });
     }
@@ -264,9 +263,9 @@ export const uploadOfflineData = async (req: AuthenticatedRequest, res: Response
 };
 
 // Download de dados para sincronização inicial
-export const downloadInitialData = async (req: AuthenticatedRequest, res: Response) => {
+export const downloadInitialData = async (req: Request, res: Response) => {
   try {
-    const userId = req.user?.id;
+    const userId = (req as any).user?.id;
     if (!userId) {
       return res.status(401).json({ error: 'Usuário não autenticado' });
     }
@@ -331,9 +330,9 @@ export const downloadInitialData = async (req: AuthenticatedRequest, res: Respon
 };
 
 // Download de dados para sincronização incremental
-export const downloadIncrementalData = async (req: AuthenticatedRequest, res: Response) => {
+export const downloadIncrementalData = async (req: Request, res: Response) => {
   try {
-    const userId = req.user?.id;
+    const userId = (req as any).user?.id;
     if (!userId) {
       return res.status(401).json({ error: 'Usuário não autenticado' });
     }
@@ -407,9 +406,9 @@ export const downloadIncrementalData = async (req: AuthenticatedRequest, res: Re
 };
 
 // Obter timestamp da última sincronização
-export const getLastSyncTimestamp = async (req: AuthenticatedRequest, res: Response) => {
+export const getLastSyncTimestamp = async (req: Request, res: Response) => {
   try {
-    const userId = req.user?.id;
+    const userId = (req as any).user?.id;
     if (!userId) {
       return res.status(401).json({ error: 'Usuário não autenticado' });
     }

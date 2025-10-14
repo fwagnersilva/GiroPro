@@ -276,9 +276,9 @@ export class AdvancedAnalyticsController {
   /**
    * Análise de consumo por veículo
    */
-  static async getConsumptionAnalysis(req: AuthenticatedRequest, res: Response) {
+  static async getConsumptionAnalysis(req: Request, res: Response) {
     try {
-      if (!req.user?.id) {
+      if (!(req as any).user?.id) {
         throw new UnauthorizedError('Usuário não autenticado');
       }
 
@@ -289,13 +289,13 @@ export class AdvancedAnalyticsController {
 
       const { dataInicio, dataFim, idVeiculo, periodo, timezone } = validation.data;
 
-      if (idVeiculo && !(await this.validateVehicleAccess(req.user.id, idVeiculo))) {
+      if (idVeiculo && !(await this.validateVehicleAccess((req as any).user.id, idVeiculo))) {
         throw new NotFoundError('Veículo não encontrado ou sem acesso');
       }
 
       const { startDate, endDate } = this.calculatePeriod(periodo, dataInicio, dataFim, timezone);
 
-      const userVehicles = await db.select().from(veiculos).where(and(eq(veiculos.idUsuario, req.user.id), isNull(veiculos.deletedAt)));
+      const userVehicles = await db.select().from(veiculos).where(and(eq(veiculos.idUsuario, (req as any).user.id), isNull(veiculos.deletedAt)));
 
       if (userVehicles.length === 0) {
         throw new NotFoundError('Nenhum veículo encontrado');
@@ -304,7 +304,7 @@ export class AdvancedAnalyticsController {
       const consumptionAnalysis = [];
 
       for (const vehicle of userVehicles) {
-        const [fuelings, journeys] = await this.fetchVehicleData(req.user.id, vehicle.id, startDate, endDate);
+        const [fuelings, journeys] = await this.fetchVehicleData((req as any).user.id, vehicle.id, startDate, endDate);
         const metricasPeriodo = this.calculateVehicleMetrics(fuelings, journeys);
         const historicoEficiencia = this.calculateEfficiencyHistory(fuelings, metricasPeriodo.consumoMedio);
         const tendenciaConsumo = this.calculateConsumptionTrend(historicoEficiencia);
@@ -419,9 +419,9 @@ export class AdvancedAnalyticsController {
   /**
    * Análise de produtividade - NOVO MÉTODO
    */
-  static async getProductivityAnalysis(req: AuthenticatedRequest, res: Response) {
+  static async getProductivityAnalysis(req: Request, res: Response) {
     try {
-      if (!req.user?.id) {
+      if (!(req as any).user?.id) {
         throw new UnauthorizedError('Usuário não autenticado');
       }
 
@@ -435,7 +435,7 @@ export class AdvancedAnalyticsController {
 
       // Buscar dados de produtividade
       const vehicleConditions = [
-        eq(veiculos.idUsuario, req.user.id),
+        eq(veiculos.idUsuario, (req as any).user.id),
         isNull(veiculos.deletedAt)
       ];
 
@@ -493,9 +493,9 @@ export class AdvancedAnalyticsController {
    /**
    * Comparativo entre veículos - NOVO MÉTODO
    */
-  static async compareVehicles(req: AuthenticatedRequest, res: Response) {
+  static async compareVehicles(req: Request, res: Response) {
     try {
-      if (!req.user?.id) {
+      if (!(req as any).user?.id) {
         throw new UnauthorizedError('Usuário não autenticado');
       }
 
@@ -505,7 +505,7 @@ export class AdvancedAnalyticsController {
       }
 
       const { vehicleIds } = validation.data;
-      const { id: userId } = req.user;
+      const { id: userId } = (req as any).user;
 
       const comparisonData = [];
 

@@ -1,6 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
-import { authenticateToken, authorizeRoles, AuthenticatedRequest } from '../middlewares/authMiddleware';
 import { config } from '../config';
 
 // Mock do logger

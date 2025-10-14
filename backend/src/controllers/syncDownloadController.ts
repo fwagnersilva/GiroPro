@@ -1,12 +1,11 @@
 import { Response } from 'express';
-import { AuthenticatedRequest } from '../types';
 import { db } from '../db';
 import { usuarios, veiculos, jornadas, abastecimentos, despesas } from '../db/schema.postgres';
 import { eq } from 'drizzle-orm';
 
 export class SyncDownloadController {
-  static async downloadAll(req: AuthenticatedRequest, res: Response) {
-    const userId = req.user?.id;
+  static async downloadAll(req: Request, res: Response) {
+    const userId = (req as any).user?.id;
 
     if (!userId) {
       return res.status(401).json({ success: false, message: 'Usuário não autenticado' });
@@ -36,8 +35,8 @@ export class SyncDownloadController {
     }
   }
 
-  static async downloadSince(req: AuthenticatedRequest, res: Response) {
-    const userId = req.user?.id;
+  static async downloadSince(req: Request, res: Response) {
+    const userId = (req as any).user?.id;
     const { lastSync } = req.query;
 
     if (!userId) {

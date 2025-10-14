@@ -6,17 +6,14 @@
     "outDir": "./dist",
     "rootDir": "./src",
     "skipLibCheck": true,
+    "noEmit": false,
     "strict": false,
     "noImplicitAny": false,
     "esModuleInterop": true,
     "moduleResolution": "node",
     "resolveJsonModule": true,
-    "declaration": true,
-    "sourceMap": true,
-    "removeComments": true,
-    "downlevelIteration": true,
-    "allowJs": true
+    "downlevelIteration": true
   },
   "include": ["src/**/*.ts"],
-  "exclude": ["node_modules", "src/__tests__", "src/tests", "dist", "src/**/*.d.ts"]
+  "exclude": ["node_modules", "src/__tests__", "src/tests", "dist", "**/*.d.ts"]
 }

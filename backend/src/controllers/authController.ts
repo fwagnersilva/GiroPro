@@ -2,7 +2,6 @@ import { Request, Response } from 'express';
 import { AuthService } from '../services/authService';
 import { loginSchema, registerSchema, requestPasswordResetSchema, resetPasswordSchema, changePasswordSchema } from '../utils/validation';
 import { UnauthorizedError, NotFoundError, ValidationError, ConflictError } from "../utils/customErrors";
-import { AuthenticatedRequest } from "../middleware/auth";
 import { z } from 'zod';
 
 export class AuthController {
@@ -113,9 +112,9 @@ export class AuthController {
     }
   }
 
-  static async changePassword(req: AuthenticatedRequest, res: Response) {
+  static async changePassword(req: Request, res: Response) {
     try {
-      const userId = req.user?.id;
+      const userId = (req as any).user?.id;
       if (!userId) {
         throw new UnauthorizedError('Usuário não autenticado');
       }
@@ -139,9 +138,9 @@ export class AuthController {
     }
   }
 
-  static async me(req: AuthenticatedRequest, res: Response) {
+  static async me(req: Request, res: Response) {
     try {
-      const userId = req.user?.id;
+      const userId = (req as any).user?.id;
       if (!userId) {
         throw new UnauthorizedError('Usuário não autenticado');
       }

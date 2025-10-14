@@ -1,6 +1,5 @@
 import { Request, Response } from 'express';
 import { PlatformService } from '../services/platformService';
-import { AuthenticatedRequest } from '../types';
 import { z } from 'zod';
 
 // Schemas de validação para plataformas
@@ -20,9 +19,9 @@ type CreatePlatformRequest = z.infer<typeof createPlatformSchema>;
 type UpdatePlatformRequest = z.infer<typeof updatePlatformSchema>;
 
 export class PlatformController {
-  static async createPlatform(req: AuthenticatedRequest, res: Response) {
+  static async createPlatform(req: Request, res: Response) {
     try {
-      const userId = req.user?.id;
+      const userId = (req as any).user?.id;
       if (!userId) {
         return res.status(401).send({ success: false, message: 'Usuário não autenticado.' });
       }
@@ -39,9 +38,9 @@ export class PlatformController {
     }
   }
 
-  static async getPlatforms(req: AuthenticatedRequest, res: Response) {
+  static async getPlatforms(req: Request, res: Response) {
     try {
-      const userId = req.user?.id;
+      const userId = (req as any).user?.id;
       if (!userId) {
         return res.status(401).send({ success: false, message: 'Usuário não autenticado.' });
       }
@@ -54,9 +53,9 @@ export class PlatformController {
     }
   }
 
-  static async getActivePlatforms(req: AuthenticatedRequest, res: Response) {
+  static async getActivePlatforms(req: Request, res: Response) {
     try {
-      const userId = req.user?.id;
+      const userId = (req as any).user?.id;
       if (!userId) {
         return res.status(401).send({ success: false, message: 'Usuário não autenticado.' });
       }
@@ -69,9 +68,9 @@ export class PlatformController {
     }
   }
 
-  static async getPlatformById(req: AuthenticatedRequest, res: Response) {
+  static async getPlatformById(req: Request, res: Response) {
     try {
-      const userId = req.user?.id;
+      const userId = (req as any).user?.id;
       if (!userId) {
         return res.status(401).send({ success: false, message: 'Usuário não autenticado.' });
       }
@@ -88,9 +87,9 @@ export class PlatformController {
     }
   }
 
-  static async updatePlatform(req: AuthenticatedRequest, res: Response) {
+  static async updatePlatform(req: Request, res: Response) {
     try {
-      const userId = req.user?.id;
+      const userId = (req as any).user?.id;
       if (!userId) {
         return res.status(401).send({ success: false, message: 'Usuário não autenticado.' });
       }
@@ -112,9 +111,9 @@ export class PlatformController {
     }
   }
 
-  static async deletePlatform(req: AuthenticatedRequest, res: Response) {
+  static async deletePlatform(req: Request, res: Response) {
     try {
-      const userId = req.user?.id;
+      const userId = (req as any).user?.id;
       if (!userId) {
         return res.status(401).send({ success: false, message: 'Usuário não autenticado.' });
       }

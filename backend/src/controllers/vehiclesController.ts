@@ -3,7 +3,6 @@ import { z } from "zod";
 import { db } from "../db";
 import { veiculos } from '../db/schema.postgres';
 import { eq, and, isNull, sql } from "drizzle-orm";
-import { AuthenticatedRequest } from "../middlewares/authMiddleware";
 
 interface ApiResponse<T = any> {
   success: boolean;
@@ -83,8 +82,8 @@ export class VehiclesController {
   /**
    * Valida se o usuário está autenticado
    */
-  private static validateAuth(req: AuthenticatedRequest): string | null {
-    return req.user?.id || null;
+  private static validateAuth(req: Request): string | null {
+    return (req as any).user?.id || null;
   }
 
   /**
@@ -141,7 +140,7 @@ export class VehiclesController {
   /**
    * Listar todos os veículos do usuário
    */
-  static async getAll(req: AuthenticatedRequest, res: Response): Promise<Response> {
+  static async getAll(req: Request, res: Response): Promise<Response> {
     try {
       const userId = VehiclesController.validateAuth(req);
       if (!userId) {
@@ -215,7 +214,7 @@ export class VehiclesController {
   /**
    * Criar novo veículo
    */
-  static async create(req: AuthenticatedRequest, res: Response): Promise<Response> {
+  static async create(req: Request, res: Response): Promise<Response> {
     try {
       const userId = VehiclesController.validateAuth(req);
       if (!userId) {
@@ -296,7 +295,7 @@ export class VehiclesController {
   /**
    * Buscar veículo por ID
    */
-  static async getById(req: AuthenticatedRequest, res: Response): Promise<Response> {
+  static async getById(req: Request, res: Response): Promise<Response> {
     try {
       const userId = VehiclesController.validateAuth(req);
       if (!userId) {
@@ -325,7 +324,7 @@ export class VehiclesController {
   /**
    * Atualizar veículo
    */
-  static async update(req: AuthenticatedRequest, res: Response): Promise<Response> {
+  static async update(req: Request, res: Response): Promise<Response> {
     try {
       const userId = VehiclesController.validateAuth(req);
       if (!userId) {
@@ -403,7 +402,7 @@ export class VehiclesController {
   /**
    * Excluir veículo (soft delete)
    */
-  static async delete(req: AuthenticatedRequest, res: Response): Promise<Response> {
+  static async delete(req: Request, res: Response): Promise<Response> {
     try {
       const userId = VehiclesController.validateAuth(req);
       if (!userId) {
@@ -446,7 +445,7 @@ export class VehiclesController {
   /**
    * Reativar veículo (reverter soft delete)
    */
-  static async activate(req: AuthenticatedRequest, res: Response): Promise<Response> {
+  static async activate(req: Request, res: Response): Promise<Response> {
     try {
       const userId = VehiclesController.validateAuth(req);
       if (!userId) {
@@ -502,7 +501,7 @@ export class VehiclesController {
   /**
    * Desativar veículo (soft delete)
    */
-  static async deactivate(req: AuthenticatedRequest, res: Response): Promise<Response> {
+  static async deactivate(req: Request, res: Response): Promise<Response> {
     try {
       const userId = VehiclesController.validateAuth(req);
       if (!userId) {
