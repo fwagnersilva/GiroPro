@@ -27,7 +27,7 @@
     "paths": {
       "@/*": ["src/*"]
     },
-    "typeRoots": ["./node_modules/@types", "./src/types"],
+    "typeRoots": ["./node_modules/@types"],
     "types": ["node", "express"],
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
@@ -38,5 +38,5 @@
     "src/schemas/**/*",
     "src/types/**/*"
   ],
-  "exclude": ["node_modules", "src/tests", "dist"]
+  "exclude": ["node_modules", "src/__tests__", "src/tests", "dist"]
 }
