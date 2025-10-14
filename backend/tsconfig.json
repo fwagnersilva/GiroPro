@@ -12,15 +12,12 @@
     "strictNullChecks": false,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
-    "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "resolveJsonModule": true,
     "declaration": true,
     "declarationMap": true,
     "sourceMap": true,
     "removeComments": true,
-    "noImplicitAny": false,
-    "strictNullChecks": false,
     "strictFunctionTypes": true,
     "noImplicitThis": true,
     "noImplicitReturns": true,
@@ -34,13 +31,12 @@
     "types": ["node", "express", "jest"],
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
-    "skipDefaultLibCheck": true,
+    "skipDefaultLibCheck": true
   },
   "include": [
     "src/**/*.ts",
     "src/schemas/**/*",
     "src/types/**/*"
   ],
-  "exclude":["node_modules", "src/tests", "dist"]
-  ]
+  "exclude": ["node_modules", "src/tests", "dist"]
 }
