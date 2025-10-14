@@ -87,10 +87,10 @@ export const userCache = (ttl: number = 1800) => {
   return cache({
     ttl,
     keyGenerator: (req: Request) => {
-      const userId = req.user?.id || 'anonymous';
+      const userId = (req as any).user?.id || 'anonymous';
       return `user_data:${userId}:${req.originalUrl}`;
     },
-    skipCache: (req: Request) => !req.user?.id
+    skipCache: (req: Request) => !(req as any).user?.id
   });
 };
 
@@ -99,11 +99,11 @@ export const dashboardCache = (ttl: number = 1800) => {
   return cache({
     ttl,
     keyGenerator: (req: Request) => {
-      const userId = req.user?.id || 'anonymous';
+      const userId = (req as any).user?.id || 'anonymous';
       const period = req.query.period || 'today';
       return `dashboard:${userId}:${period}`;
     },
-    skipCache: (req: Request) => !req.user?.id,
+    skipCache: (req: Request) => !(req as any).user?.id,
     varyBy: ['period']
   });
 };
@@ -113,13 +113,13 @@ export const reportCache = (ttl: number = 3600) => {
   return cache({
     ttl,
     keyGenerator: (req: Request) => {
-      const userId = req.user?.id || 'anonymous';
+      const userId = (req as any).user?.id || 'anonymous';
       const startDate = req.query.startDate || '';
       const endDate = req.query.endDate || '';
       const vehicleId = req.query.vehicleId || 'all';
       return `report:${userId}:${startDate}:${endDate}:${vehicleId}`;
     },
-    skipCache: (req: Request) => !req.user?.id,
+    skipCache: (req: Request) => !(req as any).user?.id,
     varyBy: ['startDate', 'endDate', 'vehicleId']
   });
 };
@@ -141,7 +141,7 @@ export const invalidateCache = (patterns: string[]) => {
         // Só invalida cache em respostas de sucesso
         if (res.statusCode >= 200 && res.statusCode < 300) {
           patterns.forEach(pattern => {
-            const resolvedPattern = pattern.replace(':userId', req.user?.id || '');
+            const resolvedPattern = pattern.replace(':userId', (req as any).user?.id || '');
             cacheService.delPattern(resolvedPattern).catch(error => {
               logger.error('Failed to invalidate cache:', error);
             });
@@ -163,4 +163,3 @@ export const invalidateCache = (patterns: string[]) => {
 export const invalidateUserCache = () => {
   return invalidateCache(['user:*:userId*', 'dashboard:*:userId*', 'vehicles:*:userId*']);
 };
-

@@ -246,7 +246,7 @@ export const securityLogger = (req: Request, res: Response, next: NextFunction) 
       duration,
       userAgent: req.get('User-Agent'),
       referer: req.get('Referer'),
-      userId: req.user?.id
+      userId: (req as any).user?.id
     };
 
     // Log requests suspeitos

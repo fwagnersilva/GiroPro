@@ -1,0 +1,14 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.platformRoutes = void 0;
+var express_1 = require("express");
+var platformController_1 = require("../controllers/platformController");
+var auth_1 = require("../middleware/auth");
+var router = (0, express_1.Router)();
+router.post('/', auth_1.authMiddleware, platformController_1.PlatformController.createPlatform);
+router.get('/', auth_1.authMiddleware, platformController_1.PlatformController.getPlatforms);
+router.get('/active', auth_1.authMiddleware, platformController_1.PlatformController.getActivePlatforms);
+router.get('/:id', auth_1.authMiddleware, platformController_1.PlatformController.getPlatformById);
+router.put('/:id', auth_1.authMiddleware, platformController_1.PlatformController.updatePlatform);
+router.delete('/:id', auth_1.authMiddleware, platformController_1.PlatformController.deletePlatform);
+exports.platformRoutes = router;
