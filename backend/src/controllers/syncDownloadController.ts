@@ -37,7 +37,7 @@ export class SyncDownloadController {
 
   static async downloadSince(req: Request, res: Response) {
     const userId = (req as any).user?.id;
-    const { lastSync } = req.query;
+    const { lastSync } = (req as any).query;
 
     if (!userId) {
       return res.status(401).json({ success: false, message: 'Usuário não autenticado' });

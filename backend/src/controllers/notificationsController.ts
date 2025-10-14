@@ -121,7 +121,7 @@ export class NotificationsController {
         return NotificationsController.errorResponse(res, 401, 'Usuário não autenticado');
       }
 
-      const validation = getNotificationsSchema.safeParse(req.query);
+      const validation = getNotificationsSchema.safeParse((req as any).query);
       if (!validation.success) {
         return NotificationsController.errorResponse(
           res,
@@ -174,7 +174,7 @@ export class NotificationsController {
         return NotificationsController.errorResponse(res, 401, 'Usuário não autenticado');
       }
 
-      const { id } = req.params;
+      const { id } = (req as any).params;
       if (!id) {
         return NotificationsController.errorResponse(res, 400, 'ID da notificação é obrigatório');
       }
@@ -253,7 +253,7 @@ export class NotificationsController {
         return NotificationsController.errorResponse(res, 401, 'Usuário não autenticado');
       }
 
-      const { id } = req.params;
+      const { id } = (req as any).params;
       if (!id) {
         return NotificationsController.errorResponse(res, 400, 'ID da notificação é obrigatório');
       }

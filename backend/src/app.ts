@@ -6,6 +6,10 @@ import { errorHandler } from './middlewares/errorHandler';
 import { requestLogger } from './middlewares/requestLogger';
 import logger from './utils/logger';
 
+import { authRoutes } from './routes/auth';
+import { vehicleRoutes } from './routes/vehicles';
+import { journeyRoutes } from './routes/journeys';
+
 const app = express();
 
 // Middlewares globais
@@ -18,36 +22,20 @@ app.use(requestLogger);
 
 // Health check
 app.get('/health', (req, res) => {
-  res.json({ 
-    status: 'ok', 
+  res.json({
+    status: 'ok',
     timestamp: new Date().toISOString(),
-    environment: process.env.NODE_ENV 
+    environment: process.env.NODE_ENV
   });
 });
 
-// Rotas (importar apenas as que existem)
-try {
-  const { authRoutes } = require('./routes/auth');
-  app.use('/api/v1/auth', authRoutes);
-} catch (e) {
-  logger.warn('Auth routes não disponíveis');
-}
-
-try {
-  const { vehicleRoutes } = require('./routes/vehicles');
-  app.use('/api/v1/vehicles', vehicleRoutes);
-} catch (e) {
-  logger.warn('Vehicle routes não disponíveis');
-}
-
-try {
-  const { journeyRoutes } = require('./routes/journeys');
-  app.use('/api/v1/journeys', journeyRoutes);
-} catch (e) {
-  logger.warn('Journey routes não disponíveis');
-}
+// Rotas
+app.use('/api/v1/auth', authRoutes);
+app.use('/api/v1/vehicles', vehicleRoutes);
+app.use('/api/v1/journeys', journeyRoutes);
 
 // Error handler (deve ser o último middleware)
 app.use(errorHandler);
 
 export default app;
+
