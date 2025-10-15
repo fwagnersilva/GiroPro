@@ -1,13 +1,8 @@
 import cors from 'cors';
 
-const allowedOrigins = [
-  'https://giro-pro.onrender.com',
-  'http://localhost:5173',
-  'http://localhost:3000'
-];
-
-export const corsMiddleware = cors({
+const corsOptions = {
   origin: (origin, callback) => {
+    const allowedOrigins = (process.env.ALLOWED_ORIGINS || '').split(',').map(o => o.trim());
     if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
@@ -16,5 +11,7 @@ export const corsMiddleware = cors({
   },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
-});
+  allowedHeaders: ['Content-Type', 'Authorization'],
+};
+
+export const corsMiddleware = cors(corsOptions);
