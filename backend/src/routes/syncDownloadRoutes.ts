@@ -1,11 +1,14 @@
-import { Router } from 'express';
+import { Router, Request, Response, NextFunction } from 'express';
 import { SyncDownloadController } from '../controllers/syncDownloadController';
-import { authMiddleware } from '../middleware/auth';
+import { authenticateToken } from '../middlewares/authMiddleware';
 
 const router = Router();
 
-// Rotas protegidas que requerem autenticação
-router.get('/download/all', authMiddleware, SyncDownloadController.downloadAll);
-router.get('/download/since', authMiddleware, SyncDownloadController.downloadSince);
+const asyncHandler = (fn: Function) => (req: Request, res: Response, next: NextFunction) => {
+  Promise.resolve(fn(req, res, next)).catch(next);
+};
 
-export { router as syncDownloadRoutes };
+router.get('/download/all', authenticateToken, asyncHandler(SyncDownloadController.downloadAll));
+router.get('/download/since', authenticateToken, asyncHandler(SyncDownloadController.downloadSince));
+
+export default router;
