@@ -20,6 +20,11 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(requestLogger);
 
+// Rota Raiz
+app.get('/', (req, res) => {
+  res.json({ message: 'Bem-vindo à API GiroPro. Use /health para verificar o status.' });
+});
+
 // Health check
 app.get('/health', (req, res) => {
   res.json({
