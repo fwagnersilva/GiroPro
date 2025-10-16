@@ -4,18 +4,17 @@ FROM node:20-slim AS build
 # Set working directory
 WORKDIR /app
 
-# Copy package.json and pnpm-lock.yaml
-COPY package.json pnpm-lock.yaml ./
+# Copy package.json and package-lock.json
+COPY package.json package-lock.json ./
 
-# Install dependencies using pnpm
-RUN npm install -g pnpm
-RUN pnpm install --prod
+# Install dependencies
+RUN npm install
 
 # Copy source code
 COPY . .
 
 # Build the TypeScript application
-RUN pnpm run build
+RUN npm run build
 
 # Stage 2: Production Stage
 FROM node:20-slim AS production
@@ -32,6 +31,4 @@ COPY --from=build /app/package.json ./package.json
 EXPOSE 8080
 
 # Command to run the application
-# Cloud Run requires the application to listen on the port specified by the PORT environment variable.
-# The default start script is "start": "node dist/server.js"
 CMD [ "npm", "start" ]
