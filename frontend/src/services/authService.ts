@@ -1,6 +1,6 @@
 import { LoginCredentials, AuthResponse, RegisterCredentials, AuthTokens } from "../types/auth";
 
-const API_URL = process.env.EXPO_PUBLIC_API_URL || 'https://giropro-backend-bn14.onrender.com';
+const API_URL = process.env.EXPO_PUBLIC_API_URL || 'https://giropro-78908506544.europe-west1.run.app';
 
 export const loginApi = async (credentials: LoginCredentials): Promise<AuthResponse> => {
   try {

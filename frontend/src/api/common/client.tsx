@@ -2,7 +2,7 @@ import axios from 'axios';
 import { getItem } from '@/lib/storage';
 
 // Forçar localhost em desenvolvimento
-const API_URL = process.env.EXPO_PUBLIC_API_URL || 'https://giropro-backend2.onrender.com/api/v1';
+const API_URL = process.env.EXPO_PUBLIC_API_URL || 'https://giropro-78908506544.europe-west1.run.app/api/v1';
 
 console.log('🔗 API URL configurada:', API_URL);
 
