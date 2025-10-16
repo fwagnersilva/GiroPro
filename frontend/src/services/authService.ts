@@ -30,7 +30,7 @@ export const loginApi = async (credentials: LoginCredentials): Promise<AuthRespo
         updatedAt: new Date().toISOString(),
       },
       tokens: {
-        accessToken: data.token,
+        accessToken: data.accessToken,
         refreshToken: data.refreshToken,
         expiresAt: Date.now() + 7 * 24 * 60 * 60 * 1000,
       },
@@ -71,7 +71,7 @@ export const registerApi = async (credentials: RegisterCredentials): Promise<Aut
         updatedAt: new Date().toISOString(),
       },
       tokens: {
-        accessToken: data.token,
+        accessToken: data.accessToken,
         refreshToken: data.refreshToken,
         expiresAt: Date.now() + 7 * 24 * 60 * 60 * 1000,
       },
@@ -98,7 +98,7 @@ export const refreshTokenApi = async (refreshToken: string): Promise<AuthTokens>
     }
 
     return {
-      accessToken: data.token,
+      accessToken: data.accessToken,
       refreshToken: data.refreshToken,
       expiresAt: Date.now() + 7 * 24 * 60 * 60 * 1000,
     };
