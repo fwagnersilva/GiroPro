@@ -1,57 +1,16 @@
 services:
-  # Frontend - Expo Web Build
-  - type: web
-    name: giropro-frontend
-    env: node
-    rootDir: frontend
-    buildCommand: |
-      rm -rf node_modules package-lock.json .expo node_modules/.cache dist &&
-      npm cache clean --force &&
-      NODE_ENV=development HUSKY=0 npm install --legacy-peer-deps &&
-      npm run build:web
-    startCommand: npx serve dist -s -n -p ${PORT}
-    envVars:
-      - key: HUSKY
-        value: 0
-      - key: NODE_VERSION
-        value: 20.18.0
-      - key: NODE_ENV
-        value: production
-      - key: EXPO_PUBLIC_API_URL
-        value: https://giropro-backend-bn14.onrender.com
-    plan: free
-
-  # Backend - Node.js/TypeScript API
   - type: web
     name: giropro-backend
-    env: node
-    rootDir: backend
-    buildCommand: NODE_ENV=development npm install && npm run build
-    startCommand: npm start
+    runtime: node
+    plan: free
+    region: oregon
+    buildCommand: "cd backend && npm install && npm run build"
+    startCommand: "cd backend && npm run start"
+    healthCheckPath: /health
     envVars:
-      - key: NODE_VERSION
-        value: 20.18.0
       - key: NODE_ENV
         value: production
-      - key: DATABASE_URL
-        fromDatabase:
-          name: giropro-db
-          property: connectionString
-      - key: JWT_SECRET
-        generateValue: true
-      - key: JWT_REFRESH_SECRET
-        generateValue: true
-      - key: JWT_EXPIRES_IN
-        value: 7d
-      - key: CORS_ORIGIN
-        value: https://giropro-frontend.onrender.com
-      - key: ALLOWED_ORIGINS
-        value: https://giropro-frontend.onrender.com,http://localhost:3000
-    healthCheckPath: /health
-    plan: free
-
-# Banco de dados PostgreSQL
-databases:
-  - name: giropro-db
-    databaseName: giropro_db
-    plan: free
+      - key: PORT
+        value: 3000
+      - key: HOST
+        value: 0.0.0.0
