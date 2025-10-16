@@ -5,13 +5,12 @@ import compression from 'compression';
 import { errorHandler } from './middlewares/errorHandler';
 import { requestLogger } from './middlewares/requestLogger';
 import logger from './utils/logger';
-
 import { authRoutes } from './routes/auth';
 import { vehicleRoutes } from './routes/vehicles';
 import { journeyRoutes } from './routes/journeys';
 
-app.set("trust proxy", 1);
 const app = express();
+app.set('trust proxy', 1);
 
 // Middlewares globais
 app.use(corsMiddleware);
@@ -39,4 +38,3 @@ app.use('/api/v1/journeys', journeyRoutes);
 app.use(errorHandler);
 
 export default app;
-
