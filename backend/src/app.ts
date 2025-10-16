@@ -10,6 +10,7 @@ import { authRoutes } from './routes/auth';
 import { vehicleRoutes } from './routes/vehicles';
 import { journeyRoutes } from './routes/journeys';
 
+app.set("trust proxy", 1);
 const app = express();
 
 // Middlewares globais
