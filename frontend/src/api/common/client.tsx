@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { getItem } from '@/lib/storage';
+import { useAuth } from '@/lib/auth';
 
 // URL do backend - Google Cloud
 const API_URL = 'https://giropro-78908506544.europe-west1.run.app/api/v1';
@@ -13,9 +13,12 @@ export const client = axios.create({
 // Interceptor para adicionar token automaticamente
 client.interceptors.request.use(
   async (config) => {
-    const token = getItem<{ access: string; refresh: string }>('token');
-    if (token?.access) {
-      config.headers.Authorization = `Bearer ${token.access}`;
+    // Pegar token do estado do Zustand (funciona em aba anônima)
+    const authState = useAuth.getState();
+    const token = authState.token?.accessToken;
+    
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
     }
     console.log('📡 Request:', config.method?.toUpperCase(), config.baseURL + config.url);
     return config;
