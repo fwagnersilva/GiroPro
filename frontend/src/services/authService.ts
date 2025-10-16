@@ -1,10 +1,10 @@
 import { LoginCredentials, AuthResponse, RegisterCredentials, AuthTokens } from "../types/auth";
 
-const API_URL = process.env.EXPO_PUBLIC_API_URL || 'https://giropro-78908506544.europe-west1.run.app';
+const API_URL = process.env.EXPO_PUBLIC_API_URL || 'https://giropro-78908506544.europe-west1.run.app/api/v1';
 
 export const loginApi = async (credentials: LoginCredentials): Promise<AuthResponse> => {
   try {
-    const response = await fetch(`${API_URL}/api/v1/auth/login`, {
+    const response = await fetch(`${API_URL}/auth/login`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -42,7 +42,7 @@ export const loginApi = async (credentials: LoginCredentials): Promise<AuthRespo
 
 export const registerApi = async (credentials: RegisterCredentials): Promise<AuthResponse> => {
   try {
-    const response = await fetch(`${API_URL}/api/v1/auth/register`, {
+    const response = await fetch(`${API_URL}/auth/register`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -77,13 +77,13 @@ export const registerApi = async (credentials: RegisterCredentials): Promise<Aut
       },
     };
   } catch (error: any) {
-    throw new Error(error.message || 'Erro ao conectar com o servidor');
+    throw new Error(error.message || 'Erro ao criar conta');
   }
 };
 
 export const refreshTokenApi = async (refreshToken: string): Promise<AuthTokens> => {
   try {
-    const response = await fetch(`${API_URL}/api/v1/auth/refresh`, {
+    const response = await fetch(`${API_URL}/auth/refresh-token`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
