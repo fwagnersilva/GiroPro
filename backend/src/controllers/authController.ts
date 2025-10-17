@@ -28,27 +28,43 @@ export class AuthController {
   }
 
   static async login(req: Request, res: Response) {
-    try {
-      const { email, senha } = loginSchema.parse(req.body);
-      const { token: accessToken, refreshToken } = await AuthService.login({ email, senha });
-      res.send({ success: true, message: 'Login bem-sucedido', accessToken, refreshToken });
-    } catch (error: any) {
-      if (error instanceof ValidationError) {
-        console.error("Validation Error:", error);
-        res.status(400).send({ success: false, message: "Dados de entrada inválidos." });
-      } else if (error instanceof UnauthorizedError) {
-        console.error("Unauthorized Error:", error);
-        res.status(401).send({ success: false, message: "Credenciais inválidas." });
-      } else if (error instanceof z.ZodError) {
-        console.error("Zod Validation Error:", error);
-        res.status(400).send({ success: false, message: "Erro de validação dos dados." });
-      } else {
-        console.error('Erro no login:', error);
-        res.status(500).send({ success: false, message: 'Ocorreu um erro interno no servidor.' });
+  try {
+    const { email, senha } = loginSchema.parse(req.body);
+    const { token: accessToken, refreshToken, user } = await AuthService.login({ email, senha });
+    
+    // ✅ CORREÇÃO: Retornar no formato esperado pelo frontend
+    res.send({ 
+      success: true, 
+      message: 'Login bem-sucedido',
+      user: {
+        id: user.id,
+        email: user.email,
+        nome: user.nome,
+        createdAt: user.createdAt,
+        updatedAt: user.updatedAt
+      },
+      tokens: {
+        accessToken,
+        refreshToken,
+        expiresAt: Date.now() + 24 * 60 * 60 * 1000 // 24 horas
       }
+    });
+  } catch (error: any) {
+    if (error instanceof ValidationError) {
+      console.error("Validation Error:", error);
+      res.status(400).send({ success: false, message: "Dados de entrada inválidos." });
+    } else if (error instanceof UnauthorizedError) {
+      console.error("Unauthorized Error:", error);
+      res.status(401).send({ success: false, message: "Credenciais inválidas." });
+    } else if (error instanceof z.ZodError) {
+      console.error("Zod Validation Error:", error);
+      res.status(400).send({ success: false, message: "Erro de validação dos dados." });
+    } else {
+      console.error('Erro no login:', error);
+      res.status(500).send({ success: false, message: 'Ocorreu um erro interno no servidor.' });
     }
   }
-
+}
   static async requestPasswordReset(req: Request, res: Response) {
     try {
       const { email } = requestPasswordResetSchema.parse(req.body);
