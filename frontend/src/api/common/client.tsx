@@ -1,44 +1,38 @@
 import axios from 'axios';
-import { useAuth } from '@/lib/auth';
+import { getToken } from '@/lib/auth/utils';
 
-// URL do backend - Google Cloud
-const API_URL = 'https://giropro-78908506544.europe-west1.run.app/api/v1';
+// Detecta se está em desenvolvimento local
+const isLocalhost = typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
+const API_URL = isLocalhost ? 'http://localhost:3000/api/v1' : 'https://giropro-78908506544.europe-west1.run.app/api/v1';
 
-console.log('🔗 API URL configurada:', API_URL);
+console.log('📡 API URL configurada:', API_URL);
 
-export const client = axios.create({
+const client = axios.create({
   baseURL: API_URL,
+  timeout: 10000,
 });
 
-// Interceptor para adicionar token automaticamente
-client.interceptors.request.use(
-  async (config) => {
-    // Pegar token do estado do Zustand (funciona em aba anônima)
-    const authState = useAuth.getState();
-    const token = authState.token?.accessToken;
-    
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
-    console.log('📡 Request:', config.method?.toUpperCase(), config.baseURL + config.url);
-    return config;
-  },
-  (error) => {
-    return Promise.reject(error);
+client.interceptors.request.use((config) => {
+  const token = getToken();
+  
+  if (token?.accessToken) {
+    config.headers.Authorization = `Bearer ${token.accessToken}`;
   }
-);
+  
+  console.log('📡 Request:', config.method?.toUpperCase(), config.url, 'Token:', token ? 'Presente' : 'Ausente');
+  return config;
+});
 
-// Interceptor para tratar erros de autenticação
 client.interceptors.response.use(
   (response) => {
     console.log('✅ Response:', response.status, response.config.url);
     return response;
   },
-  async (error) => {
-    console.error('❌ Error:', error.message, error.config?.url);
-    if (error.response?.status === 401) {
-      console.log('🔐 Token expirado, faça login novamente');
-    }
+  (error) => {
+    console.error('❌ Error:', error.response?.status, error.config?.url);
     return Promise.reject(error);
   }
 );
+
+export { client };
+export default client;

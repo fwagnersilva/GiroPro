@@ -293,7 +293,7 @@ export default function Dashboard() {
           {/* Tips Section */}
           <View className="mt-6">
             <SectionHeader
-              icon="lightbulb"
+              icon="bulb"
               title="Dicas"
               color="bg-yellow-600"
             />

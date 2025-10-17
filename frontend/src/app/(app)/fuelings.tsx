@@ -32,7 +32,7 @@ const getFuelIcon = (tipo: string) => {
     gasolina: 'flame',
     etanol: 'leaf',
     diesel: 'water',
-    gnv: 'wind',
+    gnv: 'leaf',
     flex: 'swap-vertical',
   };
   return iconMap[tipo] || 'flame';

@@ -32,7 +32,7 @@ const fuelTypes = [
   { id: 'gasolina', label: 'Gasolina', icon: 'flame', color: 'bg-yellow-600' },
   { id: 'etanol', label: 'Etanol', icon: 'leaf', color: 'bg-green-600' },
   { id: 'diesel', label: 'Diesel', icon: 'water', color: 'bg-blue-600' },
-  { id: 'gnv', label: 'GNV', icon: 'wind', color: 'bg-purple-600' },
+  { id: 'gnv', label: 'GNV', icon: 'leaf', color: 'bg-purple-600' },
 ];
 
 const SectionHeader: React.FC<{ title: string; icon?: string }> = ({ title, icon }) => (
