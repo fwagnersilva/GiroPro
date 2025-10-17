@@ -139,7 +139,7 @@ const VehicleList: React.FC = () => {
       <View style={styles.header}>
         <Text style={styles.title}>Veículos</Text>
         <TouchableOpacity style={styles.addButton} onPress={handleAddVehicle}>
-          <Text style={styles.addButtonText}>+ Adicionar</Text>
+          <Text style={styles.addButtonText}>➕</Text>
         </TouchableOpacity>
       </View>
 
@@ -197,13 +197,13 @@ const styles = StyleSheet.create({
   },
   addButton: {
     backgroundColor: '#2563eb',
-    paddingHorizontal: 16,
-    paddingVertical: 8,
+    paddingHorizontal: 12,
+    paddingVertical: 12,
     borderRadius: 6,
   },
   addButtonText: {
     color: '#fff',
-    fontSize: 16,
+    fontSize: 20,
     fontWeight: '600',
   },
   listContainer: {

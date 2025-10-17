@@ -42,23 +42,14 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen = true, onClose }) => {
 
       {/* Menu Items */}
       <View style={styles.menuContainer}>
-        {/* Dashboard */}
-        <TouchableOpacity
-          style={[styles.menuItem, isActive('/dashboard') && styles.menuItemActive]}
-          onPress={() => handleNavigation('/dashboard')}
-        >
-          <Text style={styles.menuIcon}>📊</Text>
-          <Text style={[styles.menuText, isActive('/dashboard') && styles.menuTextActive]}>
-            Dashboard
-          </Text>
-        </TouchableOpacity>
+
 
         {/* Jornadas */}
         <TouchableOpacity
           style={[styles.menuItem, isActive('/jornadas') && styles.menuItemActive]}
           onPress={() => handleNavigation('/jornadas')}
         >
-          <Text style={styles.menuIcon}>🚗</Text>
+          <Text style={styles.menuIcon}>🗺️</Text>
           <Text style={[styles.menuText, isActive('/jornadas') && styles.menuTextActive]}>
             Jornadas
           </Text>
@@ -80,22 +71,13 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen = true, onClose }) => {
           style={[styles.menuItem, isActive('/despesas') && styles.menuItemActive]}
           onPress={() => handleNavigation('/despesas')}
         >
-          <Text style={styles.menuIcon}>💰</Text>
+          <Text style={styles.menuIcon}>💸</Text>
           <Text style={[styles.menuText, isActive('/despesas') && styles.menuTextActive]}>
             Despesas
           </Text>
         </TouchableOpacity>
 
-        {/* Configurações */}
-        <TouchableOpacity
-          style={[styles.menuItem, pathname.startsWith('/settings') && styles.menuItemActive]}
-          onPress={() => handleNavigation('/settings')}
-        >
-          <Text style={styles.menuIcon}>⚙️</Text>
-          <Text style={[styles.menuText, pathname.startsWith('/settings') && styles.menuTextActive]}>
-            Configurações
-          </Text>
-        </TouchableOpacity>
+
       </View>
 
       {/* Logout Button */}
