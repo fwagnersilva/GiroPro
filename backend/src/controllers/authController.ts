@@ -1,181 +1,105 @@
 import { Request, Response } from 'express';
 import { AuthService } from '../services/authService';
-import { loginSchema, registerSchema, requestPasswordResetSchema, resetPasswordSchema, changePasswordSchema } from '../utils/validation';
-import { UnauthorizedError, NotFoundError, ValidationError, ConflictError } from "../utils/customErrors";
-import { z } from 'zod';
 
 export class AuthController {
+  static async login(req: Request, res: Response) {
+    try {
+      const { email, senha } = req.body;
+
+      if (!email || !senha) {
+        return res.status(400).json({
+          error: 'Email e senha são obrigatórios'
+        });
+      }
+
+      const result = await AuthService.login({ email, senha });
+
+      return res.json({
+        token: result.token,
+        refreshToken: result.refreshToken,
+        user: result.user
+      });
+
+    } catch (error: any) {
+      console.error('Login error:', error);
+      return res.status(401).json({
+        error: error.message || 'Credenciais inválidas'
+      });
+    }
+  }
+
   static async register(req: Request, res: Response) {
     try {
-      const { email, senha, nome, dataNascimento, cidade } = registerSchema.parse(req.body);
-      const { token, user, refreshToken } = await AuthService.register({ email, senha, nome, dataNascimento, cidade });
-      res.status(201).send({ success: true, message: 'Usuário registrado com sucesso', accessToken: token, user: { ...user, role: 'user' }, refreshToken });
-    } catch (error: any) {
-      if (error instanceof ValidationError) {
-        console.error("Validation Error:", error);
-        res.status(400).send({ success: false, message: "Dados de entrada inválidos." });
-      } else if (error instanceof ConflictError) {
-        console.error("Conflict Error:", error);
-        res.status(409).send({ success: false, message: "Email já está em uso." });
-      } else if (error instanceof z.ZodError) {
-        console.error("Zod Validation Error:", error);
-        res.status(400).send({ success: false, message: "Erro de validação dos dados." });
-      } else {
-        console.error('Erro no registro:', error);
-        res.status(500).send({ success: false, message: 'Ocorreu um erro interno no servidor.' });
-      }
-    }
-  }
+      const { nome, email, senha } = req.body;
 
-  static async login(req: Request, res: Response) {
-  try {
-    const { email, senha } = loginSchema.parse(req.body);
-    const { token: accessToken, refreshToken, user } = await AuthService.login({ email, senha });
-    
-    // ✅ CORREÇÃO: Retornar no formato esperado pelo frontend
-    res.send({ 
-      success: true, 
-      message: 'Login bem-sucedido',
-      user: {
-        id: user.id,
-        email: user.email,
-        nome: user.nome,
-        createdAt: user.createdAt,
-        updatedAt: user.updatedAt
-      },
-      tokens: {
-        accessToken,
-        refreshToken,
-        expiresAt: Date.now() + 24 * 60 * 60 * 1000 // 24 horas
-      }
-    });
-  } catch (error: any) {
-    if (error instanceof ValidationError) {
-      console.error("Validation Error:", error);
-      res.status(400).send({ success: false, message: "Dados de entrada inválidos." });
-    } else if (error instanceof UnauthorizedError) {
-      console.error("Unauthorized Error:", error);
-      res.status(401).send({ success: false, message: "Credenciais inválidas." });
-    } else if (error instanceof z.ZodError) {
-      console.error("Zod Validation Error:", error);
-      res.status(400).send({ success: false, message: "Erro de validação dos dados." });
-    } else {
-      console.error('Erro no login:', error);
-      res.status(500).send({ success: false, message: 'Ocorreu um erro interno no servidor.' });
-    }
-  }
-}
-  static async requestPasswordReset(req: Request, res: Response) {
-    try {
-      const { email } = requestPasswordResetSchema.parse(req.body);
-      await AuthService.requestPasswordReset(email);
-      res.send({ success: true, message: 'Se o email estiver registrado, um link de redefinição de senha foi enviado.' });
-    } catch (error: any) {
-      if (error instanceof ValidationError) {
-        console.error("Validation Error:", error);
-        res.status(400).send({ success: false, message: "Dados de entrada inválidos." });
-      } else if (error instanceof NotFoundError) {
-        console.error("Not Found Error:", error);
-        res.status(404).send({ success: false, message: "Email não encontrado." });
-      } else if (error instanceof z.ZodError) {
-        console.error("Zod Validation Error:", error);
-        res.status(400).send({ success: false, message: "Erro de validação dos dados." });
-      } else {
-        console.error('Erro ao solicitar redefinição de senha:', error);
-        res.status(500).send({ success: false, message: 'Ocorreu um erro interno no servidor.' });
-      }
-    }
-  }
+      const result = await AuthService.register({ nome, email, senha });
 
-  static async resetPassword(req: Request, res: Response) {
-    try {
-      const { token, newPassword } = resetPasswordSchema.parse(req.body);
-      await AuthService.resetPassword(token, newPassword);
-      res.send({ success: true, message: 'Senha redefinida com sucesso.' });
+      return res.status(201).json({
+        token: result.token,
+        refreshToken: result.refreshToken,
+        user: result.user
+      });
+
     } catch (error: any) {
-      if (error instanceof ValidationError) {
-        console.error("Validation Error:", error);
-        res.status(400).send({ success: false, message: "Dados de entrada inválidos." });
-      } else if (error instanceof UnauthorizedError || error instanceof NotFoundError) {
-        console.error("Authentication/Not Found Error:", error);
-        res.status(401).send({ success: false, message: "Token inválido ou expirado." });
-      } else if (error instanceof z.ZodError) {
-        console.error("Zod Validation Error:", error);
-        res.status(400).send({ success: false, message: "Erro de validação dos dados." });
-      } else {
-        console.error('Erro ao redefinir senha:', error);
-        res.status(500).send({ success: false, message: 'Ocorreu um erro interno no servidor.' });
-      }
+      console.error('Register error:', error);
+      return res.status(400).json({
+        error: error.message || 'Erro ao registrar usuário'
+      });
     }
   }
 
   static async refreshToken(req: Request, res: Response) {
     try {
-      const { refreshToken } = z.object({ refreshToken: z.string() }).parse(req.body);
-      const { token: accessToken, refreshToken: newRefreshToken } = await AuthService.refreshToken(refreshToken);
-      res.send({ success: true, message: 'Token atualizado com sucesso', accessToken, refreshToken: newRefreshToken });
-    } catch (error: any) {
-      if (error instanceof UnauthorizedError) {
-        console.error("Unauthorized Error:", error);
-        res.status(401).send({ success: false, message: "Token de atualização inválido." });
-      } else if (error instanceof z.ZodError) {
-        console.error("Zod Validation Error:", error);
-        res.status(400).send({ success: false, message: "Erro de validação dos dados." });
-      } else {
-        console.error('Erro ao atualizar token:', error);
-        res.status(500).send({ success: false, message: 'Ocorreu um erro interno no servidor.' });
+      const { refreshToken } = req.body;
+
+      if (!refreshToken) {
+        return res.status(400).json({ error: 'Refresh token obrigatório' });
       }
+
+      const result = await AuthService.refreshToken(refreshToken);
+
+      return res.json(result);
+
+    } catch (error: any) {
+      console.error('Refresh token error:', error);
+      return res.status(401).json({
+        error: error.message || 'Token inválido'
+      });
+    }
+  }
+
+  static async requestPasswordReset(req: Request, res: Response) {
+    try {
+      return res.status(501).json({ error: 'Não implementado' });
+    } catch (error: any) {
+      return res.status(500).json({ error: error.message });
+    }
+  }
+
+  static async resetPassword(req: Request, res: Response) {
+    try {
+      return res.status(501).json({ error: 'Não implementado' });
+    } catch (error: any) {
+      return res.status(500).json({ error: error.message });
     }
   }
 
   static async changePassword(req: Request, res: Response) {
     try {
-      const userId = (req as any).user?.id;
-      if (!userId) {
-        throw new UnauthorizedError('Usuário não autenticado');
-      }
-      const { currentPassword, newPassword } = changePasswordSchema.parse(req.body);
-      await AuthService.changePassword(userId, currentPassword, newPassword);
-      res.send({ success: true, message: 'Senha alterada com sucesso.' });
+      return res.status(501).json({ error: 'Não implementado' });
     } catch (error: any) {
-      if (error instanceof ValidationError) {
-        console.error("Validation Error:", error);
-        res.status(400).send({ success: false, message: "Dados de entrada inválidos." });
-      } else if (error instanceof UnauthorizedError) {
-        console.error("Unauthorized Error:", error);
-        res.status(401).send({ success: false, message: "Credenciais inválidas ou usuário não autorizado." });
-      } else if (error instanceof z.ZodError) {
-        console.error("Zod Validation Error:", error);
-        res.status(400).send({ success: false, message: "Erro de validação dos dados." });
-      } else {
-        console.error('Erro ao alterar senha:', error);
-        res.status(500).send({ success: false, message: 'Ocorreu um erro interno no servidor.' });
-      }
+      return res.status(500).json({ error: error.message });
     }
   }
 
   static async me(req: Request, res: Response) {
     try {
-      const userId = (req as any).user?.id;
-      if (!userId) {
-        throw new UnauthorizedError('Usuário não autenticado');
-      }
-      const user = await AuthService.getUserById(userId);
-      if (!user) {
-        throw new NotFoundError('Usuário não encontrado');
-      }
-      res.send({ success: true, user });
+      return res.json(req.user);
     } catch (error: any) {
-      if (error instanceof UnauthorizedError) {
-        console.error("Unauthorized Error:", error);
-        res.status(401).send({ success: false, message: "Usuário não autenticado." });
-      } else if (error instanceof NotFoundError) {
-        console.error("Not Found Error:", error);
-        res.status(404).send({ success: false, message: "Usuário não encontrado." });
-      } else {
-        console.error('Erro ao buscar dados do usuário:', error);
-        res.status(500).send({ success: false, message: 'Ocorreu um erro interno no servidor.' });
-      }
+      console.error('Get profile error:', error);
+      return res.status(500).json({
+        error: 'Erro ao buscar perfil'
+      });
     }
   }
 }

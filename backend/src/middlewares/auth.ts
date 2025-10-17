@@ -1,112 +1,37 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
-import { config } from '../config';
 
-// Interface para o payload do JWT
-interface JWTPayload {
-  userId: string;
-  email: string;
-  nome: string;
-  role: string;
-  iat?: number;
-  exp?: number;
+declare global {
+  namespace Express {
+    interface Request {
+      user?: { id: string; email: string; nome: string; role: string; };
+    }
+  }
 }
 
-// Estende a interface Request do Express para incluir a propriedade 'user'
+export const authMiddleware = (req: Request, res: Response, next: NextFunction) => {
+  const authHeader = req.headers.authorization;
 
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    return res.status(401).json({ message: 'Token não fornecido ou formato inválido' });
+  }
 
-/**
- * Middleware de autenticação JWT
- * Verifica se o token fornecido no header Authorization é válido
- * e adiciona os dados do usuário ao objeto request
- */
+  const token = authHeader.split(' ')[1];
 
-const authMiddleware = (
-  req: Request, 
-  res: Response, 
-  next: NextFunction
-): void => {
   try {
-    // Extrai o header de autorização
-    const authHeader = req.headers.authorization;
-    
-    if (!authHeader) {
-      res.status(401).json({ 
-        success: false,
-        message: "Header de autorização não fornecido" 
-      });
-      return;
-    }
-
-    // Verifica se o formato está correto (Bearer TOKEN)
-    const tokenParts = authHeader.split(" ");
-    if (tokenParts.length !== 2 || tokenParts[0] !== "Bearer") {
-      res.status(401).json({ 
-        success: false,
-        message: "Formato do token inválido. Use: Bearer <token>" 
-      });
-      return;
-    }
-
-    const token = tokenParts[1];
-
-    // Verifica se o JWT_SECRET está configurado adequadamente
-    const jwtSecret = config.auth.jwtSecret;
-    if (!jwtSecret || jwtSecret === 'supersecretjwtkey') {
-      console.error("JWT_SECRET não configurado adequadamente nas variáveis de ambiente");
-      res.status(500).json({ 
-        success: false,
-        message: "Erro interno do servidor" 
-      });
-      return;
-    }
-
-    // Verifica e decodifica o token
-    const decoded = jwt.verify(token, jwtSecret) as JWTPayload;
-    
-    // Valida se o payload contém os campos necessários
-    if (!decoded.userId || !decoded.email) {
-      res.status(403).json({ 
-        success: false,
-        message: "Token não contém dados válidos do usuário" 
-      });
-      return;
-    }
-
-    // Adiciona os dados do usuário ao request
-    (req as any).user = {
-      id: decoded.userId,
-      email: decoded.email,
-      nome: decoded.nome,
-      role: decoded.role
-    };
-
+    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'supersecret') as { id: string; email: string; nome: string; role: string; };
+    req.user = decoded;
     next();
-
   } catch (error) {
-    // Log do erro para debugging (em produção, use um logger adequado)
-    console.error("Erro na autenticação:", error);
-
-    // Trata diferentes tipos de erro do JWT
-    if (error instanceof jwt.TokenExpiredError) {
-      res.status(401).json({ 
-        success: false,
-        message: "Token expirado" 
-      });
-    } else if (error instanceof jwt.JsonWebTokenError) {
-      res.status(403).json({ 
-        success: false,
-        message: "Token inválido" 
-      });
-    } else {
-      res.status(500).json({ 
-        success: false,
-        message: "Erro interno do servidor" 
-      });
-    }
+    return res.status(403).json({ message: 'Token inválido' });
   }
 };
 
-export { authMiddleware };
-
-
+export const roleMiddleware = (roles: string[]) => {
+  return (req: Request, res: Response, next: NextFunction) => {
+    if (!req.user || !roles.includes(req.user.role)) {
+      return res.status(403).json({ message: 'Forbidden' });
+    }
+    return next();
+  };
+};

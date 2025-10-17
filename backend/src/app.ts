@@ -1,45 +1,47 @@
 import express from 'express';
-import { corsMiddleware } from './middlewares/cors';
+import cors from 'cors';
 import helmet from 'helmet';
 import compression from 'compression';
+import cookieParser from 'cookie-parser';
 import { errorHandler } from './middlewares/errorHandler';
 import { requestLogger } from './middlewares/requestLogger';
-import logger from './utils/logger';
 import { authRoutes } from './routes/auth';
 import { vehicleRoutes } from './routes/vehicles';
 import { journeyRoutes } from './routes/journeys';
+import { authMiddleware } from './middlewares/auth';
 
 const app = express();
 app.set('trust proxy', 1);
 
-// Middlewares globais
-app.use(corsMiddleware);
+// Middlewares básicos
 app.use(helmet());
 app.use(compression());
+app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// CORS
+app.use(cors({
+  origin: process.env.CORS_ORIGIN?.split(',') || '*',
+  credentials: true
+}));
+
+// Logger
 app.use(requestLogger);
 
-// Rota Raiz
-app.get('/', (req, res) => {
-  res.json({ message: 'Bem-vindo à API GiroPro. Use /health para verificar o status.' });
-});
-
-// Health check
+// Health check (sem autenticação)
 app.get('/health', (req, res) => {
-  res.json({
-    status: 'ok',
-    timestamp: new Date().toISOString(),
-    environment: process.env.NODE_ENV
-  });
+  res.json({ status: 'ok' });
 });
 
-// Rotas
+// Rotas públicas
 app.use('/api/v1/auth', authRoutes);
-app.use('/api/v1/vehicles', vehicleRoutes);
-app.use('/api/v1/journeys', journeyRoutes);
 
-// Error handler (deve ser o último middleware)
+// Rotas protegidas (COM autenticação)
+app.use('/api/v1/vehicles', authMiddleware, vehicleRoutes);
+app.use('/api/v1/journeys', authMiddleware, journeyRoutes);
+
+// Error handler
 app.use(errorHandler);
 
 export default app;
