@@ -5,7 +5,6 @@ import { useForm } from 'react-hook-form';
 import { KeyboardAvoidingView } from 'react-native-keyboard-controller';
 import * as z from 'zod';
 import { useNavigation } from '@react-navigation/native';
-
 import { Button, ControlledInput, Text, View } from '@/components/ui';
 
 const schema = z.object({
@@ -25,13 +24,20 @@ export type FormType = z.infer<typeof schema>;
 
 export type LoginFormProps = {
   onSubmit?: SubmitHandler<FormType>;
+  errorMessage?: string;
+  isLoading?: boolean;
 };
 
-export const LoginForm = ({ onSubmit = () => {} }: LoginFormProps) => {
+export const LoginForm = ({ 
+  onSubmit = () => {}, 
+  errorMessage = '',
+  isLoading = false 
+}: LoginFormProps) => {
   const navigation = useNavigation();
   const { handleSubmit, control } = useForm<FormType>({
     resolver: zodResolver(schema),
   });
+
   return (
     <KeyboardAvoidingView
       style={{ flex: 1 }}
@@ -46,11 +52,13 @@ export const LoginForm = ({ onSubmit = () => {} }: LoginFormProps) => {
           >
             GiroPro
           </Text>
-
-          {/* Texto de demonstração removido */}
         </View>
 
-        {/* Campo 'name' removido */}
+        {errorMessage ? (
+          <View className="bg-red-100 border border-red-400 rounded-lg p-3 mb-4">
+            <Text className="text-red-700 text-center">{errorMessage}</Text>
+          </View>
+        ) : null}
 
         <ControlledInput
           testID="email-input"
@@ -68,10 +76,10 @@ export const LoginForm = ({ onSubmit = () => {} }: LoginFormProps) => {
         />
         <Button
           testID="login-button"
-          label="Login"
+          label={isLoading ? "Entrando..." : "Login"}
           onPress={handleSubmit(onSubmit)}
+          disabled={isLoading}
         />
-        
         <View className="mt-4 items-center">
           <Text
             className="text-blue-600 text-sm"
