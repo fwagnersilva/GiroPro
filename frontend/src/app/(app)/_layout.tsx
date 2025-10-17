@@ -27,10 +27,6 @@ export default function TabLayout() {
     }
   }, [hideSplash, status]);
 
-  // if (isFirstTime) {
-  //   return <Redirect href="/onboarding" />;
-  // }
-
   if (status === 'signOut' || status === 'idle') {
     return <Redirect href="/login" />;
   }
@@ -49,93 +45,41 @@ export default function TabLayout() {
               <Text style={{ fontSize: 24 }}>☰</Text>
             </Pressable>
           ),
-          headerShown: true, // Ensure header is always shown for screens within these tabs
+          headerShown: true,
         }}
       >
-        {/* Apenas 3 tabs principais no menu inferior */}
         <Tabs.Screen
           name="trips"
           options={{
             title: 'Jornadas',
-            headerShown: true,
             tabBarIcon: ({ color }) => <FeedIcon color={color} />,
-            tabBarButtonTestID: 'trips-tab',
           }}
         />
         <Tabs.Screen
           name="fuelings"
           options={{
             title: 'Abastecimentos',
-            headerShown: true,
             tabBarIcon: ({ color }) => <FeedIcon color={color} />,
-            tabBarButtonTestID: 'fuelings-tab',
           }}
         />
         <Tabs.Screen
           name="expenses"
           options={{
             title: 'Despesas',
-            headerShown: true,
             tabBarIcon: ({ color }) => <SettingsIcon color={color} />,
-            tabBarButtonTestID: 'expenses-tab',
           }}
         />
-
-        {/* Ocultar outras telas da tab bar, mas manter acessíveis via navegação */}
-        <Tabs.Screen
-          name="index"
-          options={{
-            href: null, // Remove da tab bar
-          }}
-        />
-        <Tabs.Screen
-          name="activities"
-          options={{
-            href: null,
-          }}
-        />
-        <Tabs.Screen
-          name="dashboard"
-          options={{
-            href: null,
-          }}
-        />
-        <Tabs.Screen
-          name="vehicles"
-          options={{
-            href: null,
-          }}
-        />
-        <Tabs.Screen
-          name="style"
-          options={{
-            href: null,
-          }}
-        />
-        <Tabs.Screen
-          name="profile"
-          options={{
-            href: null,
-          }}
-        />
-        <Tabs.Screen
-          name="settings"
-          options={{
-            href: null,
-          }}
-        />
-        <Tabs.Screen
-          name="edit-expense"
-          options={{
-            href: null,
-          }}
-        />
-        <Tabs.Screen
-          name="edit-fueling"
-          options={{
-            href: null,
-          }}
-        />
+        <Tabs.Screen name="index" options={{ href: null }} />
+        <Tabs.Screen name="activities" options={{ href: null }} />
+        <Tabs.Screen name="dashboard" options={{ href: null }} />
+        <Tabs.Screen name="dashboard-backup" options={{ href: null }} />
+        <Tabs.Screen name="vehicles" options={{ href: null }} />
+        <Tabs.Screen name="style" options={{ href: null }} />
+        <Tabs.Screen name="profile" options={{ href: null }} />
+        <Tabs.Screen name="settings" options={{ href: null }} />
+        <Tabs.Screen name="edit-expense" options={{ href: null }} />
+        <Tabs.Screen name="edit-fueling" options={{ href: null }} />
+        <Tabs.Screen name="edit-vehicle" options={{ href: null }} />
       </Tabs>
     </View>
   );
