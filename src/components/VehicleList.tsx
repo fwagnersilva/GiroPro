@@ -6,14 +6,16 @@ import {
   ActivityIndicator, 
   StyleSheet, 
   TouchableOpacity,
-  Alert,
-  Modal
+  Alert
 } from 'react-native';
+import { useRouter } from 'expo-router';
+import { Ionicons } from '@expo/vector-icons';
 import { useVehicleService } from '../hooks/useVehicleService';
 import { Vehicle } from '../services/vehicleService';
 import VehicleForm from './VehicleForm';
 
 const VehicleList: React.FC = () => {
+  const router = useRouter();
   const { 
     vehicles, 
     loading, 
@@ -24,21 +26,19 @@ const VehicleList: React.FC = () => {
     removeVehicle 
   } = useVehicleService();
 
-  const [showForm, setShowForm] = useState(false);
-  const [editingVehicle, setEditingVehicle] = useState<Vehicle | null>(null);
+
+
 
   useEffect(() => {
     fetchVehicles();
   }, [fetchVehicles]);
 
   const handleAddVehicle = () => {
-    setEditingVehicle(null);
-    setShowForm(true);
+    router.push('/vehicles/new');
   };
 
   const handleEditVehicle = (vehicle: Vehicle) => {
-    setEditingVehicle(vehicle);
-    setShowForm(true);
+    router.push(`/vehicles/${vehicle.id}`);
   };
 
   const handleDeleteVehicle = (vehicle: Vehicle) => {
@@ -57,18 +57,13 @@ const VehicleList: React.FC = () => {
   };
 
   const handleFormSubmit = async (data: any) => {
-    if (editingVehicle) {
-      await editVehicle(editingVehicle.id, data);
-    } else {
-      await addVehicle(data);
-    }
-    setShowForm(false);
-    setEditingVehicle(null);
+    // This logic will be moved to the form screen
+    console.log('Form submitted, but this logic should be in the form screen.');
   };
 
   const handleFormCancel = () => {
-    setShowForm(false);
-    setEditingVehicle(null);
+    // This logic will be moved to the form screen
+    console.log('Form cancelled, but this logic should be in the form screen.');
   };
 
   const renderVehicleItem = ({ item }: { item: Vehicle }) => (
@@ -139,7 +134,7 @@ const VehicleList: React.FC = () => {
       <View style={styles.header}>
         <Text style={styles.title}>Veículos</Text>
         <TouchableOpacity style={styles.addButton} onPress={handleAddVehicle}>
-          <Text style={styles.addButtonText}>+ Adicionar</Text>
+          <Ionicons name="add-circle" size={24} color="#fff" /><Text style={styles.addButtonText}> Adicionar</Text>
         </TouchableOpacity>
       </View>
 
@@ -160,18 +155,7 @@ const VehicleList: React.FC = () => {
         />
       )}
 
-      <Modal
-        visible={showForm}
-        animationType="slide"
-        presentationStyle="pageSheet"
-      >
-        <VehicleForm
-          vehicle={editingVehicle || undefined}
-          onSubmit={handleFormSubmit}
-          onCancel={handleFormCancel}
-          isEditing={!!editingVehicle}
-        />
-      </Modal>
+
     </View>
   );
 };
@@ -197,9 +181,12 @@ const styles = StyleSheet.create({
   },
   addButton: {
     backgroundColor: '#2563eb',
-    paddingHorizontal: 16,
+    paddingHorizontal: 12,
     paddingVertical: 8,
     borderRadius: 6,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 5,
   },
   addButtonText: {
     color: '#fff',

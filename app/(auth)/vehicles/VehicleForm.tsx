@@ -9,7 +9,7 @@ import {
   Alert 
 } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
-import { Vehicle, CreateVehicleData, UpdateVehicleData } from '../services/vehicleService';
+import { Vehicle, CreateVehicleData, UpdateVehicleData } from '../../../../src/services/vehicleService';
 
 interface VehicleFormProps {
   vehicle?: Vehicle;

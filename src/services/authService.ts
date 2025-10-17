@@ -13,8 +13,8 @@ export const loginApi = async (credentials: LoginCredentials): Promise<AuthRespo
           updatedAt: new Date().toISOString(),
         };
         const tokens: AuthTokens = {
-          accessToken: "mock-access-token",
-          refreshToken: "mock-refresh-token",
+          accessToken: "", // Removido dado mockado
+          refreshToken: "", // Removido dado mockado
           expiresAt: Date.now() + 3600 * 1000, // Expira em 1 hora
         };
         resolve({ user, tokens });
@@ -55,8 +55,8 @@ export const registerApi = async (credentials: any): Promise<AuthResponse> => {
           updatedAt: new Date().toISOString(),
         };
         const tokens: AuthTokens = {
-          accessToken: "mock-new-access-token",
-          refreshToken: "mock-new-refresh-token",
+          accessToken: "", // Removido dado mockado
+          refreshToken: "", // Removido dado mockado
           expiresAt: Date.now() + 3600 * 1000, // Expira em 1 hora
         };
         resolve({ user, tokens });
@@ -71,10 +71,10 @@ export const registerApi = async (credentials: any): Promise<AuthResponse> => {
 export const refreshTokenApi = async (refreshToken: string): Promise<AuthTokens> => {
   return new Promise((resolve, reject) => {
     setTimeout(() => {
-      if (refreshToken === "mock-refresh-token") {
+      if (refreshToken === "") { // Removido dado mockado
         const newTokens: AuthTokens = {
-          accessToken: "mock-new-access-token-" + Math.random().toString(36).substring(7),
-          refreshToken: "mock-refresh-token",
+          accessToken: "", // Removido dado mockado
+          refreshToken: "", // Removido dado mockado
           expiresAt: Date.now() + 3600 * 1000, // Expira em 1 hora
         };
         resolve(newTokens);

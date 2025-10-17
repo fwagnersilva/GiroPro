@@ -21,6 +21,8 @@ export default function AuthLayout() {
               <Stack.Screen name="abastecimentos" />
               <Stack.Screen name="despesas" />
               <Stack.Screen name="vehicles" />
+              <Stack.Screen name="vehicles/index" options={{ title: 'Formulário de Veículo' }} />
+              <Stack.Screen name="vehicles/[id]" options={{ title: 'Editar Veículo' }} />
               <Stack.Screen name="cadastro-plataformas" />
               <Stack.Screen name="settings" />
             </Stack>

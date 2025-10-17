@@ -209,64 +209,11 @@ export default function Settings() {
           />
         </SectionContainer>
 
-        {/* Support */}
-        <SectionTitle title="Suporte" />
-        <SectionContainer>
-          <SettingItem
-            icon="help-circle"
-            title="Centro de Ajuda"
-            subtitle="Dúvidas frequentes e tutoriais"
-            onPress={() => handleOpenLink('https://help.giropro.com')}
-          />
-          <SettingItem
-            icon="bug"
-            title="Reportar Problema"
-            subtitle="Nos ajude a melhorar"
-            onPress={() => Alert.alert('Reportar Problema', 'Descreva o problema encontrado')}
-          />
-          <SettingItem
-            icon="star"
-            title="Avaliar Aplicativo"
-            subtitle="Deixe sua avaliação"
-            onPress={() => handleOpenLink('https://play.google.com/store/apps/details?id=com.giropro')}
-          />
-          <SettingItem
-            icon="share-social"
-            title="Compartilhar"
-            subtitle="Indique para amigos"
-            onPress={() => Alert.alert('Compartilhar', 'Baixe o GiroPro no App Store ou Play Store')}
-          />
-        </SectionContainer>
 
-        {/* Legal */}
-        <SectionTitle title="Legal" />
-        <SectionContainer>
-          <SettingItem
-            icon="document-text"
-            title="Termos de Serviço"
-            onPress={() => handleOpenLink('https://giropro.com/terms')}
-          />
-          <SettingItem
-            icon="shield-checkmark"
-            title="Política de Privacidade"
-            onPress={() => handleOpenLink('https://giropro.com/privacy')}
-          />
-        </SectionContainer>
 
-        {/* Social Links */}
-        <SectionTitle title="Redes Sociais" />
-        <SectionContainer>
-          <SettingItem
-            icon="logo-github"
-            title="GitHub"
-            onPress={() => handleOpenLink('https://github.com/giropro')}
-          />
-          <SettingItem
-            icon="globe"
-            title="Website"
-            onPress={() => handleOpenLink('https://giropro.com')}
-          />
-        </SectionContainer>
+
+
+
 
         {/* Danger Zone */}
         <SectionTitle title="Segurança" />
