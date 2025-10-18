@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ScrollView, Alert, Dimensions, RefreshControl, ActivityIndicator } from 'react-native';
+import { ScrollView, Alert, Dimensions, RefreshControl, ActivityIndicator, TouchableOpacity } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { Ionicons } from '@expo/vector-icons';
 import { FocusAwareStatusBar, Text, View, Button, Input } from '@/components/ui';
@@ -33,6 +33,7 @@ interface Trip {
   pausedOdometer?: number | null;
   pauseTimestamps?: { pause: string; resume: string | null; pauseKm: number; resumeKm: number | null }[];
   earnings?: { uber: number; app99: number; total: number } | null;
+  valorTotal?: number;
 }
 
 interface Vehicle {
@@ -72,11 +73,31 @@ const detectTimeShiftCrossing = (startDate: string) => {
 const ActiveTripCard = ({ 
   trip, 
   vehicle,
+  endOdometerInput,
+  setEndOdometerInput,
+  uber1Input,
+  setUber1Input,
+  uber2Input,
+  setUber2Input,
+  app99_1Input,
+  setApp99_1Input,
+  app99_2Input,
+  setApp99_2Input,
   onFinish, 
   onCancel 
 }: { 
   trip: Trip; 
   vehicle?: Vehicle;
+  endOdometerInput: string;
+  setEndOdometerInput: (value: string) => void;
+  uber1Input: string;
+  setUber1Input: (value: string) => void;
+  uber2Input: string;
+  setUber2Input: (value: string) => void;
+  app99_1Input: string;
+  setApp99_1Input: (value: string) => void;
+  app99_2Input: string;
+  setApp99_2Input: (value: string) => void;
   onFinish: () => void;
   onCancel: () => void;
 }) => {
@@ -96,41 +117,40 @@ const ActiveTripCard = ({
   const crossing = detectTimeShiftCrossing(startDate);
 
   return (
-    <View className="bg-gradient-to-br from-red-50 to-pink-50 rounded-2xl p-5 mb-6 border-2 border-red-300">
+    <View className="bg-white rounded-2xl p-5 mb-6 border border-gray-200">
       {/* Header */}
       <View className="flex-row items-center justify-between mb-4">
         <View className="flex-row items-center flex-1">
-          <View className="w-12 h-12 bg-red-500 rounded-full items-center justify-center mr-3">
+          <View className="w-12 h-12 bg-blue-600 rounded-full items-center justify-center mr-3">
             <Ionicons name="car-sport" size={24} color="white" />
           </View>
           <View className="flex-1">
             <Text className="text-lg font-bold text-gray-900">Jornada em Andamento</Text>
-            <Text className="text-sm text-gray-600 mt-1">
-              Veículo: {vehicle?.marca} {vehicle?.modelo} ({vehicle?.placa || 'N/A'})
+            <Text className="text-xs text-gray-500 mt-1">
+              Início: {new Date(startDate).toLocaleDateString('pt-BR')} {new Date(startDate).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
             </Text>
           </View>
         </View>
       </View>
 
-      {/* Informações */}
-      <View className="bg-white rounded-xl p-4 mb-4">
-        {/* KM Inicial */}
-        <View className="flex-row items-center mb-3">
-          <Ionicons name="speedometer-outline" size={20} color="#6B7280" />
-          <Text className="text-sm text-gray-600 ml-2">
-            KM Início: <Text className="font-bold text-gray-900">{startOdometer.toLocaleString('pt-BR')}</Text>
-          </Text>
-        </View>
+      {/* Informações do Veículo */}
+      <View className="bg-gray-800 rounded-xl p-4 mb-4">
+        <Text className="text-white font-bold text-base mb-1">
+          Veículo: {vehicle?.marca} {vehicle?.modelo} ({vehicle?.placa || 'N/A'})
+        </Text>
+        <Text className="text-gray-300 text-sm">
+          Início: {new Date(startDate).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
+        </Text>
+      </View>
 
-        {/* Hora de Início */}
-        <View className="flex-row items-center">
-          <Ionicons name="time-outline" size={20} color="#6B7280" />
-          <Text className="text-sm text-gray-600 ml-2">
-            Início: <Text className="font-bold text-gray-900">
-              {new Date(startDate).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
-            </Text>
-          </Text>
-        </View>
+      {/* KM Inicial */}
+      <View className="bg-blue-50 rounded-xl p-4 mb-4">
+        <Text className="text-sm font-semibold text-gray-700 mb-2">KM Inicial *</Text>
+        <Input
+          value={startOdometer.toString()}
+          editable={false}
+          className="bg-white"
+        />
       </View>
 
       {/* Aviso de Cruzamento */}
@@ -157,6 +177,205 @@ const ActiveTripCard = ({
           </View>
         </View>
       )}
+
+      {/* KM Final */}
+      <View className="mb-4">
+        <Text className="text-sm font-semibold text-gray-700 mb-2">KM Final *</Text>
+        <Input
+          placeholder="Quilometragem no painel"
+          value={endOdometerInput}
+          onChangeText={setEndOdometerInput}
+          keyboardType="numeric"
+          className="bg-gray-50"
+        />
+      </View>
+
+      {/* Faturamento por Plataforma */}
+      <Text className="text-base font-bold text-gray-900 mb-3">Faturamento por Plataforma (R$)</Text>
+      
+      {/* 99Pop */}
+      <View className="mb-4 bg-orange-50 border border-orange-200 rounded-xl p-4">
+        <Text className="text-sm font-semibold text-orange-900 mb-2">99</Text>
+        <View className="flex-row gap-2">
+          <View className="flex-1">
+            <Input
+              placeholder={crossing.crossed99 ? "Dia anterior" : "0,00"}
+              value={app99_1Input}
+              onChangeText={setApp99_1Input}
+              keyboardType="decimal-pad"
+              className="bg-white"
+            />
+          </View>
+          {crossing.crossed99 && (
+            <View className="flex-1">
+              <Input
+                placeholder="Novo dia (0,00)"
+                value={app99_2Input}
+                onChangeText={setApp99_2Input}
+                keyboardType="decimal-pad"
+                className="bg-white"
+              />
+            </View>
+          )}
+        </View>
+      </View>
+
+      {/* Uber */}
+      <View className="mb-6 bg-gray-100 border border-gray-300 rounded-xl p-4">
+        <Text className="text-sm font-semibold text-gray-900 mb-2">UBER</Text>
+        <View className="flex-row gap-2">
+          <View className="flex-1">
+            <Input
+              placeholder={crossing.crossedUber ? "Antes das 4h" : "0,00"}
+              value={uber1Input}
+              onChangeText={setUber1Input}
+              keyboardType="decimal-pad"
+              className="bg-white"
+            />
+          </View>
+          {crossing.crossedUber && (
+            <View className="flex-1">
+              <Input
+                placeholder="Após 4h (0,00)"
+                value={uber2Input}
+                onChangeText={setUber2Input}
+                keyboardType="decimal-pad"
+                className="bg-white"
+              />
+            </View>
+          )}
+        </View>
+      </View>
+
+      {/* Botões */}
+      <View className="flex-row gap-3">
+        <Button onPress={onFinish} className="flex-1 bg-green-600 py-4 rounded-xl">
+          <Text className="text-white font-bold text-center">✓ Finalizar Jornada</Text>
+        </Button>
+        <Button onPress={onCancel} className="bg-red-600 px-6 py-4 rounded-xl">
+          <Text className="text-white font-bold text-center">✕ Cancelar</Text>
+        </Button>
+      </View>
+    </View>
+  );
+};
+
+// Componente do Card de Histórico
+const HistoryTripCard = ({ 
+  trip, 
+  vehicle,
+  onDelete 
+}: { 
+  trip: Trip; 
+  vehicle?: Vehicle;
+  onDelete: () => void;
+}) => {
+  const startDate = trip.startDate || trip.dataInicio || '';
+  const endDate = trip.endDate || trip.dataFim || '';
+  const startOdometer = trip.startOdometer || trip.kmInicio || 0;
+  const endOdometer = trip.endOdometer || trip.kmFim || 0;
+  const kmPercorrido = endOdometer - startOdometer;
+  
+  // Calcular tempo de jornada
+  const getJourneyTime = () => {
+    if (!startDate || !endDate) return '0h 0min';
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+    const diffMs = end.getTime() - start.getTime();
+    const hours = Math.floor(diffMs / (1000 * 60 * 60));
+    const minutes = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
+    return `${hours}h ${minutes}min`;
+  };
+
+  // Valores fictícios para demonstração (substituir por dados reais da API)
+  const valorBruto = trip.valorTotal ? (trip.valorTotal / 100) : 0;
+  const valorLiquido = valorBruto * 0.85; // Exemplo: 85% do bruto
+  const valor99 = valorBruto * 0.4; // Exemplo
+  const valorUber = valorBruto * 0.6; // Exemplo
+
+  return (
+    <View className="bg-white rounded-2xl p-5 mb-4 border border-gray-200">
+      {/* Header com Data */}
+      <View className="flex-row items-center justify-between mb-4">
+        <Text className="text-base font-bold text-gray-900">
+          {new Date(startDate).toLocaleDateString('pt-BR')}
+        </Text>
+        <TouchableOpacity onPress={onDelete}>
+          <Ionicons name="trash-outline" size={20} color="#EF4444" />
+        </TouchableOpacity>
+      </View>
+
+      {/* Informações do Veículo */}
+      <View className="bg-gray-800 rounded-xl p-4 mb-4">
+        <Text className="text-white font-bold text-sm mb-1">
+          Veículo: {vehicle?.marca} {vehicle?.modelo} ({vehicle?.placa || 'N/A'})
+        </Text>
+        <Text className="text-gray-300 text-xs">
+          {new Date(startDate).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })} - {new Date(endDate).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
+        </Text>
+      </View>
+
+      {/* Valores Principais */}
+      <View className="flex-row mb-4">
+        <View className="flex-1 bg-green-50 rounded-xl p-3 mr-2 border border-green-200">
+          <View className="flex-row items-center mb-1">
+            <Ionicons name="trending-up" size={16} color="#10B981" />
+            <Text className="text-xs text-gray-600 ml-1">Bruto</Text>
+          </View>
+          <Text className="text-lg font-bold text-green-700">R$ {valorBruto.toFixed(2)}</Text>
+        </View>
+        
+        <View className="flex-1 bg-blue-50 rounded-xl p-3 border border-blue-200">
+          <View className="flex-row items-center mb-1">
+            <Ionicons name="cash" size={16} color="#3B82F6" />
+            <Text className="text-xs text-gray-600 ml-1">Líquido</Text>
+          </View>
+          <Text className="text-lg font-bold text-blue-700">R$ {valorLiquido.toFixed(2)}</Text>
+        </View>
+        
+        <View className="flex-1 bg-purple-50 rounded-xl p-3 ml-2 border border-purple-200">
+          <View className="flex-row items-center mb-1">
+            <Ionicons name="navigate" size={16} color="#8B5CF6" />
+            <Text className="text-xs text-gray-600 ml-1">KM</Text>
+          </View>
+          <Text className="text-lg font-bold text-purple-700">{kmPercorrido.toFixed(0)} km</Text>
+        </View>
+      </View>
+
+      {/* Detalhes Adicionais */}
+      <View className="flex-row mb-4">
+        <View className="flex-1 mr-2">
+          <View className="flex-row items-center mb-1">
+            <Ionicons name="time-outline" size={14} color="#6B7280" />
+            <Text className="text-xs text-gray-600 ml-1">Tempo</Text>
+          </View>
+          <Text className="text-sm font-bold text-gray-900">{getJourneyTime()}</Text>
+        </View>
+        
+        <View className="flex-1">
+          <View className="flex-row items-center mb-1">
+            <Ionicons name="speedometer-outline" size={14} color="#6B7280" />
+            <Text className="text-xs text-gray-600 ml-1">R$/Hora</Text>
+          </View>
+          <Text className="text-sm font-bold text-gray-900">
+            R$ {(valorLiquido / (parseInt(getJourneyTime().split('h')[0]) || 1)).toFixed(2)}
+          </Text>
+        </View>
+      </View>
+
+      {/* Faturamento por Plataforma */}
+      <Text className="text-xs font-semibold text-gray-700 mb-2">Detalhado por Plataforma</Text>
+      <View className="flex-row gap-2">
+        <View className="flex-1 bg-orange-50 rounded-lg p-3 border border-orange-200">
+          <Text className="text-xs text-orange-900 font-semibold mb-1">99</Text>
+          <Text className="text-base font-bold text-orange-700">R$ {valor99.toFixed(2)}</Text>
+        </View>
+        
+        <View className="flex-1 bg-gray-100 rounded-lg p-3 border border-gray-300">
+          <Text className="text-xs text-gray-900 font-semibold mb-1">UBER</Text>
+          <Text className="text-base font-bold text-gray-700">R$ {valorUber.toFixed(2)}</Text>
+        </View>
+      </View>
     </View>
   );
 };
@@ -178,16 +397,12 @@ export default function Trips() {
   const [app99_2Input, setApp99_2Input] = useState('');
   
   const [selectedVehicleId, setSelectedVehicleId] = useState('');
-  const [showEndForm, setShowEndForm] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
 
   const vehicles: Vehicle[] = vehiclesData || [];
   const trips: Trip[] = journeysData || [];
   const activeTrip = trips.find((trip) => !(trip.endDate || trip.dataFim));
   const allCompletedTrips = trips.filter(trip => trip.endDate || trip.dataFim);
-
-  const startDate = activeTrip?.startDate || activeTrip?.dataInicio || '';
-  const crossing = startDate ? detectTimeShiftCrossing(startDate) : { crossed99: false, crossedUber: false, hasCrossing: false };
 
   useEffect(() => {
     if (vehicles.length > 0 && !selectedVehicleId) {
@@ -263,7 +478,6 @@ export default function Trips() {
       setUber2Input('');
       setApp99_1Input('');
       setApp99_2Input('');
-      setShowEndForm(false);
       
       Alert.alert('Sucesso', 'Jornada finalizada!');
       await refetchJourneys();
@@ -286,6 +500,12 @@ export default function Trips() {
             if (activeTrip) {
               try {
                 await deleteJourney.mutateAsync(activeTrip.id);
+                // Limpa os campos
+                setEndOdometerInput('');
+                setUber1Input('');
+                setUber2Input('');
+                setApp99_1Input('');
+                setApp99_2Input('');
                 Alert.alert('Sucesso', 'Jornada cancelada.');
                 await refetchJourneys();
               } catch (error) {
@@ -298,10 +518,33 @@ export default function Trips() {
     );
   };
 
+  const handleDeleteTrip = (tripId: string) => {
+    Alert.alert(
+      'Excluir Jornada',
+      'Tem certeza que deseja excluir esta jornada do histórico?',
+      [
+        { text: 'Não', style: 'cancel' },
+        {
+          text: 'Sim, Excluir',
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              await deleteJourney.mutateAsync(tripId);
+              Alert.alert('Sucesso', 'Jornada excluída.');
+              await refetchJourneys();
+            } catch (error) {
+              Alert.alert('Erro', 'Não foi possível excluir.');
+            }
+          }
+        }
+      ]
+    );
+  };
+
   if (isLoadingJourneys || isLoadingVehicles) {
     return (
       <View className="flex-1 bg-gray-50 items-center justify-center">
-        <ActivityIndicator size="large" color="#0066CC" />
+        <ActivityIndicator size="large" color="#3B82F6" />
         <Text className="text-gray-600 mt-4">Carregando...</Text>
       </View>
     );
@@ -316,110 +559,32 @@ export default function Trips() {
         className="flex-1 px-4 py-6"
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />}
       >
+        {/* Título */}
+        <Text className="text-2xl font-bold text-gray-900 mb-6">Jornadas</Text>
+
         {/* Jornada Ativa */}
-        {activeTrip && !showEndForm && (
-          <>
-            <ActiveTripCard
-              trip={activeTrip}
-              vehicle={vehicleForActiveTrip}
-              onFinish={() => setShowEndForm(true)}
-              onCancel={handleCancelTrip}
-            />
-            <Button onPress={() => setShowEndForm(true)} className="bg-green-600 py-4 rounded-xl mb-6">
-              <Text className="text-white font-bold text-center">Finalizar Jornada</Text>
-            </Button>
-          </>
-        )}
-
-        {/* Formulário de Finalização */}
-        {showEndForm && activeTrip && (
-          <View className="bg-white rounded-2xl p-5 mb-6 border border-gray-200">
-            <Text className="text-xl font-bold text-gray-900 mb-4">Finalizar Jornada</Text>
-            
-            {/* KM Final */}
-            <View className="mb-4">
-              <Text className="text-sm font-semibold text-gray-700 mb-2">KM Final *</Text>
-              <Input
-                placeholder="Quilometragem no painel"
-                value={endOdometerInput}
-                onChangeText={setEndOdometerInput}
-                keyboardType="numeric"
-                className="bg-gray-50"
-              />
-            </View>
-
-            {/* Faturamento por Plataforma */}
-            <Text className="text-base font-bold text-gray-900 mb-3">Faturamento por Plataforma (R$)</Text>
-            
-            {/* 99Pop */}
-            <View className="mb-4 bg-purple-50 p-4 rounded-xl">
-              <Text className="text-sm font-semibold text-purple-900 mb-2">🟣 99Pop/InDrive</Text>
-              <View className="flex-row gap-2">
-                <View className="flex-1">
-                  <Input
-                    placeholder={crossing.crossed99 ? "Dia anterior" : "Valor"}
-                    value={app99_1Input}
-                    onChangeText={setApp99_1Input}
-                    keyboardType="decimal-pad"
-                    className="bg-white"
-                  />
-                </View>
-                {crossing.crossed99 && (
-                  <View className="flex-1">
-                    <Input
-                      placeholder="Novo dia"
-                      value={app99_2Input}
-                      onChangeText={setApp99_2Input}
-                      keyboardType="decimal-pad"
-                      className="bg-white"
-                    />
-                  </View>
-                )}
-              </View>
-            </View>
-
-            {/* Uber */}
-            <View className="mb-6 bg-gray-100 p-4 rounded-xl">
-              <Text className="text-sm font-semibold text-gray-900 mb-2">⚫ UBER</Text>
-              <View className="flex-row gap-2">
-                <View className="flex-1">
-                  <Input
-                    placeholder={crossing.crossedUber ? "Antes das 4h" : "Valor"}
-                    value={uber1Input}
-                    onChangeText={setUber1Input}
-                    keyboardType="decimal-pad"
-                    className="bg-white"
-                  />
-                </View>
-                {crossing.crossedUber && (
-                  <View className="flex-1">
-                    <Input
-                      placeholder="Após 4h"
-                      value={uber2Input}
-                      onChangeText={setUber2Input}
-                      keyboardType="decimal-pad"
-                      className="bg-white"
-                    />
-                  </View>
-                )}
-              </View>
-            </View>
-
-            {/* Botões */}
-            <View className="flex-row gap-3">
-              <Button onPress={handleEndTrip} className="flex-1 bg-green-600 py-4 rounded-xl">
-                <Text className="text-white font-bold text-center">Finalizar Jornada</Text>
-              </Button>
-              <Button onPress={() => setShowEndForm(false)} className="bg-gray-300 px-6 py-4 rounded-xl">
-                <Text className="text-gray-800 font-bold text-center">Cancelar</Text>
-              </Button>
-            </View>
-          </View>
+        {activeTrip && (
+          <ActiveTripCard
+            trip={activeTrip}
+            vehicle={vehicleForActiveTrip}
+            endOdometerInput={endOdometerInput}
+            setEndOdometerInput={setEndOdometerInput}
+            uber1Input={uber1Input}
+            setUber1Input={setUber1Input}
+            uber2Input={uber2Input}
+            setUber2Input={setUber2Input}
+            app99_1Input={app99_1Input}
+            setApp99_1Input={setApp99_1Input}
+            app99_2Input={app99_2Input}
+            setApp99_2Input={setApp99_2Input}
+            onFinish={handleEndTrip}
+            onCancel={handleCancelTrip}
+          />
         )}
 
         {/* Iniciar Nova Jornada */}
         {!activeTrip && vehicles.length > 0 && (
-          <View className="bg-white rounded-2xl p-5 mb-6">
+          <View className="bg-white rounded-2xl p-5 mb-6 border border-gray-200">
             <Text className="text-xl font-bold text-gray-900 mb-4">Iniciar Nova Jornada</Text>
             
             <View className="mb-4">
@@ -459,11 +624,22 @@ export default function Trips() {
         {/* Histórico */}
         {allCompletedTrips.length > 0 && (
           <View>
-            <Text className="text-xl font-bold text-gray-900 mb-4">Histórico de Jornadas</Text>
-            <Text className="text-gray-600 mb-4">{allCompletedTrips.length} jornadas finalizadas</Text>
+            <Text className="text-2xl font-bold text-gray-900 mb-4">Histórico</Text>
+            {allCompletedTrips.map((trip) => {
+              const vehicleForTrip = vehicles.find(v => v.id === (trip.vehicleId || trip.idVeiculo));
+              return (
+                <HistoryTripCard
+                  key={trip.id}
+                  trip={trip}
+                  vehicle={vehicleForTrip}
+                  onDelete={() => handleDeleteTrip(trip.id)}
+                />
+              );
+            })}
           </View>
         )}
       </ScrollView>
     </View>
   );
 }
+
