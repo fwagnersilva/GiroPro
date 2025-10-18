@@ -75,11 +75,14 @@ export default function EditVehicleScreen() {
     }
   }, [vehicleData]);
 
-  const handleSaveVehicle = async () => {
-    if (!formData.marca || !formData.modelo || !formData.ano || !formData.placa) {
-      Alert.alert('Erro', 'Marca, modelo, ano e placa são obrigatórios.');
-      return;
-    }
+ const handleSaveVehicle = async () => {
+  console.log('🚀 BOTÃO CLICADO - handleSaveVehicle EXECUTADA!');
+  console.log('📋 Dados do formulário:', formData);
+  
+  if (!formData.marca || !formData.modelo || !formData.ano || !formData.placa) {
+    Alert.alert('Erro', 'Marca, modelo, ano e placa são obrigatórios.');
+    return;
+  }
 
     const placaRegex = /^[A-Z]{3}[0-9]{4}$|^[A-Z]{3}[0-9][A-Z][0-9]{2}$/;
     const placaLimpa = formData.placa.toUpperCase().replace(/[-\s]/g, '');

@@ -17,91 +17,146 @@ const isSmallScreen = width < 400;
 
 interface Trip {
   id: string;
-  vehicleId: string;
+  vehicleId?: string;
+  idVeiculo?: string;
   vehicleModel?: string;
   vehiclePlate?: string;
-  startDate: string;
-  endDate: string | null;
-  startOdometer: number;
-  endOdometer: number | null;
-  status: 'active' | 'paused' | 'completed';
-  pausedOdometer: number | null;
-  pauseTimestamps: { pause: string; resume: string | null; pauseKm: number; resumeKm: number | null }[];
-  earnings: { uber: number; app99: number; total: number } | null;
-  totalKm: number | null;
-  totalTime: string | null;
-  grossEarnings: number | null;
-  netEarnings: number | null;
-  ratePerHour: number | null;
-  ratePerKm: number | null;
+  startDate?: string;
+  dataInicio?: string;
+  endDate?: string | null;
+  dataFim?: string | null;
+  startOdometer?: number;
+  kmInicio?: number;
+  endOdometer?: number | null;
+  kmFim?: number | null;
+  status?: 'active' | 'paused' | 'completed';
+  pausedOdometer?: number | null;
+  pauseTimestamps?: { pause: string; resume: string | null; pauseKm: number; resumeKm: number | null }[];
+  earnings?: { uber: number; app99: number; total: number } | null;
 }
 
 interface Vehicle {
   id: string;
-  model: string;
-  plate: string;
+  marca: string;
+  modelo: string;
+  placa: string;
+  ano: number;
 }
 
-const TripHistoryCard: React.FC<{ trip: Trip; onDelete: (trip: Trip) => void }> = ({ trip, onDelete }) => {
-  const formatCurrency = (value: number) => `R$ ${value.toFixed(2).replace('.', ',')}`;
-  const formatDate = (dateString: string) => new Date(dateString).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' });
-  const formatTime = (dateString: string) => new Date(dateString).toLocaleString('pt-BR', { hour: '2-digit', minute: '2-digit' });
-  const liquidoValue = trip.netEarnings || 0;
-  const isPositive = liquidoValue > 0;
+// Função para detectar cruzamento de horário
+const detectTimeShiftCrossing = (startDate: string) => {
+  const start = new Date(startDate);
+  const now = new Date();
+  
+  // Para 99Pop: verifica se cruzou meia-noite (00:00)
+  const crossed99Midnight = start.getDate() !== now.getDate();
+  
+  // Para Uber: verifica se cruzou 4h da manhã
+  let crossedUber4AM = false;
+  if (start.getDate() === now.getDate()) {
+    // Mesmo dia: verifica se iniciou antes das 4h e agora é depois
+    crossedUber4AM = start.getHours() < 4 && now.getHours() >= 4;
+  } else {
+    // Dias diferentes: sempre cruzou 4h
+    crossedUber4AM = true;
+  }
+  
+  return {
+    crossed99: crossed99Midnight,
+    crossedUber: crossedUber4AM,
+    hasCrossing: crossed99Midnight || crossedUber4AM
+  };
+};
+
+// Componente do Card de Jornada Ativa
+const ActiveTripCard = ({ 
+  trip, 
+  vehicle,
+  onFinish, 
+  onCancel 
+}: { 
+  trip: Trip; 
+  vehicle?: Vehicle;
+  onFinish: () => void;
+  onCancel: () => void;
+}) => {
+  const startDate = trip.startDate || trip.dataInicio || '';
+  const startOdometer = trip.startOdometer || trip.kmInicio || 0;
+  
+  const getElapsedTime = () => {
+    const start = new Date(startDate);
+    const now = new Date();
+    const diffMs = now.getTime() - start.getTime();
+    const hours = Math.floor(diffMs / (1000 * 60 * 60));
+    const minutes = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
+    return { hours, minutes };
+  };
+
+  const elapsed = getElapsedTime();
+  const crossing = detectTimeShiftCrossing(startDate);
 
   return (
-    <View className="bg-white rounded-2xl overflow-hidden shadow-lg border border-gray-100 mb-4">
-      <View className="px-4 pt-3 pb-2 border-b border-gray-100 flex-row justify-between items-center">
-        <Text className="text-sm text-gray-600">{formatDate(trip.startDate)}</Text>
-        <Button onPress={() => onDelete(trip)} className="bg-transparent p-0">
-          <Ionicons name="trash-outline" size={18} color="#EF4444" />
-        </Button>
-      </View>
-      <View className="bg-slate-800 px-4 py-3">
-        <View className="flex-row items-center justify-between mb-2">
-          <View className="flex-row items-center flex-1">
-            <Ionicons name="car" size={18} color="white" />
-            <Text className="text-white font-semibold ml-2">{trip.vehicleModel || 'Veículo'} ({trip.vehiclePlate || 'N/A'})</Text>
+    <View className="bg-gradient-to-br from-red-50 to-pink-50 rounded-2xl p-5 mb-6 border-2 border-red-300">
+      {/* Header */}
+      <View className="flex-row items-center justify-between mb-4">
+        <View className="flex-row items-center flex-1">
+          <View className="w-12 h-12 bg-red-500 rounded-full items-center justify-center mr-3">
+            <Ionicons name="car-sport" size={24} color="white" />
           </View>
-        </View>
-        <View className="flex-row justify-between">
-          <View className="flex-row items-center">
-            <Ionicons name="time-outline" size={14} color="#CBD5E1" />
-            <Text className="text-slate-300 text-xs ml-1">{formatTime(trip.startDate)} - {trip.endDate ? formatTime(trip.endDate) : '...'}</Text>
-          </View>
-          <View className="flex-row items-center">
-            <Ionicons name="speedometer-outline" size={14} color="#CBD5E1" />
-            <Text className="text-slate-300 text-xs ml-1">{trip.startOdometer} - {trip.endOdometer || '...'}</Text>
-          </View>
-        </View>
-      </View>
-      <View className="px-4 py-4">
-        <View className="flex-row justify-between mb-4">
-          <View className="flex-1 items-center bg-gray-50 rounded-lg py-3 mr-2">
-            <View className="flex-row items-center mb-1">
-              <Ionicons name="cash-outline" size={16} color="#6B7280" />
-              <Text className="text-xs text-gray-500 font-medium ml-1">Bruto</Text>
-            </View>
-            <Text className="text-xl font-bold text-gray-900">{formatCurrency(trip.grossEarnings || 0)}</Text>
-          </View>
-          <View className={`flex-1 items-center rounded-lg py-3 ${isPositive ? 'bg-green-50' : 'bg-gray-50'}`}>
-            <View className="flex-row items-center mb-1">
-              <Ionicons name="trending-up-outline" size={16} color={isPositive ? "#16A34A" : "#6B7280"} />
-              <Text className={`text-xs font-medium ml-1 ${isPositive ? 'text-green-600' : 'text-gray-500'}`}>Líquido</Text>
-            </View>
-            <Text className={`text-xl font-bold ${isPositive ? 'text-green-600' : 'text-gray-900'}`}>
-              {liquidoValue >= 0 ? '' : '-'}{formatCurrency(Math.abs(liquidoValue))}
+          <View className="flex-1">
+            <Text className="text-lg font-bold text-gray-900">Jornada em Andamento</Text>
+            <Text className="text-sm text-gray-600 mt-1">
+              Veículo: {vehicle?.marca} {vehicle?.modelo} ({vehicle?.placa || 'N/A'})
             </Text>
           </View>
-          <View className="flex-1 items-center bg-gray-50 rounded-lg py-3 ml-2">
-            <View className="flex-row items-center mb-1">
-              <Ionicons name="navigate-outline" size={16} color="#6B7280" />
-              <Text className="text-xs text-gray-500 font-medium ml-1">KM</Text>
-            </View>
-            <Text className="text-xl font-bold text-gray-900">{(trip.totalKm || 0).toFixed(1)} km</Text>
-          </View>
         </View>
       </View>
+
+      {/* Informações */}
+      <View className="bg-white rounded-xl p-4 mb-4">
+        {/* KM Inicial */}
+        <View className="flex-row items-center mb-3">
+          <Ionicons name="speedometer-outline" size={20} color="#6B7280" />
+          <Text className="text-sm text-gray-600 ml-2">
+            KM Início: <Text className="font-bold text-gray-900">{startOdometer.toLocaleString('pt-BR')}</Text>
+          </Text>
+        </View>
+
+        {/* Hora de Início */}
+        <View className="flex-row items-center">
+          <Ionicons name="time-outline" size={20} color="#6B7280" />
+          <Text className="text-sm text-gray-600 ml-2">
+            Início: <Text className="font-bold text-gray-900">
+              {new Date(startDate).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
+            </Text>
+          </Text>
+        </View>
+      </View>
+
+      {/* Aviso de Cruzamento */}
+      {crossing.hasCrossing && (
+        <View className="bg-blue-100 border border-blue-300 rounded-xl p-3 mb-4">
+          <View className="flex-row items-start">
+            <Ionicons name="alert-circle" size={20} color="#2563EB" />
+            <View className="flex-1 ml-2">
+              <Text className="text-sm font-bold text-blue-900 mb-1">Cruzamento de Horário Detectado!</Text>
+              {crossing.crossed99 && (
+                <Text className="text-xs text-blue-800">
+                  • Cruzou 00:00 (meia-noite) - Separe os valores da 99
+                </Text>
+              )}
+              {crossing.crossedUber && (
+                <Text className="text-xs text-blue-800">
+                  • Cruzou 04:00 - Separe os valores da UBER
+                </Text>
+              )}
+              <Text className="text-xs text-blue-700 mt-1 italic">
+                Isso é importante para o relatório fiscal das plataformas
+              </Text>
+            </View>
+          </View>
+        </View>
+      )}
     </View>
   );
 };
@@ -115,16 +170,24 @@ export default function Trips() {
 
   const [startOdometerInput, setStartOdometerInput] = useState('');
   const [endOdometerInput, setEndOdometerInput] = useState('');
-  const [uberEarningsInput, setUberEarningsInput] = useState('0,00');
-  const [app99EarningsInput, setApp99EarningsInput] = useState('0,00');
+  
+  // Estados para faturamento
+  const [uber1Input, setUber1Input] = useState('');
+  const [uber2Input, setUber2Input] = useState('');
+  const [app99_1Input, setApp99_1Input] = useState('');
+  const [app99_2Input, setApp99_2Input] = useState('');
+  
   const [selectedVehicleId, setSelectedVehicleId] = useState('');
   const [showEndForm, setShowEndForm] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
 
   const vehicles: Vehicle[] = vehiclesData || [];
   const trips: Trip[] = journeysData || [];
-  const activeTrip = trips.find((trip) => trip.status === 'active' || trip.status === 'paused');
-  const allCompletedTrips = trips.filter(trip => trip.status === 'completed');
+  const activeTrip = trips.find((trip) => !(trip.endDate || trip.dataFim));
+  const allCompletedTrips = trips.filter(trip => trip.endDate || trip.dataFim);
+
+  const startDate = activeTrip?.startDate || activeTrip?.dataInicio || '';
+  const crossing = startDate ? detectTimeShiftCrossing(startDate) : { crossed99: false, crossedUber: false, hasCrossing: false };
 
   useEffect(() => {
     if (vehicles.length > 0 && !selectedVehicleId) {
@@ -157,7 +220,6 @@ export default function Trips() {
         idVeiculo: selectedVehicleId,
         kmInicio: odometerNum,
         dataInicio: new Date().toISOString(),
-        status: 'ativa'
       });
       setStartOdometerInput('');
       Alert.alert('Sucesso', 'Jornada iniciada!');
@@ -174,21 +236,35 @@ export default function Trips() {
       return;
     }
     const endOdometerNum = parseInt(endOdometerInput);
-    if (isNaN(endOdometerNum) || endOdometerNum <= activeTrip.startOdometer) {
+    const startOdometer = activeTrip.startOdometer || activeTrip.kmInicio || 0;
+    
+    if (isNaN(endOdometerNum) || endOdometerNum <= startOdometer) {
       Alert.alert('Erro', 'Quilometragem final inválida.');
       return;
     }
-    const uberEarnings = parseFloat(uberEarningsInput.replace(',', '.')) || 0;
-    const app99Earnings = parseFloat(app99EarningsInput.replace(',', '.')) || 0;
+
+    // Calcula o total de faturamento
+    const uber1 = parseFloat(uber1Input.replace(',', '.')) || 0;
+    const uber2 = parseFloat(uber2Input.replace(',', '.')) || 0;
+    const app99_1 = parseFloat(app99_1Input.replace(',', '.')) || 0;
+    const app99_2 = parseFloat(app99_2Input.replace(',', '.')) || 0;
+    
+    const totalEarnings = uber1 + uber2 + app99_1 + app99_2;
+
     try {
       await finalizeJourney.mutateAsync({
         id: activeTrip.id,
-        data: { kmFim: endOdometerNum, valorTotal: uberEarnings + app99Earnings }
+        data: { kmFim: endOdometerNum, valorTotal: Math.round(totalEarnings * 100) }
       });
+      
+      // Limpa os campos
       setEndOdometerInput('');
-      setUberEarningsInput('0,00');
-      setApp99EarningsInput('0,00');
+      setUber1Input('');
+      setUber2Input('');
+      setApp99_1Input('');
+      setApp99_2Input('');
       setShowEndForm(false);
+      
       Alert.alert('Sucesso', 'Jornada finalizada!');
       await refetchJourneys();
     } catch (error) {
@@ -197,101 +273,196 @@ export default function Trips() {
     }
   };
 
-  const handleDeleteTrip = (trip: Trip) => {
-    Alert.alert('Excluir Jornada', 'Tem certeza?', [
-      { text: 'Cancelar', style: 'cancel' },
-      {
-        text: 'Excluir',
-        style: 'destructive',
-        onPress: async () => {
-          try {
-            await deleteJourney.mutateAsync(trip.id);
-            Alert.alert('Sucesso', 'Jornada excluída!');
-            await refetchJourneys();
-          } catch (error) {
-            Alert.alert('Erro', 'Não foi possível excluir.');
+  const handleCancelTrip = () => {
+    Alert.alert(
+      'Cancelar Jornada',
+      'Tem certeza que deseja cancelar esta jornada?',
+      [
+        { text: 'Não', style: 'cancel' },
+        {
+          text: 'Sim, Cancelar',
+          style: 'destructive',
+          onPress: async () => {
+            if (activeTrip) {
+              try {
+                await deleteJourney.mutateAsync(activeTrip.id);
+                Alert.alert('Sucesso', 'Jornada cancelada.');
+                await refetchJourneys();
+              } catch (error) {
+                Alert.alert('Erro', 'Não foi possível cancelar.');
+              }
+            }
           }
         }
-      }
-    ]);
+      ]
+    );
   };
 
   if (isLoadingJourneys || isLoadingVehicles) {
     return (
-      <View className="flex-1 bg-gradient-to-b from-blue-900 to-blue-950 items-center justify-center">
-        <ActivityIndicator size="large" color="#FFFFFF" />
-        <Text className="text-white mt-4">Carregando...</Text>
+      <View className="flex-1 bg-gray-50 items-center justify-center">
+        <ActivityIndicator size="large" color="#0066CC" />
+        <Text className="text-gray-600 mt-4">Carregando...</Text>
       </View>
     );
   }
 
+  const vehicleForActiveTrip = vehicles.find(v => v.id === (activeTrip?.vehicleId || activeTrip?.idVeiculo));
+
   return (
-    <View className="flex-1 bg-gradient-to-b from-blue-900 to-blue-950">
+    <View className="flex-1 bg-gray-50">
       <FocusAwareStatusBar />
-      <ScrollView className="flex-1" refreshControl={<RefreshControl refreshing={refreshing} onRefresh={handleRefresh} tintColor="#FFFFFF" />} showsVerticalScrollIndicator={false}>
-        <View className="px-4 pt-6 pb-4">
-          <Text className="text-3xl font-bold text-white mb-1">Jornadas</Text>
-          <Text className="text-blue-100">Gerencie suas corridas diárias</Text>
-        </View>
-        <View className="px-4 pb-8">
-          {!activeTrip && vehicles.length > 0 && (
-            <View className="bg-white rounded-2xl p-5 mb-6 shadow-lg">
-              <Text className="text-lg font-bold text-gray-900 mb-4">Iniciar Nova Jornada</Text>
-              {vehicles.length > 1 && (
-                <View className="mb-4">
-                  <Text className="text-sm font-semibold text-gray-700 mb-2">Escolha o Veículo</Text>
-                  <Picker selectedValue={selectedVehicleId} onValueChange={setSelectedVehicleId}>
-                    {vehicles.map((v) => <Picker.Item key={v.id} label={`${v.model} (${v.plate})`} value={v.id} />)}
-                  </Picker>
-                </View>
-              )}
-              <View className="mb-4">
-                <Text className="text-sm font-semibold text-gray-700 mb-2">Quilometragem Inicial</Text>
-                <Input placeholder="Ex: 45230" value={startOdometerInput} onChangeText={setStartOdometerInput} keyboardType="numeric" />
-              </View>
-              <Button onPress={handleStartTrip} className="bg-green-600 py-3 rounded-lg">
-                <Text className="text-white font-bold text-center">Iniciar Jornada</Text>
-              </Button>
+      <ScrollView
+        className="flex-1 px-4 py-6"
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />}
+      >
+        {/* Jornada Ativa */}
+        {activeTrip && !showEndForm && (
+          <>
+            <ActiveTripCard
+              trip={activeTrip}
+              vehicle={vehicleForActiveTrip}
+              onFinish={() => setShowEndForm(true)}
+              onCancel={handleCancelTrip}
+            />
+            <Button onPress={() => setShowEndForm(true)} className="bg-green-600 py-4 rounded-xl mb-6">
+              <Text className="text-white font-bold text-center">Finalizar Jornada</Text>
+            </Button>
+          </>
+        )}
+
+        {/* Formulário de Finalização */}
+        {showEndForm && activeTrip && (
+          <View className="bg-white rounded-2xl p-5 mb-6 border border-gray-200">
+            <Text className="text-xl font-bold text-gray-900 mb-4">Finalizar Jornada</Text>
+            
+            {/* KM Final */}
+            <View className="mb-4">
+              <Text className="text-sm font-semibold text-gray-700 mb-2">KM Final *</Text>
+              <Input
+                placeholder="Quilometragem no painel"
+                value={endOdometerInput}
+                onChangeText={setEndOdometerInput}
+                keyboardType="numeric"
+                className="bg-gray-50"
+              />
             </View>
-          )}
-          {activeTrip && !showEndForm && (
-            <View className="mb-6">
-              <Button onPress={() => setShowEndForm(true)} className="bg-blue-600 py-3 rounded-lg">
+
+            {/* Faturamento por Plataforma */}
+            <Text className="text-base font-bold text-gray-900 mb-3">Faturamento por Plataforma (R$)</Text>
+            
+            {/* 99Pop */}
+            <View className="mb-4 bg-purple-50 p-4 rounded-xl">
+              <Text className="text-sm font-semibold text-purple-900 mb-2">🟣 99Pop/InDrive</Text>
+              <View className="flex-row gap-2">
+                <View className="flex-1">
+                  <Input
+                    placeholder={crossing.crossed99 ? "Dia anterior" : "Valor"}
+                    value={app99_1Input}
+                    onChangeText={setApp99_1Input}
+                    keyboardType="decimal-pad"
+                    className="bg-white"
+                  />
+                </View>
+                {crossing.crossed99 && (
+                  <View className="flex-1">
+                    <Input
+                      placeholder="Novo dia"
+                      value={app99_2Input}
+                      onChangeText={setApp99_2Input}
+                      keyboardType="decimal-pad"
+                      className="bg-white"
+                    />
+                  </View>
+                )}
+              </View>
+            </View>
+
+            {/* Uber */}
+            <View className="mb-6 bg-gray-100 p-4 rounded-xl">
+              <Text className="text-sm font-semibold text-gray-900 mb-2">⚫ UBER</Text>
+              <View className="flex-row gap-2">
+                <View className="flex-1">
+                  <Input
+                    placeholder={crossing.crossedUber ? "Antes das 4h" : "Valor"}
+                    value={uber1Input}
+                    onChangeText={setUber1Input}
+                    keyboardType="decimal-pad"
+                    className="bg-white"
+                  />
+                </View>
+                {crossing.crossedUber && (
+                  <View className="flex-1">
+                    <Input
+                      placeholder="Após 4h"
+                      value={uber2Input}
+                      onChangeText={setUber2Input}
+                      keyboardType="decimal-pad"
+                      className="bg-white"
+                    />
+                  </View>
+                )}
+              </View>
+            </View>
+
+            {/* Botões */}
+            <View className="flex-row gap-3">
+              <Button onPress={handleEndTrip} className="flex-1 bg-green-600 py-4 rounded-xl">
                 <Text className="text-white font-bold text-center">Finalizar Jornada</Text>
               </Button>
-            </View>
-          )}
-          {showEndForm && (
-            <View className="bg-white rounded-2xl p-5 mb-6">
-              <Text className="text-lg font-bold text-gray-900 mb-4">Finalizar Jornada</Text>
-              <View className="mb-3">
-                <Text className="text-sm font-semibold text-gray-700 mb-2">KM Final</Text>
-                <Input placeholder="Ex: 45280" value={endOdometerInput} onChangeText={setEndOdometerInput} keyboardType="numeric" />
-              </View>
-              <View className="mb-4">
-                <Text className="text-sm font-semibold text-gray-700 mb-2">Faturamento (R$)</Text>
-                <View className="flex-row gap-2">
-                  <Input placeholder="UBER" value={uberEarningsInput} onChangeText={setUberEarningsInput} keyboardType="numeric" className="flex-1" />
-                  <Input placeholder="99" value={app99EarningsInput} onChangeText={setApp99EarningsInput} keyboardType="numeric" className="flex-1" />
-                </View>
-              </View>
-              <Button onPress={handleEndTrip} className="bg-green-600 py-3 rounded-lg mb-2">
-                <Text className="text-white font-bold text-center">Confirmar</Text>
-              </Button>
-              <Button onPress={() => setShowEndForm(false)} className="bg-gray-300 py-3 rounded-lg">
-                <Text className="text-gray-900 font-bold text-center">Voltar</Text>
+              <Button onPress={() => setShowEndForm(false)} className="bg-gray-300 px-6 py-4 rounded-xl">
+                <Text className="text-gray-800 font-bold text-center">Cancelar</Text>
               </Button>
             </View>
-          )}
-          <View>
-            <Text className="text-2xl font-bold text-white mb-4">Histórico</Text>
-            {allCompletedTrips.length === 0 ? (
-              <Text className="text-white text-center">Nenhuma jornada finalizada</Text>
-            ) : (
-              allCompletedTrips.map((trip) => <TripHistoryCard key={trip.id} trip={trip} onDelete={handleDeleteTrip} />)
-            )}
           </View>
-        </View>
+        )}
+
+        {/* Iniciar Nova Jornada */}
+        {!activeTrip && vehicles.length > 0 && (
+          <View className="bg-white rounded-2xl p-5 mb-6">
+            <Text className="text-xl font-bold text-gray-900 mb-4">Iniciar Nova Jornada</Text>
+            
+            <View className="mb-4">
+              <Text className="text-sm font-semibold text-gray-700 mb-2">Veículo</Text>
+              <Picker
+                selectedValue={selectedVehicleId}
+                onValueChange={(value) => setSelectedVehicleId(value)}
+                style={{ backgroundColor: '#F9FAFB' }}
+              >
+                {vehicles.map((vehicle) => (
+                  <Picker.Item
+                    key={vehicle.id}
+                    label={`${vehicle.marca} ${vehicle.modelo} - ${vehicle.placa}`}
+                    value={vehicle.id}
+                  />
+                ))}
+              </Picker>
+            </View>
+
+            <View className="mb-4">
+              <Text className="text-sm font-semibold text-gray-700 mb-2">KM Inicial</Text>
+              <Input
+                placeholder="Ex: 230730"
+                value={startOdometerInput}
+                onChangeText={setStartOdometerInput}
+                keyboardType="numeric"
+                className="bg-gray-50"
+              />
+            </View>
+
+            <Button onPress={handleStartTrip} className="bg-blue-600 py-4 rounded-xl">
+              <Text className="text-white font-bold text-center">Iniciar Jornada</Text>
+            </Button>
+          </View>
+        )}
+
+        {/* Histórico */}
+        {allCompletedTrips.length > 0 && (
+          <View>
+            <Text className="text-xl font-bold text-gray-900 mb-4">Histórico de Jornadas</Text>
+            <Text className="text-gray-600 mb-4">{allCompletedTrips.length} jornadas finalizadas</Text>
+          </View>
+        )}
       </ScrollView>
     </View>
   );

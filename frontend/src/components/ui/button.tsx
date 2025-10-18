@@ -128,6 +128,8 @@ export const Button = React.forwardRef<View, Props>(
       testID,
       textClassName = '',
       fullWidth = true,
+      children,
+      onPress,
       ...props
     },
     ref
@@ -137,18 +139,27 @@ export const Button = React.forwardRef<View, Props>(
       [variant, disabled, size, fullWidth, loading]
     );
 
+    // CORREÇÃO: Adiciona log para debug
+    const handlePress = React.useCallback((event: any) => {
+      console.log('🔥 Button pressed!', { disabled, loading, onPress: !!onPress });
+      if (onPress && !disabled && !loading) {
+        onPress(event);
+      }
+    }, [onPress, disabled, loading]);
+
     return (
       <Pressable
         disabled={disabled || loading}
         className={styles.container({ className })}
+        onPress={handlePress} // CORREÇÃO: Garantir que onPress seja sempre passado
         {...props}
         ref={ref}
         testID={testID}
         accessibilityRole="button"
         accessibilityState={{ disabled: disabled || loading }}
       >
-        {props.children ? (
-          props.children
+        {children ? (
+          children
         ) : (
           <>
             {loading ? (

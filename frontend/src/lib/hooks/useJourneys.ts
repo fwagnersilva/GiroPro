@@ -5,9 +5,14 @@ import type { CreateJourneyDto, UpdateJourneyDto, JourneyFilters } from '@/api/j
 const JOURNEYS_KEY = 'journeys';
 
 export const useJourneys = (filters?: JourneyFilters) => {
+  // CORREÇÃO: Define filtros padrão se nenhum for fornecido
+  const defaultFilters: JourneyFilters = filters || {
+    periodo: 'mes', // Valor padrão: último mês
+  };
+
   return useQuery({
-    queryKey: [JOURNEYS_KEY, filters],
-    queryFn: () => journeysApi.getAll(filters),
+    queryKey: [JOURNEYS_KEY, defaultFilters],
+    queryFn: () => journeysApi.getAll(defaultFilters),
   });
 };
 
