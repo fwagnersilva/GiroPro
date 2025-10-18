@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { z } from "zod";
 import { db } from "../db";
-import { veiculos } from '../db/schema.postgres';
+import { veiculos } from '../db/schema.sqlite';
 import { eq, and, isNull, sql } from "drizzle-orm";
 
 interface ApiResponse<T = any> {
@@ -79,16 +79,10 @@ const queryParamsSchema = z.object({
 });
 
 export class VehiclesController {
-  /**
-   * Valida se o usuário está autenticado
-   */
   private static validateAuth(req: Request): string | null {
     return (req as any).user?.id || null;
   }
 
-  /**
-   * Retorna resposta de erro padronizada
-   */
   private static errorResponse(res: Response, status: number, message: string, details?: any): Response {
     return res.status(status).json({
       success: false,
@@ -96,21 +90,20 @@ export class VehiclesController {
     });
   }
 
-  /**
-   * Retorna resposta de sucesso padronizada
-   */
   private static successResponse<T>(res: Response, data?: T, message?: string, status: number = 200): Response {
-    const response: ApiResponse<T> = {
-      success: true,
-      ...(data !== undefined && { data }),
-      ...(message && { message }),
-    };
-    return res.status(status).json(response);
+  // Para compatibilidade com frontend, retornar data diretamente se for array
+  if (Array.isArray(data)) {
+    return res.status(status).json(data);
   }
+  
+  const response: ApiResponse<T> = {
+    success: true,
+    ...(data !== undefined && { data }),
+    ...(message && { message }),
+  };
+  return res.status(status).json(response);
+}
 
-  /**
-   * Busca e valida se o veículo pertence ao usuário
-   */
   private static async findAndValidateVehicle(vehicleId: string, userId: string) {
     try {
       const vehicles = await db
@@ -119,7 +112,7 @@ export class VehiclesController {
         .where(
           and(
             eq(veiculos.id, vehicleId),
-            isNull(veiculos.deletedAt) // Apenas veículos não deletados
+            isNull(veiculos.deletedAt)
           )
         );
 
@@ -137,9 +130,6 @@ export class VehiclesController {
     }
   }
 
-  /**
-   * Listar todos os veículos do usuário
-   */
   static async getAll(req: Request, res: Response): Promise<Response> {
     try {
       const userId = VehiclesController.validateAuth(req);
@@ -159,10 +149,9 @@ export class VehiclesController {
 
       const { tipoUso, tipoCombustivel, limit, offset } = queryValidation.data;
 
-      // Construir condições de filtro
       let whereConditions = and(
         eq(veiculos.idUsuario, userId),
-        isNull(veiculos.deletedAt) // Apenas veículos ativos (não deletados)
+        isNull(veiculos.deletedAt)
       );
 
       if (tipoUso) {
@@ -173,47 +162,21 @@ export class VehiclesController {
         whereConditions = and(whereConditions, eq(veiculos.tipoCombustivel, tipoCombustivel));
       }
 
-      // Buscar veículos com paginação
-      const [userVehicles, totalCountResult] = await Promise.all([
-        db
-          .select()
-          .from(veiculos)
-          .where(whereConditions)
-          .limit(limit)
-          .offset(offset)
-          .orderBy(veiculos.dataCadastro),
-        db
-          .select({ count: sql<number>`count(*)` })
-          .from(veiculos)
-          .where(whereConditions),
-      ]);
+      const userVehicles = await db
+        .select()
+        .from(veiculos)
+        .where(whereConditions)
+        .limit(limit)
+        .offset(offset)
+        .orderBy(veiculos.dataCadastro);
 
-      const totalCount = totalCountResult[0].count;
-
-      const responseData = {
-        vehicles: userVehicles,
-        pagination: {
-          total: totalCount,
-          limit,
-          offset,
-          has_more: totalCount > offset + limit,
-        },
-        filters: {
-          tipoUso: tipoUso || null,
-          tipoCombustivel: tipoCombustivel || null,
-        },
-      };
-
-      return VehiclesController.successResponse(res, responseData);
+      return VehiclesController.successResponse(res, userVehicles);
     } catch (error: any) {
       console.error("Erro ao buscar veículos:", error);
       return VehiclesController.errorResponse(res, 500, "Erro interno do servidor");
     }
   }
 
-  /**
-   * Criar novo veículo
-   */
   static async create(req: Request, res: Response): Promise<Response> {
     try {
       const userId = VehiclesController.validateAuth(req);
@@ -231,7 +194,6 @@ export class VehiclesController {
         );
       }
 
-      // Verificar se já existe veículo com a mesma placa (se fornecida)
       if (validation.data.placa) {
         const existingVehicle = await db
           .select({ id: veiculos.id })
@@ -250,20 +212,19 @@ export class VehiclesController {
             409,
             "Já existe um veículo cadastrado com esta placa"
           );
-        };
-      };
+        }
+      }
 
       const vehicleData = {
         idUsuario: userId,
         marca: validation.data.marca,
         modelo: validation.data.modelo,
         ano: validation.data.ano,
-        placa: validation.data.placa || `TEMP${Date.now()}`, // Placa temporária se não fornecida
+        placa: validation.data.placa,
         tipoCombustivel: validation.data.tipoCombustivel,
         tipoUso: validation.data.tipoUso,
         dataCadastro: new Date(),
         updatedAt: new Date(),
-        // Campos opcionais
         ...(validation.data.cor && { cor: validation.data.cor }),
         ...(validation.data.mediaConsumo && { mediaConsumo: validation.data.mediaConsumo }),
         ...(validation.data.valorAluguel && { valorAluguel: validation.data.valorAluguel }),
@@ -282,19 +243,10 @@ export class VehiclesController {
       );
     } catch (error: any) {
       console.error("Erro ao criar veículo:", error);
-
-      // Tratar erros específicos do banco de dados
-      if (error.code === "23505") { // Unique constraint violation
-        return VehiclesController.errorResponse(res, 409, "Já existe um veículo com estes dados");
-      }
-
       return VehiclesController.errorResponse(res, 500, "Erro interno do servidor");
     }
   }
 
-  /**
-   * Buscar veículo por ID
-   */
   static async getById(req: Request, res: Response): Promise<Response> {
     try {
       const userId = VehiclesController.validateAuth(req);
@@ -321,9 +273,6 @@ export class VehiclesController {
     }
   }
 
-  /**
-   * Atualizar veículo
-   */
   static async update(req: Request, res: Response): Promise<Response> {
     try {
       const userId = VehiclesController.validateAuth(req);
@@ -346,7 +295,6 @@ export class VehiclesController {
         );
       }
 
-      // Verificar se o veículo existe e pertence ao usuário
       const { vehicle, error } = await VehiclesController.findAndValidateVehicle(id, userId);
 
       if (error) {
@@ -354,7 +302,6 @@ export class VehiclesController {
         return VehiclesController.errorResponse(res, status, error);
       }
 
-      // Verificar conflito de placa (se está sendo alterada)
       if (validation.data.placa && validation.data.placa !== vehicle!.placa) {
         const existingVehicle = await db
           .select({ id: veiculos.id })
@@ -390,18 +337,10 @@ export class VehiclesController {
       );
     } catch (error: any) {
       console.error("Erro ao atualizar veículo:", error);
-
-      if (error.code === "23505") { // Unique constraint violation
-        return VehiclesController.errorResponse(res, 409, "Já existe um veículo com estes dados");
-      }
-
       return VehiclesController.errorResponse(res, 500, "Erro interno do servidor");
     }
   }
 
-  /**
-   * Excluir veículo (soft delete)
-   */
   static async delete(req: Request, res: Response): Promise<Response> {
     try {
       const userId = VehiclesController.validateAuth(req);
@@ -421,7 +360,6 @@ export class VehiclesController {
         return VehiclesController.errorResponse(res, status, error);
       }
 
-      // Soft delete
       await db
         .update(veiculos)
         .set({
@@ -441,107 +379,4 @@ export class VehiclesController {
       return VehiclesController.errorResponse(res, 500, "Erro interno do servidor");
     }
   }
-
-  /**
-   * Reativar veículo (reverter soft delete)
-   */
-  static async activate(req: Request, res: Response): Promise<Response> {
-    try {
-      const userId = VehiclesController.validateAuth(req);
-      if (!userId) {
-        return VehiclesController.errorResponse(res, 401, "Usuário não autenticado");
-      }
-
-      const { id } = req.params;
-      if (!id) {
-        return VehiclesController.errorResponse(res, 400, "ID do veículo é obrigatório");
-      }
-
-      // Buscar o veículo, mesmo que esteja inativo (deletedAt não nulo)
-      const vehicles = await db
-        .select()
-        .from(veiculos)
-        .where(
-          and(
-            eq(veiculos.id, id),
-            eq(veiculos.idUsuario, userId) // Apenas veículos do usuário
-          )
-        );
-
-      if (vehicles.length === 0) {
-        return VehiclesController.errorResponse(res, 404, "Veículo não encontrado ou não pertence ao usuário");
-      }
-
-      const vehicleToActivate = vehicles[0];
-
-      if (vehicleToActivate.deletedAt === null) {
-        return VehiclesController.errorResponse(res, 400, "Veículo já está ativo");
-      }
-
-      const updatedVehicles = await db
-        .update(veiculos)
-        .set({
-          deletedAt: null, // Remove o soft delete
-          updatedAt: new Date(),
-        })
-        .where(eq(veiculos.id, id))
-        .returning();
-
-      return VehiclesController.successResponse(
-        res,
-        updatedVehicles[0],
-        "Veículo reativado com sucesso"
-      );
-    } catch (error: any) {
-      console.error("Erro ao reativar veículo:", error);
-      return VehiclesController.errorResponse(res, 500, "Erro interno do servidor");
-    }
-  }
-
-  /**
-   * Desativar veículo (soft delete)
-   */
-  static async deactivate(req: Request, res: Response): Promise<Response> {
-    try {
-      const userId = VehiclesController.validateAuth(req);
-      if (!userId) {
-        return VehiclesController.errorResponse(res, 401, "Usuário não autenticado");
-      }
-
-      const { id } = req.params;
-      if (!id) {
-        return VehiclesController.errorResponse(res, 400, "ID do veículo é obrigatório");
-      }
-
-      const { vehicle, error } = await VehiclesController.findAndValidateVehicle(id, userId);
-
-      if (error) {
-        const status = error === "Veículo não encontrado" ? 404 : 403;
-        return VehiclesController.errorResponse(res, status, error);
-      }
-
-      if (vehicle!.deletedAt !== null) {
-        return VehiclesController.errorResponse(res, 400, "Veículo já está inativo");
-      }
-
-      const updatedVehicles = await db
-        .update(veiculos)
-        .set({
-          deletedAt: new Date(),
-          updatedAt: new Date(),
-        })
-        .where(eq(veiculos.id, id))
-        .returning();
-
-      return VehiclesController.successResponse(
-        res,
-        updatedVehicles[0],
-        "Veículo desativado com sucesso"
-      );
-    } catch (error: any) {
-      console.error("Erro ao desativar veículo:", error);
-      return VehiclesController.errorResponse(res, 500, "Erro interno do servidor");
-    }
-  }
 }
-

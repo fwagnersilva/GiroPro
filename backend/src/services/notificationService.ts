@@ -1,5 +1,5 @@
 import { db } from '../db';
-import { notificacoes, tipoNotificacao } from '../db/schema.postgres';
+import { notificacoes, tipoNotificacao } from '../db';
 import { eq, and, desc, isNull, gte, lte } from 'drizzle-orm';
 import { v4 as uuidv4 } from 'uuid';
 

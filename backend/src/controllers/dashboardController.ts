@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { z } from 'zod';
 import { db } from '../db';
-import { jornadas, abastecimentos, despesas, veiculos } from '../db/schema.postgres';
+import { jornadas, abastecimentos, despesas, veiculos } from '../db';
 import { eq, and, isNull, isNotNull, sql, gte, lte, sum, count, inArray } from 'drizzle-orm';
 import type { ServiceResult, CacheConfig } from '../types';
 

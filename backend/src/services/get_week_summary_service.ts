@@ -1,6 +1,6 @@
 import { eq, gte, lte, sql, count } from "drizzle-orm";
 import { db } from '../db';
-import { metas, progressoMetas } from '../db/schema.postgres';
+import { metas, progressoMetas } from '../db';
 import type { WeekDateQuery } from "../controllers/goalsController";
 
 interface GoalSummary {

@@ -1,6 +1,6 @@
 import { eq, sql } from "drizzle-orm";
 import { db } from '../db';
-import { metas, progressoMetas } from '../db/schema.postgres';
+import { metas, progressoMetas } from '../db';
 import { CompleteGoalRequest } from "../controllers/goalsController";
 
 interface CreateGoalCompletionResponse {

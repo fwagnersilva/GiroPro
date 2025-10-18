@@ -61,15 +61,17 @@ const updateJourneySchema = z.object({
 });
 
 const querySchema = z.object({
-  page: z.string().transform(val => parseInt(val) || 1).pipe(z.number().min(1)),
-  limit: z.string().transform(val => Math.min(parseInt(val) || 10, 100)).pipe(z.number().min(1).max(100)),
+  page: z.string().optional().transform(val => parseInt(val || '1') || 1).pipe(z.number().min(1)),
+  limit: z.string().optional().transform(val => Math.min(parseInt(val || '10') || 10, 100)).pipe(z.number().min(1).max(100)),
   sortBy: z.enum(['dataInicio', 'dataFim', 'kmTotal', 'ganhoBruto', 'createdAt']).optional(),
-  sortOrder: z.enum(['asc', 'desc']).default('desc'),
-  status: z.enum(['em_andamento', 'concluida', 'todas']).default('todas'),
+  sortOrder: z.enum(['asc', 'desc']).optional().default('desc'),
+  status: z.enum(['em_andamento', 'concluida', 'todas']).optional().default('todas'),
   dataInicio: z.string().datetime().optional(),
   dataFim: z.string().datetime().optional(),
   veiculoId: z.string().uuid().optional(),
-});
+  periodo: z.enum(['hoje', 'ontem', 'semana', 'mes', 'trimestre', 'ano']).optional(),
+}).partial();
+console.log("✅ PERIODO ADICIONADO AO SCHEMA!");
 
 const periodoValido = z.enum(['semana', 'mes', 'trimestre', 'ano']).optional();
 

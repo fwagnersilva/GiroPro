@@ -1,5 +1,5 @@
 import { db } from "../db";
-import { abastecimentos, veiculos } from '../db/schema.postgres';
+import { abastecimentos, veiculos } from '../db';
 import { eq, and, desc, asc, count, between, sql, gte, lte } from "drizzle-orm";
 import { CreateFuelingRequest, UpdateFuelingRequest } from "../types";
 import crypto from 'crypto';

@@ -2,7 +2,6 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 import { createDatabaseConnection, checkDatabaseConnection } from './connection.factory';
-import * as schema from './schema.postgres';
 
 let dbInstance: any;
 let clientInstance: any;
@@ -11,6 +10,7 @@ export async function initializeDatabase() {
   const { db, client } = await createDatabaseConnection();
   dbInstance = db;
   clientInstance = client;
+  
   return { db, client };
 }
 
@@ -41,7 +41,7 @@ export const db = new Proxy({} as any, {
   }
 });
 
-// Exportar pool (alias para client) usando Proxy
+// Exportar pool (alias para client)
 export const pool = new Proxy({} as any, {
   get(target, prop) {
     if (!clientInstance) {
@@ -51,17 +51,10 @@ export const pool = new Proxy({} as any, {
   }
 });
 
-export { checkDatabaseConnection, schema };
+export { checkDatabaseConnection };
 
-// Exportar tabelas do schema
-export const {
-  usuarios,
-  veiculos,
-  jornadas,
-  abastecimentos,
-  despesas,
-  plataformas
-} = schema;
+// Exportar todas as tabelas do schema
+export * from './schema';
 
 // Exportar funções de inicialização
 export { initTables } from './initTables';

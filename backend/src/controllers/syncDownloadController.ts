@@ -1,6 +1,6 @@
 import { Response } from 'express';
 import { db } from '../db';
-import { usuarios, veiculos, jornadas, abastecimentos, despesas } from '../db/schema.postgres';
+import { usuarios, veiculos, jornadas, abastecimentos, despesas } from '../db';
 import { eq } from 'drizzle-orm';
 
 export class SyncDownloadController {

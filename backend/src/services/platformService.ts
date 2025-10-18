@@ -1,5 +1,5 @@
 import { db } from "../db";
-import { plataformas, usuarios, jornadasFaturamentoPorPlataforma } from '../db/schema.postgres';
+import { plataformas, usuarios, jornadasFaturamentoPorPlataforma } from '../db';
 import { eq, and, isNull } from "drizzle-orm";
 import crypto from 'crypto';
 
