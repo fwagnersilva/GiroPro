@@ -23,6 +23,9 @@ import {
 } from '../../src/services/journeyService';
 import { getActivePlatforms, Platform } from '../../src/services/platformService';
 import { getVehicles, Vehicle } from '../../src/services/vehicleService';
+import { CurrencyInput } from '../../src/components/CurrencyInput';
+import { NumericInput } from '../../src/components/NumericInput';
+import { formatCurrency, parseCurrencyInput } from '../../src/utils/currency';
 
 const JornadasScreen: React.FC = () => {
   const router = useRouter();
@@ -34,6 +37,8 @@ const JornadasScreen: React.FC = () => {
   const [showFinishModal, setShowFinishModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [cancelingJourneyId, setCancelingJourneyId] = useState<string | null>(null);
+  const [finishingJourneyId, setFinishingJourneyId] = useState<string | null>(null);
   const [selectedJourneyToFinish, setSelectedJourneyToFinish] = useState<Journey | null>(null);
   const [selectedJourneyToEdit, setSelectedJourneyToEdit] = useState<Journey | null>(null);
 
@@ -142,12 +147,14 @@ const JornadasScreen: React.FC = () => {
           style: 'destructive',
           onPress: async () => {
             try {
-              // Para cancelar, vamos deletar a jornada
+              setCancelingJourneyId(journeyId);
               await deleteJourney(journeyId);
               Alert.alert('Sucesso', 'Jornada cancelada com sucesso!');
               await loadData();
             } catch (error: any) {
               Alert.alert('Erro', error.message || 'Erro ao cancelar jornada');
+            } finally {
+              setCancelingJourneyId(null);
             }
           },
         },
@@ -260,8 +267,8 @@ const JornadasScreen: React.FC = () => {
       const crossesCutoff = checksCutoffTime(selectedJourneyToFinish, platform.nome, endDate);
 
       if (crossesCutoff) {
-        const revenueBefore = parseFloat(finishPlatformRevenuesBeforeCutoff[platform.id] || "0");
-        const revenueAfter = parseFloat(finishPlatformRevenuesAfterCutoff[platform.id] || "0");
+        const revenueBefore = parseCurrencyInput(finishPlatformRevenuesBeforeCutoff[platform.id] || "") / 100;
+        const revenueAfter = parseCurrencyInput(finishPlatformRevenuesAfterCutoff[platform.id] || "") / 100;
         
         if (revenueBefore > 0 || revenueAfter > 0) {
           finalPlatformRevenues.push({
@@ -273,7 +280,7 @@ const JornadasScreen: React.FC = () => {
           totalRevenue += (revenueBefore + revenueAfter);
         }
       } else {
-        const revenue = parseFloat(finishPlatformRevenues[platform.id] || "0");
+        const revenue = parseCurrencyInput(finishPlatformRevenues[platform.id] || "") / 100;
         if (revenue > 0) {
           finalPlatformRevenues.push({
             idPlataforma: platform.id,
@@ -354,8 +361,8 @@ const JornadasScreen: React.FC = () => {
       const crossesCutoff = checksCutoffTime(selectedJourneyToEdit, platform.nome, endDate);
 
       if (crossesCutoff) {
-        const revenueBefore = parseFloat(editPlatformRevenuesBeforeCutoff[platform.id] || "0");
-        const revenueAfter = parseFloat(editPlatformRevenuesAfterCutoff[platform.id] || "0");
+        const revenueBefore = parseCurrencyInput(editPlatformRevenuesBeforeCutoff[platform.id] || "") / 100;
+        const revenueAfter = parseCurrencyInput(editPlatformRevenuesAfterCutoff[platform.id] || "") / 100;
         
         if (revenueBefore > 0 || revenueAfter > 0) {
           finalPlatformRevenues.push({
@@ -367,7 +374,7 @@ const JornadasScreen: React.FC = () => {
           totalRevenue += (revenueBefore + revenueAfter);
         }
       } else {
-        const revenue = parseFloat(editPlatformRevenues[platform.id] || "0");
+        const revenue = parseCurrencyInput(editPlatformRevenues[platform.id] || "") / 100;
         if (revenue > 0) {
           finalPlatformRevenues.push({
             idPlataforma: platform.id,
@@ -404,12 +411,7 @@ const JornadasScreen: React.FC = () => {
     }
   };
 
-  const formatCurrency = (value: number) => {
-    return new Intl.NumberFormat('pt-BR', {
-      style: 'currency',
-      currency: 'BRL',
-    }).format(value / 100);
-  };
+  // Função formatCurrency importada de utils/currency.ts
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -487,16 +489,26 @@ const JornadasScreen: React.FC = () => {
                 {isActive ? (
                   <View style={styles.journeyActions}>
                     <TouchableOpacity
-                      style={[styles.actionButton, styles.cancelButton]}
+                      style={[styles.actionButton, styles.cancelButton, cancelingJourneyId === journey.id && styles.actionButtonDisabled]}
                       onPress={() => handleCancelJourney(journey.id)}
+                      disabled={cancelingJourneyId === journey.id || finishingJourneyId === journey.id}
                     >
-                      <Text style={styles.cancelButtonText}>Cancelar</Text>
+                      {cancelingJourneyId === journey.id ? (
+                        <ActivityIndicator size="small" color="#fff" />
+                      ) : (
+                        <Text style={styles.cancelButtonText}>Cancelar</Text>
+                      )}
                     </TouchableOpacity>
                     <TouchableOpacity
-                      style={[styles.actionButton, styles.finishButton]}
+                      style={[styles.actionButton, styles.finishButton, finishingJourneyId === journey.id && styles.actionButtonDisabled]}
                       onPress={() => handleFinishJourney(journey)}
+                      disabled={cancelingJourneyId === journey.id || finishingJourneyId === journey.id}
                     >
-                      <Text style={styles.finishButtonText}>Finalizar Jornada</Text>
+                      {finishingJourneyId === journey.id ? (
+                        <ActivityIndicator size="small" color="#fff" />
+                      ) : (
+                        <Text style={styles.finishButtonText}>Finalizar Jornada</Text>
+                      )}
                     </TouchableOpacity>
                   </View>
                 ) : (
@@ -560,16 +572,13 @@ const JornadasScreen: React.FC = () => {
             </View>
 
             {/* KM Inicial */}
-            <View style={styles.formGroup}>
-              <Text style={styles.formLabel}>KM Inicial *</Text>
-              <TextInput
-                style={styles.input}
-                placeholder="0"
-                keyboardType="numeric"
-                value={kmInicio}
-                onChangeText={setKmInicio}
-              />
-            </View>
+            <NumericInput
+              label="KM Inicial *"
+              value={kmInicio}
+              onChangeValue={setKmInicio}
+              placeholder="0"
+              suffix="km"
+            />
 
 
 
@@ -632,16 +641,13 @@ const JornadasScreen: React.FC = () => {
                 </View>
 
                 {/* KM Final */}
-                <View style={styles.formGroup}>
-                  <Text style={styles.formLabel}>KM Final *</Text>
-                  <TextInput
-                    style={styles.input}
-                    placeholder="Quilometragem final"
-                    keyboardType="numeric"
-                    value={finishKmFim}
-                    onChangeText={setFinishKmFim}
-                  />
-                </View>
+                <NumericInput
+                  label="KM Final *"
+                  value={finishKmFim}
+                  onChangeValue={setFinishKmFim}
+                  placeholder="0"
+                  suffix="km"
+                />
 
                 {/* Faturamento por plataforma */}
                 <View style={styles.formGroup}>
@@ -659,58 +665,39 @@ const JornadasScreen: React.FC = () => {
                             <Text style={styles.cutoffWarning}>
                               ⚠️ Esta jornada atravessou o horário de corte da {platform.nome}
                             </Text>
-                            <View style={styles.cutoffRevenueRow}>
-                              <Text style={styles.cutoffRevenueLabel}>
-                                Antes do horário de corte:
-                              </Text>
-                              <TextInput
-                                style={styles.cutoffRevenueInput}
-                                placeholder="R$ 0,00"
-                                keyboardType="decimal-pad"
-                                value={finishPlatformRevenuesBeforeCutoff[platform.id] || ''}
-                                onChangeText={(value) =>
-                                  setFinishPlatformRevenuesBeforeCutoff({
-                                    ...finishPlatformRevenuesBeforeCutoff,
-                                    [platform.id]: value,
-                                  })
-                                }
-                              />
-                            </View>
-                            <View style={styles.cutoffRevenueRow}>
-                              <Text style={styles.cutoffRevenueLabel}>
-                                Depois do horário de corte:
-                              </Text>
-                              <TextInput
-                                style={styles.cutoffRevenueInput}
-                                placeholder="R$ 0,00"
-                                keyboardType="decimal-pad"
-                                value={finishPlatformRevenuesAfterCutoff[platform.id] || ''}
-                                onChangeText={(value) =>
-                                  setFinishPlatformRevenuesAfterCutoff({
-                                    ...finishPlatformRevenuesAfterCutoff,
-                                    [platform.id]: value,
-                                  })
-                                }
-                              />
-                            </View>
-                          </>
-                        ) : (
-                          // Mostrar um campo quando não atravessa horário de corte
-                          <View style={styles.platformRevenueRow}>
-                            <Text style={styles.platformRevenueName}>Faturamento Total:</Text>
-                            <TextInput
-                              style={styles.platformRevenueInput}
-                              placeholder="R$ 0,00"
-                              keyboardType="decimal-pad"
-                              value={finishPlatformRevenues[platform.id] || ''}
-                              onChangeText={(value) =>
-                                setFinishPlatformRevenues({
-                                  ...finishPlatformRevenues,
+                            <CurrencyInput
+                              label="Antes do horário de corte:"
+                              value={finishPlatformRevenuesBeforeCutoff[platform.id] || ''}
+                              onChangeValue={(value) =>
+                                setFinishPlatformRevenuesBeforeCutoff({
+                                  ...finishPlatformRevenuesBeforeCutoff,
                                   [platform.id]: value,
                                 })
                               }
                             />
-                          </View>
+                            <CurrencyInput
+                              label="Depois do horário de corte:"
+                              value={finishPlatformRevenuesAfterCutoff[platform.id] || ''}
+                              onChangeValue={(value) =>
+                                setFinishPlatformRevenuesAfterCutoff({
+                                  ...finishPlatformRevenuesAfterCutoff,
+                                  [platform.id]: value,
+                                })
+                              }
+                            />
+                          </>
+                        ) : (
+                          // Mostrar um campo quando não atravessa horário de corte
+                          <CurrencyInput
+                            label="Faturamento Total:"
+                            value={finishPlatformRevenues[platform.id] || ''}
+                            onChangeValue={(value) =>
+                              setFinishPlatformRevenues({
+                                ...finishPlatformRevenues,
+                                [platform.id]: value,
+                              })
+                            }
+                          />
                         )}
                       </View>
                     );
@@ -719,11 +706,13 @@ const JornadasScreen: React.FC = () => {
                   {/* Total geral */}
                   <Text style={styles.totalRevenue}>
                     Total Geral: R${' '}
-                    {(
-                      Object.values(finishPlatformRevenues).reduce((sum, value) => sum + (parseFloat(value) || 0), 0) +
-                      Object.values(finishPlatformRevenuesBeforeCutoff).reduce((sum, value) => sum + (parseFloat(value) || 0), 0) +
-                      Object.values(finishPlatformRevenuesAfterCutoff).reduce((sum, value) => sum + (parseFloat(value) || 0), 0)
-                    ).toFixed(2)}
+                    {
+                      (
+                        Object.values(finishPlatformRevenues).reduce((sum, value) => sum + parseCurrencyInput(value), 0) +
+                        Object.values(finishPlatformRevenuesBeforeCutoff).reduce((sum, value) => sum + parseCurrencyInput(value), 0) +
+                        Object.values(finishPlatformRevenuesAfterCutoff).reduce((sum, value) => sum + parseCurrencyInput(value), 0)
+                      / 100).toFixed(2)
+                    }
                   </Text>
                 </View>
 
@@ -1007,6 +996,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     borderRadius: 8,
     alignItems: 'center',
+  },
+  actionButtonDisabled: {
+    opacity: 0.6,
   },
   cancelButton: {
     backgroundColor: '#FF3B30',
