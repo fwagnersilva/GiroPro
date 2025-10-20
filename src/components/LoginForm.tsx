@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native';
+import { EmailInput } from './EmailInput';
 
 interface LoginFormProps {
   onLogin: (email: string, password: string, rememberMe: boolean) => Promise<void>;
@@ -21,13 +22,40 @@ const LoginForm: React.FC<LoginFormProps> = ({
   const [rememberMe, setRememberMe] = React.useState(false);
   const [showPassword, setShowPassword] = React.useState(false);
 
+  const [emailError, setEmailError] = React.useState('');
+  const [passwordError, setPasswordError] = React.useState('');
+
+  const validateEmail = (email: string): boolean => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
   const handleSubmit = async () => {
-    console.log('handleSubmit called', { email, password, hasEmail: !!email, hasPassword: !!password });
-    if (!email || !password) {
-      console.log('Email or password missing');
-      return;
+    // Limpa erros anteriores
+    setEmailError('');
+    setPasswordError('');
+
+    // Validações
+    let hasError = false;
+
+    if (!email) {
+      setEmailError('Email é obrigatório');
+      hasError = true;
+    } else if (!validateEmail(email)) {
+      setEmailError('Email inválido');
+      hasError = true;
     }
-    console.log('Calling onLogin...');
+
+    if (!password) {
+      setPasswordError('Senha é obrigatória');
+      hasError = true;
+    } else if (password.length < 6) {
+      setPasswordError('A senha deve ter pelo menos 6 caracteres');
+      hasError = true;
+    }
+
+    if (hasError) return;
+
     await onLogin(email, password, rememberMe);
   };
 
@@ -45,25 +73,20 @@ const LoginForm: React.FC<LoginFormProps> = ({
       {/* Formulário */}
       <View style={styles.form}>
         {/* Campo Email */}
-        <View style={styles.inputContainer}>
-          <Text style={styles.label}>Email</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Digite seu email"
-            value={email}
-            onChangeText={setEmail}
-            keyboardType="email-address"
-            autoCapitalize="none"
-            autoComplete="email"
-          />
-        </View>
+        <EmailInput
+          label="Email"
+          value={email}
+          onChangeValue={setEmail}
+          error={emailError}
+          showValidation={false}
+        />
 
         {/* Campo Senha */}
         <View style={styles.inputContainer}>
           <Text style={styles.label}>Senha</Text>
           <View style={styles.passwordContainer}>
             <TextInput
-              style={[styles.input, styles.passwordInput]}
+              style={[styles.input, styles.passwordInput, passwordError && styles.inputError]}
               placeholder="Digite sua senha"
               value={password}
               onChangeText={setPassword}
@@ -79,6 +102,7 @@ const LoginForm: React.FC<LoginFormProps> = ({
               </Text>
             </TouchableOpacity>
           </View>
+          {passwordError && <Text style={styles.errorText}>{passwordError}</Text>}
         </View>
 
         {/* Opções */}
@@ -111,7 +135,7 @@ const LoginForm: React.FC<LoginFormProps> = ({
         <TouchableOpacity
           style={[styles.button, loading && styles.buttonDisabled]}
           onPress={handleSubmit}
-          disabled={loading || !email || !password}
+          disabled={loading}
         >
           {loading ? (
             <ActivityIndicator color="#fff" />
@@ -196,6 +220,9 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     fontSize: 16,
     backgroundColor: '#fff',
+  },
+  inputError: {
+    borderColor: '#ef4444',
   },
   passwordContainer: {
     position: 'relative',
