@@ -6,10 +6,13 @@ import {
   TouchableOpacity, 
   StyleSheet, 
   ScrollView,
-  Alert 
+  Alert,
+  ActivityIndicator
 } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { Vehicle, CreateVehicleData, UpdateVehicleData } from '../../../../src/services/vehicleService';
+import { PlateInput } from '../../../../src/components/PlateInput';
+import { YearInput } from '../../../../src/components/YearInput';
 
 interface VehicleFormProps {
   vehicle?: Vehicle;
@@ -90,29 +93,17 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
           />
         </View>
 
-        <View style={styles.inputGroup}>
-          <Text style={styles.label}>Ano</Text>
-          <TextInput
-            style={styles.input}
-            value={formData.year}
-            onChangeText={(text) => setFormData(prev => ({ ...prev, year: text }))}
-            placeholder="Ex: 2020"
-            placeholderTextColor="#999"
-            keyboardType="numeric"
-          />
-        </View>
+        <YearInput
+          label="Ano"
+          value={formData.year}
+          onChangeValue={(text) => setFormData(prev => ({ ...prev, year: text }))}
+        />
 
-        <View style={styles.inputGroup}>
-          <Text style={styles.label}>Placa</Text>
-          <TextInput
-            style={styles.input}
-            value={formData.plate}
-            onChangeText={(text) => setFormData(prev => ({ ...prev, plate: text }))}
-            placeholder="Ex: ABC-1234"
-            placeholderTextColor="#999"
-            autoCapitalize="characters"
-          />
-        </View>
+        <PlateInput
+          label="Placa"
+          value={formData.plate}
+          onChangeValue={(text) => setFormData(prev => ({ ...prev, plate: text }))}
+        />
 
         <View style={styles.inputGroup}>
           <Text style={styles.label}>Cor</Text>
@@ -151,13 +142,17 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
           </TouchableOpacity>
 
           <TouchableOpacity 
-            style={[styles.button, styles.submitButton]} 
+            style={[styles.button, styles.submitButton, loading && styles.submitButtonDisabled]} 
             onPress={handleSubmit}
             disabled={loading}
           >
-            <Text style={styles.submitButtonText}>
-              {loading ? 'Salvando...' : (isEditing ? 'Atualizar' : 'Cadastrar')}
-            </Text>
+            {loading ? (
+              <ActivityIndicator size="small" color="#fff" />
+            ) : (
+              <Text style={styles.submitButtonText}>
+                {isEditing ? 'Atualizar' : 'Cadastrar'}
+              </Text>
+            )}
           </TouchableOpacity>
         </View>
       </View>
@@ -231,6 +226,9 @@ const styles = StyleSheet.create({
   },
   submitButton: {
     backgroundColor: '#2563eb',
+  },
+  submitButtonDisabled: {
+    opacity: 0.6,
   },
   submitButtonText: {
     color: '#fff',

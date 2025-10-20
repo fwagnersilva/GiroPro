@@ -25,6 +25,8 @@ const VehicleList: React.FC = () => {
     editVehicle, 
     removeVehicle 
   } = useVehicleService();
+  
+  const [deletingVehicleId, setDeletingVehicleId] = useState<string | null>(null);
 
 
 
@@ -50,7 +52,11 @@ const VehicleList: React.FC = () => {
         { 
           text: 'Excluir', 
           style: 'destructive',
-          onPress: () => removeVehicle(vehicle.id)
+          onPress: async () => {
+            setDeletingVehicleId(vehicle.id);
+            await removeVehicle(vehicle.id);
+            setDeletingVehicleId(null);
+          }
         }
       ]
     );
@@ -82,17 +88,23 @@ const VehicleList: React.FC = () => {
       
       <View style={styles.actionButtons}>
         <TouchableOpacity 
-          style={[styles.actionButton, styles.editButton]}
+          style={[styles.actionButton, styles.editButton, deletingVehicleId === item.id && styles.actionButtonDisabled]}
           onPress={() => handleEditVehicle(item)}
+          disabled={deletingVehicleId === item.id}
         >
           <Text style={styles.editButtonText}>Editar</Text>
         </TouchableOpacity>
         
         <TouchableOpacity 
-          style={[styles.actionButton, styles.deleteButton]}
+          style={[styles.actionButton, styles.deleteButton, deletingVehicleId === item.id && styles.actionButtonDisabled]}
           onPress={() => handleDeleteVehicle(item)}
+          disabled={deletingVehicleId === item.id}
         >
-          <Text style={styles.deleteButtonText}>Excluir</Text>
+          {deletingVehicleId === item.id ? (
+            <ActivityIndicator size="small" color="#fff" />
+          ) : (
+            <Text style={styles.deleteButtonText}>Excluir</Text>
+          )}
         </TouchableOpacity>
       </View>
     </View>
@@ -232,6 +244,9 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     minWidth: 70,
     alignItems: 'center',
+  },
+  actionButtonDisabled: {
+    opacity: 0.6,
   },
   editButton: {
     backgroundColor: '#f59e0b',
