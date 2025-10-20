@@ -20,10 +20,19 @@ app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// CORS
+// CORS - CONFIGURAÇÃO ATUALIZADA
 app.use(cors({
-  origin: process.env.CORS_ORIGIN?.split(',') || '*',
-  credentials: true
+  origin: [
+    'http://localhost:19006',
+    'http://localhost:3000',
+    'http://localhost:8081',
+    'https://giropro-frontend.onrender.com',
+    'https://giropro-frontend-u3da.onrender.com',
+    '*' // Temporário para testes - REMOVA depois em produção
+  ],
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
 // Logger
@@ -31,7 +40,12 @@ app.use(requestLogger);
 
 // Health check (sem autenticação)
 app.get('/health', (req, res) => {
-  res.json({ status: 'ok' });
+  res.json({ 
+    status: 'ok',
+    timestamp: new Date().toISOString(),
+    uptime: process.uptime(),
+    environment: process.env.NODE_ENV || 'development'
+  });
 });
 
 // Rotas públicas
