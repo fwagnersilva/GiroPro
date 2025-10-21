@@ -3,7 +3,13 @@ import app from './app';
 import logger from './utils/logger';
 import { initTables, initializeDatabase, getClient } from './db';
 
+console.log('🔍 DEBUG - PORT from env:', process.env.PORT);
+console.log('🔍 DEBUG - All env vars:', Object.keys(process.env).filter(k => k.includes('PORT')));
+
 const PORT = Number(config.port);
+console.log("🔍 DEBUG - PORT from process.env.PORT:", process.env.PORT);
+console.log("🔍 DEBUG - PORT from config:", config.port);
+console.log("🔍 DEBUG - All PORT-related env vars:", Object.keys(process.env).filter(k => k.includes("PORT")));
 
 // Função assíncrona para inicializar servidor
 async function startServer() {
