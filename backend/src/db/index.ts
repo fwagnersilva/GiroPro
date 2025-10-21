@@ -6,7 +6,6 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 import { createDatabaseConnection, checkDatabaseConnection } from './connection.factory';
-import { createDatabaseConnection, checkDatabaseConnection } from './connection.factory';
 
 let dbInstance: any;
 let clientInstance: any;
@@ -15,7 +14,6 @@ export async function initializeDatabase() {
   const { db, client } = await createDatabaseConnection();
   dbInstance = db;
   clientInstance = client;
-  
   return { db, client };
 }
 
