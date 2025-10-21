@@ -1,0 +1,11 @@
+.env
+.env.local
+*.log
+*.db
+*.db-shm
+*.db-wal
+node_modules/
+src/
+__tests__/
+*.test.ts
+*.spec.ts
