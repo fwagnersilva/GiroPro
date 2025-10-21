@@ -1,69 +1,90 @@
-import { config } from './config';
-import app from './app';
-import logger from './utils/logger';
-import { initTables, initializeDatabase, getClient } from './db';
+import http from 'http';
+import { app } from './app';
+import { config } from './config/env';
+import { initializeDatabase } from './config/database';
 
-console.log('🔍 DEBUG - PORT from env:', process.env.PORT);
-console.log('🔍 DEBUG - All env vars:', Object.keys(process.env).filter(k => k.includes('PORT')));
+const PORT = process.env.PORT || config.port || 3000;
 
-const PORT = Number(config.port);
-console.log("🔍 DEBUG - PORT from process.env.PORT:", process.env.PORT);
-console.log("🔍 DEBUG - PORT from config:", config.port);
-console.log("🔍 DEBUG - All PORT-related env vars:", Object.keys(process.env).filter(k => k.includes("PORT")));
+console.log('🔍 Verificando configuração de porta:');
+console.log('  - process.env.PORT:', process.env.PORT);
+console.log('  - config.port:', config.port);
+console.log('  - PORT final:', PORT);
+console.log('  - NODE_ENV:', process.env.NODE_ENV);
 
-// Função assíncrona para inicializar servidor
+let server: http.Server;
+
 async function startServer() {
   try {
-    // CRITICAL: Start listening FIRST so Qoddi knows we're alive
-    const server = app.listen(PORT, '0.0.0.0', () => {
-      logger.info(`🚀 Servidor GiroPro rodando na porta ${PORT}`);
-      logger.info(`📊 Health check: http://localhost:${PORT}/health`);
-      logger.info(`🌐 Acessível externamente em: http://0.0.0.0:${PORT}`);
-    });
-
-    // THEN initialize database in background
+    // Inicializar banco de dados
     console.log('🔄 Inicializando conexão com o banco de dados...');
     await initializeDatabase();
-    await initTables();
-    console.log('✅ Banco de dados inicializado');
-
-    // Graceful shutdown
-    const shutdown = async (signal: string) => {
-      logger.info(`🛑 ${signal} recebido, encerrando servidor...`);
-
-      server.close(async () => {
-        logger.info('✅ Servidor HTTP encerrado');
-
-        try {
-          const client = getClient();
-          if (client && typeof client.end === 'function') {
-            await client.end();
-            logger.info('✅ Conexão com banco encerrada');
-          } else {
-            logger.info('✅ Nenhuma conexão de banco de dados para encerrar (SQLite ou cliente não disponível).');
-          }
-          process.exit(0);
-        } catch (error) {
-          logger.error('❌ Erro ao encerrar conexão:', error);
-          process.exit(1);
-        }
+    
+    // Criar servidor HTTP
+    server = http.createServer(app);
+    
+    // Iniciar servidor
+    await new Promise<void>((resolve, reject) => {
+      server.listen(PORT, () => {
+        console.log('\n' + '='.repeat(60));
+        console.log(`🚀 Servidor GiroPro iniciado com sucesso!`);
+        console.log(`📍 Porta: ${PORT}`);
+        console.log(`🌍 Ambiente: ${process.env.NODE_ENV || 'development'}`);
+        console.log(`🔗 URL local: http://localhost:${PORT}`);
+        console.log(`🔗 URL externa: http://0.0.0.0:${PORT}`);
+        console.log(`🏥 Health check: http://localhost:${PORT}/health`);
+        console.log('='.repeat(60) + '\n');
+        
+        resolve();
       });
-
-      // Força encerramento após 10 segundos
-      setTimeout(() => {
-        logger.error('⏰ Tempo limite excedido, forçando encerramento...');
-        process.exit(1);
-      }, 10000);
-    };
-
-    process.on('SIGTERM', () => shutdown('SIGTERM'));
-    process.on('SIGINT', () => shutdown('SIGINT'));
-
+      
+      server.on('error', reject);
+    });
+    
   } catch (error) {
-    logger.error('❌ Erro ao iniciar servidor:', error);
+    console.error('❌ Erro ao iniciar servidor:', error);
     process.exit(1);
   }
 }
+
+// Graceful shutdown
+async function shutdown(signal: string) {
+  console.log(`\n🛑 ${signal} recebido, encerrando servidor...`);
+  
+  if (server) {
+    await new Promise<void>((resolve) => {
+      server.close(() => {
+        console.log('✅ Servidor HTTP encerrado');
+        resolve();
+      });
+    });
+  }
+  
+  // Encerrar conexão com banco de dados
+  try {
+    const { closeDatabase } = await import('./config/database');
+    await closeDatabase();
+    console.log('✅ Conexão com banco encerrada');
+  } catch (error) {
+    console.error('❌ Erro ao encerrar conexão com banco:', error);
+  }
+  
+  process.exit(0);
+}
+
+// Tratar sinais de encerramento
+process.on('SIGTERM', () => shutdown('SIGTERM'));
+process.on('SIGINT', () => shutdown('SIGINT'));
+
+// Tratar erros não capturados
+process.on('uncaughtException', (error) => {
+  console.error('❌ Uncaught Exception:', error);
+  shutdown('UNCAUGHT_EXCEPTION');
+});
+
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('❌ Unhandled Rejection at:', promise, 'reason:', reason);
+  shutdown('UNHANDLED_REJECTION');
+});
 
 // Iniciar servidor
 startServer();

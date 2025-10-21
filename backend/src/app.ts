@@ -9,7 +9,6 @@ import { authRoutes } from './routes/auth';
 import { vehicleRoutes } from './routes/vehicles';
 import { journeyRoutes } from './routes/journeys';
 import { authMiddleware } from './middlewares/auth';
-import { logger } from './config/logger';
 
 const app = express();
 app.set('trust proxy', 1);
@@ -55,7 +54,6 @@ app.get('/health', (req, res) => {
     ip: req.ip
   };
   
-  logger.info('🏥 Health check acessado', healthData);
   console.log('🏥 HEALTH CHECK:', JSON.stringify(healthData, null, 2));
   
   res.json(healthData);
@@ -63,7 +61,6 @@ app.get('/health', (req, res) => {
 
 // Root endpoint - para verificar se o servidor está respondendo
 app.get('/', (req, res) => {
-  logger.info('🏠 Root endpoint acessado');
   console.log('🏠 ROOT ENDPOINT acessado');
   
   res.json({
@@ -85,7 +82,6 @@ app.use('/api/journeys', authMiddleware, journeyRoutes);
 
 // 404 handler
 app.use((req, res) => {
-  logger.warn(`❌ Rota não encontrada: ${req.method} ${req.path}`);
   console.log(`❌ 404: ${req.method} ${req.path}`);
   
   res.status(404).json({
