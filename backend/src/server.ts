@@ -8,28 +8,26 @@ const PORT = Number(config.port);
 // Função assíncrona para inicializar servidor
 async function startServer() {
   try {
-    // Primeiro inicializa o banco de dados
-    console.log('🔄 Inicializando conexão com o banco de dados...');
-    await initializeDatabase();
-
-    // Em seguida, inicializa as tabelas
-    // console.log('🔄 Inicializando tabelas do banco de dados...');
-    await initTables();
-    
-    // Depois inicia o servidor
+    // CRITICAL: Start listening FIRST so Qoddi knows we're alive
     const server = app.listen(PORT, '0.0.0.0', () => {
       logger.info(`🚀 Servidor GiroPro rodando na porta ${PORT}`);
       logger.info(`📊 Health check: http://localhost:${PORT}/health`);
       logger.info(`🌐 Acessível externamente em: http://0.0.0.0:${PORT}`);
     });
 
+    // THEN initialize database in background
+    console.log('🔄 Inicializando conexão com o banco de dados...');
+    await initializeDatabase();
+    await initTables();
+    console.log('✅ Banco de dados inicializado');
+
     // Graceful shutdown
     const shutdown = async (signal: string) => {
       logger.info(`🛑 ${signal} recebido, encerrando servidor...`);
-      
+
       server.close(async () => {
         logger.info('✅ Servidor HTTP encerrado');
-        
+
         try {
           const client = getClient();
           if (client && typeof client.end === 'function') {
