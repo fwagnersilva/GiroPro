@@ -1,0 +1,26 @@
+{
+  "name": "giropro-backend",
+  "version": "1.0.0",
+  "packageManager": "pnpm@10.18.3",
+  "description": "Backend da aplicação GiroPro para gestão financeira de motoristas de aplicativo.",
+  "main": "dist/server.js",
+  "scripts": {
+    "dev": "NODE_ENV=development nodemon src/server.ts",
+    "dev:pg": "NODE_ENV=production nodemon src/server.ts",
+    "build": "tsc",
+    "start": "node dist/server.js",
+    "db:generate": "drizzle-kit generate",
+    "db:push": "drizzle-kit push",
+    "db:migrate": "drizzle-kit push",
+    "db:check": "drizzle-kit check",
+    "db:studio": "drizzle-kit studio",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "test:integration": "jest --testPathPattern=integration",
+    "test:e2e": "jest --testPathPattern=e2e",
+    "test:ci": "jest --ci --coverage --watchAll=false",
+    "lint": "eslint src --ext .ts",
+    "format": "prettier --write \"src/**/*.ts\""
+  }
+}

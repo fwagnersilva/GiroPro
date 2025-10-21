@@ -2,7 +2,7 @@ import { Router } from "express";
 import { VehiclesController } from "../controllers/vehiclesController";
 import asyncHandler from "../utils/asyncHandler";
 import rateLimit from "express-rate-limit";
-import { authMiddleware } from "../middleware/auth";
+import { authMiddleware } from "../middlewares/auth";
 
 const router = Router();
 
