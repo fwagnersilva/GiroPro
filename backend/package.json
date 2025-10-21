@@ -1,6 +1,7 @@
 {
   "name": "giropro-backend",
   "version": "1.0.0",
+  "packageManager": "pnpm@10.18.3",
   "description": "Backend da aplicação GiroPro para gestão financeira de motoristas de aplicativo.",
   "main": "dist/server.js",
   "scripts": {
