@@ -1,6 +1,11 @@
 import dotenv from 'dotenv';
-dotenv.config();
 
+// Only load .env in development/local, not in production (Qoddi provides env vars)
+if (process.env.NODE_ENV !== 'production') {
+  dotenv.config();
+}
+
+import { createDatabaseConnection, checkDatabaseConnection } from './connection.factory';
 import { createDatabaseConnection, checkDatabaseConnection } from './connection.factory';
 
 let dbInstance: any;
