@@ -1,8 +1,11 @@
 import dotenv from 'dotenv';
 
-// Only load .env in development/local, not in production (Qoddi provides env vars)
-if (process.env.NODE_ENV !== 'production') {
+// Only load .env if DATABASE_URL is not already set (means we're local, not on Qoddi)
+if (!process.env.DATABASE_URL) {
+  console.log('📁 Loading .env file (local development)');
   dotenv.config();
+} else {
+  console.log('☁️ Using platform environment variables (Qoddi)');
 }
 
 import { createDatabaseConnection, checkDatabaseConnection } from './connection.factory';
