@@ -1,0 +1,22 @@
+{
+  "name": "giropro-backend",
+  "build": {
+    "commands": [
+      "npm install",
+      "npm run build"
+    ]
+  },
+  "run": {
+    "command": "npm start"
+  },
+  "env": {
+    "NODE_ENV": "production",
+    "PORT": "8080"
+  },
+  "health_check": {
+    "path": "/health",
+    "interval": 30,
+    "timeout": 10,
+    "retries": 3
+  }
+}
