@@ -1,0 +1,9 @@
+{
+  "name": "giropro-monorepo",
+  "version": "1.0.0",
+  "packageManager": "pnpm@10.18.3",
+  "private": true,
+  "scripts": {
+    "start": "cd backend && pnpm start"
+  }
+}
