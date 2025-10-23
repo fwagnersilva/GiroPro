@@ -13,14 +13,7 @@ import { authMiddleware } from './middlewares/auth';
 const app = express();
 app.set('trust proxy', 1);
 
-// Middlewares básicos
-app.use(helmet());
-app.use(compression());
-app.use(cookieParser());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-
-// CORS - Configuração específica por ambiente
+// CORS - Configuração específica por ambiente (movido para o topo)
 const allowedOrigins = process.env.NODE_ENV === 'production' 
   ? [
       process.env.FRONTEND_URL, 'https://giropro-frontend-u3dw.onrender.com' // Adicionado para permitir o acesso do frontend no Render
@@ -38,8 +31,12 @@ app.use(cors({
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
-// Adicionar rota genérica para OPTIONS para garantir que o preflight seja respondido corretamente
-app.options('*', cors());
+// Middlewares básicos
+app.use(helmet());
+app.use(compression());
+app.use(cookieParser());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 // Logger
 app.use(requestLogger);
