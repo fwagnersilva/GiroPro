@@ -14,6 +14,9 @@ import {
 const router = Router();
 
 // POST /api/v1/auth/register
+router.options('/register', (req, res) => {
+  res.sendStatus(204); // Responde 204 No Content para preflight OPTIONS
+});
 router.post('/register', validate(registerSchema), AuthController.register);
 
 // POST /api/v1/auth/login
