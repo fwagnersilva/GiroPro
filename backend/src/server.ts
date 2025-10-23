@@ -1,7 +1,7 @@
 import http from 'http';
 import { app } from './app';
 import { config } from './config/env';
-import { initializeDatabase } from './config/database';
+import { initializeDatabase, closeConnection } from './db';
 
 const PORT = process.env.PORT || config.port || 3000;
 
@@ -61,8 +61,7 @@ async function shutdown(signal: string) {
   
   // Encerrar conexão com banco de dados
   try {
-    const { closeDatabase } = await import('./config/database');
-    await closeDatabase();
+    await closeConnection();
     console.log('✅ Conexão com banco encerrada');
   } catch (error) {
     console.error('❌ Erro ao encerrar conexão com banco:', error);
