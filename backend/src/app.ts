@@ -23,7 +23,7 @@ app.use(express.urlencoded({ extended: true }));
 // CORS - Configuração específica por ambiente
 const allowedOrigins = process.env.NODE_ENV === 'production' 
   ? [
-      process.env.FRONTEND_URL
+      process.env.FRONTEND_URL, 'https://giropro-frontend-u3dw.onrender.com' // Adicionado para permitir o acesso do frontend no Render
     ].filter(Boolean)
   : [
       'http://localhost:19006',
