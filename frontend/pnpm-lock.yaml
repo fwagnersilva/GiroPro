@@ -35,6 +35,9 @@ importers:
       axios:
         specifier: ^1.12.2
         version: 1.12.2
+      babel-plugin-module-resolver:
+        specifier: ^5.0.0
+        version: 5.0.2
       dotenv:
         specifier: ^17.2.3
         version: 17.2.3
@@ -128,6 +131,9 @@ importers:
       react-native-web:
         specifier: ^0.21.0
         version: 0.21.1(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+      react-native-worklets:
+        specifier: 0.6.1
+        version: 0.6.1(@babel/core@7.28.4)(react-native@0.81.4(@babel/core@7.28.4)(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)
       react-query-kit:
         specifier: ^3.3.2
         version: 3.3.2(@tanstack/react-query@5.90.2(react@19.1.0))
@@ -137,6 +143,9 @@ importers:
       tailwind-variants:
         specifier: ^3.1.1
         version: 3.1.1(tailwind-merge@3.3.1)(tailwindcss@3.4.18(yaml@2.8.1))
+      tailwindcss:
+        specifier: 3.4.18
+        version: 3.4.18(yaml@2.8.1)
       zod:
         specifier: ^3.22.4
         version: 3.25.76
@@ -180,9 +189,6 @@ importers:
       '@typescript-eslint/parser':
         specifier: ^6.2.0
         version: 6.21.0(eslint@8.57.1)(typescript@5.9.3)
-      babel-plugin-module-resolver:
-        specifier: ^5.0.0
-        version: 5.0.2
       eas-cli:
         specifier: ^16.20.2
         version: 16.20.4(@types/node@24.7.2)(typescript@5.9.3)
@@ -255,9 +261,6 @@ importers:
       sharp:
         specifier: ^0.34.4
         version: 0.34.4
-      tailwindcss:
-        specifier: ^3.4.18
-        version: 3.4.18(yaml@2.8.1)
       typescript:
         specifier: ^5.1.6
         version: 5.9.3
@@ -11289,7 +11292,7 @@ snapshots:
     dependencies:
       array-union: 2.1.0
       dir-glob: 3.0.1
-      fast-glob: 3.3.2
+      fast-glob: 3.3.3
       ignore: 5.3.0
       merge2: 1.4.1
       slash: 3.0.0
