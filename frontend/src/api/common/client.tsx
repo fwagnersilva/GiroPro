@@ -9,7 +9,7 @@ const isLocalhost = typeof window !== 'undefined' &&
 // Se localhost, usa backend local. Senão usa do config
 const API_URL = isLocalhost 
   ? 'http://localhost:3000/api'
-  : (Constants.expoConfig?.extra?.API_URL || 'https://giropro-backend-bn14.onrender.com/api');
+  : (Constants.expoConfig?.extra?.API_URL || 'https://giropro-backend2.onrender.com/api').replace('/v1', '');
 
 console.log('📡 Hostname:', typeof window !== 'undefined' ? window.location.hostname : 'server');
 console.log('📡 isLocalhost:', isLocalhost);
