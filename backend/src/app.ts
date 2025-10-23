@@ -38,6 +38,9 @@ app.use(cors({
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
+// Adicionar rota genérica para OPTIONS para garantir que o preflight seja respondido corretamente
+app.options('*', cors());
+
 // Logger
 app.use(requestLogger);
 
