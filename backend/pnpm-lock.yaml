@@ -45,8 +45,8 @@ importers:
         specifier: ^17.2.2
         version: 17.2.3
       drizzle-orm:
-        specifier: ^0.44.3
-        version: 0.44.6(@types/pg@8.15.5)(better-sqlite3@12.4.1)(pg@8.16.3)(postgres@3.4.7)
+        specifier: ^0.44.7
+        version: 0.44.7(@types/pg@8.15.5)(better-sqlite3@12.4.1)(pg@8.16.3)(postgres@3.4.7)
       express:
         specifier: ^4.18.2
         version: 4.21.2
@@ -1919,8 +1919,8 @@ packages:
     resolution: {integrity: sha512-Oqie227W2Dd7FuqX4pvQWeClSvnoPCIn2cO9JueeLWZqj3tpdBhnbgt4nLHhBbOdWRlTLYwXnkTDW3hYym/gGQ==}
     hasBin: true
 
-  drizzle-orm@0.44.6:
-    resolution: {integrity: sha512-uy6uarrrEOc9K1u5/uhBFJbdF5VJ5xQ/Yzbecw3eAYOunv5FDeYkR2m8iitocdHBOHbvorviKOW5GVw0U1j4LQ==}
+  drizzle-orm@0.44.7:
+    resolution: {integrity: sha512-quIpnYznjU9lHshEOAYLoZ9s3jweleHlZIAWR/jX9gAWNg/JhQ1wj0KGRf7/Zm+obRrYd9GjPVJg790QY9N5AQ==}
     peerDependencies:
       '@aws-sdk/client-rds-data': '>=3'
       '@cloudflare/workers-types': '>=4'
@@ -6305,7 +6305,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  drizzle-orm@0.44.6(@types/pg@8.15.5)(better-sqlite3@12.4.1)(pg@8.16.3)(postgres@3.4.7):
+  drizzle-orm@0.44.7(@types/pg@8.15.5)(better-sqlite3@12.4.1)(pg@8.16.3)(postgres@3.4.7):
     optionalDependencies:
       '@types/pg': 8.15.5
       better-sqlite3: 12.4.1
