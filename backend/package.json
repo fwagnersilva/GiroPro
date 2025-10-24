@@ -28,7 +28,7 @@
   "license": "MIT",
   "dependencies": {
     "@types/ioredis": "^4.28.10",
-    "@types/nodemailer": "^7.0.1",
+    "@types/nodemailer": "^7.0.3",
     "axios": "^1.12.2",
     "bcrypt": "^6.0.0",
     "better-sqlite3": "^12.4.1",
