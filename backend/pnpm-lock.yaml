@@ -46,7 +46,7 @@ importers:
         version: 17.2.3
       drizzle-orm:
         specifier: ^0.44.3
-        version: 0.44.6(@types/pg@8.15.5)(better-sqlite3@12.4.1)(pg@8.16.3)(postgres@3.4.7)
+        version: 0.44.6(@types/pg@8.15.6)(better-sqlite3@12.4.1)(pg@8.16.3)(postgres@3.4.7)
       express:
         specifier: ^4.18.2
         version: 4.21.2
@@ -130,8 +130,8 @@ importers:
         specifier: ^20.8.7
         version: 20.19.23
       '@types/pg':
-        specifier: ^8.10.3
-        version: 8.15.5
+        specifier: ^8.15.6
+        version: 8.15.6
       '@types/supertest':
         specifier: ^6.0.3
         version: 6.0.3
@@ -1303,8 +1303,8 @@ packages:
   '@types/nodemailer@7.0.2':
     resolution: {integrity: sha512-Zo6uOA9157WRgBk/ZhMpTQ/iCWLMk7OIs/Q9jvHarMvrzUUP/MDdPHL2U1zpf57HrrWGv4nYQn5uIxna0xY3xw==}
 
-  '@types/pg@8.15.5':
-    resolution: {integrity: sha512-LF7lF6zWEKxuT3/OR8wAZGzkg4ENGXFNyiV/JeOt9z5B+0ZVwbql9McqX5c/WStFq1GaGso7H1AzP/qSzmlCKQ==}
+  '@types/pg@8.15.6':
+    resolution: {integrity: sha512-NoaMtzhxOrubeL/7UZuNTrejB4MPAJ0RpxZqXQf2qXuVlTPuG6Y8p4u9dKRaue4yjmC7ZhzVO2/Yyyn25znrPQ==}
 
   '@types/qs@6.14.0':
     resolution: {integrity: sha512-eOunJqu0K1923aExK6y8p6fsihYEn/BYuQ4g0CxAAgFc4b/ZLN4CrsRZ55srTdqoiLzU2B2evC+apEIxprEzkQ==}
@@ -5644,7 +5644,7 @@ snapshots:
     transitivePeerDependencies:
       - aws-crt
 
-  '@types/pg@8.15.5':
+  '@types/pg@8.15.6':
     dependencies:
       '@types/node': 20.19.23
       pg-protocol: 1.10.3
@@ -6305,9 +6305,9 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  drizzle-orm@0.44.6(@types/pg@8.15.5)(better-sqlite3@12.4.1)(pg@8.16.3)(postgres@3.4.7):
+  drizzle-orm@0.44.6(@types/pg@8.15.6)(better-sqlite3@12.4.1)(pg@8.16.3)(postgres@3.4.7):
     optionalDependencies:
-      '@types/pg': 8.15.5
+      '@types/pg': 8.15.6
       better-sqlite3: 12.4.1
       pg: 8.16.3
       postgres: 3.4.7
